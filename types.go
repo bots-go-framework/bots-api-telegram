@@ -254,26 +254,74 @@ func (f *File) Link(token string) string {
 	return fmt.Sprintf(FileEndpoint, token, f.FilePath)
 }
 
+type TelegramKeyboard interface {
+	IsKeyboard()
+	IsTelegramKeyboard()
+}
+
+type telegramKeyboard struct {}
+func (kb telegramKeyboard) IsTelegramKeyboard(){}
+func (kb telegramKeyboard) IsKeyboard(){}
+var _ TelegramKeyboard = (*telegramKeyboard)(nil)
+
+type KeyboardButton struct {
+	Text string				`json:"text"`     // Telegram: Text of the button. If none of the optional fields are used, it will be sent to the bot as a message when the button is pressed
+	RequestContact bool  `json:"request_contact,omitempty"` // Telegram: Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only
+	RequestLocation bool `json:"request_location,omitempty"` //Telegram: Optional. If True, the user's current location will be sent when the button is pressed. Available in private chats only
+}
+
 // ReplyKeyboardMarkup allows the Bot to set a custom keyboard.
 type ReplyKeyboardMarkup struct {
-	Keyboard        [][]string `json:"keyboard"`
-	ResizeKeyboard  bool       `json:"resize_keyboard"`   // optional
-	OneTimeKeyboard bool       `json:"one_time_keyboard"` // optional
-	Selective       bool       `json:"selective"`         // optional
+	telegramKeyboard
+	Keyboard        [][]KeyboardButton `json:"keyboard"`
+	ResizeKeyboard  bool               `json:"resize_keyboard,omitempty"`   // optional
+	OneTimeKeyboard bool               `json:"one_time_keyboard,omitempty"` // optional
+	Selective       bool               `json:"selective,omitempty"`         // optional
+}
+var _ TelegramKeyboard = (*ReplyKeyboardMarkup)(nil)
+
+func NewReplyKeyboardUsingStrings(buttons [][]string) ReplyKeyboardMarkup {
+	kb := make([][]KeyboardButton, len(buttons))
+
+	for i, row := range buttons {
+		kbRow := make([]KeyboardButton, len(row))
+		for j, text := range row {
+			kbRow[j] = KeyboardButton{Text: text}
+		}
+		kb[i] = kbRow
+	}
+
+	return ReplyKeyboardMarkup{Keyboard: kb}
 }
 
 // ReplyKeyboardHide allows the Bot to hide a custom keyboard.
 type ReplyKeyboardHide struct {
+	telegramKeyboard
 	HideKeyboard bool `json:"hide_keyboard"`
 	Selective    bool `json:"selective"` // optional
 }
+var _ TelegramKeyboard = (*ReplyKeyboardHide)(nil)
 
 // ForceReply allows the Bot to have users directly reply to it without
 // additional interaction.
 type ForceReply struct {
-	ForceReply bool `json:"force_reply"`
-	Selective  bool `json:"selective"` // optional
+	telegramKeyboard
+	ForceReply bool `json:"force_reply,omitempty"`
+	Selective  bool `json:"selective,omitempty"` // optional
 }
+var _ TelegramKeyboard = (*ForceReply)(nil)
+
+type InlineKeyboardButton struct {
+	Text string `json:"text"` // required
+	Url  string `json:"url,omitempty"`  // optional
+	CallbackData  string `json:"callback_data,omitempty"`  // optional
+	SwitchInlineQuery string `json:"switch_inline_query,omitempty"`  // optional
+}
+
+type InlineKeyboardMarkup [][]InlineKeyboardButton
+func (kb InlineKeyboardMarkup) IsTelegramKeyboard(){}
+func (kb InlineKeyboardMarkup) IsKeyboard(){}
+var _ TelegramKeyboard = (*InlineKeyboardMarkup)(nil)
 
 // InlineQuery is a Query from Telegram for an inline request.
 type InlineQuery struct {

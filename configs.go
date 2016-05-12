@@ -2,12 +2,12 @@ package tgbotapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"net/url"
 	"strconv"
-	"net/http"
-	"fmt"
 )
 
 // Telegram constants
@@ -62,7 +62,7 @@ type BaseChat struct {
 	ChatID           int // required
 	ChannelUsername  string
 	ReplyToMessageID int
-	ReplyMarkup      interface{}
+	ReplyMarkup      TelegramKeyboard
 }
 
 // values returns url.Values representation of BaseChat
