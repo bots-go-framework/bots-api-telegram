@@ -64,7 +64,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusForbidden {
-		return APIResponse{}, errors.New(APIForbidden)
+		return APIResponse{}, errors.New(ErrAPIForbidden)
 	}
 
 	bytes, err := ioutil.ReadAll(resp.Body)
@@ -146,7 +146,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 
 		ms.WriteReader(fieldname, f.Name, int64(len(data)), buf)
 	default:
-		return APIResponse{}, errors.New("bad file type")
+		return APIResponse{}, errors.New(ErrBadFileType)
 	}
 
 	method := fmt.Sprintf(APIEndpoint, bot.Token, endpoint)
@@ -286,10 +286,10 @@ func (bot *BotAPI) uploadAndSend(method string, config Fileable) (Message, error
 // a new file, then sends it as needed.
 func (bot *BotAPI) sendFile(config Fileable) (Message, error) {
 	if config.useExistingFile() {
-		return bot.sendExisting(config.Method(), config)
+		return bot.sendExisting(config.method(), config)
 	}
 
-	return bot.uploadAndSend(config.Method(), config)
+	return bot.uploadAndSend(config.method(), config)
 }
 
 // sendChattable sends a Chattable.
@@ -299,7 +299,7 @@ func (bot *BotAPI) sendChattable(config Chattable) (Message, error) {
 		return Message{}, err
 	}
 
-	message, err := bot.makeMessageRequest(config.Method(), v)
+	message, err := bot.makeMessageRequest(config.method(), v)
 
 	if err != nil {
 		return Message{}, err
@@ -452,10 +452,10 @@ func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) (<-chan Update, error) {
 }
 
 // ListenForWebhook registers a http handler for a webhook.
-func (bot *BotAPI) ListenForWebhook(pattern string) (<-chan Update, http.Handler) {
+func (bot *BotAPI) ListenForWebhook(pattern string) <-chan Update {
 	updatesChan := make(chan Update, 100)
 
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
 		bytes, _ := ioutil.ReadAll(r.Body)
 
 		var update Update
@@ -464,9 +464,7 @@ func (bot *BotAPI) ListenForWebhook(pattern string) (<-chan Update, http.Handler
 		updatesChan <- update
 	})
 
-	http.HandleFunc(pattern, handler)
-
-	return updatesChan, handler
+	return updatesChan
 }
 
 // AnswerInlineQuery sends a response to an inline query.
@@ -484,6 +482,58 @@ func (bot *BotAPI) AnswerInlineQuery(config InlineConfig) (APIResponse, error) {
 		return APIResponse{}, err
 	}
 	v.Add("results", string(data))
+	v.Add("switch_pm_text", config.SwitchPMText)
+	v.Add("switch_pm_parameter", config.SwitchPMParameter)
+
+	bot.debugLog("answerInlineQuery", v, nil)
 
 	return bot.MakeRequest("answerInlineQuery", v)
+}
+
+// AnswerCallbackQuery sends a response to an inline query callback.
+func (bot *BotAPI) AnswerCallbackQuery(config CallbackConfig) (APIResponse, error) {
+	v := url.Values{}
+
+	v.Add("callback_query_id", config.CallbackQueryID)
+	v.Add("text", config.Text)
+	v.Add("show_alert", strconv.FormatBool(config.ShowAlert))
+
+	bot.debugLog("answerCallbackQuery", v, nil)
+
+	return bot.MakeRequest("answerCallbackQuery", v)
+}
+
+// KickChatMember kicks a user from a chat. Note that this only will work
+// in supergroups, and requires the bot to be an admin. Also note they
+// will be unable to rejoin until they are unbanned.
+func (bot *BotAPI) KickChatMember(config ChatMemberConfig) (APIResponse, error) {
+	v := url.Values{}
+
+	if config.SuperGroupUsername == "" {
+		v.Add("chat_id", strconv.FormatInt(config.ChatID, 10))
+	} else {
+		v.Add("chat_id", config.SuperGroupUsername)
+	}
+	v.Add("user_id", strconv.Itoa(config.UserID))
+
+	bot.debugLog("kickChatMember", v, nil)
+
+	return bot.MakeRequest("kickChatMember", v)
+}
+
+// UnbanChatMember unbans a user from a chat. Note that this only will work
+// in supergroups, and requires the bot to be an admin.
+func (bot *BotAPI) UnbanChatMember(config ChatMemberConfig) (APIResponse, error) {
+	v := url.Values{}
+
+	if config.SuperGroupUsername == "" {
+		v.Add("chat_id", strconv.FormatInt(config.ChatID, 10))
+	} else {
+		v.Add("chat_id", config.SuperGroupUsername)
+	}
+	v.Add("user_id", strconv.Itoa(config.UserID))
+
+	bot.debugLog("unbanChatMember", v, nil)
+
+	return bot.MakeRequest("unbanChatMember", v)
 }

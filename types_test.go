@@ -1,7 +1,7 @@
 package tgbotapi_test
 
 import (
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/strongo/bots-api-telegram"
 	"testing"
 	"time"
 )

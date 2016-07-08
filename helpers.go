@@ -7,7 +7,7 @@ import (
 // NewMessage creates a new Message.
 //
 // chatID is where to send it, text is the message text.
-func NewMessage(chatID int, text string) MessageConfig {
+func NewMessage(chatID int64, text string) MessageConfig {
 	return MessageConfig{
 		BaseChat: BaseChat{
 			ChatID:           chatID,
@@ -18,11 +18,23 @@ func NewMessage(chatID int, text string) MessageConfig {
 	}
 }
 
+// NewMessageToChannel creates a new Message that is sent to a channel
+// by username.
+// username is the username of the channel, text is the message text.
+func NewMessageToChannel(username string, text string) MessageConfig {
+	return MessageConfig{
+		BaseChat: BaseChat{
+			ChannelUsername: username,
+		},
+		Text: text,
+	}
+}
+
 // NewForward creates a new forward.
 //
 // chatID is where to send it, fromChatID is the source chat,
 // and messageID is the ID of the original message.
-func NewForward(chatID int, fromChatID int, messageID int) ForwardConfig {
+func NewForward(chatID int64, fromChatID int64, messageID int) ForwardConfig {
 	return ForwardConfig{
 		BaseChat:   BaseChat{ChatID: chatID},
 		FromChatID: fromChatID,
@@ -36,7 +48,7 @@ func NewForward(chatID int, fromChatID int, messageID int) ForwardConfig {
 // FileReader, or FileBytes.
 //
 // Note that you must send animated GIFs as a document.
-func NewPhotoUpload(chatID int, file interface{}) PhotoConfig {
+func NewPhotoUpload(chatID int64, file interface{}) PhotoConfig {
 	return PhotoConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -51,7 +63,7 @@ func NewPhotoUpload(chatID int, file interface{}) PhotoConfig {
 //
 // chatID is where to send it, fileID is the ID of the file
 // already uploaded.
-func NewPhotoShare(chatID int, fileID string) PhotoConfig {
+func NewPhotoShare(chatID int64, fileID string) PhotoConfig {
 	return PhotoConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -65,7 +77,7 @@ func NewPhotoShare(chatID int, fileID string) PhotoConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewAudioUpload(chatID int, file interface{}) AudioConfig {
+func NewAudioUpload(chatID int64, file interface{}) AudioConfig {
 	return AudioConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -81,7 +93,7 @@ func NewAudioUpload(chatID int, file interface{}) AudioConfig {
 //
 // chatID is where to send it, fileID is the ID of the audio
 // already uploaded.
-func NewAudioShare(chatID int, fileID string) AudioConfig {
+func NewAudioShare(chatID int64, fileID string) AudioConfig {
 	return AudioConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -95,7 +107,7 @@ func NewAudioShare(chatID int, fileID string) AudioConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewDocumentUpload(chatID int, file interface{}) DocumentConfig {
+func NewDocumentUpload(chatID int64, file interface{}) DocumentConfig {
 	return DocumentConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -111,7 +123,7 @@ func NewDocumentUpload(chatID int, file interface{}) DocumentConfig {
 //
 // chatID is where to send it, fileID is the ID of the document
 // already uploaded.
-func NewDocumentShare(chatID int, fileID string) DocumentConfig {
+func NewDocumentShare(chatID int64, fileID string) DocumentConfig {
 	return DocumentConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -125,7 +137,7 @@ func NewDocumentShare(chatID int, fileID string) DocumentConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewStickerUpload(chatID int, file interface{}) StickerConfig {
+func NewStickerUpload(chatID int64, file interface{}) StickerConfig {
 	return StickerConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -141,7 +153,7 @@ func NewStickerUpload(chatID int, file interface{}) StickerConfig {
 //
 // chatID is where to send it, fileID is the ID of the sticker
 // already uploaded.
-func NewStickerShare(chatID int, fileID string) StickerConfig {
+func NewStickerShare(chatID int64, fileID string) StickerConfig {
 	return StickerConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -155,7 +167,7 @@ func NewStickerShare(chatID int, fileID string) StickerConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewVideoUpload(chatID int, file interface{}) VideoConfig {
+func NewVideoUpload(chatID int64, file interface{}) VideoConfig {
 	return VideoConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -170,7 +182,7 @@ func NewVideoUpload(chatID int, file interface{}) VideoConfig {
 //
 // chatID is where to send it, fileID is the ID of the video
 // already uploaded.
-func NewVideoShare(chatID int, fileID string) VideoConfig {
+func NewVideoShare(chatID int64, fileID string) VideoConfig {
 	return VideoConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -184,7 +196,7 @@ func NewVideoShare(chatID int, fileID string) VideoConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewVoiceUpload(chatID int, file interface{}) VoiceConfig {
+func NewVoiceUpload(chatID int64, file interface{}) VoiceConfig {
 	return VoiceConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -199,7 +211,7 @@ func NewVoiceUpload(chatID int, file interface{}) VoiceConfig {
 //
 // chatID is where to send it, fileID is the ID of the video
 // already uploaded.
-func NewVoiceShare(chatID int, fileID string) VoiceConfig {
+func NewVoiceShare(chatID int64, fileID string) VoiceConfig {
 	return VoiceConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
@@ -209,16 +221,38 @@ func NewVoiceShare(chatID int, fileID string) VoiceConfig {
 	}
 }
 
+// NewContact allows you to send a shared contact.
+func NewContact(chatID int64, phoneNumber, firstName string) ContactConfig {
+	return ContactConfig{
+		BaseChat: BaseChat{
+			ChatID: chatID,
+		},
+		PhoneNumber: phoneNumber,
+		FirstName:   firstName,
+	}
+}
+
 // NewLocation shares your location.
 //
 // chatID is where to send it, latitude and longitude are coordinates.
-func NewLocation(chatID int, latitude float64, longitude float64) LocationConfig {
+func NewLocation(chatID int64, latitude float64, longitude float64) LocationConfig {
 	return LocationConfig{
 		BaseChat: BaseChat{
-			ChatID:           chatID,
-			ReplyToMessageID: 0,
-			ReplyMarkup:      nil,
+			ChatID: chatID,
 		},
+		Latitude:  latitude,
+		Longitude: longitude,
+	}
+}
+
+// NewVenue allows you to send a venue and its location.
+func NewVenue(chatID int64, title, address string, latitude, longitude float64) VenueConfig {
+	return VenueConfig{
+		BaseChat: BaseChat{
+			ChatID: chatID,
+		},
+		Title:     title,
+		Address:   address,
 		Latitude:  latitude,
 		Longitude: longitude,
 	}
@@ -228,7 +262,7 @@ func NewLocation(chatID int, latitude float64, longitude float64) LocationConfig
 // Actions last for 5 seconds, or until your next action.
 //
 // chatID is where to send it, action should be set via Chat constants.
-func NewChatAction(chatID int, action string) ChatActionConfig {
+func NewChatAction(chatID int64, action string) ChatActionConfig {
 	return ChatActionConfig{
 		BaseChat: BaseChat{ChatID: chatID},
 		Action:   action,
@@ -279,5 +313,250 @@ func NewWebhookWithCert(link string, file interface{}) WebhookConfig {
 	return WebhookConfig{
 		URL:         u,
 		Certificate: file,
+	}
+}
+
+// NewInlineQueryResultArticle creates a new inline query article.
+func NewInlineQueryResultArticle(id, title, messageText string) InlineQueryResultArticle {
+	return InlineQueryResultArticle{
+		Type:  "article",
+		ID:    id,
+		Title: title,
+		InputMessageContent: InputTextMessageContent{
+			Text: messageText,
+		},
+	}
+}
+
+// NewInlineQueryResultGIF creates a new inline query GIF.
+func NewInlineQueryResultGIF(id, url string) InlineQueryResultGIF {
+	return InlineQueryResultGIF{
+		Type: "gif",
+		ID:   id,
+		URL:  url,
+	}
+}
+
+// NewInlineQueryResultMPEG4GIF creates a new inline query MPEG4 GIF.
+func NewInlineQueryResultMPEG4GIF(id, url string) InlineQueryResultMPEG4GIF {
+	return InlineQueryResultMPEG4GIF{
+		Type: "mpeg4_gif",
+		ID:   id,
+		URL:  url,
+	}
+}
+
+// NewInlineQueryResultPhoto creates a new inline query photo.
+func NewInlineQueryResultPhoto(id, url string) InlineQueryResultPhoto {
+	return InlineQueryResultPhoto{
+		Type: "photo",
+		ID:   id,
+		URL:  url,
+	}
+}
+
+// NewInlineQueryResultVideo creates a new inline query video.
+func NewInlineQueryResultVideo(id, url string) InlineQueryResultVideo {
+	return InlineQueryResultVideo{
+		Type: "video",
+		ID:   id,
+		URL:  url,
+	}
+}
+
+// NewInlineQueryResultAudio creates a new inline query audio.
+func NewInlineQueryResultAudio(id, url, title string) InlineQueryResultAudio {
+	return InlineQueryResultAudio{
+		Type:  "audio",
+		ID:    id,
+		URL:   url,
+		Title: title,
+	}
+}
+
+// NewInlineQueryResultVoice creates a new inline query voice.
+func NewInlineQueryResultVoice(id, url, title string) InlineQueryResultVoice {
+	return InlineQueryResultVoice{
+		Type:  "voice",
+		ID:    id,
+		URL:   url,
+		Title: title,
+	}
+}
+
+// NewInlineQueryResultDocument creates a new inline query document.
+func NewInlineQueryResultDocument(id, url, title, mimeType string) InlineQueryResultDocument {
+	return InlineQueryResultDocument{
+		Type:     "document",
+		ID:       id,
+		URL:      url,
+		Title:    title,
+		MimeType: mimeType,
+	}
+}
+
+// NewInlineQueryResultLocation creates a new inline query location.
+func NewInlineQueryResultLocation(id, title string, latitude, longitude float64) InlineQueryResultLocation {
+	return InlineQueryResultLocation{
+		Type:      "location",
+		ID:        id,
+		Title:     title,
+		Latitude:  latitude,
+		Longitude: longitude,
+	}
+}
+
+// NewEditMessageText allows you to edit the text of a message.
+func NewEditMessageText(chatID int64, messageID int, text string) EditMessageTextConfig {
+	return EditMessageTextConfig{
+		BaseEdit: BaseEdit{
+			ChatID:    chatID,
+			MessageID: messageID,
+		},
+		Text: text,
+	}
+}
+
+// NewEditMessageCaption allows you to edit the caption of a message.
+func NewEditMessageCaption(chatID int64, messageID int, caption string) EditMessageCaptionConfig {
+	return EditMessageCaptionConfig{
+		BaseEdit: BaseEdit{
+			ChatID:    chatID,
+			MessageID: messageID,
+		},
+		Caption: caption,
+	}
+}
+
+// NewEditMessageReplyMarkup allows you to edit the inline
+// keyboard markup.
+func NewEditMessageReplyMarkup(chatID int64, messageID int, replyMarkup InlineKeyboardMarkup) EditMessageReplyMarkupConfig {
+	return EditMessageReplyMarkupConfig{
+		BaseEdit: BaseEdit{
+			ChatID:      chatID,
+			MessageID:   messageID,
+			ReplyMarkup: &replyMarkup,
+		},
+	}
+}
+
+// NewHideKeyboard hides the keyboard, with the option for being selective
+// or hiding for everyone.
+func NewHideKeyboard(selective bool) ReplyKeyboardHide {
+	return ReplyKeyboardHide{
+		HideKeyboard: true,
+		Selective:    selective,
+	}
+}
+
+// NewKeyboardButton creates a regular keyboard button.
+func NewKeyboardButton(text string) KeyboardButton {
+	return KeyboardButton{
+		Text: text,
+	}
+}
+
+// NewKeyboardButtonContact creates a keyboard button that requests
+// user contact information upon click.
+func NewKeyboardButtonContact(text string) KeyboardButton {
+	return KeyboardButton{
+		Text:           text,
+		RequestContact: true,
+	}
+}
+
+// NewKeyboardButtonLocation creates a keyboard button that requests
+// user location information upon click.
+func NewKeyboardButtonLocation(text string) KeyboardButton {
+	return KeyboardButton{
+		Text:            text,
+		RequestLocation: true,
+	}
+}
+
+// NewKeyboardButtonRow creates a row of keyboard buttons.
+func NewKeyboardButtonRow(buttons ...KeyboardButton) []KeyboardButton {
+	var row []KeyboardButton
+
+	row = append(row, buttons...)
+
+	return row
+}
+
+// NewReplyKeyboard creates a new regular keyboard with sane defaults.
+func NewReplyKeyboard(rows ...[]KeyboardButton) ReplyKeyboardMarkup {
+	var keyboard [][]KeyboardButton
+
+	keyboard = append(keyboard, rows...)
+
+	return ReplyKeyboardMarkup{
+		ResizeKeyboard: true,
+		Keyboard:       keyboard,
+	}
+}
+
+// NewInlineKeyboardButtonData creates an inline keyboard button with text
+// and data for a callback.
+func NewInlineKeyboardButtonData(text, data string) InlineKeyboardButton {
+	return InlineKeyboardButton{
+		Text:         text,
+		CallbackData: &data,
+	}
+}
+
+// NewInlineKeyboardButtonURL creates an inline keyboard button with text
+// which goes to a URL.
+func NewInlineKeyboardButtonURL(text, url string) InlineKeyboardButton {
+	return InlineKeyboardButton{
+		Text: text,
+		URL:  &url,
+	}
+}
+
+// NewInlineKeyboardButtonSwitch creates an inline keyboard button with
+// text which allows the user to switch to a chat or return to a chat.
+func NewInlineKeyboardButtonSwitch(text, sw string) InlineKeyboardButton {
+	return InlineKeyboardButton{
+		Text:              text,
+		SwitchInlineQuery: &sw,
+	}
+}
+
+// NewInlineKeyboardRow creates an inline keyboard row with buttons.
+func NewInlineKeyboardRow(buttons ...InlineKeyboardButton) []InlineKeyboardButton {
+	var row []InlineKeyboardButton
+
+	row = append(row, buttons...)
+
+	return row
+}
+
+// NewInlineKeyboardMarkup creates a new inline keyboard.
+func NewInlineKeyboardMarkup(rows ...[]InlineKeyboardButton) InlineKeyboardMarkup {
+	var keyboard [][]InlineKeyboardButton
+
+	keyboard = append(keyboard, rows...)
+
+	return InlineKeyboardMarkup{
+		InlineKeyboard: keyboard,
+	}
+}
+
+// NewCallback creates a new callback message.
+func NewCallback(id, text string) CallbackConfig {
+	return CallbackConfig{
+		CallbackQueryID: id,
+		Text:            text,
+		ShowAlert:       false,
+	}
+}
+
+// NewCallbackWithAlert creates a new callback message that alerts
+// the user.
+func NewCallbackWithAlert(id, text string) CallbackConfig {
+	return CallbackConfig{
+		CallbackQueryID: id,
+		Text:            text,
+		ShowAlert:       true,
 	}
 }

@@ -2,10 +2,7 @@ package tgbotapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
-	"log"
-	"net/http"
 	"net/url"
 	"strconv"
 )
@@ -33,19 +30,27 @@ const (
 
 // API errors
 const (
-	// APIForbidden happens when a token is bad
-	APIForbidden = "forbidden"
+	// ErrAPIForbidden happens when a token is bad
+	ErrAPIForbidden = "forbidden"
 )
 
 // Constant values for ParseMode in MessageConfig
 const (
 	ModeMarkdown = "Markdown"
+	ModeHTML     = "HTML"
+)
+
+// Library errors
+const (
+	// ErrBadFileType happens when you pass an unknown type
+	ErrBadFileType = "bad file type"
+	ErrBadURL      = "bad or empty url"
 )
 
 // Chattable is any config type that can be sent.
 type Chattable interface {
 	values() (url.Values, error)
-	Method() string
+	method() string
 }
 
 // Fileable is any config type that can be sent that includes a file.
@@ -59,20 +64,20 @@ type Fileable interface {
 
 // BaseChat is base type for all chat config types.
 type BaseChat struct {
-	ChatID           int // required
-	ChannelUsername  string
-	ReplyToMessageID int
-	ReplyMarkup      TelegramKeyboard
+	ChatID              int64 // required
+	ChannelUsername     string
+	ReplyToMessageID    int
+	ReplyMarkup         interface{}
+	DisableNotification bool
 }
 
 // values returns url.Values representation of BaseChat
 func (chat *BaseChat) values() (url.Values, error) {
 	v := url.Values{}
-
 	if chat.ChannelUsername != "" {
 		v.Add("chat_id", chat.ChannelUsername)
 	} else {
-		v.Add("chat_id", strconv.Itoa(chat.ChatID))
+		v.Add("chat_id", strconv.FormatInt(chat.ChatID, 10))
 	}
 
 	if chat.ReplyToMessageID != 0 {
@@ -88,13 +93,14 @@ func (chat *BaseChat) values() (url.Values, error) {
 		v.Add("reply_markup", string(data))
 	}
 
+	v.Add("disable_notification", strconv.FormatBool(chat.DisableNotification))
+
 	return v, nil
 }
 
 // BaseFile is a base type for all file config types.
 type BaseFile struct {
 	BaseChat
-	FilePath    string
 	File        interface{}
 	FileID      string
 	UseExisting bool
@@ -109,7 +115,7 @@ func (file BaseFile) params() (map[string]string, error) {
 	if file.ChannelUsername != "" {
 		params["chat_id"] = file.ChannelUsername
 	} else {
-		params["chat_id"] = strconv.Itoa(file.ChatID)
+		params["chat_id"] = strconv.FormatInt(file.ChatID, 10)
 	}
 
 	if file.ReplyToMessageID != 0 {
@@ -133,26 +139,55 @@ func (file BaseFile) params() (map[string]string, error) {
 		params["file_size"] = strconv.Itoa(file.FileSize)
 	}
 
+	params["disable_notification"] = strconv.FormatBool(file.DisableNotification)
+
 	return params, nil
 }
 
 // getFile returns the file.
 func (file BaseFile) getFile() interface{} {
-	var result interface{}
-	if file.FilePath == "" {
-		result = file.File
-	} else {
-		log.Println("FilePath is deprecated.")
-		log.Println("Please use BaseFile.File instead.")
-		result = file.FilePath
-	}
-
-	return result
+	return file.File
 }
 
 // useExistingFile returns if the BaseFile has already been uploaded.
 func (file BaseFile) useExistingFile() bool {
 	return file.UseExisting
+}
+
+// BaseEdit is base type of all chat edits.
+type BaseEdit struct {
+	ChatID          int64
+	ChannelUsername string
+	MessageID       int
+	InlineMessageID string
+	ReplyMarkup     *InlineKeyboardMarkup
+}
+
+func (edit BaseEdit) values() (url.Values, error) {
+	v := url.Values{}
+
+	if edit.ChannelUsername != "" {
+		v.Add("chat_id", edit.ChannelUsername)
+	}
+	if edit.ChatID != 0 {
+		v.Add("chat_id", strconv.FormatInt(edit.ChatID, 10))
+	}
+	if edit.MessageID != 0 {
+		v.Add("message_id", strconv.Itoa(edit.MessageID))
+	}
+	if edit.InlineMessageID != "" {
+		v.Add("inline_message_id", edit.InlineMessageID)
+	}
+
+	if edit.ReplyMarkup != nil {
+		data, err := json.Marshal(edit.ReplyMarkup)
+		if err != nil {
+			return v, err
+		}
+		v.Add("reply_markup", string(data))
+	}
+
+	return v, nil
 }
 
 // MessageConfig contains information about a SendMessage request.
@@ -161,22 +196,6 @@ type MessageConfig struct {
 	Text                  string
 	ParseMode             string
 	DisableWebPagePreview bool
-}
-
-func (config *MessageConfig) ReplyToResponse(w http.ResponseWriter) (string, error) {
-	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
-
-	values, err := config.values()
-
-	if err != nil {
-		return "", err
-	}
-
-	s := fmt.Sprintf("method=%v&%v", config.Method(), values.Encode())
-
-	_, err = w.Write([]byte(s))
-
-	return s, err
 }
 
 // values returns a url.Values representation of MessageConfig.
@@ -192,14 +211,14 @@ func (config MessageConfig) values() (url.Values, error) {
 }
 
 // method returns Telegram API method name for sending Message.
-func (config MessageConfig) Method() string {
+func (config MessageConfig) method() string {
 	return "sendMessage"
 }
 
 // ForwardConfig contains information about a ForwardMessage request.
 type ForwardConfig struct {
 	BaseChat
-	FromChatID          int // required
+	FromChatID          int64 // required
 	FromChannelUsername string
 	MessageID           int // required
 }
@@ -207,13 +226,13 @@ type ForwardConfig struct {
 // values returns a url.Values representation of ForwardConfig.
 func (config ForwardConfig) values() (url.Values, error) {
 	v, _ := config.BaseChat.values()
-	v.Add("from_chat_id", strconv.Itoa(config.FromChatID))
+	v.Add("from_chat_id", strconv.FormatInt(config.FromChatID, 10))
 	v.Add("message_id", strconv.Itoa(config.MessageID))
 	return v, nil
 }
 
 // method returns Telegram API method name for sending Forward.
-func (config ForwardConfig) Method() string {
+func (config ForwardConfig) method() string {
 	return "forwardMessage"
 }
 
@@ -251,7 +270,7 @@ func (config PhotoConfig) name() string {
 }
 
 // method returns Telegram API method name for sending Photo.
-func (config PhotoConfig) Method() string {
+func (config PhotoConfig) method() string {
 	return "sendPhoto"
 }
 
@@ -306,7 +325,7 @@ func (config AudioConfig) name() string {
 }
 
 // method returns Telegram API method name for sending Audio.
-func (config AudioConfig) Method() string {
+func (config AudioConfig) method() string {
 	return "sendAudio"
 }
 
@@ -337,7 +356,7 @@ func (config DocumentConfig) name() string {
 }
 
 // method returns Telegram API method name for sending Document.
-func (config DocumentConfig) Method() string {
+func (config DocumentConfig) method() string {
 	return "sendDocument"
 }
 
@@ -368,7 +387,7 @@ func (config StickerConfig) name() string {
 }
 
 // method returns Telegram API method name for sending Sticker.
-func (config StickerConfig) Method() string {
+func (config StickerConfig) method() string {
 	return "sendSticker"
 }
 
@@ -407,7 +426,7 @@ func (config VideoConfig) name() string {
 }
 
 // method returns Telegram API method name for sending Video.
-func (config VideoConfig) Method() string {
+func (config VideoConfig) method() string {
 	return "sendVideo"
 }
 
@@ -446,7 +465,7 @@ func (config VoiceConfig) name() string {
 }
 
 // method returns Telegram API method name for sending Voice.
-func (config VoiceConfig) Method() string {
+func (config VoiceConfig) method() string {
 	return "sendVoice"
 }
 
@@ -468,8 +487,58 @@ func (config LocationConfig) values() (url.Values, error) {
 }
 
 // method returns Telegram API method name for sending Location.
-func (config LocationConfig) Method() string {
+func (config LocationConfig) method() string {
 	return "sendLocation"
+}
+
+// VenueConfig contains information about a SendVenue request.
+type VenueConfig struct {
+	BaseChat
+	Latitude     float64 // required
+	Longitude    float64 // required
+	Title        string  // required
+	Address      string  // required
+	FoursquareID string
+}
+
+func (config VenueConfig) values() (url.Values, error) {
+	v, _ := config.BaseChat.values()
+
+	v.Add("latitude", strconv.FormatFloat(config.Latitude, 'f', 6, 64))
+	v.Add("longitude", strconv.FormatFloat(config.Longitude, 'f', 6, 64))
+	v.Add("title", config.Title)
+	v.Add("address", config.Address)
+	if config.FoursquareID != "" {
+		v.Add("foursquare_id", config.FoursquareID)
+	}
+
+	return v, nil
+}
+
+func (config VenueConfig) method() string {
+	return "sendVenue"
+}
+
+// ContactConfig allows you to send a contact.
+type ContactConfig struct {
+	BaseChat
+	PhoneNumber string
+	FirstName   string
+	LastName    string
+}
+
+func (config ContactConfig) values() (url.Values, error) {
+	v, _ := config.BaseChat.values()
+
+	v.Add("phone_number", config.PhoneNumber)
+	v.Add("first_name", config.FirstName)
+	v.Add("last_name", config.LastName)
+
+	return v, nil
+}
+
+func (config ContactConfig) method() string {
+	return "sendContact"
 }
 
 // ChatActionConfig contains information about a SendChatAction request.
@@ -486,8 +555,62 @@ func (config ChatActionConfig) values() (url.Values, error) {
 }
 
 // method returns Telegram API method name for sending ChatAction.
-func (config ChatActionConfig) Method() string {
+func (config ChatActionConfig) method() string {
 	return "sendChatAction"
+}
+
+// EditMessageTextConfig allows you to modify the text in a message.
+type EditMessageTextConfig struct {
+	BaseEdit
+	Text                  string
+	ParseMode             string
+	DisableWebPagePreview bool
+}
+
+func (config EditMessageTextConfig) values() (url.Values, error) {
+	v, _ := config.BaseEdit.values()
+
+	v.Add("text", config.Text)
+	v.Add("parse_mode", config.ParseMode)
+	v.Add("disable_web_page_preview", strconv.FormatBool(config.DisableWebPagePreview))
+
+	return v, nil
+}
+
+func (config EditMessageTextConfig) method() string {
+	return "editMessageText"
+}
+
+// EditMessageCaptionConfig allows you to modify the caption of a message.
+type EditMessageCaptionConfig struct {
+	BaseEdit
+	Caption string
+}
+
+func (config EditMessageCaptionConfig) values() (url.Values, error) {
+	v, _ := config.BaseEdit.values()
+
+	v.Add("caption", config.Caption)
+
+	return v, nil
+}
+
+func (config EditMessageCaptionConfig) method() string {
+	return "editMessageCaption"
+}
+
+// EditMessageReplyMarkupConfig allows you to modify the reply markup
+// of a message.
+type EditMessageReplyMarkupConfig struct {
+	BaseEdit
+}
+
+func (config EditMessageReplyMarkupConfig) values() (url.Values, error) {
+	return config.BaseEdit.values()
+}
+
+func (config EditMessageReplyMarkupConfig) method() string {
+	return "editMessageReplyMarkup"
 }
 
 // UserProfilePhotosConfig contains information about a
@@ -534,9 +657,48 @@ type FileReader struct {
 
 // InlineConfig contains information on making an InlineQuery response.
 type InlineConfig struct {
-	InlineQueryID string              `json:"inline_query_id"`
-	Results       []InlineQueryResult `json:"results"`
-	CacheTime     int                 `json:"cache_time"`
-	IsPersonal    bool                `json:"is_personal"`
-	NextOffset    string              `json:"next_offset"`
+	InlineQueryID     string        `json:"inline_query_id"`
+	Results           []interface{} `json:"results"`
+	CacheTime         int           `json:"cache_time"`
+	IsPersonal        bool          `json:"is_personal"`
+	NextOffset        string        `json:"next_offset"`
+	SwitchPMText      string        `json:"switch_pm_text"`
+	SwitchPMParameter string        `json:"switch_pm_parameter"`
+}
+
+func (config InlineConfig) method() string {
+	return "answerInlineQuery"
+}
+
+func (config InlineConfig) values() (url.Values, error) {
+	v := url.Values{}
+
+	v.Add("inline_query_id", config.InlineQueryID)
+	v.Add("cache_time", strconv.Itoa(config.CacheTime))
+	v.Add("is_personal", strconv.FormatBool(config.IsPersonal))
+	v.Add("next_offset", config.NextOffset)
+	v.Add("switch_pm_text", config.SwitchPMText)
+	v.Add("switch_pm_parameter", config.SwitchPMParameter)
+	data, err := json.Marshal(config.Results)
+	if err != nil {
+		return v, err
+	}
+	v.Add("results", string(data))
+
+	return v, nil
+}
+
+// CallbackConfig contains information on making a CallbackQuery response.
+type CallbackConfig struct {
+	CallbackQueryID string `json:"callback_query_id"`
+	Text            string `json:"text"`
+	ShowAlert       bool   `json:"show_alert"`
+}
+
+// ChatMemberConfig contains information about a user in a chat for use
+// with administrative functions such as kicking or unbanning a user.
+type ChatMemberConfig struct {
+	ChatID             int64
+	SuperGroupUsername string
+	UserID             int
 }
