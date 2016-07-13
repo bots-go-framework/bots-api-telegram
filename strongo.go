@@ -32,5 +32,5 @@ func NewReplyKeyboardUsingStrings(buttons [][]string) ReplyKeyboardMarkup {
 		kb[i] = kbRow
 	}
 
-	return ReplyKeyboardMarkup{Keyboard: kb}
+	return ReplyKeyboardMarkup{Keyboard: kb, ResizeKeyboard: true}
 }
