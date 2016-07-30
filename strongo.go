@@ -8,7 +8,7 @@ import (
 func ReplyToResponse(chattable Chattable, w http.ResponseWriter) (string, error) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 
-	values, err := chattable.values()
+	values, err := chattable.Values()
 
 	if err != nil {
 		return "", err

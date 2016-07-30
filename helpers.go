@@ -417,6 +417,16 @@ func NewEditMessageText(chatID int64, messageID int, text string) EditMessageTex
 	}
 }
 
+// NewEditMessageText allows you to edit the text of a message.
+func NewEditMessageTextByInlineMessageID(inlineMessageID string, text string) EditMessageTextConfig {
+	return EditMessageTextConfig{
+		BaseEdit: BaseEdit{
+			InlineMessageID: inlineMessageID,
+		},
+		Text: text,
+	}
+}
+
 // NewEditMessageCaption allows you to edit the caption of a message.
 func NewEditMessageCaption(chatID int64, messageID int, caption string) EditMessageCaptionConfig {
 	return EditMessageCaptionConfig{

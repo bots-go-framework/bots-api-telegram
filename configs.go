@@ -49,7 +49,7 @@ const (
 
 // Chattable is any config type that can be sent.
 type Chattable interface {
-	values() (url.Values, error)
+	Values() (url.Values, error)
 	method() string
 }
 
@@ -72,7 +72,7 @@ type BaseChat struct {
 }
 
 // values returns url.Values representation of BaseChat
-func (chat *BaseChat) values() (url.Values, error) {
+func (chat *BaseChat) Values() (url.Values, error) {
 	v := url.Values{}
 	if chat.ChannelUsername != "" {
 		v.Add("chat_id", chat.ChannelUsername)
@@ -163,7 +163,7 @@ type BaseEdit struct {
 	ReplyMarkup     *InlineKeyboardMarkup
 }
 
-func (edit BaseEdit) values() (url.Values, error) {
+func (edit BaseEdit) Values() (url.Values, error) {
 	v := url.Values{}
 
 	if edit.ChannelUsername != "" {
@@ -199,8 +199,8 @@ type MessageConfig struct {
 }
 
 // values returns a url.Values representation of MessageConfig.
-func (config MessageConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config MessageConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 	v.Add("text", config.Text)
 	v.Add("disable_web_page_preview", strconv.FormatBool(config.DisableWebPagePreview))
 	if config.ParseMode != "" {
@@ -224,8 +224,8 @@ type ForwardConfig struct {
 }
 
 // values returns a url.Values representation of ForwardConfig.
-func (config ForwardConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config ForwardConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 	v.Add("from_chat_id", strconv.FormatInt(config.FromChatID, 10))
 	v.Add("message_id", strconv.Itoa(config.MessageID))
 	return v, nil
@@ -254,8 +254,8 @@ func (config PhotoConfig) params() (map[string]string, error) {
 }
 
 // Values returns a url.Values representation of PhotoConfig.
-func (config PhotoConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config PhotoConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add(config.name(), config.FileID)
 	if config.Caption != "" {
@@ -283,8 +283,8 @@ type AudioConfig struct {
 }
 
 // values returns a url.Values representation of AudioConfig.
-func (config AudioConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config AudioConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add(config.name(), config.FileID)
 	if config.Duration != 0 {
@@ -335,8 +335,8 @@ type DocumentConfig struct {
 }
 
 // values returns a url.Values representation of DocumentConfig.
-func (config DocumentConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config DocumentConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add(config.name(), config.FileID)
 
@@ -366,8 +366,8 @@ type StickerConfig struct {
 }
 
 // values returns a url.Values representation of StickerConfig.
-func (config StickerConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config StickerConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add(config.name(), config.FileID)
 
@@ -399,8 +399,8 @@ type VideoConfig struct {
 }
 
 // values returns a url.Values representation of VideoConfig.
-func (config VideoConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config VideoConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add(config.name(), config.FileID)
 	if config.Duration != 0 {
@@ -437,8 +437,8 @@ type VoiceConfig struct {
 }
 
 // values returns a url.Values representation of VoiceConfig.
-func (config VoiceConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config VoiceConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add(config.name(), config.FileID)
 	if config.Duration != 0 {
@@ -477,8 +477,8 @@ type LocationConfig struct {
 }
 
 // values returns a url.Values representation of LocationConfig.
-func (config LocationConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config LocationConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add("latitude", strconv.FormatFloat(config.Latitude, 'f', 6, 64))
 	v.Add("longitude", strconv.FormatFloat(config.Longitude, 'f', 6, 64))
@@ -501,8 +501,8 @@ type VenueConfig struct {
 	FoursquareID string
 }
 
-func (config VenueConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config VenueConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add("latitude", strconv.FormatFloat(config.Latitude, 'f', 6, 64))
 	v.Add("longitude", strconv.FormatFloat(config.Longitude, 'f', 6, 64))
@@ -527,8 +527,8 @@ type ContactConfig struct {
 	LastName    string
 }
 
-func (config ContactConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config ContactConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 
 	v.Add("phone_number", config.PhoneNumber)
 	v.Add("first_name", config.FirstName)
@@ -548,8 +548,8 @@ type ChatActionConfig struct {
 }
 
 // values returns a url.Values representation of ChatActionConfig.
-func (config ChatActionConfig) values() (url.Values, error) {
-	v, _ := config.BaseChat.values()
+func (config ChatActionConfig) Values() (url.Values, error) {
+	v, _ := config.BaseChat.Values()
 	v.Add("action", config.Action)
 	return v, nil
 }
@@ -567,12 +567,16 @@ type EditMessageTextConfig struct {
 	DisableWebPagePreview bool
 }
 
-func (config EditMessageTextConfig) values() (url.Values, error) {
-	v, _ := config.BaseEdit.values()
+func (config EditMessageTextConfig) Values() (url.Values, error) {
+	v, _ := config.BaseEdit.Values()
 
 	v.Add("text", config.Text)
-	v.Add("parse_mode", config.ParseMode)
-	v.Add("disable_web_page_preview", strconv.FormatBool(config.DisableWebPagePreview))
+	if config.ParseMode != "" {
+		v.Add("parse_mode", config.ParseMode)
+	}
+	if config.DisableWebPagePreview {
+		v.Add("disable_web_page_preview", strconv.FormatBool(config.DisableWebPagePreview))
+	}
 
 	return v, nil
 }
@@ -587,8 +591,8 @@ type EditMessageCaptionConfig struct {
 	Caption string
 }
 
-func (config EditMessageCaptionConfig) values() (url.Values, error) {
-	v, _ := config.BaseEdit.values()
+func (config EditMessageCaptionConfig) Values() (url.Values, error) {
+	v, _ := config.BaseEdit.Values()
 
 	v.Add("caption", config.Caption)
 
@@ -605,8 +609,8 @@ type EditMessageReplyMarkupConfig struct {
 	BaseEdit
 }
 
-func (config EditMessageReplyMarkupConfig) values() (url.Values, error) {
-	return config.BaseEdit.values()
+func (config EditMessageReplyMarkupConfig) Values() (url.Values, error) {
+	return config.BaseEdit.Values()
 }
 
 func (config EditMessageReplyMarkupConfig) method() string {
@@ -670,7 +674,7 @@ func (config InlineConfig) method() string {
 	return "answerInlineQuery"
 }
 
-func (config InlineConfig) values() (url.Values, error) {
+func (config InlineConfig) Values() (url.Values, error) {
 	v := url.Values{}
 
 	v.Add("inline_query_id", config.InlineQueryID)

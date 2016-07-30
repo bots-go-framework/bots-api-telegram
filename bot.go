@@ -246,7 +246,7 @@ func (bot *BotAPI) debugLog(context string, v url.Values, message interface{}) {
 
 // sendExisting will send a Message with an existing file to Telegram.
 func (bot *BotAPI) sendExisting(method string, config Fileable) (Message, error) {
-	v, err := config.values()
+	v, err := config.Values()
 
 	if err != nil {
 		return Message{}, err
@@ -294,7 +294,7 @@ func (bot *BotAPI) sendFile(config Fileable) (Message, error) {
 
 // sendChattable sends a Chattable.
 func (bot *BotAPI) sendChattable(config Chattable) (Message, error) {
-	v, err := config.values()
+	v, err := config.Values()
 	if err != nil {
 		return Message{}, err
 	}
