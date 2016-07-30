@@ -414,6 +414,8 @@ func NewEditMessageText(chatID int64, messageID int, text string) *EditMessageTe
 			MessageID: messageID,
 		},
 		Text: text,
+		ParseMode: "HTML",
+		DisableWebPagePreview: true,
 	}
 }
 
