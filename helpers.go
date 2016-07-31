@@ -512,7 +512,7 @@ func NewReplyKeyboard(rows ...[]KeyboardButton) ReplyKeyboardMarkup {
 func NewInlineKeyboardButtonData(text, data string) InlineKeyboardButton {
 	return InlineKeyboardButton{
 		Text:         text,
-		CallbackData: &data,
+		CallbackData: data,
 	}
 }
 
@@ -521,16 +521,16 @@ func NewInlineKeyboardButtonData(text, data string) InlineKeyboardButton {
 func NewInlineKeyboardButtonURL(text, url string) InlineKeyboardButton {
 	return InlineKeyboardButton{
 		Text: text,
-		URL:  &url,
+		URL:  url,
 	}
 }
 
 // NewInlineKeyboardButtonSwitch creates an inline keyboard button with
 // text which allows the user to switch to a chat or return to a chat.
-func NewInlineKeyboardButtonSwitch(text, sw string) InlineKeyboardButton {
+func NewInlineKeyboardButtonSwitch(text, switchInlineQuery string) InlineKeyboardButton {
 	return InlineKeyboardButton{
 		Text:              text,
-		SwitchInlineQuery: &sw,
+		SwitchInlineQuery: switchInlineQuery,
 	}
 }
 
