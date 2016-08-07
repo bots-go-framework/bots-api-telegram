@@ -29,7 +29,7 @@ type BotAPI struct {
 // NewBotAPI creates a new BotAPI instance.
 //
 // It requires a token, provided by @BotFather on Telegram.
-func NewBotAPI(token string) (*BotAPI, error) {
+func NewBotAPI(token string) *BotAPI {
 	return NewBotAPIWithClient(token, &http.Client{})
 }
 
@@ -37,20 +37,11 @@ func NewBotAPI(token string) (*BotAPI, error) {
 // and allows you to pass a http.Client.
 //
 // It requires a token, provided by @BotFather on Telegram.
-func NewBotAPIWithClient(token string, client *http.Client) (*BotAPI, error) {
-	bot := &BotAPI{
+func NewBotAPIWithClient(token string, client *http.Client) *BotAPI {
+	return &BotAPI{
 		Token:  token,
 		Client: client,
 	}
-
-	//self, err := bot.GetMe()
-	//if err != nil {
-	//	return &BotAPI{}, err
-	//}
-	//
-	//bot.Self = self
-
-	return bot, nil
 }
 
 // MakeRequest makes a request to a specific endpoint with our token.
