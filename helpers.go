@@ -544,7 +544,7 @@ func NewInlineKeyboardRow(buttons ...InlineKeyboardButton) []InlineKeyboardButto
 }
 
 // NewInlineKeyboardMarkup creates a new inline keyboard.
-func NewInlineKeyboardMarkup(rows ...[]InlineKeyboardButton) InlineKeyboardMarkup {
+func NewInlineKeyboardMarkup(rows ...[]InlineKeyboardButton) InlineKeyboardMarkup { // TODO: Return pointer?
 	var keyboard [][]InlineKeyboardButton
 
 	keyboard = append(keyboard, rows...)
