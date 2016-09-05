@@ -315,7 +315,7 @@ type InlineKeyboardMarkup struct {
 // Note that some values are references as even an empty string
 // will change behavior.
 type InlineKeyboardButton struct {
-	Text              string  `json:"text"`
+	Text              string `json:"text"`
 	URL               string `json:"url,omitempty"`                 // optional
 	CallbackData      string `json:"callback_data,omitempty"`       // optional
 	SwitchInlineQuery string `json:"switch_inline_query,omitempty"` // optional
