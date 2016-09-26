@@ -16,14 +16,18 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"github.com/strongo/app"
+	"golang.org/x/net/context"
 )
 
 // BotAPI allows you to interact with the Telegram Bot API.
 type BotAPI struct {
-	Token  string       `json:"token"`
-	Debug  bool         `json:"debug"`
-	Self   User         `json:"-"`
-	Client *http.Client `json:"-"`
+	Token  string         `json:"token"`
+	Debug  bool           `json:"debug"`
+	Self   User           `json:"-"`
+	Client *http.Client   `json:"-"`
+	logger strongo.Logger `json:"-"`
+	c context.Context // TODO: Wrong, read docs on Context class
 }
 
 // NewBotAPI creates a new BotAPI instance.
@@ -44,6 +48,15 @@ func NewBotAPIWithClient(token string, client *http.Client) *BotAPI {
 	}
 }
 
+func NewBotAPIWithClientAndLogger(c context.Context, token string, client *http.Client, logger strongo.Logger) *BotAPI {
+	return &BotAPI{
+		Token:  token,
+		Client: client,
+		logger: logger,
+		c: c,
+	}
+}
+
 // MakeRequest makes a request to a specific endpoint with our token.
 func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse, error) {
 	method := fmt.Sprintf(APIEndpoint, bot.Token, endpoint)
@@ -55,20 +68,29 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusForbidden {
-		return APIResponse{}, errors.New(ErrAPIForbidden)
+		apiResponse := APIResponse{}
+		if resp.ContentLength > 0 {
+			if body, err := ioutil.ReadAll(resp.Body); err == nil {
+				apiResponse.Result = json.RawMessage(body)
+				if bot.Debug && bot.logger != nil {
+					bot.logger.Debugf(bot.c, "Response.body: %v", string(apiResponse.Result))
+				}
+			}
+		}
+		return apiResponse, ErrAPIForbidden
 	}
 
-	bytes, err := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return APIResponse{}, err
 	}
 
 	if bot.Debug {
-		log.Println(endpoint, string(bytes))
+		log.Println(endpoint, string(body))
 	}
 
 	var apiResp APIResponse
-	json.Unmarshal(bytes, &apiResp)
+	json.Unmarshal(body, &apiResp)
 
 	if !apiResp.Ok {
 		return APIResponse{}, errors.New(apiResp.Description)
@@ -85,11 +107,10 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 	}
 
 	var message Message
-	json.Unmarshal(resp.Result, &message)
 
+	err = json.Unmarshal(resp.Result, &message)
 	bot.debugLog(endpoint, params, message)
-
-	return message, nil
+	return message, err
 }
 
 // UploadFile makes a request to the API with a file.
@@ -230,8 +251,13 @@ func (bot *BotAPI) Send(c Chattable) (Message, error) {
 // debug log.
 func (bot *BotAPI) debugLog(context string, v url.Values, message interface{}) {
 	if bot.Debug {
-		log.Printf("%s req : %+v\n", context, v)
-		log.Printf("%s resp: %+v\n", context, message)
+		if bot.logger != nil {
+			bot.logger.Debugf(bot.c, "%s req : %+v\n", context, v)
+			bot.logger.Debugf(bot.c, "%s resp: %+v\n", context, message)
+		} else {
+			log.Printf("%s req : %+v\n", context, v)
+			log.Printf("%s resp: %+v\n", context, message)
+		}
 	}
 }
 
@@ -290,13 +316,7 @@ func (bot *BotAPI) sendChattable(config Chattable) (Message, error) {
 		return Message{}, err
 	}
 
-	message, err := bot.makeMessageRequest(config.method(), v)
-
-	if err != nil {
-		return Message{}, err
-	}
-
-	return message, nil
+	return bot.makeMessageRequest(config.method(), v)
 }
 
 // GetUserProfilePhotos gets a user's profile photos.

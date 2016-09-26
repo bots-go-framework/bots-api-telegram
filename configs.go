@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/url"
 	"strconv"
+	"github.com/pkg/errors"
 )
 
 // Telegram constants
@@ -29,10 +30,11 @@ const (
 )
 
 // API errors
-const (
+//const (
 	// ErrAPIForbidden happens when a token is bad
-	ErrAPIForbidden = "forbidden"
-)
+	//ErrAPIForbidden = "forbidden"
+//)
+var ErrAPIForbidden = errors.New("forbidden")  // happens when a token is bad or user deleted chat
 
 // Constant values for ParseMode in MessageConfig
 const (
