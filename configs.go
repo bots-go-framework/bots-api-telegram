@@ -699,6 +699,7 @@ type CallbackConfig struct {
 	CallbackQueryID string `json:"callback_query_id"`
 	Text            string `json:"text"`
 	ShowAlert       bool   `json:"show_alert"`
+	Url             string `json:"url"`
 }
 
 // ChatMemberConfig contains information about a user in a chat for use
