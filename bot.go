@@ -57,6 +57,14 @@ func NewBotAPIWithClientAndLogger(c context.Context, token string, client *http.
 	}
 }
 
+func (bot *BotAPI) MakeRequestFromChattable(m Chattable) (resp APIResponse, err error) { // TODO: Is duplicate of Send()?
+	values, err := m.Values()
+	if err != nil {
+		return resp, err
+	}
+	return bot.MakeRequest(m.method(), values)
+}
+
 // MakeRequest makes a request to a specific endpoint with our token.
 func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse, error) {
 	method := fmt.Sprintf(APIEndpoint, bot.Token, endpoint)
@@ -499,19 +507,6 @@ func (bot *BotAPI) AnswerInlineQuery(config InlineConfig) (APIResponse, error) {
 	bot.debugLog("answerInlineQuery", v, nil)
 
 	return bot.MakeRequest("answerInlineQuery", v)
-}
-
-// AnswerCallbackQuery sends a response to an inline query callback.
-func (bot *BotAPI) AnswerCallbackQuery(config CallbackConfig) (APIResponse, error) {
-	v := url.Values{}
-
-	v.Add("callback_query_id", config.CallbackQueryID)
-	v.Add("text", config.Text)
-	v.Add("show_alert", strconv.FormatBool(config.ShowAlert))
-
-	bot.debugLog("answerCallbackQuery", v, nil)
-
-	return bot.MakeRequest("answerCallbackQuery", v)
 }
 
 // KickChatMember kicks a user from a chat. Note that this only will work

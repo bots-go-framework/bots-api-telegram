@@ -696,10 +696,27 @@ func (config InlineConfig) Values() (url.Values, error) {
 
 // CallbackConfig contains information on making a CallbackQuery response.
 type CallbackConfig struct {
-	CallbackQueryID string `json:"callback_query_id"`
-	Text            string `json:"text"`
-	ShowAlert       bool   `json:"show_alert"`
-	Url             string `json:"url"`
+	CallbackQueryID string `json:"callback_query_id,"`
+	Text            string `json:"text,"`
+	ShowAlert       bool   `json:"show_alert,omitempty"`
+	Url             string `json:"url,omitempty"`
+}
+var _ Chattable = (*CallbackConfig)(nil)
+func (config CallbackConfig) method() string {
+	return "answerCallbackQuery"
+}
+func (config CallbackConfig) Values() (url.Values, error) {
+	v := url.Values{}
+
+	v.Add("callback_query_id", config.CallbackQueryID)
+	v.Add("text", config.Text)
+	if config.ShowAlert {
+		v.Add("show_alert", "true")
+	}
+	if config.Url != "" {
+		v.Add("url", config.Url)
+	}
+	return v, nil
 }
 
 // ChatMemberConfig contains information about a user in a chat for use

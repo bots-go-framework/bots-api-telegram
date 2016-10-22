@@ -573,10 +573,9 @@ func NewCallbackWithAlert(id, text string) CallbackConfig {
 	}
 }
 
-func NewCallbackWithUrl(id, text, url string, showAlert bool) CallbackConfig {
+func NewCallbackWithUrl(url string, showAlert bool) CallbackConfig {
 	return CallbackConfig{
-		CallbackQueryID: id,
-		Text:            text,
+		Url: 				  url,
 		ShowAlert:       showAlert,
 	}
 }
