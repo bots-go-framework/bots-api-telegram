@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"strconv"
 	"github.com/pkg/errors"
+	"fmt"
 )
 
 // Telegram constants
@@ -90,6 +91,9 @@ func (chat *BaseChat) Values() (url.Values, error) {
 		data, err := json.Marshal(chat.ReplyMarkup)
 		if err != nil {
 			return v, err
+		}
+		if string(data) == "null" {
+			panic(fmt.Sprintf("string(data) == null, BaseChat: %v", chat))
 		}
 
 		v.Add("reply_markup", string(data))
@@ -697,7 +701,7 @@ func (config InlineConfig) Values() (url.Values, error) {
 // CallbackConfig contains information on making a CallbackQuery response.
 type CallbackConfig struct {
 	CallbackQueryID string `json:"callback_query_id,"`
-	Text            string `json:"text,"`
+	Text            string `json:"text,omitempty"`
 	ShowAlert       bool   `json:"show_alert,omitempty"`
 	Url             string `json:"url,omitempty"`
 }
@@ -705,18 +709,22 @@ var _ Chattable = (*CallbackConfig)(nil)
 func (config CallbackConfig) method() string {
 	return "answerCallbackQuery"
 }
-func (config CallbackConfig) Values() (url.Values, error) {
-	v := url.Values{}
-
+func (config CallbackConfig) Values() (v url.Values, err error) {
+	v = url.Values{} // if removed causes nil pointer exception
 	v.Add("callback_query_id", config.CallbackQueryID)
-	v.Add("text", config.Text)
-	if config.ShowAlert {
-		v.Add("show_alert", "true")
+	if config.Text != "" && config.Url != "" {
+		err = errors.New("Both config.Text && config.Url supplied")
+		return
 	}
-	if config.Url != "" {
+	if config.Text != "" {
+		v.Add("text", config.Text)
+		if config.ShowAlert {
+			v.Add("show_alert", "true")
+		}
+	} else if config.Url != "" {
 		v.Add("url", config.Url)
 	}
-	return v, nil
+	return
 }
 
 // ChatMemberConfig contains information about a user in a chat for use
