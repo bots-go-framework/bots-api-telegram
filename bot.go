@@ -5,7 +5,6 @@ package tgbotapi
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/technoweenie/multipartstreamer"
 	"io/ioutil"
@@ -18,6 +17,7 @@ import (
 	"time"
 	"github.com/strongo/app"
 	"golang.org/x/net/context"
+	"github.com/pkg/errors"
 )
 
 // BotAPI allows you to interact with the Telegram Bot API.
@@ -110,14 +110,22 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 // makeMessageRequest makes a request to a method that returns a Message.
 func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Message, error) {
 	resp, err := bot.MakeRequest(endpoint, params)
-	if err != nil {
-		return Message{}, err
-	}
-
 	var message Message
 
-	err = json.Unmarshal(resp.Result, &message)
-	bot.debugLog(endpoint, params, message)
+	if err != nil {
+		return message, err
+	}
+
+	if !resp.Ok || resp.ErrorCode != 0 {
+		return message, errors.New(fmt.Sprintf("Telegram returned Ok=%v, ErrorCode=%v, Description: %v; Result: %v", resp.Ok, resp.ErrorCode, resp.Description, string(resp.Result)))
+	}
+
+	if string(resp.Result) != "true" { // TODO: This is a workaround for "answerCallbackQuery" that returns just "true".
+		if err = json.Unmarshal(resp.Result, &message); err != nil {
+			return message, errors.Wrapf(err, "Failed to call json.Unmarshal(%v)", string(resp.Result))
+		}
+		bot.debugLog(endpoint, params, message)
+	}
 	return message, err
 }
 
