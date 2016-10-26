@@ -85,7 +85,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 				}
 			}
 		}
-		return apiResponse, ErrAPIForbidden
+		return apiResponse, ErrAPIForbidden{}
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)

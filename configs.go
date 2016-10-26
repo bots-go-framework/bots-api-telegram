@@ -35,7 +35,17 @@ const (
 	// ErrAPIForbidden happens when a token is bad
 	//ErrAPIForbidden = "forbidden"
 //)
-var ErrAPIForbidden = errors.New("forbidden")  // happens when a token is bad or user deleted chat
+//var ErrAPIForbidden = errors.New("forbidden")  // happens when a token is bad or user deleted chat
+
+type ErrAPIForbidden struct {
+}
+
+func (err ErrAPIForbidden) Error() string {
+	return "forbidden"
+}
+
+func (err ErrAPIForbidden) IsForbidden() {
+}
 
 // Constant values for ParseMode in MessageConfig
 const (
