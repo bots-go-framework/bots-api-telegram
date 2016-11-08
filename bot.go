@@ -71,6 +71,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 
 	resp, err := bot.Client.PostForm(method, params)
 	if err != nil {
+		bot.logger.Errorf(bot.c, "Failed to send POST %v", method)
 		return APIResponse{}, err
 	}
 	defer resp.Body.Close()
@@ -113,6 +114,9 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 	var message Message
 
 	if err != nil {
+		bot.logger.Debugf(bot.c, "endpoint: %v", endpoint)
+		bot.logger.Errorf(bot.c, err.Error())
+		bot.debugLog("DEBUG:", params, message)
 		return message, err
 	}
 
