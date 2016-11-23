@@ -114,9 +114,7 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 	var message Message
 
 	if err != nil {
-		bot.logger.Debugf(bot.c, "endpoint: %v", endpoint)
-		bot.logger.Errorf(bot.c, err.Error())
-		bot.debugLog("DEBUG:", params, message)
+		bot.logger.Debugf(bot.c, "Telegram endpoint: %v, error: %v", endpoint, err)
 		return message, err
 	}
 
