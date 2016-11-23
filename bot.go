@@ -114,7 +114,9 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 	var message Message
 
 	if err != nil {
-		bot.logger.Debugf(bot.c, "Telegram endpoint: %v, error: %v", endpoint, err)
+		if bot.logger != nil {
+			bot.logger.Debugf(bot.c, "Telegram endpoint: %v, error: %v", endpoint, err)
+		}
 		return message, err
 	}
 
@@ -272,9 +274,9 @@ func (bot *BotAPI) debugLog(context string, v url.Values, message interface{}) {
 		if bot.logger != nil {
 			bot.logger.Debugf(bot.c, "%s req : %+v\n", context, v)
 			bot.logger.Debugf(bot.c, "%s resp: %+v\n", context, message)
-		} else {
-			log.Printf("%s req : %+v\n", context, v)
-			log.Printf("%s resp: %+v\n", context, message)
+		//} else {
+		//	log.Printf("%s req : %+v\n", context, v)
+		//	log.Printf("%s resp: %+v\n", context, message)
 		}
 	}
 }
