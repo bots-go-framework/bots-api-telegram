@@ -8,16 +8,15 @@ import (
 	"fmt"
 	"github.com/technoweenie/multipartstreamer"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strconv"
 	"strings"
 	"time"
-	"github.com/strongo/app"
 	"golang.org/x/net/context"
 	"github.com/pkg/errors"
+	"github.com/strongo/app/log"
 )
 
 // BotAPI allows you to interact with the Telegram Bot API.
@@ -26,7 +25,6 @@ type BotAPI struct {
 	Debug  bool           `json:"debug"`
 	Self   User           `json:"-"`
 	Client *http.Client   `json:"-"`
-	logger strongo.Logger `json:"-"`
 	c context.Context // TODO: Wrong, read docs on Context class
 }
 
@@ -48,11 +46,10 @@ func NewBotAPIWithClient(token string, client *http.Client) *BotAPI {
 	}
 }
 
-func NewBotAPIWithClientAndLogger(c context.Context, token string, client *http.Client, logger strongo.Logger) *BotAPI {
+func NewBotAPIWithClientAndLogger(c context.Context, token string, client *http.Client) *BotAPI {
 	return &BotAPI{
 		Token:  token,
 		Client: client,
-		logger: logger,
 		c: c,
 	}
 }
@@ -71,7 +68,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 
 	resp, err := bot.Client.PostForm(method, params)
 	if err != nil {
-		bot.logger.Errorf(bot.c, "Failed to send POST %v", method)
+		log.Errorf(bot.c, "Failed to send POST %v", method)
 		return APIResponse{}, err
 	}
 	defer resp.Body.Close()
@@ -81,8 +78,8 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 		if resp.ContentLength > 0 {
 			if body, err := ioutil.ReadAll(resp.Body); err == nil {
 				apiResponse.Result = json.RawMessage(body)
-				if bot.Debug && bot.logger != nil {
-					bot.logger.Debugf(bot.c, "Response.body: %v", string(apiResponse.Result))
+				if bot.Debug {
+					log.Debugf(bot.c, "Response.body: %v", string(apiResponse.Result))
 				}
 			}
 		}
@@ -95,7 +92,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 	}
 
 	if bot.Debug {
-		log.Println(endpoint, string(body))
+		log.Debugf(context.Background(),"%v: %v", endpoint, string(body))
 	}
 
 	var apiResp APIResponse
@@ -114,9 +111,6 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 	var message Message
 
 	if err != nil {
-		if bot.logger != nil {
-			bot.logger.Debugf(bot.c, "Telegram endpoint: %v, error: %v", endpoint, err)
-		}
 		return message, err
 	}
 
@@ -202,7 +196,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 	}
 
 	if bot.Debug {
-		log.Println(string(bytes))
+		//log.Println(string(bytes))
 	}
 
 	var apiResp APIResponse
@@ -271,13 +265,11 @@ func (bot *BotAPI) Send(c Chattable) (Message, error) {
 // debug log.
 func (bot *BotAPI) debugLog(context string, v url.Values, message interface{}) {
 	if bot.Debug {
-		if bot.logger != nil {
-			bot.logger.Debugf(bot.c, "%s req : %+v\n", context, v)
-			bot.logger.Debugf(bot.c, "%s resp: %+v\n", context, message)
+		log.Debugf(bot.c, "%s req : %+v\n", context, v)
+		log.Debugf(bot.c, "%s resp: %+v\n", context, message)
 		//} else {
 		//	log.Printf("%s req : %+v\n", context, v)
 		//	log.Printf("%s resp: %+v\n", context, message)
-		}
 	}
 }
 
@@ -449,7 +441,7 @@ func (bot *BotAPI) SetWebhook(config WebhookConfig) (APIResponse, error) {
 	json.Unmarshal(resp.Result, &apiResp)
 
 	if bot.Debug {
-		log.Printf("setWebhook resp: %+v\n", apiResp)
+		//log.Printf("setWebhook resp: %+v\n", apiResp)
 	}
 
 	return apiResp, nil
@@ -463,8 +455,8 @@ func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) (<-chan Update, error) {
 		for {
 			updates, err := bot.GetUpdates(config)
 			if err != nil {
-				log.Println(err)
-				log.Println("Failed to get updates, retrying in 3 seconds...")
+				//log.Println(err)
+				//log.Println("Failed to get updates, retrying in 3 seconds...")
 				time.Sleep(time.Second * 3)
 
 				continue
