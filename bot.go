@@ -22,10 +22,13 @@ import (
 // BotAPI allows you to interact with the Telegram Bot API.
 type BotAPI struct {
 	Token  string         `json:"token"`
-	Debug  bool           `json:"debug"`
 	Self   User           `json:"-"`
 	Client *http.Client   `json:"-"`
-	c context.Context // TODO: Wrong, read docs on Context class
+	c context.Context // TODO: Wrong? read docs on Context class
+}
+
+func (bot *BotAPI) EnableDebug(c context.Context) {
+	bot.c = c
 }
 
 // NewBotAPI creates a new BotAPI instance.
@@ -43,14 +46,6 @@ func NewBotAPIWithClient(token string, client *http.Client) *BotAPI {
 	return &BotAPI{
 		Token:  token,
 		Client: client,
-	}
-}
-
-func NewBotAPIWithClientAndLogger(c context.Context, token string, client *http.Client) *BotAPI {
-	return &BotAPI{
-		Token:  token,
-		Client: client,
-		c: c,
 	}
 }
 
@@ -78,7 +73,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 		if resp.ContentLength > 0 {
 			if body, err := ioutil.ReadAll(resp.Body); err == nil {
 				apiResponse.Result = json.RawMessage(body)
-				if bot.Debug {
+				if bot.c != nil {
 					log.Debugf(bot.c, "Response.body: %v", string(apiResponse.Result))
 				}
 			}
@@ -91,8 +86,8 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 		return APIResponse{}, err
 	}
 
-	if bot.Debug {
-		log.Debugf(context.Background(),"%v: %v", endpoint, string(body))
+	if bot.c != nil {
+		log.Debugf(bot.c,"%v: %v", endpoint, string(body))
 	}
 
 	var apiResp APIResponse
@@ -195,8 +190,8 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 		return APIResponse{}, err
 	}
 
-	if bot.Debug {
-		//log.Println(string(bytes))
+	if bot.c != nil {
+		log.Debugf(bot.c, string(bytes))
 	}
 
 	var apiResp APIResponse
@@ -264,7 +259,7 @@ func (bot *BotAPI) Send(c Chattable) (Message, error) {
 // so will display information about the request and response in the
 // debug log.
 func (bot *BotAPI) debugLog(context string, v url.Values, message interface{}) {
-	if bot.Debug {
+	if bot.c != nil {
 		log.Debugf(bot.c, "%s req : %+v\n", context, v)
 		log.Debugf(bot.c, "%s resp: %+v\n", context, message)
 		//} else {
@@ -440,8 +435,8 @@ func (bot *BotAPI) SetWebhook(config WebhookConfig) (APIResponse, error) {
 	var apiResp APIResponse
 	json.Unmarshal(resp.Result, &apiResp)
 
-	if bot.Debug {
-		//log.Printf("setWebhook resp: %+v\n", apiResp)
+	if bot.c != nil {
+		log.Debugf(bot.c, "setWebhook resp: %+v\n", apiResp)
 	}
 
 	return apiResp, nil
