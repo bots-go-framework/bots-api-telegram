@@ -530,7 +530,7 @@ func NewInlineKeyboardButtonURL(text, url string) InlineKeyboardButton {
 func NewInlineKeyboardButtonSwitch(text, switchInlineQuery string) InlineKeyboardButton {
 	return InlineKeyboardButton{
 		Text:              text,
-		SwitchInlineQuery: switchInlineQuery,
+		SwitchInlineQuery: &switchInlineQuery,
 	}
 }
 

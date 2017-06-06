@@ -1,5 +1,7 @@
 package tgbotapi
 
+//go:generate ffjson $GOFILE
+
 import (
 	"encoding/json"
 	"errors"
@@ -22,6 +24,7 @@ type APIResponse struct {
 type Update struct {
 	UpdateID           int                 `json:"update_id"`
 	Message            *Message            `json:"message"`
+	EditedMessage      *Message            `json:"edited_message"`
 	InlineQuery        *InlineQuery        `json:"inline_query"`
 	ChosenInlineResult *ChosenInlineResult `json:"chosen_inline_result"`
 	CallbackQuery      *CallbackQuery      `json:"callback_query"`
@@ -29,10 +32,35 @@ type Update struct {
 
 // User is a user on Telegram.
 type User struct {
-	ID        int    `json:"id"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"` // optional
-	UserName  string `json:"username"`  // optional
+	ID           int    `json:"id"`
+	FirstName    string `json:"first_name,omitempty"`
+	LastName     string `json:"last_name,omitempty"`     // optional
+	UserName     string `json:"username,omitempty"`      // optional
+	LanguageCode string `json:"language_code,omitempty"` // optional
+}
+
+func (u *User) Platform() string {
+	return "Telegram"
+}
+
+func (u *User) GetID() interface{} {
+	return u.ID
+}
+
+func (u *User) GetFirstName() string {
+	return u.FirstName
+}
+
+func (u *User) GetLastName() string {
+	return u.LastName
+}
+
+func (u *User) GetUserName() string {
+	return u.UserName
+}
+
+func (u *User) GetLanguage() string {
+	return u.LanguageCode
 }
 
 // String displays a simple text version of a user.
@@ -88,8 +116,7 @@ func (c *Chat) IsChannel() bool {
 	return c.Type == "channel"
 }
 
-// Message is returned by almost every request, and contains data about
-// almost anything.
+// Message is returned by almost every request, and contains data about almost anything.
 type Message struct {
 	MessageID             int              `json:"message_id"`
 	From                  *User            `json:"from"` // optional
@@ -110,7 +137,8 @@ type Message struct {
 	Contact               *Contact         `json:"contact,omitempty"`                 // optional
 	Location              *Location        `json:"location,omitempty"`                // optional
 	Venue                 *Venue           `json:"venue,omitempty"`                   // optional
-	NewChatMember         *User            `json:"new_chat_member,omitempty"`         // optional
+	NewChatMember         *User            `json:"new_chat_member,omitempty"`         // Obsolete
+	NewChatMembers        []*User          `json:"new_chat_members,omitempty"`        // optional
 	LeftChatMember        *User            `json:"left_chat_member,omitempty"`        // optional
 	NewChatTitle          string           `json:"new_chat_title,omitempty"`          // optional
 	NewChatPhoto          *[]PhotoSize     `json:"new_chat_photo,omitempty"`          // optional
@@ -312,13 +340,14 @@ type InlineKeyboardMarkup struct {
 // InlineKeyboardButton is a button within a custom keyboard for
 // inline query responses.
 //
-// Note that some values are references as even an empty string
-// will change behavior.
+// Note that some values are references as even an empty string will change behavior.
 type InlineKeyboardButton struct {
-	Text              string `json:"text"`
-	URL               string `json:"url,omitempty"`                 // optional
-	CallbackData      string `json:"callback_data,omitempty"`       // optional
-	SwitchInlineQuery string `json:"switch_inline_query,omitempty"` // optional
+	Text                         string `json:"text"`
+	URL                          string `json:"url,omitempty"`                     // optional
+	CallbackData                 string `json:"callback_data,omitempty"`           // optional
+	SwitchInlineQuery            *string `json:"switch_inline_query"`              // optional
+	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat"` // optional
+	Pay                          bool `json:"pay,omitempty"`
 }
 
 // CallbackQuery is data sent when a keyboard button with callback data
