@@ -3664,18 +3664,19 @@ func (mj *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteByte(',')
 	}
 	if mj.SwitchInlineQuery != nil {
-		buf.WriteString(`"switch_inline_query":`)
-		fflib.WriteJsonString(buf, string(*mj.SwitchInlineQuery))
-	} else {
-		buf.WriteString(`"switch_inline_query":null`)
+		if true {
+			buf.WriteString(`"switch_inline_query":`)
+			fflib.WriteJsonString(buf, string(*mj.SwitchInlineQuery))
+			buf.WriteByte(',')
+		}
 	}
 	if mj.SwitchInlineQueryCurrentChat != nil {
-		buf.WriteString(`,"switch_inline_query_current_chat":`)
-		fflib.WriteJsonString(buf, string(*mj.SwitchInlineQueryCurrentChat))
-	} else {
-		buf.WriteString(`,"switch_inline_query_current_chat":null`)
+		if true {
+			buf.WriteString(`"switch_inline_query_current_chat":`)
+			fflib.WriteJsonString(buf, string(*mj.SwitchInlineQueryCurrentChat))
+			buf.WriteByte(',')
+		}
 	}
-	buf.WriteByte(',')
 	if mj.Pay != false {
 		if mj.Pay {
 			buf.WriteString(`"pay":true`)
@@ -16501,6 +16502,34 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`,"edited_message":null`)
 	}
+	if mj.ChannelPost != nil {
+		buf.WriteString(`,"channel_post":`)
+
+		{
+
+			err = mj.ChannelPost.MarshalJSONBuf(buf)
+			if err != nil {
+				return err
+			}
+
+		}
+	} else {
+		buf.WriteString(`,"channel_post":null`)
+	}
+	if mj.EditedChannelPost != nil {
+		buf.WriteString(`,"edited_channel_post":`)
+
+		{
+
+			err = mj.EditedChannelPost.MarshalJSONBuf(buf)
+			if err != nil {
+				return err
+			}
+
+		}
+	} else {
+		buf.WriteString(`,"edited_channel_post":null`)
+	}
 	if mj.InlineQuery != nil {
 		buf.WriteString(`,"inline_query":`)
 
@@ -16557,6 +16586,10 @@ const (
 
 	ffj_t_Update_EditedMessage
 
+	ffj_t_Update_ChannelPost
+
+	ffj_t_Update_EditedChannelPost
+
 	ffj_t_Update_InlineQuery
 
 	ffj_t_Update_ChosenInlineResult
@@ -16569,6 +16602,10 @@ var ffj_key_Update_UpdateID = []byte("update_id")
 var ffj_key_Update_Message = []byte("message")
 
 var ffj_key_Update_EditedMessage = []byte("edited_message")
+
+var ffj_key_Update_ChannelPost = []byte("channel_post")
+
+var ffj_key_Update_EditedChannelPost = []byte("edited_channel_post")
 
 var ffj_key_Update_InlineQuery = []byte("inline_query")
 
@@ -16637,7 +16674,12 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_Update_ChosenInlineResult, kn) {
+					if bytes.Equal(ffj_key_Update_ChannelPost, kn) {
+						currentKey = ffj_t_Update_ChannelPost
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Update_ChosenInlineResult, kn) {
 						currentKey = ffj_t_Update_ChosenInlineResult
 						state = fflib.FFParse_want_colon
 						goto mainparse
@@ -16652,6 +16694,11 @@ mainparse:
 
 					if bytes.Equal(ffj_key_Update_EditedMessage, kn) {
 						currentKey = ffj_t_Update_EditedMessage
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Update_EditedChannelPost, kn) {
+						currentKey = ffj_t_Update_EditedChannelPost
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -16700,6 +16747,18 @@ mainparse:
 					goto mainparse
 				}
 
+				if fflib.EqualFoldRight(ffj_key_Update_EditedChannelPost, kn) {
+					currentKey = ffj_t_Update_EditedChannelPost
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffj_key_Update_ChannelPost, kn) {
+					currentKey = ffj_t_Update_ChannelPost
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.EqualFoldRight(ffj_key_Update_EditedMessage, kn) {
 					currentKey = ffj_t_Update_EditedMessage
 					state = fflib.FFParse_want_colon
@@ -16743,6 +16802,12 @@ mainparse:
 
 				case ffj_t_Update_EditedMessage:
 					goto handle_EditedMessage
+
+				case ffj_t_Update_ChannelPost:
+					goto handle_ChannelPost
+
+				case ffj_t_Update_EditedChannelPost:
+					goto handle_EditedChannelPost
 
 				case ffj_t_Update_InlineQuery:
 					goto handle_InlineQuery
@@ -16842,6 +16907,60 @@ handle_EditedMessage:
 		}
 
 		err = uj.EditedMessage.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_ChannelPost:
+
+	/* handler: uj.ChannelPost type=tgbotapi.Message kind=struct quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			uj.ChannelPost = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
+		if uj.ChannelPost == nil {
+			uj.ChannelPost = new(Message)
+		}
+
+		err = uj.ChannelPost.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_EditedChannelPost:
+
+	/* handler: uj.EditedChannelPost type=tgbotapi.Message kind=struct quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			uj.EditedChannelPost = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
+		if uj.EditedChannelPost == nil {
+			uj.EditedChannelPost = new(Message)
+		}
+
+		err = uj.EditedChannelPost.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}

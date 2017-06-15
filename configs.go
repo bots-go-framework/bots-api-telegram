@@ -172,11 +172,11 @@ func (file BaseFile) useExistingFile() bool {
 
 // BaseEdit is base type of all chat edits.
 type BaseEdit struct {
-	ChatID          int64
-	ChannelUsername string
-	MessageID       int
-	InlineMessageID string
-	ReplyMarkup     *InlineKeyboardMarkup
+	ChatID          int64  `json:",omitempty"`
+	ChannelUsername string `json:",omitempty"`
+	MessageID       int    `json:",omitempty"`
+	InlineMessageID string `json:"inline_message_id,omitempty"`
+	ReplyMarkup     *InlineKeyboardMarkup `json:",omitempty"`
 }
 
 func (edit BaseEdit) Values() (url.Values, error) {

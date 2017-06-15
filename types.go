@@ -25,6 +25,8 @@ type Update struct {
 	UpdateID           int                 `json:"update_id"`
 	Message            *Message            `json:"message"`
 	EditedMessage      *Message            `json:"edited_message"`
+	ChannelPost        *Message            `json:"channel_post"`
+	EditedChannelPost  *Message            `json:"edited_channel_post"`
 	InlineQuery        *InlineQuery        `json:"inline_query"`
 	ChosenInlineResult *ChosenInlineResult `json:"chosen_inline_result"`
 	CallbackQuery      *CallbackQuery      `json:"callback_query"`
@@ -345,9 +347,9 @@ type InlineKeyboardButton struct {
 	Text                         string `json:"text"`
 	URL                          string `json:"url,omitempty"`                     // optional
 	CallbackData                 string `json:"callback_data,omitempty"`           // optional
-	SwitchInlineQuery            *string `json:"switch_inline_query"`              // optional
-	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat"` // optional
-	Pay                          bool `json:"pay,omitempty"`
+	SwitchInlineQuery            *string `json:"switch_inline_query,omitempty"`              // optional
+	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // optional
+	Pay                          bool `json:"pay,omitempty"` // optional
 }
 
 // CallbackQuery is data sent when a keyboard button with callback data
