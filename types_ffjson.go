@@ -866,6 +866,11 @@ func (mj *CallbackQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
+	if len(mj.ChatInstance) != 0 {
+		buf.WriteString(`"chat_instance":`)
+		fflib.WriteJsonString(buf, string(mj.ChatInstance))
+		buf.WriteByte(',')
+	}
 	if len(mj.InlineMessageID) != 0 {
 		buf.WriteString(`"inline_message_id":`)
 		fflib.WriteJsonString(buf, string(mj.InlineMessageID))
@@ -891,6 +896,8 @@ const (
 
 	ffj_t_CallbackQuery_Message
 
+	ffj_t_CallbackQuery_ChatInstance
+
 	ffj_t_CallbackQuery_InlineMessageID
 
 	ffj_t_CallbackQuery_Data
@@ -901,6 +908,8 @@ var ffj_key_CallbackQuery_ID = []byte("id")
 var ffj_key_CallbackQuery_From = []byte("from")
 
 var ffj_key_CallbackQuery_Message = []byte("message")
+
+var ffj_key_CallbackQuery_ChatInstance = []byte("chat_instance")
 
 var ffj_key_CallbackQuery_InlineMessageID = []byte("inline_message_id")
 
@@ -965,6 +974,14 @@ mainparse:
 			} else {
 				switch kn[0] {
 
+				case 'c':
+
+					if bytes.Equal(ffj_key_CallbackQuery_ChatInstance, kn) {
+						currentKey = ffj_t_CallbackQuery_ChatInstance
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'd':
 
 					if bytes.Equal(ffj_key_CallbackQuery_Data, kn) {
@@ -1016,6 +1033,12 @@ mainparse:
 					goto mainparse
 				}
 
+				if fflib.EqualFoldRight(ffj_key_CallbackQuery_ChatInstance, kn) {
+					currentKey = ffj_t_CallbackQuery_ChatInstance
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.EqualFoldRight(ffj_key_CallbackQuery_Message, kn) {
 					currentKey = ffj_t_CallbackQuery_Message
 					state = fflib.FFParse_want_colon
@@ -1059,6 +1082,9 @@ mainparse:
 
 				case ffj_t_CallbackQuery_Message:
 					goto handle_Message
+
+				case ffj_t_CallbackQuery_ChatInstance:
+					goto handle_ChatInstance
 
 				case ffj_t_CallbackQuery_InlineMessageID:
 					goto handle_InlineMessageID
@@ -1155,6 +1181,32 @@ handle_Message:
 			return err
 		}
 		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_ChatInstance:
+
+	/* handler: uj.ChatInstance type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.ChatInstance = string(string(outBuf))
+
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -3147,15 +3199,20 @@ func (mj *ForceReply) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	if mj.ForceReply {
-		buf.WriteString(`{"force_reply":true`)
+		buf.WriteString(`{ "force_reply":true`)
 	} else {
-		buf.WriteString(`{"force_reply":false`)
+		buf.WriteString(`{ "force_reply":false`)
 	}
-	if mj.Selective {
-		buf.WriteString(`,"selective":true`)
-	} else {
-		buf.WriteString(`,"selective":false`)
+	buf.WriteByte(',')
+	if mj.Selective != false {
+		if mj.Selective {
+			buf.WriteString(`"selective":true`)
+		} else {
+			buf.WriteString(`"selective":false`)
+		}
+		buf.WriteByte(',')
 	}
+	buf.Rewind(1)
 	buf.WriteByte('}')
 	return nil
 }

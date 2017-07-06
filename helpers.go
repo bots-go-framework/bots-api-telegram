@@ -407,11 +407,14 @@ func NewInlineQueryResultLocation(id, title string, latitude, longitude float64)
 }
 
 // NewEditMessageText allows you to edit the text of a message.
-func NewEditMessageText(chatID int64, messageID int, text string) *EditMessageTextConfig {
+func NewEditMessageText(chatID int64, messageID int, inlineMessageID, text string) *EditMessageTextConfig {
+	if inlineMessageID == "" && chatID == 0 && messageID == 0 {
+		panic("inlineMessageID is empty string && chatID == 0 && messageID == 0")
+	}
 	return &EditMessageTextConfig{
 		BaseEdit: BaseEdit{
-			ChatID:    chatID,
-			MessageID: messageID,
+			chatEdit: chatEdit{ChatID: chatID, MessageID: messageID},
+			InlineMessageID: inlineMessageID,
 		},
 		Text:                  text,
 		ParseMode:             "HTML",
@@ -419,34 +422,24 @@ func NewEditMessageText(chatID int64, messageID int, text string) *EditMessageTe
 	}
 }
 
-// NewEditMessageText allows you to edit the text of a message.
-func NewEditMessageTextByInlineMessageID(inlineMessageID string, text string) EditMessageTextConfig {
-	return EditMessageTextConfig{
-		BaseEdit: BaseEdit{
-			InlineMessageID: inlineMessageID,
-		},
-		Text: text,
-	}
-}
-
 // NewEditMessageCaption allows you to edit the caption of a message.
 func NewEditMessageCaption(chatID int64, messageID int, caption string) EditMessageCaptionConfig {
 	return EditMessageCaptionConfig{
-		BaseEdit: BaseEdit{
-			ChatID:    chatID,
-			MessageID: messageID,
-		},
+		BaseEdit: NewChatMessageEdit(chatID, messageID),
 		Caption: caption,
 	}
 }
 
 // NewEditMessageReplyMarkup allows you to edit the inline
 // keyboard markup.
-func NewEditMessageReplyMarkup(chatID int64, messageID int, replyMarkup InlineKeyboardMarkup) EditMessageReplyMarkupConfig {
+func NewEditMessageReplyMarkup(chatID int64, messageID int, inlineMessageID string, replyMarkup InlineKeyboardMarkup) EditMessageReplyMarkupConfig {
+	if inlineMessageID == "" && chatID == 0 && messageID == 0 {
+		panic("inlineMessageID is empty string && chatID == 0 && messageID == 0")
+	}
 	return EditMessageReplyMarkupConfig{
 		BaseEdit: BaseEdit{
-			ChatID:      chatID,
-			MessageID:   messageID,
+			chatEdit: chatEdit{ChatID: chatID, MessageID: messageID},
+			InlineMessageID: inlineMessageID,
 			ReplyMarkup: &replyMarkup,
 		},
 	}

@@ -358,6 +358,7 @@ type CallbackQuery struct {
 	ID              string   `json:"id"`
 	From            *User    `json:"from"`
 	Message         *Message `json:"message,omitempty"`           // optional
+	ChatInstance    string   `json:"chat_instance,omitempty"`     // optional
 	InlineMessageID string   `json:"inline_message_id,omitempty"` // optional
 	Data            string   `json:"data,omitempty"`              // optional
 }
@@ -366,7 +367,7 @@ type CallbackQuery struct {
 // additional interaction.
 type ForceReply struct {
 	ForceReply bool `json:"force_reply"`
-	Selective  bool `json:"selective"` // optional
+	Selective  bool `json:"selective,omitempty"` // optional
 }
 
 // InlineQuery is a Query from Telegram for an inline request.

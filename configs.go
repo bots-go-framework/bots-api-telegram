@@ -1,5 +1,7 @@
 package tgbotapi
 
+//go:generate ffjson $GOFILE
+
 import (
 	"encoding/json"
 	"io"
@@ -32,8 +34,8 @@ const (
 
 // API errors
 //const (
-	// ErrAPIForbidden happens when a token is bad
-	//ErrAPIForbidden = "forbidden"
+// ErrAPIForbidden happens when a token is bad
+//ErrAPIForbidden = "forbidden"
 //)
 //var ErrAPIForbidden = errors.New("forbidden")  // happens when a token is bad or user deleted chat
 
@@ -79,9 +81,9 @@ type Fileable interface {
 type BaseChat struct {
 	ChatID              int64 // required
 	ChannelUsername     string
-	ReplyToMessageID    int
-	ReplyMarkup         interface{}
-	DisableNotification bool
+	ReplyToMessageID    int `json:"reply_to_message_id,omitempty"`
+	ReplyMarkup         interface{} `json:"reply_markup,omitempty"`
+	DisableNotification bool `json:"disable_notification,omitempty"`
 }
 
 // values returns url.Values representation of BaseChat
@@ -170,11 +172,19 @@ func (file BaseFile) useExistingFile() bool {
 	return file.UseExisting
 }
 
+type chatEdit struct {
+	ChatID          int64  `json:"chat_id,omitempty"`
+	MessageID       int    `json:"message_id,omitempty"`
+}
+
+func NewChatMessageEdit(chatID int64, messageID int) BaseEdit {
+	return BaseEdit{chatEdit: chatEdit{ChatID: chatID, MessageID: messageID}}
+}
+
 // BaseEdit is base type of all chat edits.
 type BaseEdit struct {
-	ChatID          int64  `json:",omitempty"`
+	chatEdit
 	ChannelUsername string `json:",omitempty"`
-	MessageID       int    `json:",omitempty"`
 	InlineMessageID string `json:"inline_message_id,omitempty"`
 	ReplyMarkup     *InlineKeyboardMarkup `json:",omitempty"`
 }
@@ -210,8 +220,8 @@ func (edit BaseEdit) Values() (url.Values, error) {
 type MessageConfig struct {
 	BaseChat
 	Text                  string
-	ParseMode             string
-	DisableWebPagePreview bool
+	ParseMode             string `json:"parse_mode,omitempty"`
+	DisableWebPagePreview bool   `json:disable_web_page_preview,omitempty`
 }
 
 // values returns a url.Values representation of MessageConfig.
@@ -575,6 +585,21 @@ func (config ChatActionConfig) method() string {
 	return "sendChatAction"
 }
 
+type DeleteMessage chatEdit
+
+func (_ DeleteMessage) method() string {
+	return "deleteMessage"
+}
+
+func (m DeleteMessage) Values() (url.Values, error) {
+	return url.Values{
+		"chat_id": []string{strconv.FormatInt(m.ChatID, 10)},
+		"message_id": []string{strconv.Itoa(m.MessageID)},
+	}, nil
+}
+
+var _ Chattable = (*DeleteMessage)(nil)
+
 // EditMessageTextConfig allows you to modify the text in a message.
 type EditMessageTextConfig struct {
 	BaseEdit
@@ -678,12 +703,12 @@ type FileReader struct {
 // InlineConfig contains information on making an InlineQuery response.
 type InlineConfig struct {
 	InlineQueryID     string        `json:"inline_query_id"`
-	Results           []interface{} `json:"results"`
+	Results           []interface{} `json:"results,omitempty"`
 	CacheTime         int           `json:"cache_time"`
-	IsPersonal        bool          `json:"is_personal"`
-	NextOffset        string        `json:"next_offset"`
-	SwitchPMText      string        `json:"switch_pm_text"`
-	SwitchPMParameter string        `json:"switch_pm_parameter"`
+	IsPersonal        bool          `json:"is_personal,omitempty"`
+	NextOffset        string        `json:"next_offset,omitempty"`
+	SwitchPMText      string        `json:"switch_pm_text,omitempty"`
+	SwitchPMParameter string        `json:"switch_pm_parameter,omitempty"`
 }
 
 func (config InlineConfig) method() string {
@@ -694,11 +719,22 @@ func (config InlineConfig) Values() (url.Values, error) {
 	v := url.Values{}
 
 	v.Add("inline_query_id", config.InlineQueryID)
-	v.Add("cache_time", strconv.Itoa(config.CacheTime))
-	v.Add("is_personal", strconv.FormatBool(config.IsPersonal))
-	v.Add("next_offset", config.NextOffset)
-	v.Add("switch_pm_text", config.SwitchPMText)
-	v.Add("switch_pm_parameter", config.SwitchPMParameter)
+	if config.CacheTime != 0 {
+		v.Add("cache_time", strconv.Itoa(config.CacheTime))
+	}
+	if config.IsPersonal {
+		v.Add("is_personal", strconv.FormatBool(config.IsPersonal))
+	}
+	if config.NextOffset != "" {
+		v.Add("next_offset", config.NextOffset)
+	}
+	if config.SwitchPMText != "" {
+		v.Add("switch_pm_text", config.SwitchPMText)
+	}
+	if config.SwitchPMParameter != "" {
+		v.Add("switch_pm_parameter", config.SwitchPMParameter)
+	}
+
 	data, err := json.Marshal(config.Results)
 	if err != nil {
 		return v, err
@@ -715,7 +751,9 @@ type CallbackConfig struct {
 	ShowAlert       bool   `json:"show_alert,omitempty"`
 	Url             string `json:"url,omitempty"`
 }
+
 var _ Chattable = (*CallbackConfig)(nil)
+
 func (config CallbackConfig) method() string {
 	return "answerCallbackQuery"
 }
