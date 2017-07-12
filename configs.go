@@ -79,8 +79,8 @@ type Fileable interface {
 
 // BaseChat is base type for all chat config types.
 type BaseChat struct {
-	ChatID              int64 // required
-	ChannelUsername     string
+	ChatID              int64 `json:"chat_id,omitempty"`
+	ChannelUsername     string `json:"chat_id,omitempty"`
 	ReplyToMessageID    int `json:"reply_to_message_id,omitempty"`
 	ReplyMarkup         interface{} `json:"reply_markup,omitempty"`
 	DisableNotification bool `json:"disable_notification,omitempty"`
@@ -744,20 +744,21 @@ func (config InlineConfig) Values() (url.Values, error) {
 	return v, nil
 }
 
-// CallbackConfig contains information on making a CallbackQuery response.
-type CallbackConfig struct {
+// AnswerCallbackQueryConfig contains information on making a CallbackQuery response.
+type AnswerCallbackQueryConfig struct {
 	CallbackQueryID string `json:"callback_query_id,"`
 	Text            string `json:"text,omitempty"`
 	ShowAlert       bool   `json:"show_alert,omitempty"`
 	Url             string `json:"url,omitempty"`
+	CacheTime       int    `json:"cache_time,omitempty"`
 }
 
-var _ Chattable = (*CallbackConfig)(nil)
+var _ Chattable = (*AnswerCallbackQueryConfig)(nil)
 
-func (config CallbackConfig) method() string {
+func (config AnswerCallbackQueryConfig) method() string {
 	return "answerCallbackQuery"
 }
-func (config CallbackConfig) Values() (v url.Values, err error) {
+func (config AnswerCallbackQueryConfig) Values() (v url.Values, err error) {
 	v = url.Values{} // if removed causes nil pointer exception
 	v.Add("callback_query_id", config.CallbackQueryID)
 	if config.Text != "" && config.Url != "" {

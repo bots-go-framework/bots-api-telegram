@@ -3720,19 +3720,15 @@ func (mj *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(mj.CallbackData))
 		buf.WriteByte(',')
 	}
-	if mj.SwitchInlineQuery != nil {
-		if true {
-			buf.WriteString(`"switch_inline_query":`)
-			fflib.WriteJsonString(buf, string(*mj.SwitchInlineQuery))
-			buf.WriteByte(',')
-		}
+	if len(mj.SwitchInlineQuery) != 0 {
+		buf.WriteString(`"switch_inline_query":`)
+		fflib.WriteJsonString(buf, string(mj.SwitchInlineQuery))
+		buf.WriteByte(',')
 	}
-	if mj.SwitchInlineQueryCurrentChat != nil {
-		if true {
-			buf.WriteString(`"switch_inline_query_current_chat":`)
-			fflib.WriteJsonString(buf, string(*mj.SwitchInlineQueryCurrentChat))
-			buf.WriteByte(',')
-		}
+	if len(mj.SwitchInlineQueryCurrentChat) != 0 {
+		buf.WriteString(`"switch_inline_query_current_chat":`)
+		fflib.WriteJsonString(buf, string(mj.SwitchInlineQueryCurrentChat))
+		buf.WriteByte(',')
 	}
 	if mj.Pay != false {
 		if mj.Pay {
@@ -4059,15 +4055,11 @@ handle_SwitchInlineQuery:
 
 		if tok == fflib.FFTok_null {
 
-			uj.SwitchInlineQuery = nil
-
 		} else {
 
-			var tval string
 			outBuf := fs.Output.Bytes()
 
-			tval = string(string(outBuf))
-			uj.SwitchInlineQuery = &tval
+			uj.SwitchInlineQuery = string(string(outBuf))
 
 		}
 	}
@@ -4089,15 +4081,11 @@ handle_SwitchInlineQueryCurrentChat:
 
 		if tok == fflib.FFTok_null {
 
-			uj.SwitchInlineQueryCurrentChat = nil
-
 		} else {
 
-			var tval string
 			outBuf := fs.Output.Bytes()
 
-			tval = string(string(outBuf))
-			uj.SwitchInlineQueryCurrentChat = &tval
+			uj.SwitchInlineQueryCurrentChat = string(string(outBuf))
 
 		}
 	}

@@ -15,6 +15,418 @@ import (
 	"reflect"
 )
 
+func (mj *AnswerCallbackQueryConfig) MarshalJSON() ([]byte, error) {
+	var buf fflib.Buffer
+	if mj == nil {
+		buf.WriteString("null")
+		return buf.Bytes(), nil
+	}
+	err := mj.MarshalJSONBuf(&buf)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+func (mj *AnswerCallbackQueryConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if mj == nil {
+		buf.WriteString("null")
+		return nil
+	}
+	var err error
+	var obj []byte
+	_ = obj
+	_ = err
+	buf.WriteString(`{ "callback_query_id":`)
+	fflib.WriteJsonString(buf, string(mj.CallbackQueryID))
+	buf.WriteByte(',')
+	if len(mj.Text) != 0 {
+		buf.WriteString(`"text":`)
+		fflib.WriteJsonString(buf, string(mj.Text))
+		buf.WriteByte(',')
+	}
+	if mj.ShowAlert != false {
+		if mj.ShowAlert {
+			buf.WriteString(`"show_alert":true`)
+		} else {
+			buf.WriteString(`"show_alert":false`)
+		}
+		buf.WriteByte(',')
+	}
+	if len(mj.Url) != 0 {
+		buf.WriteString(`"url":`)
+		fflib.WriteJsonString(buf, string(mj.Url))
+		buf.WriteByte(',')
+	}
+	if mj.CacheTime != 0 {
+		buf.WriteString(`"cache_time":`)
+		fflib.FormatBits2(buf, uint64(mj.CacheTime), 10, mj.CacheTime < 0)
+		buf.WriteByte(',')
+	}
+	buf.Rewind(1)
+	buf.WriteByte('}')
+	return nil
+}
+
+const (
+	ffj_t_AnswerCallbackQueryConfigbase = iota
+	ffj_t_AnswerCallbackQueryConfigno_such_key
+
+	ffj_t_AnswerCallbackQueryConfig_CallbackQueryID
+
+	ffj_t_AnswerCallbackQueryConfig_Text
+
+	ffj_t_AnswerCallbackQueryConfig_ShowAlert
+
+	ffj_t_AnswerCallbackQueryConfig_Url
+
+	ffj_t_AnswerCallbackQueryConfig_CacheTime
+)
+
+var ffj_key_AnswerCallbackQueryConfig_CallbackQueryID = []byte("callback_query_id")
+
+var ffj_key_AnswerCallbackQueryConfig_Text = []byte("text")
+
+var ffj_key_AnswerCallbackQueryConfig_ShowAlert = []byte("show_alert")
+
+var ffj_key_AnswerCallbackQueryConfig_Url = []byte("url")
+
+var ffj_key_AnswerCallbackQueryConfig_CacheTime = []byte("cache_time")
+
+func (uj *AnswerCallbackQueryConfig) UnmarshalJSON(input []byte) error {
+	fs := fflib.NewFFLexer(input)
+	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+}
+
+func (uj *AnswerCallbackQueryConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error = nil
+	currentKey := ffj_t_AnswerCallbackQueryConfigbase
+	_ = currentKey
+	tok := fflib.FFTok_init
+	wantedTok := fflib.FFTok_init
+
+mainparse:
+	for {
+		tok = fs.Scan()
+		//	println(fmt.Sprintf("debug: tok: %v  state: %v", tok, state))
+		if tok == fflib.FFTok_error {
+			goto tokerror
+		}
+
+		switch state {
+
+		case fflib.FFParse_map_start:
+			if tok != fflib.FFTok_left_bracket {
+				wantedTok = fflib.FFTok_left_bracket
+				goto wrongtokenerror
+			}
+			state = fflib.FFParse_want_key
+			continue
+
+		case fflib.FFParse_after_value:
+			if tok == fflib.FFTok_comma {
+				state = fflib.FFParse_want_key
+			} else if tok == fflib.FFTok_right_bracket {
+				goto done
+			} else {
+				wantedTok = fflib.FFTok_comma
+				goto wrongtokenerror
+			}
+
+		case fflib.FFParse_want_key:
+			// json {} ended. goto exit. woo.
+			if tok == fflib.FFTok_right_bracket {
+				goto done
+			}
+			if tok != fflib.FFTok_string {
+				wantedTok = fflib.FFTok_string
+				goto wrongtokenerror
+			}
+
+			kn := fs.Output.Bytes()
+			if len(kn) <= 0 {
+				// "" case. hrm.
+				currentKey = ffj_t_AnswerCallbackQueryConfigno_such_key
+				state = fflib.FFParse_want_colon
+				goto mainparse
+			} else {
+				switch kn[0] {
+
+				case 'c':
+
+					if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_CallbackQueryID, kn) {
+						currentKey = ffj_t_AnswerCallbackQueryConfig_CallbackQueryID
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_CacheTime, kn) {
+						currentKey = ffj_t_AnswerCallbackQueryConfig_CacheTime
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 's':
+
+					if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_ShowAlert, kn) {
+						currentKey = ffj_t_AnswerCallbackQueryConfig_ShowAlert
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 't':
+
+					if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_Text, kn) {
+						currentKey = ffj_t_AnswerCallbackQueryConfig_Text
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'u':
+
+					if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_Url, kn) {
+						currentKey = ffj_t_AnswerCallbackQueryConfig_Url
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				}
+
+				if fflib.AsciiEqualFold(ffj_key_AnswerCallbackQueryConfig_CacheTime, kn) {
+					currentKey = ffj_t_AnswerCallbackQueryConfig_CacheTime
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_AnswerCallbackQueryConfig_Url, kn) {
+					currentKey = ffj_t_AnswerCallbackQueryConfig_Url
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffj_key_AnswerCallbackQueryConfig_ShowAlert, kn) {
+					currentKey = ffj_t_AnswerCallbackQueryConfig_ShowAlert
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_AnswerCallbackQueryConfig_Text, kn) {
+					currentKey = ffj_t_AnswerCallbackQueryConfig_Text
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffj_key_AnswerCallbackQueryConfig_CallbackQueryID, kn) {
+					currentKey = ffj_t_AnswerCallbackQueryConfig_CallbackQueryID
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				currentKey = ffj_t_AnswerCallbackQueryConfigno_such_key
+				state = fflib.FFParse_want_colon
+				goto mainparse
+			}
+
+		case fflib.FFParse_want_colon:
+			if tok != fflib.FFTok_colon {
+				wantedTok = fflib.FFTok_colon
+				goto wrongtokenerror
+			}
+			state = fflib.FFParse_want_value
+			continue
+		case fflib.FFParse_want_value:
+
+			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
+				switch currentKey {
+
+				case ffj_t_AnswerCallbackQueryConfig_CallbackQueryID:
+					goto handle_CallbackQueryID
+
+				case ffj_t_AnswerCallbackQueryConfig_Text:
+					goto handle_Text
+
+				case ffj_t_AnswerCallbackQueryConfig_ShowAlert:
+					goto handle_ShowAlert
+
+				case ffj_t_AnswerCallbackQueryConfig_Url:
+					goto handle_Url
+
+				case ffj_t_AnswerCallbackQueryConfig_CacheTime:
+					goto handle_CacheTime
+
+				case ffj_t_AnswerCallbackQueryConfigno_such_key:
+					err = fs.SkipField(tok)
+					if err != nil {
+						return fs.WrapErr(err)
+					}
+					state = fflib.FFParse_after_value
+					goto mainparse
+				}
+			} else {
+				goto wantedvalue
+			}
+		}
+	}
+
+handle_CallbackQueryID:
+
+	/* handler: uj.CallbackQueryID type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.CallbackQueryID = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Text:
+
+	/* handler: uj.Text type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.Text = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_ShowAlert:
+
+	/* handler: uj.ShowAlert type=bool kind=bool quoted=false*/
+
+	{
+		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for bool", tok))
+		}
+	}
+
+	{
+		if tok == fflib.FFTok_null {
+
+		} else {
+			tmpb := fs.Output.Bytes()
+
+			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
+
+				uj.ShowAlert = true
+
+			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
+
+				uj.ShowAlert = false
+
+			} else {
+				err = errors.New("unexpected bytes for true/false value")
+				return fs.WrapErr(err)
+			}
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Url:
+
+	/* handler: uj.Url type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.Url = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_CacheTime:
+
+	/* handler: uj.CacheTime type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.CacheTime = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+wantedvalue:
+	return fs.WrapErr(fmt.Errorf("wanted value token, but got token: %v", tok))
+wrongtokenerror:
+	return fs.WrapErr(fmt.Errorf("ffjson: wanted token: %v, but got token: %v output=%s", wantedTok, tok, fs.Output.String()))
+tokerror:
+	if fs.BigError != nil {
+		return fs.WrapErr(fs.BigError)
+	}
+	err = fs.Error.ToError()
+	if err != nil {
+		return fs.WrapErr(err)
+	}
+	panic("ffjson-generated: unreachable, please report bug.")
+done:
+
+	return nil
+}
+
 func (mj *AudioConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if mj == nil {
@@ -59,10 +471,6 @@ func (mj *AudioConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.MimeType))
 	buf.WriteString(`,"FileSize":`)
 	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -111,10 +519,6 @@ const (
 
 	ffj_t_AudioConfig_FileSize
 
-	ffj_t_AudioConfig_ChatID
-
-	ffj_t_AudioConfig_ChannelUsername
-
 	ffj_t_AudioConfig_ReplyToMessageID
 
 	ffj_t_AudioConfig_ReplyMarkup
@@ -137,10 +541,6 @@ var ffj_key_AudioConfig_UseExisting = []byte("UseExisting")
 var ffj_key_AudioConfig_MimeType = []byte("MimeType")
 
 var ffj_key_AudioConfig_FileSize = []byte("FileSize")
-
-var ffj_key_AudioConfig_ChatID = []byte("ChatID")
-
-var ffj_key_AudioConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_AudioConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -206,19 +606,6 @@ mainparse:
 				goto mainparse
 			} else {
 				switch kn[0] {
-
-				case 'C':
-
-					if bytes.Equal(ffj_key_AudioConfig_ChatID, kn) {
-						currentKey = ffj_t_AudioConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_AudioConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_AudioConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
 
 				case 'D':
 
@@ -319,18 +706,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_AudioConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_AudioConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_AudioConfig_ChatID, kn) {
-					currentKey = ffj_t_AudioConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_AudioConfig_FileSize, kn) {
 					currentKey = ffj_t_AudioConfig_FileSize
 					state = fflib.FFParse_want_colon
@@ -419,12 +794,6 @@ mainparse:
 
 				case ffj_t_AudioConfig_FileSize:
 					goto handle_FileSize
-
-				case ffj_t_AudioConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_AudioConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_AudioConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -668,62 +1037,6 @@ handle_FileSize:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
 handle_ReplyToMessageID:
 
 	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
@@ -848,11 +1161,7 @@ func (mj *BaseChat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteString(`{ "ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
-	buf.WriteByte(',')
+	buf.WriteString(`{ `)
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
 		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
@@ -884,20 +1193,12 @@ const (
 	ffj_t_BaseChatbase = iota
 	ffj_t_BaseChatno_such_key
 
-	ffj_t_BaseChat_ChatID
-
-	ffj_t_BaseChat_ChannelUsername
-
 	ffj_t_BaseChat_ReplyToMessageID
 
 	ffj_t_BaseChat_ReplyMarkup
 
 	ffj_t_BaseChat_DisableNotification
 )
-
-var ffj_key_BaseChat_ChatID = []byte("ChatID")
-
-var ffj_key_BaseChat_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_BaseChat_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -964,19 +1265,6 @@ mainparse:
 			} else {
 				switch kn[0] {
 
-				case 'C':
-
-					if bytes.Equal(ffj_key_BaseChat_ChatID, kn) {
-						currentKey = ffj_t_BaseChat_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_BaseChat_ChannelUsername, kn) {
-						currentKey = ffj_t_BaseChat_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				case 'd':
 
 					if bytes.Equal(ffj_key_BaseChat_DisableNotification, kn) {
@@ -1018,18 +1306,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseChat_ChannelUsername, kn) {
-					currentKey = ffj_t_BaseChat_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_BaseChat_ChatID, kn) {
-					currentKey = ffj_t_BaseChat_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				currentKey = ffj_t_BaseChatno_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
@@ -1046,12 +1322,6 @@ mainparse:
 
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
-
-				case ffj_t_BaseChat_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_BaseChat_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_BaseChat_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -1075,62 +1345,6 @@ mainparse:
 			}
 		}
 	}
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
 
 handle_ReplyToMessageID:
 
@@ -1582,10 +1796,6 @@ func (mj *BaseFile) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.MimeType))
 	buf.WriteString(`,"FileSize":`)
 	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -1628,10 +1838,6 @@ const (
 
 	ffj_t_BaseFile_FileSize
 
-	ffj_t_BaseFile_ChatID
-
-	ffj_t_BaseFile_ChannelUsername
-
 	ffj_t_BaseFile_ReplyToMessageID
 
 	ffj_t_BaseFile_ReplyMarkup
@@ -1648,10 +1854,6 @@ var ffj_key_BaseFile_UseExisting = []byte("UseExisting")
 var ffj_key_BaseFile_MimeType = []byte("MimeType")
 
 var ffj_key_BaseFile_FileSize = []byte("FileSize")
-
-var ffj_key_BaseFile_ChatID = []byte("ChatID")
-
-var ffj_key_BaseFile_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_BaseFile_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -1717,19 +1919,6 @@ mainparse:
 				goto mainparse
 			} else {
 				switch kn[0] {
-
-				case 'C':
-
-					if bytes.Equal(ffj_key_BaseFile_ChatID, kn) {
-						currentKey = ffj_t_BaseFile_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_BaseFile_ChannelUsername, kn) {
-						currentKey = ffj_t_BaseFile_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
 
 				case 'F':
 
@@ -1806,18 +1995,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseFile_ChannelUsername, kn) {
-					currentKey = ffj_t_BaseFile_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_BaseFile_ChatID, kn) {
-					currentKey = ffj_t_BaseFile_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_BaseFile_FileSize, kn) {
 					currentKey = ffj_t_BaseFile_FileSize
 					state = fflib.FFParse_want_colon
@@ -1879,12 +2056,6 @@ mainparse:
 
 				case ffj_t_BaseFile_FileSize:
 					goto handle_FileSize
-
-				case ffj_t_BaseFile_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_BaseFile_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_BaseFile_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -2046,62 +2217,6 @@ handle_FileSize:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
 handle_ReplyToMessageID:
 
 	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
@@ -2205,365 +2320,6 @@ done:
 	return nil
 }
 
-func (mj *CallbackConfig) MarshalJSON() ([]byte, error) {
-	var buf fflib.Buffer
-	if mj == nil {
-		buf.WriteString("null")
-		return buf.Bytes(), nil
-	}
-	err := mj.MarshalJSONBuf(&buf)
-	if err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
-}
-func (mj *CallbackConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
-		buf.WriteString("null")
-		return nil
-	}
-	var err error
-	var obj []byte
-	_ = obj
-	_ = err
-	buf.WriteString(`{ "callback_query_id":`)
-	fflib.WriteJsonString(buf, string(mj.CallbackQueryID))
-	buf.WriteByte(',')
-	if len(mj.Text) != 0 {
-		buf.WriteString(`"text":`)
-		fflib.WriteJsonString(buf, string(mj.Text))
-		buf.WriteByte(',')
-	}
-	if mj.ShowAlert != false {
-		if mj.ShowAlert {
-			buf.WriteString(`"show_alert":true`)
-		} else {
-			buf.WriteString(`"show_alert":false`)
-		}
-		buf.WriteByte(',')
-	}
-	if len(mj.Url) != 0 {
-		buf.WriteString(`"url":`)
-		fflib.WriteJsonString(buf, string(mj.Url))
-		buf.WriteByte(',')
-	}
-	buf.Rewind(1)
-	buf.WriteByte('}')
-	return nil
-}
-
-const (
-	ffj_t_CallbackConfigbase = iota
-	ffj_t_CallbackConfigno_such_key
-
-	ffj_t_CallbackConfig_CallbackQueryID
-
-	ffj_t_CallbackConfig_Text
-
-	ffj_t_CallbackConfig_ShowAlert
-
-	ffj_t_CallbackConfig_Url
-)
-
-var ffj_key_CallbackConfig_CallbackQueryID = []byte("callback_query_id")
-
-var ffj_key_CallbackConfig_Text = []byte("text")
-
-var ffj_key_CallbackConfig_ShowAlert = []byte("show_alert")
-
-var ffj_key_CallbackConfig_Url = []byte("url")
-
-func (uj *CallbackConfig) UnmarshalJSON(input []byte) error {
-	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
-}
-
-func (uj *CallbackConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_CallbackConfigbase
-	_ = currentKey
-	tok := fflib.FFTok_init
-	wantedTok := fflib.FFTok_init
-
-mainparse:
-	for {
-		tok = fs.Scan()
-		//	println(fmt.Sprintf("debug: tok: %v  state: %v", tok, state))
-		if tok == fflib.FFTok_error {
-			goto tokerror
-		}
-
-		switch state {
-
-		case fflib.FFParse_map_start:
-			if tok != fflib.FFTok_left_bracket {
-				wantedTok = fflib.FFTok_left_bracket
-				goto wrongtokenerror
-			}
-			state = fflib.FFParse_want_key
-			continue
-
-		case fflib.FFParse_after_value:
-			if tok == fflib.FFTok_comma {
-				state = fflib.FFParse_want_key
-			} else if tok == fflib.FFTok_right_bracket {
-				goto done
-			} else {
-				wantedTok = fflib.FFTok_comma
-				goto wrongtokenerror
-			}
-
-		case fflib.FFParse_want_key:
-			// json {} ended. goto exit. woo.
-			if tok == fflib.FFTok_right_bracket {
-				goto done
-			}
-			if tok != fflib.FFTok_string {
-				wantedTok = fflib.FFTok_string
-				goto wrongtokenerror
-			}
-
-			kn := fs.Output.Bytes()
-			if len(kn) <= 0 {
-				// "" case. hrm.
-				currentKey = ffj_t_CallbackConfigno_such_key
-				state = fflib.FFParse_want_colon
-				goto mainparse
-			} else {
-				switch kn[0] {
-
-				case 'c':
-
-					if bytes.Equal(ffj_key_CallbackConfig_CallbackQueryID, kn) {
-						currentKey = ffj_t_CallbackConfig_CallbackQueryID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
-				case 's':
-
-					if bytes.Equal(ffj_key_CallbackConfig_ShowAlert, kn) {
-						currentKey = ffj_t_CallbackConfig_ShowAlert
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
-				case 't':
-
-					if bytes.Equal(ffj_key_CallbackConfig_Text, kn) {
-						currentKey = ffj_t_CallbackConfig_Text
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
-				case 'u':
-
-					if bytes.Equal(ffj_key_CallbackConfig_Url, kn) {
-						currentKey = ffj_t_CallbackConfig_Url
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_CallbackConfig_Url, kn) {
-					currentKey = ffj_t_CallbackConfig_Url
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.EqualFoldRight(ffj_key_CallbackConfig_ShowAlert, kn) {
-					currentKey = ffj_t_CallbackConfig_ShowAlert
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_CallbackConfig_Text, kn) {
-					currentKey = ffj_t_CallbackConfig_Text
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.EqualFoldRight(ffj_key_CallbackConfig_CallbackQueryID, kn) {
-					currentKey = ffj_t_CallbackConfig_CallbackQueryID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				currentKey = ffj_t_CallbackConfigno_such_key
-				state = fflib.FFParse_want_colon
-				goto mainparse
-			}
-
-		case fflib.FFParse_want_colon:
-			if tok != fflib.FFTok_colon {
-				wantedTok = fflib.FFTok_colon
-				goto wrongtokenerror
-			}
-			state = fflib.FFParse_want_value
-			continue
-		case fflib.FFParse_want_value:
-
-			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
-				switch currentKey {
-
-				case ffj_t_CallbackConfig_CallbackQueryID:
-					goto handle_CallbackQueryID
-
-				case ffj_t_CallbackConfig_Text:
-					goto handle_Text
-
-				case ffj_t_CallbackConfig_ShowAlert:
-					goto handle_ShowAlert
-
-				case ffj_t_CallbackConfig_Url:
-					goto handle_Url
-
-				case ffj_t_CallbackConfigno_such_key:
-					err = fs.SkipField(tok)
-					if err != nil {
-						return fs.WrapErr(err)
-					}
-					state = fflib.FFParse_after_value
-					goto mainparse
-				}
-			} else {
-				goto wantedvalue
-			}
-		}
-	}
-
-handle_CallbackQueryID:
-
-	/* handler: uj.CallbackQueryID type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.CallbackQueryID = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_Text:
-
-	/* handler: uj.Text type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.Text = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ShowAlert:
-
-	/* handler: uj.ShowAlert type=bool kind=bool quoted=false*/
-
-	{
-		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for bool", tok))
-		}
-	}
-
-	{
-		if tok == fflib.FFTok_null {
-
-		} else {
-			tmpb := fs.Output.Bytes()
-
-			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
-
-				uj.ShowAlert = true
-
-			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
-
-				uj.ShowAlert = false
-
-			} else {
-				err = errors.New("unexpected bytes for true/false value")
-				return fs.WrapErr(err)
-			}
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_Url:
-
-	/* handler: uj.Url type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.Url = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-wantedvalue:
-	return fs.WrapErr(fmt.Errorf("wanted value token, but got token: %v", tok))
-wrongtokenerror:
-	return fs.WrapErr(fmt.Errorf("ffjson: wanted token: %v, but got token: %v output=%s", wantedTok, tok, fs.Output.String()))
-tokerror:
-	if fs.BigError != nil {
-		return fs.WrapErr(fs.BigError)
-	}
-	err = fs.Error.ToError()
-	if err != nil {
-		return fs.WrapErr(err)
-	}
-	panic("ffjson-generated: unreachable, please report bug.")
-done:
-
-	return nil
-}
-
 func (mj *ChatActionConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if mj == nil {
@@ -2587,10 +2343,6 @@ func (mj *ChatActionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = err
 	buf.WriteString(`{ "Action":`)
 	fflib.WriteJsonString(buf, string(mj.Action))
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -2625,10 +2377,6 @@ const (
 
 	ffj_t_ChatActionConfig_Action
 
-	ffj_t_ChatActionConfig_ChatID
-
-	ffj_t_ChatActionConfig_ChannelUsername
-
 	ffj_t_ChatActionConfig_ReplyToMessageID
 
 	ffj_t_ChatActionConfig_ReplyMarkup
@@ -2637,10 +2385,6 @@ const (
 )
 
 var ffj_key_ChatActionConfig_Action = []byte("Action")
-
-var ffj_key_ChatActionConfig_ChatID = []byte("ChatID")
-
-var ffj_key_ChatActionConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_ChatActionConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -2715,19 +2459,6 @@ mainparse:
 						goto mainparse
 					}
 
-				case 'C':
-
-					if bytes.Equal(ffj_key_ChatActionConfig_ChatID, kn) {
-						currentKey = ffj_t_ChatActionConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_ChatActionConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_ChatActionConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				case 'd':
 
 					if bytes.Equal(ffj_key_ChatActionConfig_DisableNotification, kn) {
@@ -2769,18 +2500,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ChatActionConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_ChatActionConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_ChatActionConfig_ChatID, kn) {
-					currentKey = ffj_t_ChatActionConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.SimpleLetterEqualFold(ffj_key_ChatActionConfig_Action, kn) {
 					currentKey = ffj_t_ChatActionConfig_Action
 					state = fflib.FFParse_want_colon
@@ -2806,12 +2525,6 @@ mainparse:
 
 				case ffj_t_ChatActionConfig_Action:
 					goto handle_Action
-
-				case ffj_t_ChatActionConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_ChatActionConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_ChatActionConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -2855,62 +2568,6 @@ handle_Action:
 			outBuf := fs.Output.Bytes()
 
 			uj.Action = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -3343,10 +3000,6 @@ func (mj *ContactConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.FirstName))
 	buf.WriteString(`,"LastName":`)
 	fflib.WriteJsonString(buf, string(mj.LastName))
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -3385,10 +3038,6 @@ const (
 
 	ffj_t_ContactConfig_LastName
 
-	ffj_t_ContactConfig_ChatID
-
-	ffj_t_ContactConfig_ChannelUsername
-
 	ffj_t_ContactConfig_ReplyToMessageID
 
 	ffj_t_ContactConfig_ReplyMarkup
@@ -3401,10 +3050,6 @@ var ffj_key_ContactConfig_PhoneNumber = []byte("PhoneNumber")
 var ffj_key_ContactConfig_FirstName = []byte("FirstName")
 
 var ffj_key_ContactConfig_LastName = []byte("LastName")
-
-var ffj_key_ContactConfig_ChatID = []byte("ChatID")
-
-var ffj_key_ContactConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_ContactConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -3471,19 +3116,6 @@ mainparse:
 			} else {
 				switch kn[0] {
 
-				case 'C':
-
-					if bytes.Equal(ffj_key_ContactConfig_ChatID, kn) {
-						currentKey = ffj_t_ContactConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_ContactConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_ContactConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				case 'F':
 
 					if bytes.Equal(ffj_key_ContactConfig_FirstName, kn) {
@@ -3549,18 +3181,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ContactConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_ContactConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_ContactConfig_ChatID, kn) {
-					currentKey = ffj_t_ContactConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_ContactConfig_LastName, kn) {
 					currentKey = ffj_t_ContactConfig_LastName
 					state = fflib.FFParse_want_colon
@@ -3604,12 +3224,6 @@ mainparse:
 
 				case ffj_t_ContactConfig_LastName:
 					goto handle_LastName
-
-				case ffj_t_ContactConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_ContactConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_ContactConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -3705,62 +3319,6 @@ handle_LastName:
 			outBuf := fs.Output.Bytes()
 
 			uj.LastName = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -4163,10 +3721,6 @@ func (mj *DocumentConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.MimeType))
 	buf.WriteString(`,"FileSize":`)
 	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -4209,10 +3763,6 @@ const (
 
 	ffj_t_DocumentConfig_FileSize
 
-	ffj_t_DocumentConfig_ChatID
-
-	ffj_t_DocumentConfig_ChannelUsername
-
 	ffj_t_DocumentConfig_ReplyToMessageID
 
 	ffj_t_DocumentConfig_ReplyMarkup
@@ -4229,10 +3779,6 @@ var ffj_key_DocumentConfig_UseExisting = []byte("UseExisting")
 var ffj_key_DocumentConfig_MimeType = []byte("MimeType")
 
 var ffj_key_DocumentConfig_FileSize = []byte("FileSize")
-
-var ffj_key_DocumentConfig_ChatID = []byte("ChatID")
-
-var ffj_key_DocumentConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_DocumentConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -4298,19 +3844,6 @@ mainparse:
 				goto mainparse
 			} else {
 				switch kn[0] {
-
-				case 'C':
-
-					if bytes.Equal(ffj_key_DocumentConfig_ChatID, kn) {
-						currentKey = ffj_t_DocumentConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_DocumentConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_DocumentConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
 
 				case 'F':
 
@@ -4387,18 +3920,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_DocumentConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_DocumentConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_DocumentConfig_ChatID, kn) {
-					currentKey = ffj_t_DocumentConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_DocumentConfig_FileSize, kn) {
 					currentKey = ffj_t_DocumentConfig_FileSize
 					state = fflib.FFParse_want_colon
@@ -4460,12 +3981,6 @@ mainparse:
 
 				case ffj_t_DocumentConfig_FileSize:
 					goto handle_FileSize
-
-				case ffj_t_DocumentConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_DocumentConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_DocumentConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -4620,62 +4135,6 @@ handle_FileSize:
 			}
 
 			uj.FileSize = int(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -6815,10 +6274,6 @@ func (mj *ForwardConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.FromChannelUsername))
 	buf.WriteString(`,"MessageID":`)
 	fflib.FormatBits2(buf, uint64(mj.MessageID), 10, mj.MessageID < 0)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -6857,10 +6312,6 @@ const (
 
 	ffj_t_ForwardConfig_MessageID
 
-	ffj_t_ForwardConfig_ChatID
-
-	ffj_t_ForwardConfig_ChannelUsername
-
 	ffj_t_ForwardConfig_ReplyToMessageID
 
 	ffj_t_ForwardConfig_ReplyMarkup
@@ -6873,10 +6324,6 @@ var ffj_key_ForwardConfig_FromChatID = []byte("FromChatID")
 var ffj_key_ForwardConfig_FromChannelUsername = []byte("FromChannelUsername")
 
 var ffj_key_ForwardConfig_MessageID = []byte("MessageID")
-
-var ffj_key_ForwardConfig_ChatID = []byte("ChatID")
-
-var ffj_key_ForwardConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_ForwardConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -6943,19 +6390,6 @@ mainparse:
 			} else {
 				switch kn[0] {
 
-				case 'C':
-
-					if bytes.Equal(ffj_key_ForwardConfig_ChatID, kn) {
-						currentKey = ffj_t_ForwardConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_ForwardConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_ForwardConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				case 'F':
 
 					if bytes.Equal(ffj_key_ForwardConfig_FromChatID, kn) {
@@ -7018,18 +6452,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ForwardConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_ForwardConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_ForwardConfig_ChatID, kn) {
-					currentKey = ffj_t_ForwardConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_ForwardConfig_MessageID, kn) {
 					currentKey = ffj_t_ForwardConfig_MessageID
 					state = fflib.FFParse_want_colon
@@ -7073,12 +6495,6 @@ mainparse:
 
 				case ffj_t_ForwardConfig_MessageID:
 					goto handle_MessageID
-
-				case ffj_t_ForwardConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_ForwardConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_ForwardConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -7182,62 +6598,6 @@ handle_MessageID:
 			}
 
 			uj.MessageID = int(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -7941,10 +7301,6 @@ func (mj *LocationConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.AppendFloat(buf, float64(mj.Latitude), 'g', -1, 64)
 	buf.WriteString(`,"Longitude":`)
 	fflib.AppendFloat(buf, float64(mj.Longitude), 'g', -1, 64)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -7981,10 +7337,6 @@ const (
 
 	ffj_t_LocationConfig_Longitude
 
-	ffj_t_LocationConfig_ChatID
-
-	ffj_t_LocationConfig_ChannelUsername
-
 	ffj_t_LocationConfig_ReplyToMessageID
 
 	ffj_t_LocationConfig_ReplyMarkup
@@ -7995,10 +7347,6 @@ const (
 var ffj_key_LocationConfig_Latitude = []byte("Latitude")
 
 var ffj_key_LocationConfig_Longitude = []byte("Longitude")
-
-var ffj_key_LocationConfig_ChatID = []byte("ChatID")
-
-var ffj_key_LocationConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_LocationConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -8065,19 +7413,6 @@ mainparse:
 			} else {
 				switch kn[0] {
 
-				case 'C':
-
-					if bytes.Equal(ffj_key_LocationConfig_ChatID, kn) {
-						currentKey = ffj_t_LocationConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_LocationConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_LocationConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				case 'L':
 
 					if bytes.Equal(ffj_key_LocationConfig_Latitude, kn) {
@@ -8132,18 +7467,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_LocationConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_LocationConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_LocationConfig_ChatID, kn) {
-					currentKey = ffj_t_LocationConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.SimpleLetterEqualFold(ffj_key_LocationConfig_Longitude, kn) {
 					currentKey = ffj_t_LocationConfig_Longitude
 					state = fflib.FFParse_want_colon
@@ -8178,12 +7501,6 @@ mainparse:
 
 				case ffj_t_LocationConfig_Longitude:
 					goto handle_Longitude
-
-				case ffj_t_LocationConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_LocationConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_LocationConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -8261,62 +7578,6 @@ handle_Longitude:
 			}
 
 			uj.Longitude = float64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -8461,10 +7722,6 @@ func (mj *MessageConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`"DisableWebPagePreview":false`)
 	}
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -8503,10 +7760,6 @@ const (
 
 	ffj_t_MessageConfig_DisableWebPagePreview
 
-	ffj_t_MessageConfig_ChatID
-
-	ffj_t_MessageConfig_ChannelUsername
-
 	ffj_t_MessageConfig_ReplyToMessageID
 
 	ffj_t_MessageConfig_ReplyMarkup
@@ -8519,10 +7772,6 @@ var ffj_key_MessageConfig_Text = []byte("Text")
 var ffj_key_MessageConfig_ParseMode = []byte("parse_mode")
 
 var ffj_key_MessageConfig_DisableWebPagePreview = []byte("DisableWebPagePreview")
-
-var ffj_key_MessageConfig_ChatID = []byte("ChatID")
-
-var ffj_key_MessageConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_MessageConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -8589,19 +7838,6 @@ mainparse:
 			} else {
 				switch kn[0] {
 
-				case 'C':
-
-					if bytes.Equal(ffj_key_MessageConfig_ChatID, kn) {
-						currentKey = ffj_t_MessageConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_MessageConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_MessageConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				case 'D':
 
 					if bytes.Equal(ffj_key_MessageConfig_DisableWebPagePreview, kn) {
@@ -8667,18 +7903,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_MessageConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_MessageConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_MessageConfig_ChatID, kn) {
-					currentKey = ffj_t_MessageConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_MessageConfig_DisableWebPagePreview, kn) {
 					currentKey = ffj_t_MessageConfig_DisableWebPagePreview
 					state = fflib.FFParse_want_colon
@@ -8722,12 +7946,6 @@ mainparse:
 
 				case ffj_t_MessageConfig_DisableWebPagePreview:
 					goto handle_DisableWebPagePreview
-
-				case ffj_t_MessageConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_MessageConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_MessageConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -8832,62 +8050,6 @@ handle_DisableWebPagePreview:
 				err = errors.New("unexpected bytes for true/false value")
 				return fs.WrapErr(err)
 			}
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -9038,10 +8200,6 @@ func (mj *PhotoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.MimeType))
 	buf.WriteString(`,"FileSize":`)
 	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -9086,10 +8244,6 @@ const (
 
 	ffj_t_PhotoConfig_FileSize
 
-	ffj_t_PhotoConfig_ChatID
-
-	ffj_t_PhotoConfig_ChannelUsername
-
 	ffj_t_PhotoConfig_ReplyToMessageID
 
 	ffj_t_PhotoConfig_ReplyMarkup
@@ -9108,10 +8262,6 @@ var ffj_key_PhotoConfig_UseExisting = []byte("UseExisting")
 var ffj_key_PhotoConfig_MimeType = []byte("MimeType")
 
 var ffj_key_PhotoConfig_FileSize = []byte("FileSize")
-
-var ffj_key_PhotoConfig_ChatID = []byte("ChatID")
-
-var ffj_key_PhotoConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_PhotoConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -9182,16 +8332,6 @@ mainparse:
 
 					if bytes.Equal(ffj_key_PhotoConfig_Caption, kn) {
 						currentKey = ffj_t_PhotoConfig_Caption
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_PhotoConfig_ChatID, kn) {
-						currentKey = ffj_t_PhotoConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_PhotoConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_PhotoConfig_ChannelUsername
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -9271,18 +8411,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_PhotoConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_PhotoConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_PhotoConfig_ChatID, kn) {
-					currentKey = ffj_t_PhotoConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_PhotoConfig_FileSize, kn) {
 					currentKey = ffj_t_PhotoConfig_FileSize
 					state = fflib.FFParse_want_colon
@@ -9353,12 +8481,6 @@ mainparse:
 
 				case ffj_t_PhotoConfig_FileSize:
 					goto handle_FileSize
-
-				case ffj_t_PhotoConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_PhotoConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_PhotoConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -9546,62 +8668,6 @@ handle_FileSize:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
 handle_ReplyToMessageID:
 
 	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
@@ -9743,10 +8809,6 @@ func (mj *StickerConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.MimeType))
 	buf.WriteString(`,"FileSize":`)
 	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -9789,10 +8851,6 @@ const (
 
 	ffj_t_StickerConfig_FileSize
 
-	ffj_t_StickerConfig_ChatID
-
-	ffj_t_StickerConfig_ChannelUsername
-
 	ffj_t_StickerConfig_ReplyToMessageID
 
 	ffj_t_StickerConfig_ReplyMarkup
@@ -9809,10 +8867,6 @@ var ffj_key_StickerConfig_UseExisting = []byte("UseExisting")
 var ffj_key_StickerConfig_MimeType = []byte("MimeType")
 
 var ffj_key_StickerConfig_FileSize = []byte("FileSize")
-
-var ffj_key_StickerConfig_ChatID = []byte("ChatID")
-
-var ffj_key_StickerConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_StickerConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -9878,19 +8932,6 @@ mainparse:
 				goto mainparse
 			} else {
 				switch kn[0] {
-
-				case 'C':
-
-					if bytes.Equal(ffj_key_StickerConfig_ChatID, kn) {
-						currentKey = ffj_t_StickerConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_StickerConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_StickerConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
 
 				case 'F':
 
@@ -9967,18 +9008,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_StickerConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_StickerConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_StickerConfig_ChatID, kn) {
-					currentKey = ffj_t_StickerConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_StickerConfig_FileSize, kn) {
 					currentKey = ffj_t_StickerConfig_FileSize
 					state = fflib.FFParse_want_colon
@@ -10040,12 +9069,6 @@ mainparse:
 
 				case ffj_t_StickerConfig_FileSize:
 					goto handle_FileSize
-
-				case ffj_t_StickerConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_StickerConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_StickerConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -10200,62 +9223,6 @@ handle_FileSize:
 			}
 
 			uj.FileSize = int(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -10995,10 +9962,6 @@ func (mj *VenueConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.Address))
 	buf.WriteString(`,"FoursquareID":`)
 	fflib.WriteJsonString(buf, string(mj.FoursquareID))
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -11041,10 +10004,6 @@ const (
 
 	ffj_t_VenueConfig_FoursquareID
 
-	ffj_t_VenueConfig_ChatID
-
-	ffj_t_VenueConfig_ChannelUsername
-
 	ffj_t_VenueConfig_ReplyToMessageID
 
 	ffj_t_VenueConfig_ReplyMarkup
@@ -11061,10 +10020,6 @@ var ffj_key_VenueConfig_Title = []byte("Title")
 var ffj_key_VenueConfig_Address = []byte("Address")
 
 var ffj_key_VenueConfig_FoursquareID = []byte("FoursquareID")
-
-var ffj_key_VenueConfig_ChatID = []byte("ChatID")
-
-var ffj_key_VenueConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_VenueConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -11139,19 +10094,6 @@ mainparse:
 						goto mainparse
 					}
 
-				case 'C':
-
-					if bytes.Equal(ffj_key_VenueConfig_ChatID, kn) {
-						currentKey = ffj_t_VenueConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_VenueConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_VenueConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				case 'F':
 
 					if bytes.Equal(ffj_key_VenueConfig_FoursquareID, kn) {
@@ -11222,18 +10164,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VenueConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_VenueConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_VenueConfig_ChatID, kn) {
-					currentKey = ffj_t_VenueConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_VenueConfig_FoursquareID, kn) {
 					currentKey = ffj_t_VenueConfig_FoursquareID
 					state = fflib.FFParse_want_colon
@@ -11295,12 +10225,6 @@ mainparse:
 
 				case ffj_t_VenueConfig_FoursquareID:
 					goto handle_FoursquareID
-
-				case ffj_t_VenueConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_VenueConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_VenueConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -11463,62 +10387,6 @@ handle_FoursquareID:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
 handle_ReplyToMessageID:
 
 	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
@@ -11664,10 +10532,6 @@ func (mj *VideoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.MimeType))
 	buf.WriteString(`,"FileSize":`)
 	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -11714,10 +10578,6 @@ const (
 
 	ffj_t_VideoConfig_FileSize
 
-	ffj_t_VideoConfig_ChatID
-
-	ffj_t_VideoConfig_ChannelUsername
-
 	ffj_t_VideoConfig_ReplyToMessageID
 
 	ffj_t_VideoConfig_ReplyMarkup
@@ -11738,10 +10598,6 @@ var ffj_key_VideoConfig_UseExisting = []byte("UseExisting")
 var ffj_key_VideoConfig_MimeType = []byte("MimeType")
 
 var ffj_key_VideoConfig_FileSize = []byte("FileSize")
-
-var ffj_key_VideoConfig_ChatID = []byte("ChatID")
-
-var ffj_key_VideoConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_VideoConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -11812,16 +10668,6 @@ mainparse:
 
 					if bytes.Equal(ffj_key_VideoConfig_Caption, kn) {
 						currentKey = ffj_t_VideoConfig_Caption
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_VideoConfig_ChatID, kn) {
-						currentKey = ffj_t_VideoConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_VideoConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_VideoConfig_ChannelUsername
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -11909,18 +10755,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VideoConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_VideoConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_VideoConfig_ChatID, kn) {
-					currentKey = ffj_t_VideoConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_VideoConfig_FileSize, kn) {
 					currentKey = ffj_t_VideoConfig_FileSize
 					state = fflib.FFParse_want_colon
@@ -12000,12 +10834,6 @@ mainparse:
 
 				case ffj_t_VideoConfig_FileSize:
 					goto handle_FileSize
-
-				case ffj_t_VideoConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_VideoConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_VideoConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -12223,62 +11051,6 @@ handle_FileSize:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
 handle_ReplyToMessageID:
 
 	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
@@ -12422,10 +11194,6 @@ func (mj *VoiceConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	fflib.WriteJsonString(buf, string(mj.MimeType))
 	buf.WriteString(`,"FileSize":`)
 	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
-	buf.WriteString(`,"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
-	buf.WriteString(`,"ChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.ChannelUsername))
 	buf.WriteByte(',')
 	if mj.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
@@ -12470,10 +11238,6 @@ const (
 
 	ffj_t_VoiceConfig_FileSize
 
-	ffj_t_VoiceConfig_ChatID
-
-	ffj_t_VoiceConfig_ChannelUsername
-
 	ffj_t_VoiceConfig_ReplyToMessageID
 
 	ffj_t_VoiceConfig_ReplyMarkup
@@ -12492,10 +11256,6 @@ var ffj_key_VoiceConfig_UseExisting = []byte("UseExisting")
 var ffj_key_VoiceConfig_MimeType = []byte("MimeType")
 
 var ffj_key_VoiceConfig_FileSize = []byte("FileSize")
-
-var ffj_key_VoiceConfig_ChatID = []byte("ChatID")
-
-var ffj_key_VoiceConfig_ChannelUsername = []byte("ChannelUsername")
 
 var ffj_key_VoiceConfig_ReplyToMessageID = []byte("reply_to_message_id")
 
@@ -12561,19 +11321,6 @@ mainparse:
 				goto mainparse
 			} else {
 				switch kn[0] {
-
-				case 'C':
-
-					if bytes.Equal(ffj_key_VoiceConfig_ChatID, kn) {
-						currentKey = ffj_t_VoiceConfig_ChatID
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_VoiceConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_VoiceConfig_ChannelUsername
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
 
 				case 'D':
 
@@ -12658,18 +11405,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VoiceConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_VoiceConfig_ChannelUsername
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_VoiceConfig_ChatID, kn) {
-					currentKey = ffj_t_VoiceConfig_ChatID
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.EqualFoldRight(ffj_key_VoiceConfig_FileSize, kn) {
 					currentKey = ffj_t_VoiceConfig_FileSize
 					state = fflib.FFParse_want_colon
@@ -12740,12 +11475,6 @@ mainparse:
 
 				case ffj_t_VoiceConfig_FileSize:
 					goto handle_FileSize
-
-				case ffj_t_VoiceConfig_ChatID:
-					goto handle_ChatID
-
-				case ffj_t_VoiceConfig_ChannelUsername:
-					goto handle_ChannelUsername
 
 				case ffj_t_VoiceConfig_ReplyToMessageID:
 					goto handle_ReplyToMessageID
@@ -12930,62 +11659,6 @@ handle_FileSize:
 			}
 
 			uj.FileSize = int(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChatID:
-
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.ChatID = int64(tval)
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_ChannelUsername:
-
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.ChannelUsername = string(string(outBuf))
 
 		}
 	}

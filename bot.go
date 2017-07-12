@@ -87,7 +87,8 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 	}
 
 	if bot.c != nil {
-		log.Debugf(bot.c,"%v: %v", endpoint, string(body))
+		log.Debugf(bot.c, "Request to Telegram API %v: %v", endpoint, params)
+		log.Debugf(bot.c,"Telegram API response: %v", string(body))
 	}
 
 	var apiResp APIResponse

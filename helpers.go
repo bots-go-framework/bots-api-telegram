@@ -407,7 +407,7 @@ func NewInlineQueryResultLocation(id, title string, latitude, longitude float64)
 }
 
 // NewEditMessageText allows you to edit the text of a message.
-func NewEditMessageText(chatID int64, messageID int, inlineMessageID, text string) *EditMessageTextConfig {
+func NewEditMessageText(chatID int64, messageID int, inlineMessageID, text string) *EditMessageTextConfig { // TODO: Split in 2 or pass BaseEdit?
 	if inlineMessageID == "" && chatID == 0 && messageID == 0 {
 		panic("inlineMessageID is empty string && chatID == 0 && messageID == 0")
 	}
@@ -523,7 +523,7 @@ func NewInlineKeyboardButtonURL(text, url string) InlineKeyboardButton {
 func NewInlineKeyboardButtonSwitch(text, switchInlineQuery string) InlineKeyboardButton {
 	return InlineKeyboardButton{
 		Text:              text,
-		SwitchInlineQuery: &switchInlineQuery,
+		SwitchInlineQuery: switchInlineQuery,
 	}
 }
 
@@ -548,8 +548,8 @@ func NewInlineKeyboardMarkup(rows ...[]InlineKeyboardButton) InlineKeyboardMarku
 }
 
 // NewCallback creates a new callback message.
-func NewCallback(id, text string) CallbackConfig {
-	return CallbackConfig{
+func NewCallback(id, text string) AnswerCallbackQueryConfig {
+	return AnswerCallbackQueryConfig{
 		CallbackQueryID: id,
 		Text:            text,
 		ShowAlert:       false,
@@ -558,16 +558,16 @@ func NewCallback(id, text string) CallbackConfig {
 
 // NewCallbackWithAlert creates a new callback message that alerts
 // the user.
-func NewCallbackWithAlert(id, text string) CallbackConfig {
-	return CallbackConfig{
+func NewCallbackWithAlert(id, text string) AnswerCallbackQueryConfig {
+	return AnswerCallbackQueryConfig{
 		CallbackQueryID: id,
 		Text:            text,
 		ShowAlert:       true,
 	}
 }
 
-func NewCallbackWithUrl(url string) CallbackConfig {
-	return CallbackConfig{
+func NewCallbackWithUrl(url string) AnswerCallbackQueryConfig {
+	return AnswerCallbackQueryConfig{
 		Url: 				  url,
 		//ShowAlert:       showAlert,
 	}

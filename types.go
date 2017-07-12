@@ -347,8 +347,8 @@ type InlineKeyboardButton struct {
 	Text                         string `json:"text"`
 	URL                          string `json:"url,omitempty"`                     // optional
 	CallbackData                 string `json:"callback_data,omitempty"`           // optional
-	SwitchInlineQuery            *string `json:"switch_inline_query,omitempty"`              // optional
-	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // optional
+	SwitchInlineQuery            string `json:"switch_inline_query,omitempty"`              // optional
+	SwitchInlineQueryCurrentChat string `json:"switch_inline_query_current_chat,omitempty"` // optional
 	Pay                          bool `json:"pay,omitempty"` // optional
 }
 
