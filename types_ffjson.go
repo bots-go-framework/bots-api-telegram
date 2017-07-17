@@ -13,20 +13,23 @@ import (
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 )
 
-func (mj *APIResponse) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *APIResponse) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *APIResponse) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *APIResponse) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -34,7 +37,7 @@ func (mj *APIResponse) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	if mj.Ok {
+	if j.Ok {
 		buf.WriteString(`{"ok":true`)
 	} else {
 		buf.WriteString(`{"ok":false`)
@@ -43,7 +46,7 @@ func (mj *APIResponse) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 
 	{
 
-		obj, err = mj.Result.MarshalJSON()
+		obj, err = j.Result.MarshalJSON()
 		if err != nil {
 			return err
 		}
@@ -51,42 +54,44 @@ func (mj *APIResponse) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 
 	}
 	buf.WriteString(`,"error_code":`)
-	fflib.FormatBits2(buf, uint64(mj.ErrorCode), 10, mj.ErrorCode < 0)
+	fflib.FormatBits2(buf, uint64(j.ErrorCode), 10, j.ErrorCode < 0)
 	buf.WriteString(`,"description":`)
-	fflib.WriteJsonString(buf, string(mj.Description))
+	fflib.WriteJsonString(buf, string(j.Description))
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_APIResponsebase = iota
-	ffj_t_APIResponseno_such_key
+	ffjtAPIResponsebase = iota
+	ffjtAPIResponsenosuchkey
 
-	ffj_t_APIResponse_Ok
+	ffjtAPIResponseOk
 
-	ffj_t_APIResponse_Result
+	ffjtAPIResponseResult
 
-	ffj_t_APIResponse_ErrorCode
+	ffjtAPIResponseErrorCode
 
-	ffj_t_APIResponse_Description
+	ffjtAPIResponseDescription
 )
 
-var ffj_key_APIResponse_Ok = []byte("ok")
+var ffjKeyAPIResponseOk = []byte("ok")
 
-var ffj_key_APIResponse_Result = []byte("result")
+var ffjKeyAPIResponseResult = []byte("result")
 
-var ffj_key_APIResponse_ErrorCode = []byte("error_code")
+var ffjKeyAPIResponseErrorCode = []byte("error_code")
 
-var ffj_key_APIResponse_Description = []byte("description")
+var ffjKeyAPIResponseDescription = []byte("description")
 
-func (uj *APIResponse) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *APIResponse) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *APIResponse) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_APIResponsebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *APIResponse) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtAPIResponsebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -132,7 +137,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_APIResponseno_such_key
+				currentKey = ffjtAPIResponsenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -140,63 +145,63 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_APIResponse_Description, kn) {
-						currentKey = ffj_t_APIResponse_Description
+					if bytes.Equal(ffjKeyAPIResponseDescription, kn) {
+						currentKey = ffjtAPIResponseDescription
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'e':
 
-					if bytes.Equal(ffj_key_APIResponse_ErrorCode, kn) {
-						currentKey = ffj_t_APIResponse_ErrorCode
+					if bytes.Equal(ffjKeyAPIResponseErrorCode, kn) {
+						currentKey = ffjtAPIResponseErrorCode
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'o':
 
-					if bytes.Equal(ffj_key_APIResponse_Ok, kn) {
-						currentKey = ffj_t_APIResponse_Ok
+					if bytes.Equal(ffjKeyAPIResponseOk, kn) {
+						currentKey = ffjtAPIResponseOk
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_APIResponse_Result, kn) {
-						currentKey = ffj_t_APIResponse_Result
+					if bytes.Equal(ffjKeyAPIResponseResult, kn) {
+						currentKey = ffjtAPIResponseResult
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_APIResponse_Description, kn) {
-					currentKey = ffj_t_APIResponse_Description
+				if fflib.EqualFoldRight(ffjKeyAPIResponseDescription, kn) {
+					currentKey = ffjtAPIResponseDescription
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_APIResponse_ErrorCode, kn) {
-					currentKey = ffj_t_APIResponse_ErrorCode
+				if fflib.AsciiEqualFold(ffjKeyAPIResponseErrorCode, kn) {
+					currentKey = ffjtAPIResponseErrorCode
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_APIResponse_Result, kn) {
-					currentKey = ffj_t_APIResponse_Result
+				if fflib.EqualFoldRight(ffjKeyAPIResponseResult, kn) {
+					currentKey = ffjtAPIResponseResult
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_APIResponse_Ok, kn) {
-					currentKey = ffj_t_APIResponse_Ok
+				if fflib.EqualFoldRight(ffjKeyAPIResponseOk, kn) {
+					currentKey = ffjtAPIResponseOk
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_APIResponseno_such_key
+				currentKey = ffjtAPIResponsenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -213,19 +218,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_APIResponse_Ok:
+				case ffjtAPIResponseOk:
 					goto handle_Ok
 
-				case ffj_t_APIResponse_Result:
+				case ffjtAPIResponseResult:
 					goto handle_Result
 
-				case ffj_t_APIResponse_ErrorCode:
+				case ffjtAPIResponseErrorCode:
 					goto handle_ErrorCode
 
-				case ffj_t_APIResponse_Description:
+				case ffjtAPIResponseDescription:
 					goto handle_Description
 
-				case ffj_t_APIResponseno_such_key:
+				case ffjtAPIResponsenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -241,7 +246,7 @@ mainparse:
 
 handle_Ok:
 
-	/* handler: uj.Ok type=bool kind=bool quoted=false*/
+	/* handler: j.Ok type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -257,11 +262,11 @@ handle_Ok:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.Ok = true
+				j.Ok = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.Ok = false
+				j.Ok = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -276,7 +281,7 @@ handle_Ok:
 
 handle_Result:
 
-	/* handler: uj.Result type=json.RawMessage kind=slice quoted=false*/
+	/* handler: j.Result type=json.RawMessage kind=slice quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -290,7 +295,7 @@ handle_Result:
 			return fs.WrapErr(err)
 		}
 
-		err = uj.Result.UnmarshalJSON(tbuf)
+		err = j.Result.UnmarshalJSON(tbuf)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -302,7 +307,7 @@ handle_Result:
 
 handle_ErrorCode:
 
-	/* handler: uj.ErrorCode type=int kind=int quoted=false*/
+	/* handler: j.ErrorCode type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -322,7 +327,7 @@ handle_ErrorCode:
 				return fs.WrapErr(err)
 			}
 
-			uj.ErrorCode = int(tval)
+			j.ErrorCode = int(tval)
 
 		}
 	}
@@ -332,7 +337,7 @@ handle_ErrorCode:
 
 handle_Description:
 
-	/* handler: uj.Description type=string kind=string quoted=false*/
+	/* handler: j.Description type=string kind=string quoted=false*/
 
 	{
 
@@ -348,7 +353,7 @@ handle_Description:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Description = string(string(outBuf))
+			j.Description = string(string(outBuf))
 
 		}
 	}
@@ -374,20 +379,23 @@ done:
 	return nil
 }
 
-func (mj *Audio) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Audio) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Audio) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Audio) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -396,58 +404,60 @@ func (mj *Audio) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"file_id":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
+	fflib.WriteJsonString(buf, string(j.FileID))
 	buf.WriteString(`,"duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteString(`,"performer":`)
-	fflib.WriteJsonString(buf, string(mj.Performer))
+	fflib.WriteJsonString(buf, string(j.Performer))
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"mime_type":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"file_size":`)
-	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+	fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_Audiobase = iota
-	ffj_t_Audiono_such_key
+	ffjtAudiobase = iota
+	ffjtAudionosuchkey
 
-	ffj_t_Audio_FileID
+	ffjtAudioFileID
 
-	ffj_t_Audio_Duration
+	ffjtAudioDuration
 
-	ffj_t_Audio_Performer
+	ffjtAudioPerformer
 
-	ffj_t_Audio_Title
+	ffjtAudioTitle
 
-	ffj_t_Audio_MimeType
+	ffjtAudioMimeType
 
-	ffj_t_Audio_FileSize
+	ffjtAudioFileSize
 )
 
-var ffj_key_Audio_FileID = []byte("file_id")
+var ffjKeyAudioFileID = []byte("file_id")
 
-var ffj_key_Audio_Duration = []byte("duration")
+var ffjKeyAudioDuration = []byte("duration")
 
-var ffj_key_Audio_Performer = []byte("performer")
+var ffjKeyAudioPerformer = []byte("performer")
 
-var ffj_key_Audio_Title = []byte("title")
+var ffjKeyAudioTitle = []byte("title")
 
-var ffj_key_Audio_MimeType = []byte("mime_type")
+var ffjKeyAudioMimeType = []byte("mime_type")
 
-var ffj_key_Audio_FileSize = []byte("file_size")
+var ffjKeyAudioFileSize = []byte("file_size")
 
-func (uj *Audio) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Audio) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Audio) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Audiobase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Audio) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtAudiobase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -493,7 +503,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Audiono_such_key
+				currentKey = ffjtAudionosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -501,88 +511,88 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_Audio_Duration, kn) {
-						currentKey = ffj_t_Audio_Duration
+					if bytes.Equal(ffjKeyAudioDuration, kn) {
+						currentKey = ffjtAudioDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Audio_FileID, kn) {
-						currentKey = ffj_t_Audio_FileID
+					if bytes.Equal(ffjKeyAudioFileID, kn) {
+						currentKey = ffjtAudioFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Audio_FileSize, kn) {
-						currentKey = ffj_t_Audio_FileSize
+					} else if bytes.Equal(ffjKeyAudioFileSize, kn) {
+						currentKey = ffjtAudioFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_Audio_MimeType, kn) {
-						currentKey = ffj_t_Audio_MimeType
+					if bytes.Equal(ffjKeyAudioMimeType, kn) {
+						currentKey = ffjtAudioMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_Audio_Performer, kn) {
-						currentKey = ffj_t_Audio_Performer
+					if bytes.Equal(ffjKeyAudioPerformer, kn) {
+						currentKey = ffjtAudioPerformer
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_Audio_Title, kn) {
-						currentKey = ffj_t_Audio_Title
+					if bytes.Equal(ffjKeyAudioTitle, kn) {
+						currentKey = ffjtAudioTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Audio_FileSize, kn) {
-					currentKey = ffj_t_Audio_FileSize
+				if fflib.EqualFoldRight(ffjKeyAudioFileSize, kn) {
+					currentKey = ffjtAudioFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Audio_MimeType, kn) {
-					currentKey = ffj_t_Audio_MimeType
+				if fflib.AsciiEqualFold(ffjKeyAudioMimeType, kn) {
+					currentKey = ffjtAudioMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Audio_Title, kn) {
-					currentKey = ffj_t_Audio_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioTitle, kn) {
+					currentKey = ffjtAudioTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Audio_Performer, kn) {
-					currentKey = ffj_t_Audio_Performer
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioPerformer, kn) {
+					currentKey = ffjtAudioPerformer
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Audio_Duration, kn) {
-					currentKey = ffj_t_Audio_Duration
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioDuration, kn) {
+					currentKey = ffjtAudioDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Audio_FileID, kn) {
-					currentKey = ffj_t_Audio_FileID
+				if fflib.AsciiEqualFold(ffjKeyAudioFileID, kn) {
+					currentKey = ffjtAudioFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Audiono_such_key
+				currentKey = ffjtAudionosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -599,25 +609,25 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Audio_FileID:
+				case ffjtAudioFileID:
 					goto handle_FileID
 
-				case ffj_t_Audio_Duration:
+				case ffjtAudioDuration:
 					goto handle_Duration
 
-				case ffj_t_Audio_Performer:
+				case ffjtAudioPerformer:
 					goto handle_Performer
 
-				case ffj_t_Audio_Title:
+				case ffjtAudioTitle:
 					goto handle_Title
 
-				case ffj_t_Audio_MimeType:
+				case ffjtAudioMimeType:
 					goto handle_MimeType
 
-				case ffj_t_Audio_FileSize:
+				case ffjtAudioFileSize:
 					goto handle_FileSize
 
-				case ffj_t_Audiono_such_key:
+				case ffjtAudionosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -633,7 +643,7 @@ mainparse:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -649,7 +659,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -659,7 +669,7 @@ handle_FileID:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -679,7 +689,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -689,7 +699,7 @@ handle_Duration:
 
 handle_Performer:
 
-	/* handler: uj.Performer type=string kind=string quoted=false*/
+	/* handler: j.Performer type=string kind=string quoted=false*/
 
 	{
 
@@ -705,7 +715,7 @@ handle_Performer:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Performer = string(string(outBuf))
+			j.Performer = string(string(outBuf))
 
 		}
 	}
@@ -715,7 +725,7 @@ handle_Performer:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -731,7 +741,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -741,7 +751,7 @@ handle_Title:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -757,7 +767,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -767,7 +777,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -787,7 +797,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -813,20 +823,23 @@ done:
 	return nil
 }
 
-func (mj *CallbackQuery) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *CallbackQuery) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *CallbackQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *CallbackQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -835,13 +848,13 @@ func (mj *CallbackQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
-	if mj.From != nil {
+	fflib.WriteJsonString(buf, string(j.ID))
+	if j.From != nil {
 		buf.WriteString(`,"from":`)
 
 		{
 
-			err = mj.From.MarshalJSONBuf(buf)
+			err = j.From.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -851,13 +864,13 @@ func (mj *CallbackQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteString(`,"from":null`)
 	}
 	buf.WriteByte(',')
-	if mj.Message != nil {
+	if j.Message != nil {
 		if true {
 			buf.WriteString(`"message":`)
 
 			{
 
-				err = mj.Message.MarshalJSONBuf(buf)
+				err = j.Message.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -866,19 +879,19 @@ func (mj *CallbackQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if len(mj.ChatInstance) != 0 {
+	if len(j.ChatInstance) != 0 {
 		buf.WriteString(`"chat_instance":`)
-		fflib.WriteJsonString(buf, string(mj.ChatInstance))
+		fflib.WriteJsonString(buf, string(j.ChatInstance))
 		buf.WriteByte(',')
 	}
-	if len(mj.InlineMessageID) != 0 {
+	if len(j.InlineMessageID) != 0 {
 		buf.WriteString(`"inline_message_id":`)
-		fflib.WriteJsonString(buf, string(mj.InlineMessageID))
+		fflib.WriteJsonString(buf, string(j.InlineMessageID))
 		buf.WriteByte(',')
 	}
-	if len(mj.Data) != 0 {
+	if len(j.Data) != 0 {
 		buf.WriteString(`"data":`)
-		fflib.WriteJsonString(buf, string(mj.Data))
+		fflib.WriteJsonString(buf, string(j.Data))
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -887,42 +900,44 @@ func (mj *CallbackQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_CallbackQuerybase = iota
-	ffj_t_CallbackQueryno_such_key
+	ffjtCallbackQuerybase = iota
+	ffjtCallbackQuerynosuchkey
 
-	ffj_t_CallbackQuery_ID
+	ffjtCallbackQueryID
 
-	ffj_t_CallbackQuery_From
+	ffjtCallbackQueryFrom
 
-	ffj_t_CallbackQuery_Message
+	ffjtCallbackQueryMessage
 
-	ffj_t_CallbackQuery_ChatInstance
+	ffjtCallbackQueryChatInstance
 
-	ffj_t_CallbackQuery_InlineMessageID
+	ffjtCallbackQueryInlineMessageID
 
-	ffj_t_CallbackQuery_Data
+	ffjtCallbackQueryData
 )
 
-var ffj_key_CallbackQuery_ID = []byte("id")
+var ffjKeyCallbackQueryID = []byte("id")
 
-var ffj_key_CallbackQuery_From = []byte("from")
+var ffjKeyCallbackQueryFrom = []byte("from")
 
-var ffj_key_CallbackQuery_Message = []byte("message")
+var ffjKeyCallbackQueryMessage = []byte("message")
 
-var ffj_key_CallbackQuery_ChatInstance = []byte("chat_instance")
+var ffjKeyCallbackQueryChatInstance = []byte("chat_instance")
 
-var ffj_key_CallbackQuery_InlineMessageID = []byte("inline_message_id")
+var ffjKeyCallbackQueryInlineMessageID = []byte("inline_message_id")
 
-var ffj_key_CallbackQuery_Data = []byte("data")
+var ffjKeyCallbackQueryData = []byte("data")
 
-func (uj *CallbackQuery) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *CallbackQuery) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *CallbackQuery) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_CallbackQuerybase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *CallbackQuery) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtCallbackQuerybase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -968,7 +983,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_CallbackQueryno_such_key
+				currentKey = ffjtCallbackQuerynosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -976,88 +991,88 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_CallbackQuery_ChatInstance, kn) {
-						currentKey = ffj_t_CallbackQuery_ChatInstance
+					if bytes.Equal(ffjKeyCallbackQueryChatInstance, kn) {
+						currentKey = ffjtCallbackQueryChatInstance
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_CallbackQuery_Data, kn) {
-						currentKey = ffj_t_CallbackQuery_Data
+					if bytes.Equal(ffjKeyCallbackQueryData, kn) {
+						currentKey = ffjtCallbackQueryData
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_CallbackQuery_From, kn) {
-						currentKey = ffj_t_CallbackQuery_From
+					if bytes.Equal(ffjKeyCallbackQueryFrom, kn) {
+						currentKey = ffjtCallbackQueryFrom
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_CallbackQuery_ID, kn) {
-						currentKey = ffj_t_CallbackQuery_ID
+					if bytes.Equal(ffjKeyCallbackQueryID, kn) {
+						currentKey = ffjtCallbackQueryID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_CallbackQuery_InlineMessageID, kn) {
-						currentKey = ffj_t_CallbackQuery_InlineMessageID
+					} else if bytes.Equal(ffjKeyCallbackQueryInlineMessageID, kn) {
+						currentKey = ffjtCallbackQueryInlineMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_CallbackQuery_Message, kn) {
-						currentKey = ffj_t_CallbackQuery_Message
+					if bytes.Equal(ffjKeyCallbackQueryMessage, kn) {
+						currentKey = ffjtCallbackQueryMessage
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_CallbackQuery_Data, kn) {
-					currentKey = ffj_t_CallbackQuery_Data
+				if fflib.SimpleLetterEqualFold(ffjKeyCallbackQueryData, kn) {
+					currentKey = ffjtCallbackQueryData
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_CallbackQuery_InlineMessageID, kn) {
-					currentKey = ffj_t_CallbackQuery_InlineMessageID
+				if fflib.EqualFoldRight(ffjKeyCallbackQueryInlineMessageID, kn) {
+					currentKey = ffjtCallbackQueryInlineMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_CallbackQuery_ChatInstance, kn) {
-					currentKey = ffj_t_CallbackQuery_ChatInstance
+				if fflib.EqualFoldRight(ffjKeyCallbackQueryChatInstance, kn) {
+					currentKey = ffjtCallbackQueryChatInstance
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_CallbackQuery_Message, kn) {
-					currentKey = ffj_t_CallbackQuery_Message
+				if fflib.EqualFoldRight(ffjKeyCallbackQueryMessage, kn) {
+					currentKey = ffjtCallbackQueryMessage
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_CallbackQuery_From, kn) {
-					currentKey = ffj_t_CallbackQuery_From
+				if fflib.SimpleLetterEqualFold(ffjKeyCallbackQueryFrom, kn) {
+					currentKey = ffjtCallbackQueryFrom
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_CallbackQuery_ID, kn) {
-					currentKey = ffj_t_CallbackQuery_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyCallbackQueryID, kn) {
+					currentKey = ffjtCallbackQueryID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_CallbackQueryno_such_key
+				currentKey = ffjtCallbackQuerynosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -1074,25 +1089,25 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_CallbackQuery_ID:
+				case ffjtCallbackQueryID:
 					goto handle_ID
 
-				case ffj_t_CallbackQuery_From:
+				case ffjtCallbackQueryFrom:
 					goto handle_From
 
-				case ffj_t_CallbackQuery_Message:
+				case ffjtCallbackQueryMessage:
 					goto handle_Message
 
-				case ffj_t_CallbackQuery_ChatInstance:
+				case ffjtCallbackQueryChatInstance:
 					goto handle_ChatInstance
 
-				case ffj_t_CallbackQuery_InlineMessageID:
+				case ffjtCallbackQueryInlineMessageID:
 					goto handle_InlineMessageID
 
-				case ffj_t_CallbackQuery_Data:
+				case ffjtCallbackQueryData:
 					goto handle_Data
 
-				case ffj_t_CallbackQueryno_such_key:
+				case ffjtCallbackQuerynosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -1108,7 +1123,7 @@ mainparse:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -1124,7 +1139,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -1134,22 +1149,22 @@ handle_ID:
 
 handle_From:
 
-	/* handler: uj.From type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.From = nil
+			j.From = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.From == nil {
-			uj.From = new(User)
+		if j.From == nil {
+			j.From = new(User)
 		}
 
-		err = uj.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -1161,22 +1176,22 @@ handle_From:
 
 handle_Message:
 
-	/* handler: uj.Message type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.Message type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Message = nil
+			j.Message = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Message == nil {
-			uj.Message = new(Message)
+		if j.Message == nil {
+			j.Message = new(Message)
 		}
 
-		err = uj.Message.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Message.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -1188,7 +1203,7 @@ handle_Message:
 
 handle_ChatInstance:
 
-	/* handler: uj.ChatInstance type=string kind=string quoted=false*/
+	/* handler: j.ChatInstance type=string kind=string quoted=false*/
 
 	{
 
@@ -1204,7 +1219,7 @@ handle_ChatInstance:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ChatInstance = string(string(outBuf))
+			j.ChatInstance = string(string(outBuf))
 
 		}
 	}
@@ -1214,7 +1229,7 @@ handle_ChatInstance:
 
 handle_InlineMessageID:
 
-	/* handler: uj.InlineMessageID type=string kind=string quoted=false*/
+	/* handler: j.InlineMessageID type=string kind=string quoted=false*/
 
 	{
 
@@ -1230,7 +1245,7 @@ handle_InlineMessageID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.InlineMessageID = string(string(outBuf))
+			j.InlineMessageID = string(string(outBuf))
 
 		}
 	}
@@ -1240,7 +1255,7 @@ handle_InlineMessageID:
 
 handle_Data:
 
-	/* handler: uj.Data type=string kind=string quoted=false*/
+	/* handler: j.Data type=string kind=string quoted=false*/
 
 	{
 
@@ -1256,7 +1271,7 @@ handle_Data:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Data = string(string(outBuf))
+			j.Data = string(string(outBuf))
 
 		}
 	}
@@ -1282,20 +1297,23 @@ done:
 	return nil
 }
 
-func (mj *Chat) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Chat) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Chat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Chat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -1304,58 +1322,60 @@ func (mj *Chat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"id":`)
-	fflib.FormatBits2(buf, uint64(mj.ID), 10, mj.ID < 0)
+	fflib.FormatBits2(buf, uint64(j.ID), 10, j.ID < 0)
 	buf.WriteString(`,"type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"username":`)
-	fflib.WriteJsonString(buf, string(mj.UserName))
+	fflib.WriteJsonString(buf, string(j.UserName))
 	buf.WriteString(`,"first_name":`)
-	fflib.WriteJsonString(buf, string(mj.FirstName))
+	fflib.WriteJsonString(buf, string(j.FirstName))
 	buf.WriteString(`,"last_name":`)
-	fflib.WriteJsonString(buf, string(mj.LastName))
+	fflib.WriteJsonString(buf, string(j.LastName))
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_Chatbase = iota
-	ffj_t_Chatno_such_key
+	ffjtChatbase = iota
+	ffjtChatnosuchkey
 
-	ffj_t_Chat_ID
+	ffjtChatID
 
-	ffj_t_Chat_Type
+	ffjtChatType
 
-	ffj_t_Chat_Title
+	ffjtChatTitle
 
-	ffj_t_Chat_UserName
+	ffjtChatUserName
 
-	ffj_t_Chat_FirstName
+	ffjtChatFirstName
 
-	ffj_t_Chat_LastName
+	ffjtChatLastName
 )
 
-var ffj_key_Chat_ID = []byte("id")
+var ffjKeyChatID = []byte("id")
 
-var ffj_key_Chat_Type = []byte("type")
+var ffjKeyChatType = []byte("type")
 
-var ffj_key_Chat_Title = []byte("title")
+var ffjKeyChatTitle = []byte("title")
 
-var ffj_key_Chat_UserName = []byte("username")
+var ffjKeyChatUserName = []byte("username")
 
-var ffj_key_Chat_FirstName = []byte("first_name")
+var ffjKeyChatFirstName = []byte("first_name")
 
-var ffj_key_Chat_LastName = []byte("last_name")
+var ffjKeyChatLastName = []byte("last_name")
 
-func (uj *Chat) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Chat) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Chat) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Chatbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Chat) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtChatbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -1401,7 +1421,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Chatno_such_key
+				currentKey = ffjtChatnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -1409,88 +1429,88 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Chat_FirstName, kn) {
-						currentKey = ffj_t_Chat_FirstName
+					if bytes.Equal(ffjKeyChatFirstName, kn) {
+						currentKey = ffjtChatFirstName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_Chat_ID, kn) {
-						currentKey = ffj_t_Chat_ID
+					if bytes.Equal(ffjKeyChatID, kn) {
+						currentKey = ffjtChatID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_Chat_LastName, kn) {
-						currentKey = ffj_t_Chat_LastName
+					if bytes.Equal(ffjKeyChatLastName, kn) {
+						currentKey = ffjtChatLastName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_Chat_Type, kn) {
-						currentKey = ffj_t_Chat_Type
+					if bytes.Equal(ffjKeyChatType, kn) {
+						currentKey = ffjtChatType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Chat_Title, kn) {
-						currentKey = ffj_t_Chat_Title
+					} else if bytes.Equal(ffjKeyChatTitle, kn) {
+						currentKey = ffjtChatTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_Chat_UserName, kn) {
-						currentKey = ffj_t_Chat_UserName
+					if bytes.Equal(ffjKeyChatUserName, kn) {
+						currentKey = ffjtChatUserName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Chat_LastName, kn) {
-					currentKey = ffj_t_Chat_LastName
+				if fflib.EqualFoldRight(ffjKeyChatLastName, kn) {
+					currentKey = ffjtChatLastName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Chat_FirstName, kn) {
-					currentKey = ffj_t_Chat_FirstName
+				if fflib.EqualFoldRight(ffjKeyChatFirstName, kn) {
+					currentKey = ffjtChatFirstName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Chat_UserName, kn) {
-					currentKey = ffj_t_Chat_UserName
+				if fflib.EqualFoldRight(ffjKeyChatUserName, kn) {
+					currentKey = ffjtChatUserName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Chat_Title, kn) {
-					currentKey = ffj_t_Chat_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyChatTitle, kn) {
+					currentKey = ffjtChatTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Chat_Type, kn) {
-					currentKey = ffj_t_Chat_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyChatType, kn) {
+					currentKey = ffjtChatType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Chat_ID, kn) {
-					currentKey = ffj_t_Chat_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyChatID, kn) {
+					currentKey = ffjtChatID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Chatno_such_key
+				currentKey = ffjtChatnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -1507,25 +1527,25 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Chat_ID:
+				case ffjtChatID:
 					goto handle_ID
 
-				case ffj_t_Chat_Type:
+				case ffjtChatType:
 					goto handle_Type
 
-				case ffj_t_Chat_Title:
+				case ffjtChatTitle:
 					goto handle_Title
 
-				case ffj_t_Chat_UserName:
+				case ffjtChatUserName:
 					goto handle_UserName
 
-				case ffj_t_Chat_FirstName:
+				case ffjtChatFirstName:
 					goto handle_FirstName
 
-				case ffj_t_Chat_LastName:
+				case ffjtChatLastName:
 					goto handle_LastName
 
-				case ffj_t_Chatno_such_key:
+				case ffjtChatnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -1541,7 +1561,7 @@ mainparse:
 
 handle_ID:
 
-	/* handler: uj.ID type=int64 kind=int64 quoted=false*/
+	/* handler: j.ID type=int64 kind=int64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -1561,7 +1581,7 @@ handle_ID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ID = int64(tval)
+			j.ID = int64(tval)
 
 		}
 	}
@@ -1571,7 +1591,7 @@ handle_ID:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -1587,7 +1607,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -1597,7 +1617,7 @@ handle_Type:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -1613,7 +1633,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -1623,7 +1643,7 @@ handle_Title:
 
 handle_UserName:
 
-	/* handler: uj.UserName type=string kind=string quoted=false*/
+	/* handler: j.UserName type=string kind=string quoted=false*/
 
 	{
 
@@ -1639,7 +1659,7 @@ handle_UserName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.UserName = string(string(outBuf))
+			j.UserName = string(string(outBuf))
 
 		}
 	}
@@ -1649,7 +1669,7 @@ handle_UserName:
 
 handle_FirstName:
 
-	/* handler: uj.FirstName type=string kind=string quoted=false*/
+	/* handler: j.FirstName type=string kind=string quoted=false*/
 
 	{
 
@@ -1665,7 +1685,7 @@ handle_FirstName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FirstName = string(string(outBuf))
+			j.FirstName = string(string(outBuf))
 
 		}
 	}
@@ -1675,7 +1695,7 @@ handle_FirstName:
 
 handle_LastName:
 
-	/* handler: uj.LastName type=string kind=string quoted=false*/
+	/* handler: j.LastName type=string kind=string quoted=false*/
 
 	{
 
@@ -1691,7 +1711,7 @@ handle_LastName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.LastName = string(string(outBuf))
+			j.LastName = string(string(outBuf))
 
 		}
 	}
@@ -1717,20 +1737,23 @@ done:
 	return nil
 }
 
-func (mj *ChosenInlineResult) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ChosenInlineResult) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ChosenInlineResult) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ChosenInlineResult) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -1739,13 +1762,13 @@ func (mj *ChosenInlineResult) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"result_id":`)
-	fflib.WriteJsonString(buf, string(mj.ResultID))
-	if mj.From != nil {
+	fflib.WriteJsonString(buf, string(j.ResultID))
+	if j.From != nil {
 		buf.WriteString(`,"from":`)
 
 		{
 
-			err = mj.From.MarshalJSONBuf(buf)
+			err = j.From.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -1754,12 +1777,12 @@ func (mj *ChosenInlineResult) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`,"from":null`)
 	}
-	if mj.Location != nil {
+	if j.Location != nil {
 		buf.WriteString(`,"location":`)
 
 		{
 
-			err = mj.Location.MarshalJSONBuf(buf)
+			err = j.Location.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -1769,46 +1792,48 @@ func (mj *ChosenInlineResult) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteString(`,"location":null`)
 	}
 	buf.WriteString(`,"inline_message_id":`)
-	fflib.WriteJsonString(buf, string(mj.InlineMessageID))
+	fflib.WriteJsonString(buf, string(j.InlineMessageID))
 	buf.WriteString(`,"query":`)
-	fflib.WriteJsonString(buf, string(mj.Query))
+	fflib.WriteJsonString(buf, string(j.Query))
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_ChosenInlineResultbase = iota
-	ffj_t_ChosenInlineResultno_such_key
+	ffjtChosenInlineResultbase = iota
+	ffjtChosenInlineResultnosuchkey
 
-	ffj_t_ChosenInlineResult_ResultID
+	ffjtChosenInlineResultResultID
 
-	ffj_t_ChosenInlineResult_From
+	ffjtChosenInlineResultFrom
 
-	ffj_t_ChosenInlineResult_Location
+	ffjtChosenInlineResultLocation
 
-	ffj_t_ChosenInlineResult_InlineMessageID
+	ffjtChosenInlineResultInlineMessageID
 
-	ffj_t_ChosenInlineResult_Query
+	ffjtChosenInlineResultQuery
 )
 
-var ffj_key_ChosenInlineResult_ResultID = []byte("result_id")
+var ffjKeyChosenInlineResultResultID = []byte("result_id")
 
-var ffj_key_ChosenInlineResult_From = []byte("from")
+var ffjKeyChosenInlineResultFrom = []byte("from")
 
-var ffj_key_ChosenInlineResult_Location = []byte("location")
+var ffjKeyChosenInlineResultLocation = []byte("location")
 
-var ffj_key_ChosenInlineResult_InlineMessageID = []byte("inline_message_id")
+var ffjKeyChosenInlineResultInlineMessageID = []byte("inline_message_id")
 
-var ffj_key_ChosenInlineResult_Query = []byte("query")
+var ffjKeyChosenInlineResultQuery = []byte("query")
 
-func (uj *ChosenInlineResult) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ChosenInlineResult) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ChosenInlineResult) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ChosenInlineResultbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ChosenInlineResult) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtChosenInlineResultbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -1854,7 +1879,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ChosenInlineResultno_such_key
+				currentKey = ffjtChosenInlineResultnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -1862,77 +1887,77 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_ChosenInlineResult_From, kn) {
-						currentKey = ffj_t_ChosenInlineResult_From
+					if bytes.Equal(ffjKeyChosenInlineResultFrom, kn) {
+						currentKey = ffjtChosenInlineResultFrom
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_ChosenInlineResult_InlineMessageID, kn) {
-						currentKey = ffj_t_ChosenInlineResult_InlineMessageID
+					if bytes.Equal(ffjKeyChosenInlineResultInlineMessageID, kn) {
+						currentKey = ffjtChosenInlineResultInlineMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_ChosenInlineResult_Location, kn) {
-						currentKey = ffj_t_ChosenInlineResult_Location
+					if bytes.Equal(ffjKeyChosenInlineResultLocation, kn) {
+						currentKey = ffjtChosenInlineResultLocation
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'q':
 
-					if bytes.Equal(ffj_key_ChosenInlineResult_Query, kn) {
-						currentKey = ffj_t_ChosenInlineResult_Query
+					if bytes.Equal(ffjKeyChosenInlineResultQuery, kn) {
+						currentKey = ffjtChosenInlineResultQuery
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_ChosenInlineResult_ResultID, kn) {
-						currentKey = ffj_t_ChosenInlineResult_ResultID
+					if bytes.Equal(ffjKeyChosenInlineResultResultID, kn) {
+						currentKey = ffjtChosenInlineResultResultID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ChosenInlineResult_Query, kn) {
-					currentKey = ffj_t_ChosenInlineResult_Query
+				if fflib.SimpleLetterEqualFold(ffjKeyChosenInlineResultQuery, kn) {
+					currentKey = ffjtChosenInlineResultQuery
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ChosenInlineResult_InlineMessageID, kn) {
-					currentKey = ffj_t_ChosenInlineResult_InlineMessageID
+				if fflib.EqualFoldRight(ffjKeyChosenInlineResultInlineMessageID, kn) {
+					currentKey = ffjtChosenInlineResultInlineMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ChosenInlineResult_Location, kn) {
-					currentKey = ffj_t_ChosenInlineResult_Location
+				if fflib.SimpleLetterEqualFold(ffjKeyChosenInlineResultLocation, kn) {
+					currentKey = ffjtChosenInlineResultLocation
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ChosenInlineResult_From, kn) {
-					currentKey = ffj_t_ChosenInlineResult_From
+				if fflib.SimpleLetterEqualFold(ffjKeyChosenInlineResultFrom, kn) {
+					currentKey = ffjtChosenInlineResultFrom
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ChosenInlineResult_ResultID, kn) {
-					currentKey = ffj_t_ChosenInlineResult_ResultID
+				if fflib.EqualFoldRight(ffjKeyChosenInlineResultResultID, kn) {
+					currentKey = ffjtChosenInlineResultResultID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ChosenInlineResultno_such_key
+				currentKey = ffjtChosenInlineResultnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -1949,22 +1974,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ChosenInlineResult_ResultID:
+				case ffjtChosenInlineResultResultID:
 					goto handle_ResultID
 
-				case ffj_t_ChosenInlineResult_From:
+				case ffjtChosenInlineResultFrom:
 					goto handle_From
 
-				case ffj_t_ChosenInlineResult_Location:
+				case ffjtChosenInlineResultLocation:
 					goto handle_Location
 
-				case ffj_t_ChosenInlineResult_InlineMessageID:
+				case ffjtChosenInlineResultInlineMessageID:
 					goto handle_InlineMessageID
 
-				case ffj_t_ChosenInlineResult_Query:
+				case ffjtChosenInlineResultQuery:
 					goto handle_Query
 
-				case ffj_t_ChosenInlineResultno_such_key:
+				case ffjtChosenInlineResultnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -1980,7 +2005,7 @@ mainparse:
 
 handle_ResultID:
 
-	/* handler: uj.ResultID type=string kind=string quoted=false*/
+	/* handler: j.ResultID type=string kind=string quoted=false*/
 
 	{
 
@@ -1996,7 +2021,7 @@ handle_ResultID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ResultID = string(string(outBuf))
+			j.ResultID = string(string(outBuf))
 
 		}
 	}
@@ -2006,22 +2031,22 @@ handle_ResultID:
 
 handle_From:
 
-	/* handler: uj.From type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.From = nil
+			j.From = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.From == nil {
-			uj.From = new(User)
+		if j.From == nil {
+			j.From = new(User)
 		}
 
-		err = uj.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -2033,22 +2058,22 @@ handle_From:
 
 handle_Location:
 
-	/* handler: uj.Location type=tgbotapi.Location kind=struct quoted=false*/
+	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Location = nil
+			j.Location = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Location == nil {
-			uj.Location = new(Location)
+		if j.Location == nil {
+			j.Location = new(Location)
 		}
 
-		err = uj.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -2060,7 +2085,7 @@ handle_Location:
 
 handle_InlineMessageID:
 
-	/* handler: uj.InlineMessageID type=string kind=string quoted=false*/
+	/* handler: j.InlineMessageID type=string kind=string quoted=false*/
 
 	{
 
@@ -2076,7 +2101,7 @@ handle_InlineMessageID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.InlineMessageID = string(string(outBuf))
+			j.InlineMessageID = string(string(outBuf))
 
 		}
 	}
@@ -2086,7 +2111,7 @@ handle_InlineMessageID:
 
 handle_Query:
 
-	/* handler: uj.Query type=string kind=string quoted=false*/
+	/* handler: j.Query type=string kind=string quoted=false*/
 
 	{
 
@@ -2102,7 +2127,7 @@ handle_Query:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Query = string(string(outBuf))
+			j.Query = string(string(outBuf))
 
 		}
 	}
@@ -2128,20 +2153,23 @@ done:
 	return nil
 }
 
-func (mj *Contact) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Contact) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Contact) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Contact) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -2150,18 +2178,18 @@ func (mj *Contact) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "phone_number":`)
-	fflib.WriteJsonString(buf, string(mj.PhoneNumber))
+	fflib.WriteJsonString(buf, string(j.PhoneNumber))
 	buf.WriteString(`,"first_name":`)
-	fflib.WriteJsonString(buf, string(mj.FirstName))
+	fflib.WriteJsonString(buf, string(j.FirstName))
 	buf.WriteByte(',')
-	if len(mj.LastName) != 0 {
+	if len(j.LastName) != 0 {
 		buf.WriteString(`"last_name":`)
-		fflib.WriteJsonString(buf, string(mj.LastName))
+		fflib.WriteJsonString(buf, string(j.LastName))
 		buf.WriteByte(',')
 	}
-	if mj.UserID != 0 {
+	if j.UserID != 0 {
 		buf.WriteString(`"user_id":`)
-		fflib.FormatBits2(buf, uint64(mj.UserID), 10, mj.UserID < 0)
+		fflib.FormatBits2(buf, uint64(j.UserID), 10, j.UserID < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -2170,34 +2198,36 @@ func (mj *Contact) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Contactbase = iota
-	ffj_t_Contactno_such_key
+	ffjtContactbase = iota
+	ffjtContactnosuchkey
 
-	ffj_t_Contact_PhoneNumber
+	ffjtContactPhoneNumber
 
-	ffj_t_Contact_FirstName
+	ffjtContactFirstName
 
-	ffj_t_Contact_LastName
+	ffjtContactLastName
 
-	ffj_t_Contact_UserID
+	ffjtContactUserID
 )
 
-var ffj_key_Contact_PhoneNumber = []byte("phone_number")
+var ffjKeyContactPhoneNumber = []byte("phone_number")
 
-var ffj_key_Contact_FirstName = []byte("first_name")
+var ffjKeyContactFirstName = []byte("first_name")
 
-var ffj_key_Contact_LastName = []byte("last_name")
+var ffjKeyContactLastName = []byte("last_name")
 
-var ffj_key_Contact_UserID = []byte("user_id")
+var ffjKeyContactUserID = []byte("user_id")
 
-func (uj *Contact) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Contact) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Contact) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Contactbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Contact) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtContactbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -2243,7 +2273,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Contactno_such_key
+				currentKey = ffjtContactnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -2251,63 +2281,63 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Contact_FirstName, kn) {
-						currentKey = ffj_t_Contact_FirstName
+					if bytes.Equal(ffjKeyContactFirstName, kn) {
+						currentKey = ffjtContactFirstName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_Contact_LastName, kn) {
-						currentKey = ffj_t_Contact_LastName
+					if bytes.Equal(ffjKeyContactLastName, kn) {
+						currentKey = ffjtContactLastName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_Contact_PhoneNumber, kn) {
-						currentKey = ffj_t_Contact_PhoneNumber
+					if bytes.Equal(ffjKeyContactPhoneNumber, kn) {
+						currentKey = ffjtContactPhoneNumber
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_Contact_UserID, kn) {
-						currentKey = ffj_t_Contact_UserID
+					if bytes.Equal(ffjKeyContactUserID, kn) {
+						currentKey = ffjtContactUserID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Contact_UserID, kn) {
-					currentKey = ffj_t_Contact_UserID
+				if fflib.EqualFoldRight(ffjKeyContactUserID, kn) {
+					currentKey = ffjtContactUserID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Contact_LastName, kn) {
-					currentKey = ffj_t_Contact_LastName
+				if fflib.EqualFoldRight(ffjKeyContactLastName, kn) {
+					currentKey = ffjtContactLastName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Contact_FirstName, kn) {
-					currentKey = ffj_t_Contact_FirstName
+				if fflib.EqualFoldRight(ffjKeyContactFirstName, kn) {
+					currentKey = ffjtContactFirstName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Contact_PhoneNumber, kn) {
-					currentKey = ffj_t_Contact_PhoneNumber
+				if fflib.AsciiEqualFold(ffjKeyContactPhoneNumber, kn) {
+					currentKey = ffjtContactPhoneNumber
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Contactno_such_key
+				currentKey = ffjtContactnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -2324,19 +2354,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Contact_PhoneNumber:
+				case ffjtContactPhoneNumber:
 					goto handle_PhoneNumber
 
-				case ffj_t_Contact_FirstName:
+				case ffjtContactFirstName:
 					goto handle_FirstName
 
-				case ffj_t_Contact_LastName:
+				case ffjtContactLastName:
 					goto handle_LastName
 
-				case ffj_t_Contact_UserID:
+				case ffjtContactUserID:
 					goto handle_UserID
 
-				case ffj_t_Contactno_such_key:
+				case ffjtContactnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -2352,7 +2382,7 @@ mainparse:
 
 handle_PhoneNumber:
 
-	/* handler: uj.PhoneNumber type=string kind=string quoted=false*/
+	/* handler: j.PhoneNumber type=string kind=string quoted=false*/
 
 	{
 
@@ -2368,7 +2398,7 @@ handle_PhoneNumber:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.PhoneNumber = string(string(outBuf))
+			j.PhoneNumber = string(string(outBuf))
 
 		}
 	}
@@ -2378,7 +2408,7 @@ handle_PhoneNumber:
 
 handle_FirstName:
 
-	/* handler: uj.FirstName type=string kind=string quoted=false*/
+	/* handler: j.FirstName type=string kind=string quoted=false*/
 
 	{
 
@@ -2394,7 +2424,7 @@ handle_FirstName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FirstName = string(string(outBuf))
+			j.FirstName = string(string(outBuf))
 
 		}
 	}
@@ -2404,7 +2434,7 @@ handle_FirstName:
 
 handle_LastName:
 
-	/* handler: uj.LastName type=string kind=string quoted=false*/
+	/* handler: j.LastName type=string kind=string quoted=false*/
 
 	{
 
@@ -2420,7 +2450,7 @@ handle_LastName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.LastName = string(string(outBuf))
+			j.LastName = string(string(outBuf))
 
 		}
 	}
@@ -2430,7 +2460,7 @@ handle_LastName:
 
 handle_UserID:
 
-	/* handler: uj.UserID type=int kind=int quoted=false*/
+	/* handler: j.UserID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -2450,7 +2480,7 @@ handle_UserID:
 				return fs.WrapErr(err)
 			}
 
-			uj.UserID = int(tval)
+			j.UserID = int(tval)
 
 		}
 	}
@@ -2476,20 +2506,23 @@ done:
 	return nil
 }
 
-func (mj *Document) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Document) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Document) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Document) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -2498,15 +2531,15 @@ func (mj *Document) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "file_id":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
+	fflib.WriteJsonString(buf, string(j.FileID))
 	buf.WriteByte(',')
-	if mj.Thumbnail != nil {
+	if j.Thumbnail != nil {
 		if true {
 			buf.WriteString(`"thumb":`)
 
 			{
 
-				err = mj.Thumbnail.MarshalJSONBuf(buf)
+				err = j.Thumbnail.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -2515,19 +2548,19 @@ func (mj *Document) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if len(mj.FileName) != 0 {
+	if len(j.FileName) != 0 {
 		buf.WriteString(`"file_name":`)
-		fflib.WriteJsonString(buf, string(mj.FileName))
+		fflib.WriteJsonString(buf, string(j.FileName))
 		buf.WriteByte(',')
 	}
-	if len(mj.MimeType) != 0 {
+	if len(j.MimeType) != 0 {
 		buf.WriteString(`"mime_type":`)
-		fflib.WriteJsonString(buf, string(mj.MimeType))
+		fflib.WriteJsonString(buf, string(j.MimeType))
 		buf.WriteByte(',')
 	}
-	if mj.FileSize != 0 {
+	if j.FileSize != 0 {
 		buf.WriteString(`"file_size":`)
-		fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+		fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -2536,38 +2569,40 @@ func (mj *Document) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Documentbase = iota
-	ffj_t_Documentno_such_key
+	ffjtDocumentbase = iota
+	ffjtDocumentnosuchkey
 
-	ffj_t_Document_FileID
+	ffjtDocumentFileID
 
-	ffj_t_Document_Thumbnail
+	ffjtDocumentThumbnail
 
-	ffj_t_Document_FileName
+	ffjtDocumentFileName
 
-	ffj_t_Document_MimeType
+	ffjtDocumentMimeType
 
-	ffj_t_Document_FileSize
+	ffjtDocumentFileSize
 )
 
-var ffj_key_Document_FileID = []byte("file_id")
+var ffjKeyDocumentFileID = []byte("file_id")
 
-var ffj_key_Document_Thumbnail = []byte("thumb")
+var ffjKeyDocumentThumbnail = []byte("thumb")
 
-var ffj_key_Document_FileName = []byte("file_name")
+var ffjKeyDocumentFileName = []byte("file_name")
 
-var ffj_key_Document_MimeType = []byte("mime_type")
+var ffjKeyDocumentMimeType = []byte("mime_type")
 
-var ffj_key_Document_FileSize = []byte("file_size")
+var ffjKeyDocumentFileSize = []byte("file_size")
 
-func (uj *Document) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Document) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Document) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Documentbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Document) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtDocumentbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -2613,7 +2648,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Documentno_such_key
+				currentKey = ffjtDocumentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -2621,71 +2656,71 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Document_FileID, kn) {
-						currentKey = ffj_t_Document_FileID
+					if bytes.Equal(ffjKeyDocumentFileID, kn) {
+						currentKey = ffjtDocumentFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Document_FileName, kn) {
-						currentKey = ffj_t_Document_FileName
+					} else if bytes.Equal(ffjKeyDocumentFileName, kn) {
+						currentKey = ffjtDocumentFileName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Document_FileSize, kn) {
-						currentKey = ffj_t_Document_FileSize
+					} else if bytes.Equal(ffjKeyDocumentFileSize, kn) {
+						currentKey = ffjtDocumentFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_Document_MimeType, kn) {
-						currentKey = ffj_t_Document_MimeType
+					if bytes.Equal(ffjKeyDocumentMimeType, kn) {
+						currentKey = ffjtDocumentMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_Document_Thumbnail, kn) {
-						currentKey = ffj_t_Document_Thumbnail
+					if bytes.Equal(ffjKeyDocumentThumbnail, kn) {
+						currentKey = ffjtDocumentThumbnail
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Document_FileSize, kn) {
-					currentKey = ffj_t_Document_FileSize
+				if fflib.EqualFoldRight(ffjKeyDocumentFileSize, kn) {
+					currentKey = ffjtDocumentFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Document_MimeType, kn) {
-					currentKey = ffj_t_Document_MimeType
+				if fflib.AsciiEqualFold(ffjKeyDocumentMimeType, kn) {
+					currentKey = ffjtDocumentMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Document_FileName, kn) {
-					currentKey = ffj_t_Document_FileName
+				if fflib.AsciiEqualFold(ffjKeyDocumentFileName, kn) {
+					currentKey = ffjtDocumentFileName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Document_Thumbnail, kn) {
-					currentKey = ffj_t_Document_Thumbnail
+				if fflib.SimpleLetterEqualFold(ffjKeyDocumentThumbnail, kn) {
+					currentKey = ffjtDocumentThumbnail
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Document_FileID, kn) {
-					currentKey = ffj_t_Document_FileID
+				if fflib.AsciiEqualFold(ffjKeyDocumentFileID, kn) {
+					currentKey = ffjtDocumentFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Documentno_such_key
+				currentKey = ffjtDocumentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -2702,22 +2737,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Document_FileID:
+				case ffjtDocumentFileID:
 					goto handle_FileID
 
-				case ffj_t_Document_Thumbnail:
+				case ffjtDocumentThumbnail:
 					goto handle_Thumbnail
 
-				case ffj_t_Document_FileName:
+				case ffjtDocumentFileName:
 					goto handle_FileName
 
-				case ffj_t_Document_MimeType:
+				case ffjtDocumentMimeType:
 					goto handle_MimeType
 
-				case ffj_t_Document_FileSize:
+				case ffjtDocumentFileSize:
 					goto handle_FileSize
 
-				case ffj_t_Documentno_such_key:
+				case ffjtDocumentnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -2733,7 +2768,7 @@ mainparse:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -2749,7 +2784,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -2759,22 +2794,22 @@ handle_FileID:
 
 handle_Thumbnail:
 
-	/* handler: uj.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
+	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Thumbnail = nil
+			j.Thumbnail = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Thumbnail == nil {
-			uj.Thumbnail = new(PhotoSize)
+		if j.Thumbnail == nil {
+			j.Thumbnail = new(PhotoSize)
 		}
 
-		err = uj.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -2786,7 +2821,7 @@ handle_Thumbnail:
 
 handle_FileName:
 
-	/* handler: uj.FileName type=string kind=string quoted=false*/
+	/* handler: j.FileName type=string kind=string quoted=false*/
 
 	{
 
@@ -2802,7 +2837,7 @@ handle_FileName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileName = string(string(outBuf))
+			j.FileName = string(string(outBuf))
 
 		}
 	}
@@ -2812,7 +2847,7 @@ handle_FileName:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -2828,7 +2863,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -2838,7 +2873,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -2858,7 +2893,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -2884,20 +2919,23 @@ done:
 	return nil
 }
 
-func (mj *File) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *File) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *File) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *File) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -2906,16 +2944,16 @@ func (mj *File) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "file_id":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
+	fflib.WriteJsonString(buf, string(j.FileID))
 	buf.WriteByte(',')
-	if mj.FileSize != 0 {
+	if j.FileSize != 0 {
 		buf.WriteString(`"file_size":`)
-		fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+		fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 		buf.WriteByte(',')
 	}
-	if len(mj.FilePath) != 0 {
+	if len(j.FilePath) != 0 {
 		buf.WriteString(`"file_path":`)
-		fflib.WriteJsonString(buf, string(mj.FilePath))
+		fflib.WriteJsonString(buf, string(j.FilePath))
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -2924,30 +2962,32 @@ func (mj *File) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Filebase = iota
-	ffj_t_Fileno_such_key
+	ffjtFilebase = iota
+	ffjtFilenosuchkey
 
-	ffj_t_File_FileID
+	ffjtFileFileID
 
-	ffj_t_File_FileSize
+	ffjtFileFileSize
 
-	ffj_t_File_FilePath
+	ffjtFileFilePath
 )
 
-var ffj_key_File_FileID = []byte("file_id")
+var ffjKeyFileFileID = []byte("file_id")
 
-var ffj_key_File_FileSize = []byte("file_size")
+var ffjKeyFileFileSize = []byte("file_size")
 
-var ffj_key_File_FilePath = []byte("file_path")
+var ffjKeyFileFilePath = []byte("file_path")
 
-func (uj *File) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *File) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *File) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Filebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *File) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtFilebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -2993,7 +3033,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Fileno_such_key
+				currentKey = ffjtFilenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -3001,43 +3041,43 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_File_FileID, kn) {
-						currentKey = ffj_t_File_FileID
+					if bytes.Equal(ffjKeyFileFileID, kn) {
+						currentKey = ffjtFileFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_File_FileSize, kn) {
-						currentKey = ffj_t_File_FileSize
+					} else if bytes.Equal(ffjKeyFileFileSize, kn) {
+						currentKey = ffjtFileFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_File_FilePath, kn) {
-						currentKey = ffj_t_File_FilePath
+					} else if bytes.Equal(ffjKeyFileFilePath, kn) {
+						currentKey = ffjtFileFilePath
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_File_FilePath, kn) {
-					currentKey = ffj_t_File_FilePath
+				if fflib.AsciiEqualFold(ffjKeyFileFilePath, kn) {
+					currentKey = ffjtFileFilePath
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_File_FileSize, kn) {
-					currentKey = ffj_t_File_FileSize
+				if fflib.EqualFoldRight(ffjKeyFileFileSize, kn) {
+					currentKey = ffjtFileFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_File_FileID, kn) {
-					currentKey = ffj_t_File_FileID
+				if fflib.AsciiEqualFold(ffjKeyFileFileID, kn) {
+					currentKey = ffjtFileFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Fileno_such_key
+				currentKey = ffjtFilenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -3054,16 +3094,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_File_FileID:
+				case ffjtFileFileID:
 					goto handle_FileID
 
-				case ffj_t_File_FileSize:
+				case ffjtFileFileSize:
 					goto handle_FileSize
 
-				case ffj_t_File_FilePath:
+				case ffjtFileFilePath:
 					goto handle_FilePath
 
-				case ffj_t_Fileno_such_key:
+				case ffjtFilenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -3079,7 +3119,7 @@ mainparse:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -3095,7 +3135,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -3105,7 +3145,7 @@ handle_FileID:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -3125,7 +3165,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -3135,7 +3175,7 @@ handle_FileSize:
 
 handle_FilePath:
 
-	/* handler: uj.FilePath type=string kind=string quoted=false*/
+	/* handler: j.FilePath type=string kind=string quoted=false*/
 
 	{
 
@@ -3151,7 +3191,7 @@ handle_FilePath:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FilePath = string(string(outBuf))
+			j.FilePath = string(string(outBuf))
 
 		}
 	}
@@ -3177,20 +3217,23 @@ done:
 	return nil
 }
 
-func (mj *ForceReply) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ForceReply) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ForceReply) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ForceReply) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -3198,14 +3241,14 @@ func (mj *ForceReply) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	if mj.ForceReply {
+	if j.ForceReply {
 		buf.WriteString(`{ "force_reply":true`)
 	} else {
 		buf.WriteString(`{ "force_reply":false`)
 	}
 	buf.WriteByte(',')
-	if mj.Selective != false {
-		if mj.Selective {
+	if j.Selective != false {
+		if j.Selective {
 			buf.WriteString(`"selective":true`)
 		} else {
 			buf.WriteString(`"selective":false`)
@@ -3218,26 +3261,28 @@ func (mj *ForceReply) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ForceReplybase = iota
-	ffj_t_ForceReplyno_such_key
+	ffjtForceReplybase = iota
+	ffjtForceReplynosuchkey
 
-	ffj_t_ForceReply_ForceReply
+	ffjtForceReplyForceReply
 
-	ffj_t_ForceReply_Selective
+	ffjtForceReplySelective
 )
 
-var ffj_key_ForceReply_ForceReply = []byte("force_reply")
+var ffjKeyForceReplyForceReply = []byte("force_reply")
 
-var ffj_key_ForceReply_Selective = []byte("selective")
+var ffjKeyForceReplySelective = []byte("selective")
 
-func (uj *ForceReply) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ForceReply) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ForceReply) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ForceReplybase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ForceReply) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtForceReplybase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -3283,7 +3328,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ForceReplyno_such_key
+				currentKey = ffjtForceReplynosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -3291,35 +3336,35 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_ForceReply_ForceReply, kn) {
-						currentKey = ffj_t_ForceReply_ForceReply
+					if bytes.Equal(ffjKeyForceReplyForceReply, kn) {
+						currentKey = ffjtForceReplyForceReply
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 's':
 
-					if bytes.Equal(ffj_key_ForceReply_Selective, kn) {
-						currentKey = ffj_t_ForceReply_Selective
+					if bytes.Equal(ffjKeyForceReplySelective, kn) {
+						currentKey = ffjtForceReplySelective
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ForceReply_Selective, kn) {
-					currentKey = ffj_t_ForceReply_Selective
+				if fflib.EqualFoldRight(ffjKeyForceReplySelective, kn) {
+					currentKey = ffjtForceReplySelective
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_ForceReply_ForceReply, kn) {
-					currentKey = ffj_t_ForceReply_ForceReply
+				if fflib.AsciiEqualFold(ffjKeyForceReplyForceReply, kn) {
+					currentKey = ffjtForceReplyForceReply
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ForceReplyno_such_key
+				currentKey = ffjtForceReplynosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -3336,13 +3381,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ForceReply_ForceReply:
+				case ffjtForceReplyForceReply:
 					goto handle_ForceReply
 
-				case ffj_t_ForceReply_Selective:
+				case ffjtForceReplySelective:
 					goto handle_Selective
 
-				case ffj_t_ForceReplyno_such_key:
+				case ffjtForceReplynosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -3358,7 +3403,7 @@ mainparse:
 
 handle_ForceReply:
 
-	/* handler: uj.ForceReply type=bool kind=bool quoted=false*/
+	/* handler: j.ForceReply type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -3374,11 +3419,11 @@ handle_ForceReply:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.ForceReply = true
+				j.ForceReply = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.ForceReply = false
+				j.ForceReply = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -3393,7 +3438,7 @@ handle_ForceReply:
 
 handle_Selective:
 
-	/* handler: uj.Selective type=bool kind=bool quoted=false*/
+	/* handler: j.Selective type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -3409,11 +3454,11 @@ handle_Selective:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.Selective = true
+				j.Selective = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.Selective = false
+				j.Selective = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -3444,20 +3489,23 @@ done:
 	return nil
 }
 
-func (mj *GroupChat) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *GroupChat) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *GroupChat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *GroupChat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -3466,34 +3514,36 @@ func (mj *GroupChat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"id":`)
-	fflib.FormatBits2(buf, uint64(mj.ID), 10, mj.ID < 0)
+	fflib.FormatBits2(buf, uint64(j.ID), 10, j.ID < 0)
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_GroupChatbase = iota
-	ffj_t_GroupChatno_such_key
+	ffjtGroupChatbase = iota
+	ffjtGroupChatnosuchkey
 
-	ffj_t_GroupChat_ID
+	ffjtGroupChatID
 
-	ffj_t_GroupChat_Title
+	ffjtGroupChatTitle
 )
 
-var ffj_key_GroupChat_ID = []byte("id")
+var ffjKeyGroupChatID = []byte("id")
 
-var ffj_key_GroupChat_Title = []byte("title")
+var ffjKeyGroupChatTitle = []byte("title")
 
-func (uj *GroupChat) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *GroupChat) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *GroupChat) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_GroupChatbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *GroupChat) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtGroupChatbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -3539,7 +3589,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_GroupChatno_such_key
+				currentKey = ffjtGroupChatnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -3547,35 +3597,35 @@ mainparse:
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_GroupChat_ID, kn) {
-						currentKey = ffj_t_GroupChat_ID
+					if bytes.Equal(ffjKeyGroupChatID, kn) {
+						currentKey = ffjtGroupChatID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_GroupChat_Title, kn) {
-						currentKey = ffj_t_GroupChat_Title
+					if bytes.Equal(ffjKeyGroupChatTitle, kn) {
+						currentKey = ffjtGroupChatTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_GroupChat_Title, kn) {
-					currentKey = ffj_t_GroupChat_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyGroupChatTitle, kn) {
+					currentKey = ffjtGroupChatTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_GroupChat_ID, kn) {
-					currentKey = ffj_t_GroupChat_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyGroupChatID, kn) {
+					currentKey = ffjtGroupChatID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_GroupChatno_such_key
+				currentKey = ffjtGroupChatnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -3592,13 +3642,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_GroupChat_ID:
+				case ffjtGroupChatID:
 					goto handle_ID
 
-				case ffj_t_GroupChat_Title:
+				case ffjtGroupChatTitle:
 					goto handle_Title
 
-				case ffj_t_GroupChatno_such_key:
+				case ffjtGroupChatnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -3614,7 +3664,7 @@ mainparse:
 
 handle_ID:
 
-	/* handler: uj.ID type=int kind=int quoted=false*/
+	/* handler: j.ID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -3634,7 +3684,7 @@ handle_ID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ID = int(tval)
+			j.ID = int(tval)
 
 		}
 	}
@@ -3644,7 +3694,7 @@ handle_ID:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -3660,7 +3710,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -3686,20 +3736,23 @@ done:
 	return nil
 }
 
-func (mj *InlineKeyboardButton) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineKeyboardButton) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -3708,30 +3761,30 @@ func (mj *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "text":`)
-	fflib.WriteJsonString(buf, string(mj.Text))
+	fflib.WriteJsonString(buf, string(j.Text))
 	buf.WriteByte(',')
-	if len(mj.URL) != 0 {
+	if len(j.URL) != 0 {
 		buf.WriteString(`"url":`)
-		fflib.WriteJsonString(buf, string(mj.URL))
+		fflib.WriteJsonString(buf, string(j.URL))
 		buf.WriteByte(',')
 	}
-	if len(mj.CallbackData) != 0 {
+	if len(j.CallbackData) != 0 {
 		buf.WriteString(`"callback_data":`)
-		fflib.WriteJsonString(buf, string(mj.CallbackData))
+		fflib.WriteJsonString(buf, string(j.CallbackData))
 		buf.WriteByte(',')
 	}
-	if len(mj.SwitchInlineQuery) != 0 {
+	if len(j.SwitchInlineQuery) != 0 {
 		buf.WriteString(`"switch_inline_query":`)
-		fflib.WriteJsonString(buf, string(mj.SwitchInlineQuery))
+		fflib.WriteJsonString(buf, string(j.SwitchInlineQuery))
 		buf.WriteByte(',')
 	}
-	if len(mj.SwitchInlineQueryCurrentChat) != 0 {
+	if len(j.SwitchInlineQueryCurrentChat) != 0 {
 		buf.WriteString(`"switch_inline_query_current_chat":`)
-		fflib.WriteJsonString(buf, string(mj.SwitchInlineQueryCurrentChat))
+		fflib.WriteJsonString(buf, string(j.SwitchInlineQueryCurrentChat))
 		buf.WriteByte(',')
 	}
-	if mj.Pay != false {
-		if mj.Pay {
+	if j.Pay != false {
+		if j.Pay {
 			buf.WriteString(`"pay":true`)
 		} else {
 			buf.WriteString(`"pay":false`)
@@ -3744,42 +3797,44 @@ func (mj *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_InlineKeyboardButtonbase = iota
-	ffj_t_InlineKeyboardButtonno_such_key
+	ffjtInlineKeyboardButtonbase = iota
+	ffjtInlineKeyboardButtonnosuchkey
 
-	ffj_t_InlineKeyboardButton_Text
+	ffjtInlineKeyboardButtonText
 
-	ffj_t_InlineKeyboardButton_URL
+	ffjtInlineKeyboardButtonURL
 
-	ffj_t_InlineKeyboardButton_CallbackData
+	ffjtInlineKeyboardButtonCallbackData
 
-	ffj_t_InlineKeyboardButton_SwitchInlineQuery
+	ffjtInlineKeyboardButtonSwitchInlineQuery
 
-	ffj_t_InlineKeyboardButton_SwitchInlineQueryCurrentChat
+	ffjtInlineKeyboardButtonSwitchInlineQueryCurrentChat
 
-	ffj_t_InlineKeyboardButton_Pay
+	ffjtInlineKeyboardButtonPay
 )
 
-var ffj_key_InlineKeyboardButton_Text = []byte("text")
+var ffjKeyInlineKeyboardButtonText = []byte("text")
 
-var ffj_key_InlineKeyboardButton_URL = []byte("url")
+var ffjKeyInlineKeyboardButtonURL = []byte("url")
 
-var ffj_key_InlineKeyboardButton_CallbackData = []byte("callback_data")
+var ffjKeyInlineKeyboardButtonCallbackData = []byte("callback_data")
 
-var ffj_key_InlineKeyboardButton_SwitchInlineQuery = []byte("switch_inline_query")
+var ffjKeyInlineKeyboardButtonSwitchInlineQuery = []byte("switch_inline_query")
 
-var ffj_key_InlineKeyboardButton_SwitchInlineQueryCurrentChat = []byte("switch_inline_query_current_chat")
+var ffjKeyInlineKeyboardButtonSwitchInlineQueryCurrentChat = []byte("switch_inline_query_current_chat")
 
-var ffj_key_InlineKeyboardButton_Pay = []byte("pay")
+var ffjKeyInlineKeyboardButtonPay = []byte("pay")
 
-func (uj *InlineKeyboardButton) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineKeyboardButton) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineKeyboardButton) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineKeyboardButtonbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineKeyboardButton) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineKeyboardButtonbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -3825,7 +3880,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineKeyboardButtonno_such_key
+				currentKey = ffjtInlineKeyboardButtonnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -3833,88 +3888,88 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_InlineKeyboardButton_CallbackData, kn) {
-						currentKey = ffj_t_InlineKeyboardButton_CallbackData
+					if bytes.Equal(ffjKeyInlineKeyboardButtonCallbackData, kn) {
+						currentKey = ffjtInlineKeyboardButtonCallbackData
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_InlineKeyboardButton_Pay, kn) {
-						currentKey = ffj_t_InlineKeyboardButton_Pay
+					if bytes.Equal(ffjKeyInlineKeyboardButtonPay, kn) {
+						currentKey = ffjtInlineKeyboardButtonPay
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 's':
 
-					if bytes.Equal(ffj_key_InlineKeyboardButton_SwitchInlineQuery, kn) {
-						currentKey = ffj_t_InlineKeyboardButton_SwitchInlineQuery
+					if bytes.Equal(ffjKeyInlineKeyboardButtonSwitchInlineQuery, kn) {
+						currentKey = ffjtInlineKeyboardButtonSwitchInlineQuery
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineKeyboardButton_SwitchInlineQueryCurrentChat, kn) {
-						currentKey = ffj_t_InlineKeyboardButton_SwitchInlineQueryCurrentChat
+					} else if bytes.Equal(ffjKeyInlineKeyboardButtonSwitchInlineQueryCurrentChat, kn) {
+						currentKey = ffjtInlineKeyboardButtonSwitchInlineQueryCurrentChat
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineKeyboardButton_Text, kn) {
-						currentKey = ffj_t_InlineKeyboardButton_Text
+					if bytes.Equal(ffjKeyInlineKeyboardButtonText, kn) {
+						currentKey = ffjtInlineKeyboardButtonText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_InlineKeyboardButton_URL, kn) {
-						currentKey = ffj_t_InlineKeyboardButton_URL
+					if bytes.Equal(ffjKeyInlineKeyboardButtonURL, kn) {
+						currentKey = ffjtInlineKeyboardButtonURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineKeyboardButton_Pay, kn) {
-					currentKey = ffj_t_InlineKeyboardButton_Pay
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineKeyboardButtonPay, kn) {
+					currentKey = ffjtInlineKeyboardButtonPay
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineKeyboardButton_SwitchInlineQueryCurrentChat, kn) {
-					currentKey = ffj_t_InlineKeyboardButton_SwitchInlineQueryCurrentChat
+				if fflib.EqualFoldRight(ffjKeyInlineKeyboardButtonSwitchInlineQueryCurrentChat, kn) {
+					currentKey = ffjtInlineKeyboardButtonSwitchInlineQueryCurrentChat
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineKeyboardButton_SwitchInlineQuery, kn) {
-					currentKey = ffj_t_InlineKeyboardButton_SwitchInlineQuery
+				if fflib.EqualFoldRight(ffjKeyInlineKeyboardButtonSwitchInlineQuery, kn) {
+					currentKey = ffjtInlineKeyboardButtonSwitchInlineQuery
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineKeyboardButton_CallbackData, kn) {
-					currentKey = ffj_t_InlineKeyboardButton_CallbackData
+				if fflib.EqualFoldRight(ffjKeyInlineKeyboardButtonCallbackData, kn) {
+					currentKey = ffjtInlineKeyboardButtonCallbackData
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineKeyboardButton_URL, kn) {
-					currentKey = ffj_t_InlineKeyboardButton_URL
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineKeyboardButtonURL, kn) {
+					currentKey = ffjtInlineKeyboardButtonURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineKeyboardButton_Text, kn) {
-					currentKey = ffj_t_InlineKeyboardButton_Text
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineKeyboardButtonText, kn) {
+					currentKey = ffjtInlineKeyboardButtonText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineKeyboardButtonno_such_key
+				currentKey = ffjtInlineKeyboardButtonnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -3931,25 +3986,25 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineKeyboardButton_Text:
+				case ffjtInlineKeyboardButtonText:
 					goto handle_Text
 
-				case ffj_t_InlineKeyboardButton_URL:
+				case ffjtInlineKeyboardButtonURL:
 					goto handle_URL
 
-				case ffj_t_InlineKeyboardButton_CallbackData:
+				case ffjtInlineKeyboardButtonCallbackData:
 					goto handle_CallbackData
 
-				case ffj_t_InlineKeyboardButton_SwitchInlineQuery:
+				case ffjtInlineKeyboardButtonSwitchInlineQuery:
 					goto handle_SwitchInlineQuery
 
-				case ffj_t_InlineKeyboardButton_SwitchInlineQueryCurrentChat:
+				case ffjtInlineKeyboardButtonSwitchInlineQueryCurrentChat:
 					goto handle_SwitchInlineQueryCurrentChat
 
-				case ffj_t_InlineKeyboardButton_Pay:
+				case ffjtInlineKeyboardButtonPay:
 					goto handle_Pay
 
-				case ffj_t_InlineKeyboardButtonno_such_key:
+				case ffjtInlineKeyboardButtonnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -3965,7 +4020,7 @@ mainparse:
 
 handle_Text:
 
-	/* handler: uj.Text type=string kind=string quoted=false*/
+	/* handler: j.Text type=string kind=string quoted=false*/
 
 	{
 
@@ -3981,7 +4036,7 @@ handle_Text:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Text = string(string(outBuf))
+			j.Text = string(string(outBuf))
 
 		}
 	}
@@ -3991,7 +4046,7 @@ handle_Text:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -4007,7 +4062,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -4017,7 +4072,7 @@ handle_URL:
 
 handle_CallbackData:
 
-	/* handler: uj.CallbackData type=string kind=string quoted=false*/
+	/* handler: j.CallbackData type=string kind=string quoted=false*/
 
 	{
 
@@ -4033,7 +4088,7 @@ handle_CallbackData:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.CallbackData = string(string(outBuf))
+			j.CallbackData = string(string(outBuf))
 
 		}
 	}
@@ -4043,7 +4098,7 @@ handle_CallbackData:
 
 handle_SwitchInlineQuery:
 
-	/* handler: uj.SwitchInlineQuery type=string kind=string quoted=false*/
+	/* handler: j.SwitchInlineQuery type=string kind=string quoted=false*/
 
 	{
 
@@ -4059,7 +4114,7 @@ handle_SwitchInlineQuery:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.SwitchInlineQuery = string(string(outBuf))
+			j.SwitchInlineQuery = string(string(outBuf))
 
 		}
 	}
@@ -4069,7 +4124,7 @@ handle_SwitchInlineQuery:
 
 handle_SwitchInlineQueryCurrentChat:
 
-	/* handler: uj.SwitchInlineQueryCurrentChat type=string kind=string quoted=false*/
+	/* handler: j.SwitchInlineQueryCurrentChat type=string kind=string quoted=false*/
 
 	{
 
@@ -4085,7 +4140,7 @@ handle_SwitchInlineQueryCurrentChat:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.SwitchInlineQueryCurrentChat = string(string(outBuf))
+			j.SwitchInlineQueryCurrentChat = string(string(outBuf))
 
 		}
 	}
@@ -4095,7 +4150,7 @@ handle_SwitchInlineQueryCurrentChat:
 
 handle_Pay:
 
-	/* handler: uj.Pay type=bool kind=bool quoted=false*/
+	/* handler: j.Pay type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -4111,11 +4166,11 @@ handle_Pay:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.Pay = true
+				j.Pay = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.Pay = false
+				j.Pay = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -4146,20 +4201,23 @@ done:
 	return nil
 }
 
-func (mj *InlineKeyboardMarkup) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineKeyboardMarkup) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -4168,9 +4226,9 @@ func (mj *InlineKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"inline_keyboard":`)
-	if mj.InlineKeyboard != nil {
+	if j.InlineKeyboard != nil {
 		buf.WriteString(`[`)
-		for i, v := range mj.InlineKeyboard {
+		for i, v := range j.InlineKeyboard {
 			if i != 0 {
 				buf.WriteString(`,`)
 			}
@@ -4204,22 +4262,24 @@ func (mj *InlineKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_InlineKeyboardMarkupbase = iota
-	ffj_t_InlineKeyboardMarkupno_such_key
+	ffjtInlineKeyboardMarkupbase = iota
+	ffjtInlineKeyboardMarkupnosuchkey
 
-	ffj_t_InlineKeyboardMarkup_InlineKeyboard
+	ffjtInlineKeyboardMarkupInlineKeyboard
 )
 
-var ffj_key_InlineKeyboardMarkup_InlineKeyboard = []byte("inline_keyboard")
+var ffjKeyInlineKeyboardMarkupInlineKeyboard = []byte("inline_keyboard")
 
-func (uj *InlineKeyboardMarkup) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineKeyboardMarkup) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineKeyboardMarkup) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineKeyboardMarkupbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineKeyboardMarkup) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineKeyboardMarkupbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -4265,7 +4325,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineKeyboardMarkupno_such_key
+				currentKey = ffjtInlineKeyboardMarkupnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -4273,21 +4333,21 @@ mainparse:
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineKeyboardMarkup_InlineKeyboard, kn) {
-						currentKey = ffj_t_InlineKeyboardMarkup_InlineKeyboard
+					if bytes.Equal(ffjKeyInlineKeyboardMarkupInlineKeyboard, kn) {
+						currentKey = ffjtInlineKeyboardMarkupInlineKeyboard
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineKeyboardMarkup_InlineKeyboard, kn) {
-					currentKey = ffj_t_InlineKeyboardMarkup_InlineKeyboard
+				if fflib.EqualFoldRight(ffjKeyInlineKeyboardMarkupInlineKeyboard, kn) {
+					currentKey = ffjtInlineKeyboardMarkupInlineKeyboard
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineKeyboardMarkupno_such_key
+				currentKey = ffjtInlineKeyboardMarkupnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -4304,10 +4364,10 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineKeyboardMarkup_InlineKeyboard:
+				case ffjtInlineKeyboardMarkupInlineKeyboard:
 					goto handle_InlineKeyboard
 
-				case ffj_t_InlineKeyboardMarkupno_such_key:
+				case ffjtInlineKeyboardMarkupnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -4323,7 +4383,7 @@ mainparse:
 
 handle_InlineKeyboard:
 
-	/* handler: uj.InlineKeyboard type=[][]tgbotapi.InlineKeyboardButton kind=slice quoted=false*/
+	/* handler: j.InlineKeyboard type=[][]tgbotapi.InlineKeyboardButton kind=slice quoted=false*/
 
 	{
 		/* Falling back. type=[][]tgbotapi.InlineKeyboardButton kind=slice */
@@ -4332,7 +4392,7 @@ handle_InlineKeyboard:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InlineKeyboard)
+		err = json.Unmarshal(tbuf, &j.InlineKeyboard)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -4359,20 +4419,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQuery) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQuery) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -4381,13 +4444,13 @@ func (mj *InlineQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
-	if mj.From != nil {
+	fflib.WriteJsonString(buf, string(j.ID))
+	if j.From != nil {
 		buf.WriteString(`,"from":`)
 
 		{
 
-			err = mj.From.MarshalJSONBuf(buf)
+			err = j.From.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -4397,13 +4460,13 @@ func (mj *InlineQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteString(`,"from":null`)
 	}
 	buf.WriteByte(',')
-	if mj.Location != nil {
+	if j.Location != nil {
 		if true {
 			buf.WriteString(`"location":`)
 
 			{
 
-				err = mj.Location.MarshalJSONBuf(buf)
+				err = j.Location.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -4413,46 +4476,48 @@ func (mj *InlineQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		}
 	}
 	buf.WriteString(`"query":`)
-	fflib.WriteJsonString(buf, string(mj.Query))
+	fflib.WriteJsonString(buf, string(j.Query))
 	buf.WriteString(`,"offset":`)
-	fflib.WriteJsonString(buf, string(mj.Offset))
+	fflib.WriteJsonString(buf, string(j.Offset))
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_InlineQuerybase = iota
-	ffj_t_InlineQueryno_such_key
+	ffjtInlineQuerybase = iota
+	ffjtInlineQuerynosuchkey
 
-	ffj_t_InlineQuery_ID
+	ffjtInlineQueryID
 
-	ffj_t_InlineQuery_From
+	ffjtInlineQueryFrom
 
-	ffj_t_InlineQuery_Location
+	ffjtInlineQueryLocation
 
-	ffj_t_InlineQuery_Query
+	ffjtInlineQueryQuery
 
-	ffj_t_InlineQuery_Offset
+	ffjtInlineQueryOffset
 )
 
-var ffj_key_InlineQuery_ID = []byte("id")
+var ffjKeyInlineQueryID = []byte("id")
 
-var ffj_key_InlineQuery_From = []byte("from")
+var ffjKeyInlineQueryFrom = []byte("from")
 
-var ffj_key_InlineQuery_Location = []byte("location")
+var ffjKeyInlineQueryLocation = []byte("location")
 
-var ffj_key_InlineQuery_Query = []byte("query")
+var ffjKeyInlineQueryQuery = []byte("query")
 
-var ffj_key_InlineQuery_Offset = []byte("offset")
+var ffjKeyInlineQueryOffset = []byte("offset")
 
-func (uj *InlineQuery) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQuery) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQuery) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQuerybase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQuery) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQuerybase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -4498,7 +4563,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryno_such_key
+				currentKey = ffjtInlineQuerynosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -4506,77 +4571,77 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_InlineQuery_From, kn) {
-						currentKey = ffj_t_InlineQuery_From
+					if bytes.Equal(ffjKeyInlineQueryFrom, kn) {
+						currentKey = ffjtInlineQueryFrom
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQuery_ID, kn) {
-						currentKey = ffj_t_InlineQuery_ID
+					if bytes.Equal(ffjKeyInlineQueryID, kn) {
+						currentKey = ffjtInlineQueryID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_InlineQuery_Location, kn) {
-						currentKey = ffj_t_InlineQuery_Location
+					if bytes.Equal(ffjKeyInlineQueryLocation, kn) {
+						currentKey = ffjtInlineQueryLocation
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'o':
 
-					if bytes.Equal(ffj_key_InlineQuery_Offset, kn) {
-						currentKey = ffj_t_InlineQuery_Offset
+					if bytes.Equal(ffjKeyInlineQueryOffset, kn) {
+						currentKey = ffjtInlineQueryOffset
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'q':
 
-					if bytes.Equal(ffj_key_InlineQuery_Query, kn) {
-						currentKey = ffj_t_InlineQuery_Query
+					if bytes.Equal(ffjKeyInlineQueryQuery, kn) {
+						currentKey = ffjtInlineQueryQuery
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQuery_Offset, kn) {
-					currentKey = ffj_t_InlineQuery_Offset
+				if fflib.EqualFoldRight(ffjKeyInlineQueryOffset, kn) {
+					currentKey = ffjtInlineQueryOffset
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQuery_Query, kn) {
-					currentKey = ffj_t_InlineQuery_Query
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryQuery, kn) {
+					currentKey = ffjtInlineQueryQuery
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQuery_Location, kn) {
-					currentKey = ffj_t_InlineQuery_Location
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryLocation, kn) {
+					currentKey = ffjtInlineQueryLocation
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQuery_From, kn) {
-					currentKey = ffj_t_InlineQuery_From
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryFrom, kn) {
+					currentKey = ffjtInlineQueryFrom
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQuery_ID, kn) {
-					currentKey = ffj_t_InlineQuery_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryID, kn) {
+					currentKey = ffjtInlineQueryID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryno_such_key
+				currentKey = ffjtInlineQuerynosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -4593,22 +4658,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQuery_ID:
+				case ffjtInlineQueryID:
 					goto handle_ID
 
-				case ffj_t_InlineQuery_From:
+				case ffjtInlineQueryFrom:
 					goto handle_From
 
-				case ffj_t_InlineQuery_Location:
+				case ffjtInlineQueryLocation:
 					goto handle_Location
 
-				case ffj_t_InlineQuery_Query:
+				case ffjtInlineQueryQuery:
 					goto handle_Query
 
-				case ffj_t_InlineQuery_Offset:
+				case ffjtInlineQueryOffset:
 					goto handle_Offset
 
-				case ffj_t_InlineQueryno_such_key:
+				case ffjtInlineQuerynosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -4624,7 +4689,7 @@ mainparse:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -4640,7 +4705,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -4650,22 +4715,22 @@ handle_ID:
 
 handle_From:
 
-	/* handler: uj.From type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.From = nil
+			j.From = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.From == nil {
-			uj.From = new(User)
+		if j.From == nil {
+			j.From = new(User)
 		}
 
-		err = uj.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -4677,22 +4742,22 @@ handle_From:
 
 handle_Location:
 
-	/* handler: uj.Location type=tgbotapi.Location kind=struct quoted=false*/
+	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Location = nil
+			j.Location = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Location == nil {
-			uj.Location = new(Location)
+		if j.Location == nil {
+			j.Location = new(Location)
 		}
 
-		err = uj.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -4704,7 +4769,7 @@ handle_Location:
 
 handle_Query:
 
-	/* handler: uj.Query type=string kind=string quoted=false*/
+	/* handler: j.Query type=string kind=string quoted=false*/
 
 	{
 
@@ -4720,7 +4785,7 @@ handle_Query:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Query = string(string(outBuf))
+			j.Query = string(string(outBuf))
 
 		}
 	}
@@ -4730,7 +4795,7 @@ handle_Query:
 
 handle_Offset:
 
-	/* handler: uj.Offset type=string kind=string quoted=false*/
+	/* handler: j.Offset type=string kind=string quoted=false*/
 
 	{
 
@@ -4746,7 +4811,7 @@ handle_Offset:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Offset = string(string(outBuf))
+			j.Offset = string(string(outBuf))
 
 		}
 	}
@@ -4772,20 +4837,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultArticle) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultArticle) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultArticle) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultArticle) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -4794,25 +4862,25 @@ func (mj *InlineQueryResultArticle) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"input_message_content":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.InputMessageContent)
+	err = buf.Encode(j.InputMessageContent)
 	if err != nil {
 		return err
 	}
 	buf.WriteByte(',')
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -4821,37 +4889,37 @@ func (mj *InlineQueryResultArticle) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 			buf.WriteByte(',')
 		}
 	}
-	if len(mj.URL) != 0 {
+	if len(j.URL) != 0 {
 		buf.WriteString(`"url":`)
-		fflib.WriteJsonString(buf, string(mj.URL))
+		fflib.WriteJsonString(buf, string(j.URL))
 		buf.WriteByte(',')
 	}
-	if mj.HideURL != false {
-		if mj.HideURL {
+	if j.HideURL != false {
+		if j.HideURL {
 			buf.WriteString(`"hide_url":true`)
 		} else {
 			buf.WriteString(`"hide_url":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if len(mj.Description) != 0 {
+	if len(j.Description) != 0 {
 		buf.WriteString(`"description":`)
-		fflib.WriteJsonString(buf, string(mj.Description))
+		fflib.WriteJsonString(buf, string(j.Description))
 		buf.WriteByte(',')
 	}
-	if len(mj.ThumbURL) != 0 {
+	if len(j.ThumbURL) != 0 {
 		buf.WriteString(`"thumb_url":`)
-		fflib.WriteJsonString(buf, string(mj.ThumbURL))
+		fflib.WriteJsonString(buf, string(j.ThumbURL))
 		buf.WriteByte(',')
 	}
-	if mj.ThumbWidth != 0 {
+	if j.ThumbWidth != 0 {
 		buf.WriteString(`"thumb_width":`)
-		fflib.FormatBits2(buf, uint64(mj.ThumbWidth), 10, mj.ThumbWidth < 0)
+		fflib.FormatBits2(buf, uint64(j.ThumbWidth), 10, j.ThumbWidth < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ThumbHeight != 0 {
+	if j.ThumbHeight != 0 {
 		buf.WriteString(`"thumb_height":`)
-		fflib.FormatBits2(buf, uint64(mj.ThumbHeight), 10, mj.ThumbHeight < 0)
+		fflib.FormatBits2(buf, uint64(j.ThumbHeight), 10, j.ThumbHeight < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -4860,62 +4928,64 @@ func (mj *InlineQueryResultArticle) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 }
 
 const (
-	ffj_t_InlineQueryResultArticlebase = iota
-	ffj_t_InlineQueryResultArticleno_such_key
+	ffjtInlineQueryResultArticlebase = iota
+	ffjtInlineQueryResultArticlenosuchkey
 
-	ffj_t_InlineQueryResultArticle_Type
+	ffjtInlineQueryResultArticleType
 
-	ffj_t_InlineQueryResultArticle_ID
+	ffjtInlineQueryResultArticleID
 
-	ffj_t_InlineQueryResultArticle_Title
+	ffjtInlineQueryResultArticleTitle
 
-	ffj_t_InlineQueryResultArticle_InputMessageContent
+	ffjtInlineQueryResultArticleInputMessageContent
 
-	ffj_t_InlineQueryResultArticle_ReplyMarkup
+	ffjtInlineQueryResultArticleReplyMarkup
 
-	ffj_t_InlineQueryResultArticle_URL
+	ffjtInlineQueryResultArticleURL
 
-	ffj_t_InlineQueryResultArticle_HideURL
+	ffjtInlineQueryResultArticleHideURL
 
-	ffj_t_InlineQueryResultArticle_Description
+	ffjtInlineQueryResultArticleDescription
 
-	ffj_t_InlineQueryResultArticle_ThumbURL
+	ffjtInlineQueryResultArticleThumbURL
 
-	ffj_t_InlineQueryResultArticle_ThumbWidth
+	ffjtInlineQueryResultArticleThumbWidth
 
-	ffj_t_InlineQueryResultArticle_ThumbHeight
+	ffjtInlineQueryResultArticleThumbHeight
 )
 
-var ffj_key_InlineQueryResultArticle_Type = []byte("type")
+var ffjKeyInlineQueryResultArticleType = []byte("type")
 
-var ffj_key_InlineQueryResultArticle_ID = []byte("id")
+var ffjKeyInlineQueryResultArticleID = []byte("id")
 
-var ffj_key_InlineQueryResultArticle_Title = []byte("title")
+var ffjKeyInlineQueryResultArticleTitle = []byte("title")
 
-var ffj_key_InlineQueryResultArticle_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultArticleInputMessageContent = []byte("input_message_content")
 
-var ffj_key_InlineQueryResultArticle_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultArticleReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultArticle_URL = []byte("url")
+var ffjKeyInlineQueryResultArticleURL = []byte("url")
 
-var ffj_key_InlineQueryResultArticle_HideURL = []byte("hide_url")
+var ffjKeyInlineQueryResultArticleHideURL = []byte("hide_url")
 
-var ffj_key_InlineQueryResultArticle_Description = []byte("description")
+var ffjKeyInlineQueryResultArticleDescription = []byte("description")
 
-var ffj_key_InlineQueryResultArticle_ThumbURL = []byte("thumb_url")
+var ffjKeyInlineQueryResultArticleThumbURL = []byte("thumb_url")
 
-var ffj_key_InlineQueryResultArticle_ThumbWidth = []byte("thumb_width")
+var ffjKeyInlineQueryResultArticleThumbWidth = []byte("thumb_width")
 
-var ffj_key_InlineQueryResultArticle_ThumbHeight = []byte("thumb_height")
+var ffjKeyInlineQueryResultArticleThumbHeight = []byte("thumb_height")
 
-func (uj *InlineQueryResultArticle) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultArticle) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultArticle) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultArticlebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultArticle) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultArticlebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -4961,7 +5031,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultArticleno_such_key
+				currentKey = ffjtInlineQueryResultArticlenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -4969,146 +5039,146 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_InlineQueryResultArticle_Description, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_Description
+					if bytes.Equal(ffjKeyInlineQueryResultArticleDescription, kn) {
+						currentKey = ffjtInlineQueryResultArticleDescription
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'h':
 
-					if bytes.Equal(ffj_key_InlineQueryResultArticle_HideURL, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_HideURL
+					if bytes.Equal(ffjKeyInlineQueryResultArticleHideURL, kn) {
+						currentKey = ffjtInlineQueryResultArticleHideURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultArticle_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_ID
+					if bytes.Equal(ffjKeyInlineQueryResultArticleID, kn) {
+						currentKey = ffjtInlineQueryResultArticleID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultArticle_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultArticleInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultArticleInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultArticle_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultArticleReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultArticleReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultArticle_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_Type
+					if bytes.Equal(ffjKeyInlineQueryResultArticleType, kn) {
+						currentKey = ffjtInlineQueryResultArticleType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultArticle_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultArticleTitle, kn) {
+						currentKey = ffjtInlineQueryResultArticleTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultArticle_ThumbURL, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_ThumbURL
+					} else if bytes.Equal(ffjKeyInlineQueryResultArticleThumbURL, kn) {
+						currentKey = ffjtInlineQueryResultArticleThumbURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultArticle_ThumbWidth, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_ThumbWidth
+					} else if bytes.Equal(ffjKeyInlineQueryResultArticleThumbWidth, kn) {
+						currentKey = ffjtInlineQueryResultArticleThumbWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultArticle_ThumbHeight, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_ThumbHeight
+					} else if bytes.Equal(ffjKeyInlineQueryResultArticleThumbHeight, kn) {
+						currentKey = ffjtInlineQueryResultArticleThumbHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_InlineQueryResultArticle_URL, kn) {
-						currentKey = ffj_t_InlineQueryResultArticle_URL
+					if bytes.Equal(ffjKeyInlineQueryResultArticleURL, kn) {
+						currentKey = ffjtInlineQueryResultArticleURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultArticle_ThumbHeight, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_ThumbHeight
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultArticleThumbHeight, kn) {
+					currentKey = ffjtInlineQueryResultArticleThumbHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultArticle_ThumbWidth, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_ThumbWidth
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultArticleThumbWidth, kn) {
+					currentKey = ffjtInlineQueryResultArticleThumbWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultArticle_ThumbURL, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_ThumbURL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultArticleThumbURL, kn) {
+					currentKey = ffjtInlineQueryResultArticleThumbURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultArticle_Description, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_Description
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultArticleDescription, kn) {
+					currentKey = ffjtInlineQueryResultArticleDescription
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultArticle_HideURL, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_HideURL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultArticleHideURL, kn) {
+					currentKey = ffjtInlineQueryResultArticleHideURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultArticle_URL, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_URL
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultArticleURL, kn) {
+					currentKey = ffjtInlineQueryResultArticleURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultArticle_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultArticleReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultArticleReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultArticle_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultArticleInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultArticleInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultArticle_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultArticleTitle, kn) {
+					currentKey = ffjtInlineQueryResultArticleTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultArticle_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultArticleID, kn) {
+					currentKey = ffjtInlineQueryResultArticleID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultArticle_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultArticle_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultArticleType, kn) {
+					currentKey = ffjtInlineQueryResultArticleType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultArticleno_such_key
+				currentKey = ffjtInlineQueryResultArticlenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -5125,40 +5195,40 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultArticle_Type:
+				case ffjtInlineQueryResultArticleType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultArticle_ID:
+				case ffjtInlineQueryResultArticleID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultArticle_Title:
+				case ffjtInlineQueryResultArticleTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultArticle_InputMessageContent:
+				case ffjtInlineQueryResultArticleInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultArticle_ReplyMarkup:
+				case ffjtInlineQueryResultArticleReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultArticle_URL:
+				case ffjtInlineQueryResultArticleURL:
 					goto handle_URL
 
-				case ffj_t_InlineQueryResultArticle_HideURL:
+				case ffjtInlineQueryResultArticleHideURL:
 					goto handle_HideURL
 
-				case ffj_t_InlineQueryResultArticle_Description:
+				case ffjtInlineQueryResultArticleDescription:
 					goto handle_Description
 
-				case ffj_t_InlineQueryResultArticle_ThumbURL:
+				case ffjtInlineQueryResultArticleThumbURL:
 					goto handle_ThumbURL
 
-				case ffj_t_InlineQueryResultArticle_ThumbWidth:
+				case ffjtInlineQueryResultArticleThumbWidth:
 					goto handle_ThumbWidth
 
-				case ffj_t_InlineQueryResultArticle_ThumbHeight:
+				case ffjtInlineQueryResultArticleThumbHeight:
 					goto handle_ThumbHeight
 
-				case ffj_t_InlineQueryResultArticleno_such_key:
+				case ffjtInlineQueryResultArticlenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -5174,7 +5244,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -5190,7 +5260,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -5200,7 +5270,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -5216,7 +5286,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -5226,7 +5296,7 @@ handle_ID:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -5242,7 +5312,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -5252,7 +5322,7 @@ handle_Title:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -5261,7 +5331,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -5272,22 +5342,22 @@ handle_InputMessageContent:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -5299,7 +5369,7 @@ handle_ReplyMarkup:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -5315,7 +5385,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -5325,7 +5395,7 @@ handle_URL:
 
 handle_HideURL:
 
-	/* handler: uj.HideURL type=bool kind=bool quoted=false*/
+	/* handler: j.HideURL type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -5341,11 +5411,11 @@ handle_HideURL:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.HideURL = true
+				j.HideURL = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.HideURL = false
+				j.HideURL = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -5360,7 +5430,7 @@ handle_HideURL:
 
 handle_Description:
 
-	/* handler: uj.Description type=string kind=string quoted=false*/
+	/* handler: j.Description type=string kind=string quoted=false*/
 
 	{
 
@@ -5376,7 +5446,7 @@ handle_Description:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Description = string(string(outBuf))
+			j.Description = string(string(outBuf))
 
 		}
 	}
@@ -5386,7 +5456,7 @@ handle_Description:
 
 handle_ThumbURL:
 
-	/* handler: uj.ThumbURL type=string kind=string quoted=false*/
+	/* handler: j.ThumbURL type=string kind=string quoted=false*/
 
 	{
 
@@ -5402,7 +5472,7 @@ handle_ThumbURL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ThumbURL = string(string(outBuf))
+			j.ThumbURL = string(string(outBuf))
 
 		}
 	}
@@ -5412,7 +5482,7 @@ handle_ThumbURL:
 
 handle_ThumbWidth:
 
-	/* handler: uj.ThumbWidth type=int kind=int quoted=false*/
+	/* handler: j.ThumbWidth type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -5432,7 +5502,7 @@ handle_ThumbWidth:
 				return fs.WrapErr(err)
 			}
 
-			uj.ThumbWidth = int(tval)
+			j.ThumbWidth = int(tval)
 
 		}
 	}
@@ -5442,7 +5512,7 @@ handle_ThumbWidth:
 
 handle_ThumbHeight:
 
-	/* handler: uj.ThumbHeight type=int kind=int quoted=false*/
+	/* handler: j.ThumbHeight type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -5462,7 +5532,7 @@ handle_ThumbHeight:
 				return fs.WrapErr(err)
 			}
 
-			uj.ThumbHeight = int(tval)
+			j.ThumbHeight = int(tval)
 
 		}
 	}
@@ -5488,20 +5558,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultAudio) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultAudio) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultAudio) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultAudio) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -5510,25 +5583,25 @@ func (mj *InlineQueryResultAudio) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"audio_url":`)
-	fflib.WriteJsonString(buf, string(mj.URL))
+	fflib.WriteJsonString(buf, string(j.URL))
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"performer":`)
-	fflib.WriteJsonString(buf, string(mj.Performer))
+	fflib.WriteJsonString(buf, string(j.Performer))
 	buf.WriteString(`,"audio_duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteByte(',')
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -5537,10 +5610,10 @@ func (mj *InlineQueryResultAudio) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 			buf.WriteByte(',')
 		}
 	}
-	if mj.InputMessageContent != nil {
+	if j.InputMessageContent != nil {
 		buf.WriteString(`"input_message_content":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.InputMessageContent)
+		err = buf.Encode(j.InputMessageContent)
 		if err != nil {
 			return err
 		}
@@ -5552,50 +5625,52 @@ func (mj *InlineQueryResultAudio) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 }
 
 const (
-	ffj_t_InlineQueryResultAudiobase = iota
-	ffj_t_InlineQueryResultAudiono_such_key
+	ffjtInlineQueryResultAudiobase = iota
+	ffjtInlineQueryResultAudionosuchkey
 
-	ffj_t_InlineQueryResultAudio_Type
+	ffjtInlineQueryResultAudioType
 
-	ffj_t_InlineQueryResultAudio_ID
+	ffjtInlineQueryResultAudioID
 
-	ffj_t_InlineQueryResultAudio_URL
+	ffjtInlineQueryResultAudioURL
 
-	ffj_t_InlineQueryResultAudio_Title
+	ffjtInlineQueryResultAudioTitle
 
-	ffj_t_InlineQueryResultAudio_Performer
+	ffjtInlineQueryResultAudioPerformer
 
-	ffj_t_InlineQueryResultAudio_Duration
+	ffjtInlineQueryResultAudioDuration
 
-	ffj_t_InlineQueryResultAudio_ReplyMarkup
+	ffjtInlineQueryResultAudioReplyMarkup
 
-	ffj_t_InlineQueryResultAudio_InputMessageContent
+	ffjtInlineQueryResultAudioInputMessageContent
 )
 
-var ffj_key_InlineQueryResultAudio_Type = []byte("type")
+var ffjKeyInlineQueryResultAudioType = []byte("type")
 
-var ffj_key_InlineQueryResultAudio_ID = []byte("id")
+var ffjKeyInlineQueryResultAudioID = []byte("id")
 
-var ffj_key_InlineQueryResultAudio_URL = []byte("audio_url")
+var ffjKeyInlineQueryResultAudioURL = []byte("audio_url")
 
-var ffj_key_InlineQueryResultAudio_Title = []byte("title")
+var ffjKeyInlineQueryResultAudioTitle = []byte("title")
 
-var ffj_key_InlineQueryResultAudio_Performer = []byte("performer")
+var ffjKeyInlineQueryResultAudioPerformer = []byte("performer")
 
-var ffj_key_InlineQueryResultAudio_Duration = []byte("audio_duration")
+var ffjKeyInlineQueryResultAudioDuration = []byte("audio_duration")
 
-var ffj_key_InlineQueryResultAudio_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultAudioReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultAudio_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultAudioInputMessageContent = []byte("input_message_content")
 
-func (uj *InlineQueryResultAudio) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultAudio) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultAudio) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultAudiobase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultAudio) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultAudiobase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -5641,7 +5716,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultAudiono_such_key
+				currentKey = ffjtInlineQueryResultAudionosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -5649,110 +5724,110 @@ mainparse:
 
 				case 'a':
 
-					if bytes.Equal(ffj_key_InlineQueryResultAudio_URL, kn) {
-						currentKey = ffj_t_InlineQueryResultAudio_URL
+					if bytes.Equal(ffjKeyInlineQueryResultAudioURL, kn) {
+						currentKey = ffjtInlineQueryResultAudioURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultAudio_Duration, kn) {
-						currentKey = ffj_t_InlineQueryResultAudio_Duration
+					} else if bytes.Equal(ffjKeyInlineQueryResultAudioDuration, kn) {
+						currentKey = ffjtInlineQueryResultAudioDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultAudio_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultAudio_ID
+					if bytes.Equal(ffjKeyInlineQueryResultAudioID, kn) {
+						currentKey = ffjtInlineQueryResultAudioID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultAudio_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultAudio_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultAudioInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultAudioInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_InlineQueryResultAudio_Performer, kn) {
-						currentKey = ffj_t_InlineQueryResultAudio_Performer
+					if bytes.Equal(ffjKeyInlineQueryResultAudioPerformer, kn) {
+						currentKey = ffjtInlineQueryResultAudioPerformer
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultAudio_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultAudio_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultAudioReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultAudioReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultAudio_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultAudio_Type
+					if bytes.Equal(ffjKeyInlineQueryResultAudioType, kn) {
+						currentKey = ffjtInlineQueryResultAudioType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultAudio_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultAudio_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultAudioTitle, kn) {
+						currentKey = ffjtInlineQueryResultAudioTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultAudio_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultAudio_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultAudioInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultAudioInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultAudio_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultAudio_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultAudioReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultAudioReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultAudio_Duration, kn) {
-					currentKey = ffj_t_InlineQueryResultAudio_Duration
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultAudioDuration, kn) {
+					currentKey = ffjtInlineQueryResultAudioDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultAudio_Performer, kn) {
-					currentKey = ffj_t_InlineQueryResultAudio_Performer
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultAudioPerformer, kn) {
+					currentKey = ffjtInlineQueryResultAudioPerformer
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultAudio_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultAudio_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultAudioTitle, kn) {
+					currentKey = ffjtInlineQueryResultAudioTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultAudio_URL, kn) {
-					currentKey = ffj_t_InlineQueryResultAudio_URL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultAudioURL, kn) {
+					currentKey = ffjtInlineQueryResultAudioURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultAudio_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultAudio_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultAudioID, kn) {
+					currentKey = ffjtInlineQueryResultAudioID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultAudio_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultAudio_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultAudioType, kn) {
+					currentKey = ffjtInlineQueryResultAudioType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultAudiono_such_key
+				currentKey = ffjtInlineQueryResultAudionosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -5769,31 +5844,31 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultAudio_Type:
+				case ffjtInlineQueryResultAudioType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultAudio_ID:
+				case ffjtInlineQueryResultAudioID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultAudio_URL:
+				case ffjtInlineQueryResultAudioURL:
 					goto handle_URL
 
-				case ffj_t_InlineQueryResultAudio_Title:
+				case ffjtInlineQueryResultAudioTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultAudio_Performer:
+				case ffjtInlineQueryResultAudioPerformer:
 					goto handle_Performer
 
-				case ffj_t_InlineQueryResultAudio_Duration:
+				case ffjtInlineQueryResultAudioDuration:
 					goto handle_Duration
 
-				case ffj_t_InlineQueryResultAudio_ReplyMarkup:
+				case ffjtInlineQueryResultAudioReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultAudio_InputMessageContent:
+				case ffjtInlineQueryResultAudioInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultAudiono_such_key:
+				case ffjtInlineQueryResultAudionosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -5809,7 +5884,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -5825,7 +5900,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -5835,7 +5910,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -5851,7 +5926,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -5861,7 +5936,7 @@ handle_ID:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -5877,7 +5952,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -5887,7 +5962,7 @@ handle_URL:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -5903,7 +5978,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -5913,7 +5988,7 @@ handle_Title:
 
 handle_Performer:
 
-	/* handler: uj.Performer type=string kind=string quoted=false*/
+	/* handler: j.Performer type=string kind=string quoted=false*/
 
 	{
 
@@ -5929,7 +6004,7 @@ handle_Performer:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Performer = string(string(outBuf))
+			j.Performer = string(string(outBuf))
 
 		}
 	}
@@ -5939,7 +6014,7 @@ handle_Performer:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -5959,7 +6034,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -5969,22 +6044,22 @@ handle_Duration:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -5996,7 +6071,7 @@ handle_ReplyMarkup:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -6005,7 +6080,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -6032,20 +6107,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultDocument) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultDocument) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultDocument) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultDocument) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -6054,27 +6132,27 @@ func (mj *InlineQueryResultDocument) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 	_ = obj
 	_ = err
 	buf.WriteString(`{"type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"caption":`)
-	fflib.WriteJsonString(buf, string(mj.Caption))
+	fflib.WriteJsonString(buf, string(j.Caption))
 	buf.WriteString(`,"document_url":`)
-	fflib.WriteJsonString(buf, string(mj.URL))
+	fflib.WriteJsonString(buf, string(j.URL))
 	buf.WriteString(`,"mime_type":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"description":`)
-	fflib.WriteJsonString(buf, string(mj.Description))
+	fflib.WriteJsonString(buf, string(j.Description))
 	buf.WriteByte(',')
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -6083,86 +6161,88 @@ func (mj *InlineQueryResultDocument) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 			buf.WriteByte(',')
 		}
 	}
-	if mj.InputMessageContent != nil {
+	if j.InputMessageContent != nil {
 		buf.WriteString(`"input_message_content":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.InputMessageContent)
+		err = buf.Encode(j.InputMessageContent)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
 	buf.WriteString(`"thumb_url":`)
-	fflib.WriteJsonString(buf, string(mj.ThumbURL))
+	fflib.WriteJsonString(buf, string(j.ThumbURL))
 	buf.WriteString(`,"thumb_width":`)
-	fflib.FormatBits2(buf, uint64(mj.ThumbWidth), 10, mj.ThumbWidth < 0)
+	fflib.FormatBits2(buf, uint64(j.ThumbWidth), 10, j.ThumbWidth < 0)
 	buf.WriteString(`,"thumb_height":`)
-	fflib.FormatBits2(buf, uint64(mj.ThumbHeight), 10, mj.ThumbHeight < 0)
+	fflib.FormatBits2(buf, uint64(j.ThumbHeight), 10, j.ThumbHeight < 0)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_InlineQueryResultDocumentbase = iota
-	ffj_t_InlineQueryResultDocumentno_such_key
+	ffjtInlineQueryResultDocumentbase = iota
+	ffjtInlineQueryResultDocumentnosuchkey
 
-	ffj_t_InlineQueryResultDocument_Type
+	ffjtInlineQueryResultDocumentType
 
-	ffj_t_InlineQueryResultDocument_ID
+	ffjtInlineQueryResultDocumentID
 
-	ffj_t_InlineQueryResultDocument_Title
+	ffjtInlineQueryResultDocumentTitle
 
-	ffj_t_InlineQueryResultDocument_Caption
+	ffjtInlineQueryResultDocumentCaption
 
-	ffj_t_InlineQueryResultDocument_URL
+	ffjtInlineQueryResultDocumentURL
 
-	ffj_t_InlineQueryResultDocument_MimeType
+	ffjtInlineQueryResultDocumentMimeType
 
-	ffj_t_InlineQueryResultDocument_Description
+	ffjtInlineQueryResultDocumentDescription
 
-	ffj_t_InlineQueryResultDocument_ReplyMarkup
+	ffjtInlineQueryResultDocumentReplyMarkup
 
-	ffj_t_InlineQueryResultDocument_InputMessageContent
+	ffjtInlineQueryResultDocumentInputMessageContent
 
-	ffj_t_InlineQueryResultDocument_ThumbURL
+	ffjtInlineQueryResultDocumentThumbURL
 
-	ffj_t_InlineQueryResultDocument_ThumbWidth
+	ffjtInlineQueryResultDocumentThumbWidth
 
-	ffj_t_InlineQueryResultDocument_ThumbHeight
+	ffjtInlineQueryResultDocumentThumbHeight
 )
 
-var ffj_key_InlineQueryResultDocument_Type = []byte("type")
+var ffjKeyInlineQueryResultDocumentType = []byte("type")
 
-var ffj_key_InlineQueryResultDocument_ID = []byte("id")
+var ffjKeyInlineQueryResultDocumentID = []byte("id")
 
-var ffj_key_InlineQueryResultDocument_Title = []byte("title")
+var ffjKeyInlineQueryResultDocumentTitle = []byte("title")
 
-var ffj_key_InlineQueryResultDocument_Caption = []byte("caption")
+var ffjKeyInlineQueryResultDocumentCaption = []byte("caption")
 
-var ffj_key_InlineQueryResultDocument_URL = []byte("document_url")
+var ffjKeyInlineQueryResultDocumentURL = []byte("document_url")
 
-var ffj_key_InlineQueryResultDocument_MimeType = []byte("mime_type")
+var ffjKeyInlineQueryResultDocumentMimeType = []byte("mime_type")
 
-var ffj_key_InlineQueryResultDocument_Description = []byte("description")
+var ffjKeyInlineQueryResultDocumentDescription = []byte("description")
 
-var ffj_key_InlineQueryResultDocument_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultDocumentReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultDocument_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultDocumentInputMessageContent = []byte("input_message_content")
 
-var ffj_key_InlineQueryResultDocument_ThumbURL = []byte("thumb_url")
+var ffjKeyInlineQueryResultDocumentThumbURL = []byte("thumb_url")
 
-var ffj_key_InlineQueryResultDocument_ThumbWidth = []byte("thumb_width")
+var ffjKeyInlineQueryResultDocumentThumbWidth = []byte("thumb_width")
 
-var ffj_key_InlineQueryResultDocument_ThumbHeight = []byte("thumb_height")
+var ffjKeyInlineQueryResultDocumentThumbHeight = []byte("thumb_height")
 
-func (uj *InlineQueryResultDocument) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultDocument) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultDocument) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultDocumentbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultDocument) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultDocumentbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -6208,7 +6288,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultDocumentno_such_key
+				currentKey = ffjtInlineQueryResultDocumentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -6216,157 +6296,157 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_InlineQueryResultDocument_Caption, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_Caption
+					if bytes.Equal(ffjKeyInlineQueryResultDocumentCaption, kn) {
+						currentKey = ffjtInlineQueryResultDocumentCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_InlineQueryResultDocument_URL, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_URL
+					if bytes.Equal(ffjKeyInlineQueryResultDocumentURL, kn) {
+						currentKey = ffjtInlineQueryResultDocumentURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultDocument_Description, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_Description
+					} else if bytes.Equal(ffjKeyInlineQueryResultDocumentDescription, kn) {
+						currentKey = ffjtInlineQueryResultDocumentDescription
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultDocument_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_ID
+					if bytes.Equal(ffjKeyInlineQueryResultDocumentID, kn) {
+						currentKey = ffjtInlineQueryResultDocumentID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultDocument_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultDocumentInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultDocumentInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_InlineQueryResultDocument_MimeType, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_MimeType
+					if bytes.Equal(ffjKeyInlineQueryResultDocumentMimeType, kn) {
+						currentKey = ffjtInlineQueryResultDocumentMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultDocument_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultDocumentReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultDocumentReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultDocument_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_Type
+					if bytes.Equal(ffjKeyInlineQueryResultDocumentType, kn) {
+						currentKey = ffjtInlineQueryResultDocumentType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultDocument_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultDocumentTitle, kn) {
+						currentKey = ffjtInlineQueryResultDocumentTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultDocument_ThumbURL, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_ThumbURL
+					} else if bytes.Equal(ffjKeyInlineQueryResultDocumentThumbURL, kn) {
+						currentKey = ffjtInlineQueryResultDocumentThumbURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultDocument_ThumbWidth, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_ThumbWidth
+					} else if bytes.Equal(ffjKeyInlineQueryResultDocumentThumbWidth, kn) {
+						currentKey = ffjtInlineQueryResultDocumentThumbWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultDocument_ThumbHeight, kn) {
-						currentKey = ffj_t_InlineQueryResultDocument_ThumbHeight
+					} else if bytes.Equal(ffjKeyInlineQueryResultDocumentThumbHeight, kn) {
+						currentKey = ffjtInlineQueryResultDocumentThumbHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultDocument_ThumbHeight, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_ThumbHeight
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultDocumentThumbHeight, kn) {
+					currentKey = ffjtInlineQueryResultDocumentThumbHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultDocument_ThumbWidth, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_ThumbWidth
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultDocumentThumbWidth, kn) {
+					currentKey = ffjtInlineQueryResultDocumentThumbWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultDocument_ThumbURL, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_ThumbURL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultDocumentThumbURL, kn) {
+					currentKey = ffjtInlineQueryResultDocumentThumbURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultDocument_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultDocumentInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultDocumentInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultDocument_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultDocumentReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultDocumentReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultDocument_Description, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_Description
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultDocumentDescription, kn) {
+					currentKey = ffjtInlineQueryResultDocumentDescription
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultDocument_MimeType, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_MimeType
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultDocumentMimeType, kn) {
+					currentKey = ffjtInlineQueryResultDocumentMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultDocument_URL, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_URL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultDocumentURL, kn) {
+					currentKey = ffjtInlineQueryResultDocumentURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultDocument_Caption, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultDocumentCaption, kn) {
+					currentKey = ffjtInlineQueryResultDocumentCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultDocument_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultDocumentTitle, kn) {
+					currentKey = ffjtInlineQueryResultDocumentTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultDocument_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultDocumentID, kn) {
+					currentKey = ffjtInlineQueryResultDocumentID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultDocument_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultDocument_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultDocumentType, kn) {
+					currentKey = ffjtInlineQueryResultDocumentType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultDocumentno_such_key
+				currentKey = ffjtInlineQueryResultDocumentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -6383,43 +6463,43 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultDocument_Type:
+				case ffjtInlineQueryResultDocumentType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultDocument_ID:
+				case ffjtInlineQueryResultDocumentID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultDocument_Title:
+				case ffjtInlineQueryResultDocumentTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultDocument_Caption:
+				case ffjtInlineQueryResultDocumentCaption:
 					goto handle_Caption
 
-				case ffj_t_InlineQueryResultDocument_URL:
+				case ffjtInlineQueryResultDocumentURL:
 					goto handle_URL
 
-				case ffj_t_InlineQueryResultDocument_MimeType:
+				case ffjtInlineQueryResultDocumentMimeType:
 					goto handle_MimeType
 
-				case ffj_t_InlineQueryResultDocument_Description:
+				case ffjtInlineQueryResultDocumentDescription:
 					goto handle_Description
 
-				case ffj_t_InlineQueryResultDocument_ReplyMarkup:
+				case ffjtInlineQueryResultDocumentReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultDocument_InputMessageContent:
+				case ffjtInlineQueryResultDocumentInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultDocument_ThumbURL:
+				case ffjtInlineQueryResultDocumentThumbURL:
 					goto handle_ThumbURL
 
-				case ffj_t_InlineQueryResultDocument_ThumbWidth:
+				case ffjtInlineQueryResultDocumentThumbWidth:
 					goto handle_ThumbWidth
 
-				case ffj_t_InlineQueryResultDocument_ThumbHeight:
+				case ffjtInlineQueryResultDocumentThumbHeight:
 					goto handle_ThumbHeight
 
-				case ffj_t_InlineQueryResultDocumentno_such_key:
+				case ffjtInlineQueryResultDocumentnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -6435,7 +6515,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -6451,7 +6531,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -6461,7 +6541,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -6477,7 +6557,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -6487,7 +6567,7 @@ handle_ID:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -6503,7 +6583,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -6513,7 +6593,7 @@ handle_Title:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -6529,7 +6609,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -6539,7 +6619,7 @@ handle_Caption:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -6555,7 +6635,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -6565,7 +6645,7 @@ handle_URL:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -6581,7 +6661,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -6591,7 +6671,7 @@ handle_MimeType:
 
 handle_Description:
 
-	/* handler: uj.Description type=string kind=string quoted=false*/
+	/* handler: j.Description type=string kind=string quoted=false*/
 
 	{
 
@@ -6607,7 +6687,7 @@ handle_Description:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Description = string(string(outBuf))
+			j.Description = string(string(outBuf))
 
 		}
 	}
@@ -6617,22 +6697,22 @@ handle_Description:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -6644,7 +6724,7 @@ handle_ReplyMarkup:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -6653,7 +6733,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -6664,7 +6744,7 @@ handle_InputMessageContent:
 
 handle_ThumbURL:
 
-	/* handler: uj.ThumbURL type=string kind=string quoted=false*/
+	/* handler: j.ThumbURL type=string kind=string quoted=false*/
 
 	{
 
@@ -6680,7 +6760,7 @@ handle_ThumbURL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ThumbURL = string(string(outBuf))
+			j.ThumbURL = string(string(outBuf))
 
 		}
 	}
@@ -6690,7 +6770,7 @@ handle_ThumbURL:
 
 handle_ThumbWidth:
 
-	/* handler: uj.ThumbWidth type=int kind=int quoted=false*/
+	/* handler: j.ThumbWidth type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -6710,7 +6790,7 @@ handle_ThumbWidth:
 				return fs.WrapErr(err)
 			}
 
-			uj.ThumbWidth = int(tval)
+			j.ThumbWidth = int(tval)
 
 		}
 	}
@@ -6720,7 +6800,7 @@ handle_ThumbWidth:
 
 handle_ThumbHeight:
 
-	/* handler: uj.ThumbHeight type=int kind=int quoted=false*/
+	/* handler: j.ThumbHeight type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -6740,7 +6820,7 @@ handle_ThumbHeight:
 				return fs.WrapErr(err)
 			}
 
-			uj.ThumbHeight = int(tval)
+			j.ThumbHeight = int(tval)
 
 		}
 	}
@@ -6766,20 +6846,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultGIF) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultGIF) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultGIF) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultGIF) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -6788,44 +6871,44 @@ func (mj *InlineQueryResultGIF) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"gif_url":`)
-	fflib.WriteJsonString(buf, string(mj.URL))
+	fflib.WriteJsonString(buf, string(j.URL))
 	buf.WriteByte(',')
-	if mj.Width != 0 {
+	if j.Width != 0 {
 		buf.WriteString(`"gif_width":`)
-		fflib.FormatBits2(buf, uint64(mj.Width), 10, mj.Width < 0)
+		fflib.FormatBits2(buf, uint64(j.Width), 10, j.Width < 0)
 		buf.WriteByte(',')
 	}
-	if mj.Height != 0 {
+	if j.Height != 0 {
 		buf.WriteString(`"gif_height":`)
-		fflib.FormatBits2(buf, uint64(mj.Height), 10, mj.Height < 0)
+		fflib.FormatBits2(buf, uint64(j.Height), 10, j.Height < 0)
 		buf.WriteByte(',')
 	}
-	if len(mj.ThumbURL) != 0 {
+	if len(j.ThumbURL) != 0 {
 		buf.WriteString(`"thumb_url":`)
-		fflib.WriteJsonString(buf, string(mj.ThumbURL))
+		fflib.WriteJsonString(buf, string(j.ThumbURL))
 		buf.WriteByte(',')
 	}
-	if len(mj.Title) != 0 {
+	if len(j.Title) != 0 {
 		buf.WriteString(`"title":`)
-		fflib.WriteJsonString(buf, string(mj.Title))
+		fflib.WriteJsonString(buf, string(j.Title))
 		buf.WriteByte(',')
 	}
-	if len(mj.Caption) != 0 {
+	if len(j.Caption) != 0 {
 		buf.WriteString(`"caption":`)
-		fflib.WriteJsonString(buf, string(mj.Caption))
+		fflib.WriteJsonString(buf, string(j.Caption))
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -6834,10 +6917,10 @@ func (mj *InlineQueryResultGIF) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.InputMessageContent != nil {
+	if j.InputMessageContent != nil {
 		buf.WriteString(`"input_message_content":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.InputMessageContent)
+		err = buf.Encode(j.InputMessageContent)
 		if err != nil {
 			return err
 		}
@@ -6849,58 +6932,60 @@ func (mj *InlineQueryResultGIF) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_InlineQueryResultGIFbase = iota
-	ffj_t_InlineQueryResultGIFno_such_key
+	ffjtInlineQueryResultGIFbase = iota
+	ffjtInlineQueryResultGIFnosuchkey
 
-	ffj_t_InlineQueryResultGIF_Type
+	ffjtInlineQueryResultGIFType
 
-	ffj_t_InlineQueryResultGIF_ID
+	ffjtInlineQueryResultGIFID
 
-	ffj_t_InlineQueryResultGIF_URL
+	ffjtInlineQueryResultGIFURL
 
-	ffj_t_InlineQueryResultGIF_Width
+	ffjtInlineQueryResultGIFWidth
 
-	ffj_t_InlineQueryResultGIF_Height
+	ffjtInlineQueryResultGIFHeight
 
-	ffj_t_InlineQueryResultGIF_ThumbURL
+	ffjtInlineQueryResultGIFThumbURL
 
-	ffj_t_InlineQueryResultGIF_Title
+	ffjtInlineQueryResultGIFTitle
 
-	ffj_t_InlineQueryResultGIF_Caption
+	ffjtInlineQueryResultGIFCaption
 
-	ffj_t_InlineQueryResultGIF_ReplyMarkup
+	ffjtInlineQueryResultGIFReplyMarkup
 
-	ffj_t_InlineQueryResultGIF_InputMessageContent
+	ffjtInlineQueryResultGIFInputMessageContent
 )
 
-var ffj_key_InlineQueryResultGIF_Type = []byte("type")
+var ffjKeyInlineQueryResultGIFType = []byte("type")
 
-var ffj_key_InlineQueryResultGIF_ID = []byte("id")
+var ffjKeyInlineQueryResultGIFID = []byte("id")
 
-var ffj_key_InlineQueryResultGIF_URL = []byte("gif_url")
+var ffjKeyInlineQueryResultGIFURL = []byte("gif_url")
 
-var ffj_key_InlineQueryResultGIF_Width = []byte("gif_width")
+var ffjKeyInlineQueryResultGIFWidth = []byte("gif_width")
 
-var ffj_key_InlineQueryResultGIF_Height = []byte("gif_height")
+var ffjKeyInlineQueryResultGIFHeight = []byte("gif_height")
 
-var ffj_key_InlineQueryResultGIF_ThumbURL = []byte("thumb_url")
+var ffjKeyInlineQueryResultGIFThumbURL = []byte("thumb_url")
 
-var ffj_key_InlineQueryResultGIF_Title = []byte("title")
+var ffjKeyInlineQueryResultGIFTitle = []byte("title")
 
-var ffj_key_InlineQueryResultGIF_Caption = []byte("caption")
+var ffjKeyInlineQueryResultGIFCaption = []byte("caption")
 
-var ffj_key_InlineQueryResultGIF_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultGIFReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultGIF_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultGIFInputMessageContent = []byte("input_message_content")
 
-func (uj *InlineQueryResultGIF) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultGIF) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultGIF) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultGIFbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultGIF) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultGIFbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -6946,7 +7031,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultGIFno_such_key
+				currentKey = ffjtInlineQueryResultGIFnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -6954,132 +7039,132 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_InlineQueryResultGIF_Caption, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_Caption
+					if bytes.Equal(ffjKeyInlineQueryResultGIFCaption, kn) {
+						currentKey = ffjtInlineQueryResultGIFCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'g':
 
-					if bytes.Equal(ffj_key_InlineQueryResultGIF_URL, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_URL
+					if bytes.Equal(ffjKeyInlineQueryResultGIFURL, kn) {
+						currentKey = ffjtInlineQueryResultGIFURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultGIF_Width, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_Width
+					} else if bytes.Equal(ffjKeyInlineQueryResultGIFWidth, kn) {
+						currentKey = ffjtInlineQueryResultGIFWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultGIF_Height, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_Height
+					} else if bytes.Equal(ffjKeyInlineQueryResultGIFHeight, kn) {
+						currentKey = ffjtInlineQueryResultGIFHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultGIF_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_ID
+					if bytes.Equal(ffjKeyInlineQueryResultGIFID, kn) {
+						currentKey = ffjtInlineQueryResultGIFID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultGIF_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultGIFInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultGIFInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultGIF_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultGIFReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultGIFReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultGIF_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_Type
+					if bytes.Equal(ffjKeyInlineQueryResultGIFType, kn) {
+						currentKey = ffjtInlineQueryResultGIFType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultGIF_ThumbURL, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_ThumbURL
+					} else if bytes.Equal(ffjKeyInlineQueryResultGIFThumbURL, kn) {
+						currentKey = ffjtInlineQueryResultGIFThumbURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultGIF_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultGIF_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultGIFTitle, kn) {
+						currentKey = ffjtInlineQueryResultGIFTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultGIF_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultGIFInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultGIFInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultGIF_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultGIFReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultGIFReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultGIF_Caption, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultGIFCaption, kn) {
+					currentKey = ffjtInlineQueryResultGIFCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultGIF_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultGIFTitle, kn) {
+					currentKey = ffjtInlineQueryResultGIFTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultGIF_ThumbURL, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_ThumbURL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultGIFThumbURL, kn) {
+					currentKey = ffjtInlineQueryResultGIFThumbURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultGIF_Height, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_Height
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultGIFHeight, kn) {
+					currentKey = ffjtInlineQueryResultGIFHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultGIF_Width, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_Width
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultGIFWidth, kn) {
+					currentKey = ffjtInlineQueryResultGIFWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultGIF_URL, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_URL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultGIFURL, kn) {
+					currentKey = ffjtInlineQueryResultGIFURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultGIF_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultGIFID, kn) {
+					currentKey = ffjtInlineQueryResultGIFID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultGIF_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultGIF_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultGIFType, kn) {
+					currentKey = ffjtInlineQueryResultGIFType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultGIFno_such_key
+				currentKey = ffjtInlineQueryResultGIFnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -7096,37 +7181,37 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultGIF_Type:
+				case ffjtInlineQueryResultGIFType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultGIF_ID:
+				case ffjtInlineQueryResultGIFID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultGIF_URL:
+				case ffjtInlineQueryResultGIFURL:
 					goto handle_URL
 
-				case ffj_t_InlineQueryResultGIF_Width:
+				case ffjtInlineQueryResultGIFWidth:
 					goto handle_Width
 
-				case ffj_t_InlineQueryResultGIF_Height:
+				case ffjtInlineQueryResultGIFHeight:
 					goto handle_Height
 
-				case ffj_t_InlineQueryResultGIF_ThumbURL:
+				case ffjtInlineQueryResultGIFThumbURL:
 					goto handle_ThumbURL
 
-				case ffj_t_InlineQueryResultGIF_Title:
+				case ffjtInlineQueryResultGIFTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultGIF_Caption:
+				case ffjtInlineQueryResultGIFCaption:
 					goto handle_Caption
 
-				case ffj_t_InlineQueryResultGIF_ReplyMarkup:
+				case ffjtInlineQueryResultGIFReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultGIF_InputMessageContent:
+				case ffjtInlineQueryResultGIFInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultGIFno_such_key:
+				case ffjtInlineQueryResultGIFnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -7142,7 +7227,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -7158,7 +7243,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -7168,7 +7253,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -7184,7 +7269,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -7194,7 +7279,7 @@ handle_ID:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -7210,7 +7295,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -7220,7 +7305,7 @@ handle_URL:
 
 handle_Width:
 
-	/* handler: uj.Width type=int kind=int quoted=false*/
+	/* handler: j.Width type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -7240,7 +7325,7 @@ handle_Width:
 				return fs.WrapErr(err)
 			}
 
-			uj.Width = int(tval)
+			j.Width = int(tval)
 
 		}
 	}
@@ -7250,7 +7335,7 @@ handle_Width:
 
 handle_Height:
 
-	/* handler: uj.Height type=int kind=int quoted=false*/
+	/* handler: j.Height type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -7270,7 +7355,7 @@ handle_Height:
 				return fs.WrapErr(err)
 			}
 
-			uj.Height = int(tval)
+			j.Height = int(tval)
 
 		}
 	}
@@ -7280,7 +7365,7 @@ handle_Height:
 
 handle_ThumbURL:
 
-	/* handler: uj.ThumbURL type=string kind=string quoted=false*/
+	/* handler: j.ThumbURL type=string kind=string quoted=false*/
 
 	{
 
@@ -7296,7 +7381,7 @@ handle_ThumbURL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ThumbURL = string(string(outBuf))
+			j.ThumbURL = string(string(outBuf))
 
 		}
 	}
@@ -7306,7 +7391,7 @@ handle_ThumbURL:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -7322,7 +7407,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -7332,7 +7417,7 @@ handle_Title:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -7348,7 +7433,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -7358,22 +7443,22 @@ handle_Caption:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -7385,7 +7470,7 @@ handle_ReplyMarkup:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -7394,7 +7479,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -7421,20 +7506,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultLocation) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultLocation) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultLocation) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultLocation) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -7443,23 +7531,23 @@ func (mj *InlineQueryResultLocation) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 	_ = obj
 	_ = err
 	buf.WriteString(`{"type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"latitude":`)
-	fflib.AppendFloat(buf, float64(mj.Latitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Latitude), 'g', -1, 64)
 	buf.WriteString(`,"longitude":`)
-	fflib.AppendFloat(buf, float64(mj.Longitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Longitude), 'g', -1, 64)
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteByte(',')
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -7468,78 +7556,80 @@ func (mj *InlineQueryResultLocation) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 			buf.WriteByte(',')
 		}
 	}
-	if mj.InputMessageContent != nil {
+	if j.InputMessageContent != nil {
 		buf.WriteString(`"input_message_content":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.InputMessageContent)
+		err = buf.Encode(j.InputMessageContent)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
 	buf.WriteString(`"thumb_url":`)
-	fflib.WriteJsonString(buf, string(mj.ThumbURL))
+	fflib.WriteJsonString(buf, string(j.ThumbURL))
 	buf.WriteString(`,"thumb_width":`)
-	fflib.FormatBits2(buf, uint64(mj.ThumbWidth), 10, mj.ThumbWidth < 0)
+	fflib.FormatBits2(buf, uint64(j.ThumbWidth), 10, j.ThumbWidth < 0)
 	buf.WriteString(`,"thumb_height":`)
-	fflib.FormatBits2(buf, uint64(mj.ThumbHeight), 10, mj.ThumbHeight < 0)
+	fflib.FormatBits2(buf, uint64(j.ThumbHeight), 10, j.ThumbHeight < 0)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_InlineQueryResultLocationbase = iota
-	ffj_t_InlineQueryResultLocationno_such_key
+	ffjtInlineQueryResultLocationbase = iota
+	ffjtInlineQueryResultLocationnosuchkey
 
-	ffj_t_InlineQueryResultLocation_Type
+	ffjtInlineQueryResultLocationType
 
-	ffj_t_InlineQueryResultLocation_ID
+	ffjtInlineQueryResultLocationID
 
-	ffj_t_InlineQueryResultLocation_Latitude
+	ffjtInlineQueryResultLocationLatitude
 
-	ffj_t_InlineQueryResultLocation_Longitude
+	ffjtInlineQueryResultLocationLongitude
 
-	ffj_t_InlineQueryResultLocation_Title
+	ffjtInlineQueryResultLocationTitle
 
-	ffj_t_InlineQueryResultLocation_ReplyMarkup
+	ffjtInlineQueryResultLocationReplyMarkup
 
-	ffj_t_InlineQueryResultLocation_InputMessageContent
+	ffjtInlineQueryResultLocationInputMessageContent
 
-	ffj_t_InlineQueryResultLocation_ThumbURL
+	ffjtInlineQueryResultLocationThumbURL
 
-	ffj_t_InlineQueryResultLocation_ThumbWidth
+	ffjtInlineQueryResultLocationThumbWidth
 
-	ffj_t_InlineQueryResultLocation_ThumbHeight
+	ffjtInlineQueryResultLocationThumbHeight
 )
 
-var ffj_key_InlineQueryResultLocation_Type = []byte("type")
+var ffjKeyInlineQueryResultLocationType = []byte("type")
 
-var ffj_key_InlineQueryResultLocation_ID = []byte("id")
+var ffjKeyInlineQueryResultLocationID = []byte("id")
 
-var ffj_key_InlineQueryResultLocation_Latitude = []byte("latitude")
+var ffjKeyInlineQueryResultLocationLatitude = []byte("latitude")
 
-var ffj_key_InlineQueryResultLocation_Longitude = []byte("longitude")
+var ffjKeyInlineQueryResultLocationLongitude = []byte("longitude")
 
-var ffj_key_InlineQueryResultLocation_Title = []byte("title")
+var ffjKeyInlineQueryResultLocationTitle = []byte("title")
 
-var ffj_key_InlineQueryResultLocation_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultLocationReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultLocation_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultLocationInputMessageContent = []byte("input_message_content")
 
-var ffj_key_InlineQueryResultLocation_ThumbURL = []byte("thumb_url")
+var ffjKeyInlineQueryResultLocationThumbURL = []byte("thumb_url")
 
-var ffj_key_InlineQueryResultLocation_ThumbWidth = []byte("thumb_width")
+var ffjKeyInlineQueryResultLocationThumbWidth = []byte("thumb_width")
 
-var ffj_key_InlineQueryResultLocation_ThumbHeight = []byte("thumb_height")
+var ffjKeyInlineQueryResultLocationThumbHeight = []byte("thumb_height")
 
-func (uj *InlineQueryResultLocation) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultLocation) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultLocation) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultLocationbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultLocation) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultLocationbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -7585,7 +7675,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultLocationno_such_key
+				currentKey = ffjtInlineQueryResultLocationnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -7593,129 +7683,129 @@ mainparse:
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultLocation_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_ID
+					if bytes.Equal(ffjKeyInlineQueryResultLocationID, kn) {
+						currentKey = ffjtInlineQueryResultLocationID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultLocation_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultLocationInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultLocationInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_InlineQueryResultLocation_Latitude, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_Latitude
+					if bytes.Equal(ffjKeyInlineQueryResultLocationLatitude, kn) {
+						currentKey = ffjtInlineQueryResultLocationLatitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultLocation_Longitude, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_Longitude
+					} else if bytes.Equal(ffjKeyInlineQueryResultLocationLongitude, kn) {
+						currentKey = ffjtInlineQueryResultLocationLongitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultLocation_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultLocationReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultLocationReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultLocation_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_Type
+					if bytes.Equal(ffjKeyInlineQueryResultLocationType, kn) {
+						currentKey = ffjtInlineQueryResultLocationType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultLocation_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultLocationTitle, kn) {
+						currentKey = ffjtInlineQueryResultLocationTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultLocation_ThumbURL, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_ThumbURL
+					} else if bytes.Equal(ffjKeyInlineQueryResultLocationThumbURL, kn) {
+						currentKey = ffjtInlineQueryResultLocationThumbURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultLocation_ThumbWidth, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_ThumbWidth
+					} else if bytes.Equal(ffjKeyInlineQueryResultLocationThumbWidth, kn) {
+						currentKey = ffjtInlineQueryResultLocationThumbWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultLocation_ThumbHeight, kn) {
-						currentKey = ffj_t_InlineQueryResultLocation_ThumbHeight
+					} else if bytes.Equal(ffjKeyInlineQueryResultLocationThumbHeight, kn) {
+						currentKey = ffjtInlineQueryResultLocationThumbHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultLocation_ThumbHeight, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_ThumbHeight
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultLocationThumbHeight, kn) {
+					currentKey = ffjtInlineQueryResultLocationThumbHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultLocation_ThumbWidth, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_ThumbWidth
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultLocationThumbWidth, kn) {
+					currentKey = ffjtInlineQueryResultLocationThumbWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultLocation_ThumbURL, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_ThumbURL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultLocationThumbURL, kn) {
+					currentKey = ffjtInlineQueryResultLocationThumbURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultLocation_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultLocationInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultLocationInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultLocation_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultLocationReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultLocationReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultLocation_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultLocationTitle, kn) {
+					currentKey = ffjtInlineQueryResultLocationTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultLocation_Longitude, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_Longitude
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultLocationLongitude, kn) {
+					currentKey = ffjtInlineQueryResultLocationLongitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultLocation_Latitude, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_Latitude
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultLocationLatitude, kn) {
+					currentKey = ffjtInlineQueryResultLocationLatitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultLocation_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultLocationID, kn) {
+					currentKey = ffjtInlineQueryResultLocationID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultLocation_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultLocation_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultLocationType, kn) {
+					currentKey = ffjtInlineQueryResultLocationType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultLocationno_such_key
+				currentKey = ffjtInlineQueryResultLocationnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -7732,37 +7822,37 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultLocation_Type:
+				case ffjtInlineQueryResultLocationType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultLocation_ID:
+				case ffjtInlineQueryResultLocationID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultLocation_Latitude:
+				case ffjtInlineQueryResultLocationLatitude:
 					goto handle_Latitude
 
-				case ffj_t_InlineQueryResultLocation_Longitude:
+				case ffjtInlineQueryResultLocationLongitude:
 					goto handle_Longitude
 
-				case ffj_t_InlineQueryResultLocation_Title:
+				case ffjtInlineQueryResultLocationTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultLocation_ReplyMarkup:
+				case ffjtInlineQueryResultLocationReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultLocation_InputMessageContent:
+				case ffjtInlineQueryResultLocationInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultLocation_ThumbURL:
+				case ffjtInlineQueryResultLocationThumbURL:
 					goto handle_ThumbURL
 
-				case ffj_t_InlineQueryResultLocation_ThumbWidth:
+				case ffjtInlineQueryResultLocationThumbWidth:
 					goto handle_ThumbWidth
 
-				case ffj_t_InlineQueryResultLocation_ThumbHeight:
+				case ffjtInlineQueryResultLocationThumbHeight:
 					goto handle_ThumbHeight
 
-				case ffj_t_InlineQueryResultLocationno_such_key:
+				case ffjtInlineQueryResultLocationnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -7778,7 +7868,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -7794,7 +7884,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -7804,7 +7894,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -7820,7 +7910,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -7830,7 +7920,7 @@ handle_ID:
 
 handle_Latitude:
 
-	/* handler: uj.Latitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Latitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -7850,7 +7940,7 @@ handle_Latitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Latitude = float64(tval)
+			j.Latitude = float64(tval)
 
 		}
 	}
@@ -7860,7 +7950,7 @@ handle_Latitude:
 
 handle_Longitude:
 
-	/* handler: uj.Longitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Longitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -7880,7 +7970,7 @@ handle_Longitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Longitude = float64(tval)
+			j.Longitude = float64(tval)
 
 		}
 	}
@@ -7890,7 +7980,7 @@ handle_Longitude:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -7906,7 +7996,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -7916,22 +8006,22 @@ handle_Title:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -7943,7 +8033,7 @@ handle_ReplyMarkup:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -7952,7 +8042,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -7963,7 +8053,7 @@ handle_InputMessageContent:
 
 handle_ThumbURL:
 
-	/* handler: uj.ThumbURL type=string kind=string quoted=false*/
+	/* handler: j.ThumbURL type=string kind=string quoted=false*/
 
 	{
 
@@ -7979,7 +8069,7 @@ handle_ThumbURL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ThumbURL = string(string(outBuf))
+			j.ThumbURL = string(string(outBuf))
 
 		}
 	}
@@ -7989,7 +8079,7 @@ handle_ThumbURL:
 
 handle_ThumbWidth:
 
-	/* handler: uj.ThumbWidth type=int kind=int quoted=false*/
+	/* handler: j.ThumbWidth type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -8009,7 +8099,7 @@ handle_ThumbWidth:
 				return fs.WrapErr(err)
 			}
 
-			uj.ThumbWidth = int(tval)
+			j.ThumbWidth = int(tval)
 
 		}
 	}
@@ -8019,7 +8109,7 @@ handle_ThumbWidth:
 
 handle_ThumbHeight:
 
-	/* handler: uj.ThumbHeight type=int kind=int quoted=false*/
+	/* handler: j.ThumbHeight type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -8039,7 +8129,7 @@ handle_ThumbHeight:
 				return fs.WrapErr(err)
 			}
 
-			uj.ThumbHeight = int(tval)
+			j.ThumbHeight = int(tval)
 
 		}
 	}
@@ -8065,20 +8155,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultMPEG4GIF) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultMPEG4GIF) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultMPEG4GIF) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultMPEG4GIF) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -8087,29 +8180,29 @@ func (mj *InlineQueryResultMPEG4GIF) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"mpeg4_url":`)
-	fflib.WriteJsonString(buf, string(mj.URL))
+	fflib.WriteJsonString(buf, string(j.URL))
 	buf.WriteString(`,"mpeg4_width":`)
-	fflib.FormatBits2(buf, uint64(mj.Width), 10, mj.Width < 0)
+	fflib.FormatBits2(buf, uint64(j.Width), 10, j.Width < 0)
 	buf.WriteString(`,"mpeg4_height":`)
-	fflib.FormatBits2(buf, uint64(mj.Height), 10, mj.Height < 0)
+	fflib.FormatBits2(buf, uint64(j.Height), 10, j.Height < 0)
 	buf.WriteString(`,"thumb_url":`)
-	fflib.WriteJsonString(buf, string(mj.ThumbURL))
+	fflib.WriteJsonString(buf, string(j.ThumbURL))
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"caption":`)
-	fflib.WriteJsonString(buf, string(mj.Caption))
+	fflib.WriteJsonString(buf, string(j.Caption))
 	buf.WriteByte(',')
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -8118,10 +8211,10 @@ func (mj *InlineQueryResultMPEG4GIF) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 			buf.WriteByte(',')
 		}
 	}
-	if mj.InputMessageContent != nil {
+	if j.InputMessageContent != nil {
 		buf.WriteString(`"input_message_content":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.InputMessageContent)
+		err = buf.Encode(j.InputMessageContent)
 		if err != nil {
 			return err
 		}
@@ -8133,58 +8226,60 @@ func (mj *InlineQueryResultMPEG4GIF) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 }
 
 const (
-	ffj_t_InlineQueryResultMPEG4GIFbase = iota
-	ffj_t_InlineQueryResultMPEG4GIFno_such_key
+	ffjtInlineQueryResultMPEG4GIFbase = iota
+	ffjtInlineQueryResultMPEG4GIFnosuchkey
 
-	ffj_t_InlineQueryResultMPEG4GIF_Type
+	ffjtInlineQueryResultMPEG4GIFType
 
-	ffj_t_InlineQueryResultMPEG4GIF_ID
+	ffjtInlineQueryResultMPEG4GIFID
 
-	ffj_t_InlineQueryResultMPEG4GIF_URL
+	ffjtInlineQueryResultMPEG4GIFURL
 
-	ffj_t_InlineQueryResultMPEG4GIF_Width
+	ffjtInlineQueryResultMPEG4GIFWidth
 
-	ffj_t_InlineQueryResultMPEG4GIF_Height
+	ffjtInlineQueryResultMPEG4GIFHeight
 
-	ffj_t_InlineQueryResultMPEG4GIF_ThumbURL
+	ffjtInlineQueryResultMPEG4GIFThumbURL
 
-	ffj_t_InlineQueryResultMPEG4GIF_Title
+	ffjtInlineQueryResultMPEG4GIFTitle
 
-	ffj_t_InlineQueryResultMPEG4GIF_Caption
+	ffjtInlineQueryResultMPEG4GIFCaption
 
-	ffj_t_InlineQueryResultMPEG4GIF_ReplyMarkup
+	ffjtInlineQueryResultMPEG4GIFReplyMarkup
 
-	ffj_t_InlineQueryResultMPEG4GIF_InputMessageContent
+	ffjtInlineQueryResultMPEG4GIFInputMessageContent
 )
 
-var ffj_key_InlineQueryResultMPEG4GIF_Type = []byte("type")
+var ffjKeyInlineQueryResultMPEG4GIFType = []byte("type")
 
-var ffj_key_InlineQueryResultMPEG4GIF_ID = []byte("id")
+var ffjKeyInlineQueryResultMPEG4GIFID = []byte("id")
 
-var ffj_key_InlineQueryResultMPEG4GIF_URL = []byte("mpeg4_url")
+var ffjKeyInlineQueryResultMPEG4GIFURL = []byte("mpeg4_url")
 
-var ffj_key_InlineQueryResultMPEG4GIF_Width = []byte("mpeg4_width")
+var ffjKeyInlineQueryResultMPEG4GIFWidth = []byte("mpeg4_width")
 
-var ffj_key_InlineQueryResultMPEG4GIF_Height = []byte("mpeg4_height")
+var ffjKeyInlineQueryResultMPEG4GIFHeight = []byte("mpeg4_height")
 
-var ffj_key_InlineQueryResultMPEG4GIF_ThumbURL = []byte("thumb_url")
+var ffjKeyInlineQueryResultMPEG4GIFThumbURL = []byte("thumb_url")
 
-var ffj_key_InlineQueryResultMPEG4GIF_Title = []byte("title")
+var ffjKeyInlineQueryResultMPEG4GIFTitle = []byte("title")
 
-var ffj_key_InlineQueryResultMPEG4GIF_Caption = []byte("caption")
+var ffjKeyInlineQueryResultMPEG4GIFCaption = []byte("caption")
 
-var ffj_key_InlineQueryResultMPEG4GIF_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultMPEG4GIFReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultMPEG4GIF_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultMPEG4GIFInputMessageContent = []byte("input_message_content")
 
-func (uj *InlineQueryResultMPEG4GIF) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultMPEG4GIF) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultMPEG4GIF) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultMPEG4GIFbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultMPEG4GIF) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultMPEG4GIFbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -8230,7 +8325,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultMPEG4GIFno_such_key
+				currentKey = ffjtInlineQueryResultMPEG4GIFnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -8238,132 +8333,132 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_Caption, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_Caption
+					if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFCaption, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_ID
+					if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFID, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_URL, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_URL
+					if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFURL, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_Width, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_Width
+					} else if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFWidth, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_Height, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_Height
+					} else if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFHeight, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_Type
+					if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFType, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_ThumbURL, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_ThumbURL
+					} else if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFThumbURL, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFThumbURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultMPEG4GIF_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultMPEG4GIF_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultMPEG4GIFTitle, kn) {
+						currentKey = ffjtInlineQueryResultMPEG4GIFTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultMPEG4GIF_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultMPEG4GIFInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultMPEG4GIF_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultMPEG4GIFReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultMPEG4GIF_Caption, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultMPEG4GIFCaption, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultMPEG4GIF_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultMPEG4GIFTitle, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultMPEG4GIF_ThumbURL, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_ThumbURL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultMPEG4GIFThumbURL, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFThumbURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultMPEG4GIF_Height, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_Height
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultMPEG4GIFHeight, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultMPEG4GIF_Width, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_Width
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultMPEG4GIFWidth, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultMPEG4GIF_URL, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_URL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultMPEG4GIFURL, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultMPEG4GIF_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultMPEG4GIFID, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultMPEG4GIF_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultMPEG4GIF_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultMPEG4GIFType, kn) {
+					currentKey = ffjtInlineQueryResultMPEG4GIFType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultMPEG4GIFno_such_key
+				currentKey = ffjtInlineQueryResultMPEG4GIFnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -8380,37 +8475,37 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultMPEG4GIF_Type:
+				case ffjtInlineQueryResultMPEG4GIFType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultMPEG4GIF_ID:
+				case ffjtInlineQueryResultMPEG4GIFID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultMPEG4GIF_URL:
+				case ffjtInlineQueryResultMPEG4GIFURL:
 					goto handle_URL
 
-				case ffj_t_InlineQueryResultMPEG4GIF_Width:
+				case ffjtInlineQueryResultMPEG4GIFWidth:
 					goto handle_Width
 
-				case ffj_t_InlineQueryResultMPEG4GIF_Height:
+				case ffjtInlineQueryResultMPEG4GIFHeight:
 					goto handle_Height
 
-				case ffj_t_InlineQueryResultMPEG4GIF_ThumbURL:
+				case ffjtInlineQueryResultMPEG4GIFThumbURL:
 					goto handle_ThumbURL
 
-				case ffj_t_InlineQueryResultMPEG4GIF_Title:
+				case ffjtInlineQueryResultMPEG4GIFTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultMPEG4GIF_Caption:
+				case ffjtInlineQueryResultMPEG4GIFCaption:
 					goto handle_Caption
 
-				case ffj_t_InlineQueryResultMPEG4GIF_ReplyMarkup:
+				case ffjtInlineQueryResultMPEG4GIFReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultMPEG4GIF_InputMessageContent:
+				case ffjtInlineQueryResultMPEG4GIFInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultMPEG4GIFno_such_key:
+				case ffjtInlineQueryResultMPEG4GIFnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -8426,7 +8521,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -8442,7 +8537,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -8452,7 +8547,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -8468,7 +8563,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -8478,7 +8573,7 @@ handle_ID:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -8494,7 +8589,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -8504,7 +8599,7 @@ handle_URL:
 
 handle_Width:
 
-	/* handler: uj.Width type=int kind=int quoted=false*/
+	/* handler: j.Width type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -8524,7 +8619,7 @@ handle_Width:
 				return fs.WrapErr(err)
 			}
 
-			uj.Width = int(tval)
+			j.Width = int(tval)
 
 		}
 	}
@@ -8534,7 +8629,7 @@ handle_Width:
 
 handle_Height:
 
-	/* handler: uj.Height type=int kind=int quoted=false*/
+	/* handler: j.Height type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -8554,7 +8649,7 @@ handle_Height:
 				return fs.WrapErr(err)
 			}
 
-			uj.Height = int(tval)
+			j.Height = int(tval)
 
 		}
 	}
@@ -8564,7 +8659,7 @@ handle_Height:
 
 handle_ThumbURL:
 
-	/* handler: uj.ThumbURL type=string kind=string quoted=false*/
+	/* handler: j.ThumbURL type=string kind=string quoted=false*/
 
 	{
 
@@ -8580,7 +8675,7 @@ handle_ThumbURL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ThumbURL = string(string(outBuf))
+			j.ThumbURL = string(string(outBuf))
 
 		}
 	}
@@ -8590,7 +8685,7 @@ handle_ThumbURL:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -8606,7 +8701,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -8616,7 +8711,7 @@ handle_Title:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -8632,7 +8727,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -8642,22 +8737,22 @@ handle_Caption:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -8669,7 +8764,7 @@ handle_ReplyMarkup:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -8678,7 +8773,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -8705,20 +8800,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultPhoto) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultPhoto) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultPhoto) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultPhoto) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -8727,54 +8825,54 @@ func (mj *InlineQueryResultPhoto) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"photo_url":`)
-	fflib.WriteJsonString(buf, string(mj.URL))
+	fflib.WriteJsonString(buf, string(j.URL))
 	buf.WriteByte(',')
-	if len(mj.MimeType) != 0 {
+	if len(j.MimeType) != 0 {
 		buf.WriteString(`"mime_type":`)
-		fflib.WriteJsonString(buf, string(mj.MimeType))
+		fflib.WriteJsonString(buf, string(j.MimeType))
 		buf.WriteByte(',')
 	}
-	if mj.Width != 0 {
+	if j.Width != 0 {
 		buf.WriteString(`"photo_width":`)
-		fflib.FormatBits2(buf, uint64(mj.Width), 10, mj.Width < 0)
+		fflib.FormatBits2(buf, uint64(j.Width), 10, j.Width < 0)
 		buf.WriteByte(',')
 	}
-	if mj.Height != 0 {
+	if j.Height != 0 {
 		buf.WriteString(`"photo_height":`)
-		fflib.FormatBits2(buf, uint64(mj.Height), 10, mj.Height < 0)
+		fflib.FormatBits2(buf, uint64(j.Height), 10, j.Height < 0)
 		buf.WriteByte(',')
 	}
-	if len(mj.ThumbURL) != 0 {
+	if len(j.ThumbURL) != 0 {
 		buf.WriteString(`"thumb_url":`)
-		fflib.WriteJsonString(buf, string(mj.ThumbURL))
+		fflib.WriteJsonString(buf, string(j.ThumbURL))
 		buf.WriteByte(',')
 	}
-	if len(mj.Title) != 0 {
+	if len(j.Title) != 0 {
 		buf.WriteString(`"title":`)
-		fflib.WriteJsonString(buf, string(mj.Title))
+		fflib.WriteJsonString(buf, string(j.Title))
 		buf.WriteByte(',')
 	}
-	if len(mj.Description) != 0 {
+	if len(j.Description) != 0 {
 		buf.WriteString(`"description":`)
-		fflib.WriteJsonString(buf, string(mj.Description))
+		fflib.WriteJsonString(buf, string(j.Description))
 		buf.WriteByte(',')
 	}
-	if len(mj.Caption) != 0 {
+	if len(j.Caption) != 0 {
 		buf.WriteString(`"caption":`)
-		fflib.WriteJsonString(buf, string(mj.Caption))
+		fflib.WriteJsonString(buf, string(j.Caption))
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -8783,10 +8881,10 @@ func (mj *InlineQueryResultPhoto) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 			buf.WriteByte(',')
 		}
 	}
-	if mj.InputMessageContent != nil {
+	if j.InputMessageContent != nil {
 		buf.WriteString(`"input_message_content":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.InputMessageContent)
+		err = buf.Encode(j.InputMessageContent)
 		if err != nil {
 			return err
 		}
@@ -8798,66 +8896,68 @@ func (mj *InlineQueryResultPhoto) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 }
 
 const (
-	ffj_t_InlineQueryResultPhotobase = iota
-	ffj_t_InlineQueryResultPhotono_such_key
+	ffjtInlineQueryResultPhotobase = iota
+	ffjtInlineQueryResultPhotonosuchkey
 
-	ffj_t_InlineQueryResultPhoto_Type
+	ffjtInlineQueryResultPhotoType
 
-	ffj_t_InlineQueryResultPhoto_ID
+	ffjtInlineQueryResultPhotoID
 
-	ffj_t_InlineQueryResultPhoto_URL
+	ffjtInlineQueryResultPhotoURL
 
-	ffj_t_InlineQueryResultPhoto_MimeType
+	ffjtInlineQueryResultPhotoMimeType
 
-	ffj_t_InlineQueryResultPhoto_Width
+	ffjtInlineQueryResultPhotoWidth
 
-	ffj_t_InlineQueryResultPhoto_Height
+	ffjtInlineQueryResultPhotoHeight
 
-	ffj_t_InlineQueryResultPhoto_ThumbURL
+	ffjtInlineQueryResultPhotoThumbURL
 
-	ffj_t_InlineQueryResultPhoto_Title
+	ffjtInlineQueryResultPhotoTitle
 
-	ffj_t_InlineQueryResultPhoto_Description
+	ffjtInlineQueryResultPhotoDescription
 
-	ffj_t_InlineQueryResultPhoto_Caption
+	ffjtInlineQueryResultPhotoCaption
 
-	ffj_t_InlineQueryResultPhoto_ReplyMarkup
+	ffjtInlineQueryResultPhotoReplyMarkup
 
-	ffj_t_InlineQueryResultPhoto_InputMessageContent
+	ffjtInlineQueryResultPhotoInputMessageContent
 )
 
-var ffj_key_InlineQueryResultPhoto_Type = []byte("type")
+var ffjKeyInlineQueryResultPhotoType = []byte("type")
 
-var ffj_key_InlineQueryResultPhoto_ID = []byte("id")
+var ffjKeyInlineQueryResultPhotoID = []byte("id")
 
-var ffj_key_InlineQueryResultPhoto_URL = []byte("photo_url")
+var ffjKeyInlineQueryResultPhotoURL = []byte("photo_url")
 
-var ffj_key_InlineQueryResultPhoto_MimeType = []byte("mime_type")
+var ffjKeyInlineQueryResultPhotoMimeType = []byte("mime_type")
 
-var ffj_key_InlineQueryResultPhoto_Width = []byte("photo_width")
+var ffjKeyInlineQueryResultPhotoWidth = []byte("photo_width")
 
-var ffj_key_InlineQueryResultPhoto_Height = []byte("photo_height")
+var ffjKeyInlineQueryResultPhotoHeight = []byte("photo_height")
 
-var ffj_key_InlineQueryResultPhoto_ThumbURL = []byte("thumb_url")
+var ffjKeyInlineQueryResultPhotoThumbURL = []byte("thumb_url")
 
-var ffj_key_InlineQueryResultPhoto_Title = []byte("title")
+var ffjKeyInlineQueryResultPhotoTitle = []byte("title")
 
-var ffj_key_InlineQueryResultPhoto_Description = []byte("description")
+var ffjKeyInlineQueryResultPhotoDescription = []byte("description")
 
-var ffj_key_InlineQueryResultPhoto_Caption = []byte("caption")
+var ffjKeyInlineQueryResultPhotoCaption = []byte("caption")
 
-var ffj_key_InlineQueryResultPhoto_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultPhotoReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultPhoto_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultPhotoInputMessageContent = []byte("input_message_content")
 
-func (uj *InlineQueryResultPhoto) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultPhoto) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultPhoto) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultPhotobase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultPhoto) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultPhotobase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -8903,7 +9003,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultPhotono_such_key
+				currentKey = ffjtInlineQueryResultPhotonosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -8911,160 +9011,160 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_InlineQueryResultPhoto_Caption, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_Caption
+					if bytes.Equal(ffjKeyInlineQueryResultPhotoCaption, kn) {
+						currentKey = ffjtInlineQueryResultPhotoCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_InlineQueryResultPhoto_Description, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_Description
+					if bytes.Equal(ffjKeyInlineQueryResultPhotoDescription, kn) {
+						currentKey = ffjtInlineQueryResultPhotoDescription
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultPhoto_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_ID
+					if bytes.Equal(ffjKeyInlineQueryResultPhotoID, kn) {
+						currentKey = ffjtInlineQueryResultPhotoID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultPhoto_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultPhotoInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultPhotoInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_InlineQueryResultPhoto_MimeType, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_MimeType
+					if bytes.Equal(ffjKeyInlineQueryResultPhotoMimeType, kn) {
+						currentKey = ffjtInlineQueryResultPhotoMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_InlineQueryResultPhoto_URL, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_URL
+					if bytes.Equal(ffjKeyInlineQueryResultPhotoURL, kn) {
+						currentKey = ffjtInlineQueryResultPhotoURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultPhoto_Width, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_Width
+					} else if bytes.Equal(ffjKeyInlineQueryResultPhotoWidth, kn) {
+						currentKey = ffjtInlineQueryResultPhotoWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultPhoto_Height, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_Height
+					} else if bytes.Equal(ffjKeyInlineQueryResultPhotoHeight, kn) {
+						currentKey = ffjtInlineQueryResultPhotoHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultPhoto_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultPhotoReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultPhotoReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultPhoto_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_Type
+					if bytes.Equal(ffjKeyInlineQueryResultPhotoType, kn) {
+						currentKey = ffjtInlineQueryResultPhotoType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultPhoto_ThumbURL, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_ThumbURL
+					} else if bytes.Equal(ffjKeyInlineQueryResultPhotoThumbURL, kn) {
+						currentKey = ffjtInlineQueryResultPhotoThumbURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultPhoto_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultPhoto_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultPhotoTitle, kn) {
+						currentKey = ffjtInlineQueryResultPhotoTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultPhoto_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultPhotoInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultPhotoInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultPhoto_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultPhotoReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultPhotoReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultPhoto_Caption, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultPhotoCaption, kn) {
+					currentKey = ffjtInlineQueryResultPhotoCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultPhoto_Description, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_Description
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultPhotoDescription, kn) {
+					currentKey = ffjtInlineQueryResultPhotoDescription
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultPhoto_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultPhotoTitle, kn) {
+					currentKey = ffjtInlineQueryResultPhotoTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultPhoto_ThumbURL, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_ThumbURL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultPhotoThumbURL, kn) {
+					currentKey = ffjtInlineQueryResultPhotoThumbURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultPhoto_Height, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_Height
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultPhotoHeight, kn) {
+					currentKey = ffjtInlineQueryResultPhotoHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultPhoto_Width, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_Width
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultPhotoWidth, kn) {
+					currentKey = ffjtInlineQueryResultPhotoWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultPhoto_MimeType, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_MimeType
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultPhotoMimeType, kn) {
+					currentKey = ffjtInlineQueryResultPhotoMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultPhoto_URL, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_URL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultPhotoURL, kn) {
+					currentKey = ffjtInlineQueryResultPhotoURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultPhoto_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultPhotoID, kn) {
+					currentKey = ffjtInlineQueryResultPhotoID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultPhoto_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultPhoto_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultPhotoType, kn) {
+					currentKey = ffjtInlineQueryResultPhotoType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultPhotono_such_key
+				currentKey = ffjtInlineQueryResultPhotonosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -9081,43 +9181,43 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultPhoto_Type:
+				case ffjtInlineQueryResultPhotoType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultPhoto_ID:
+				case ffjtInlineQueryResultPhotoID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultPhoto_URL:
+				case ffjtInlineQueryResultPhotoURL:
 					goto handle_URL
 
-				case ffj_t_InlineQueryResultPhoto_MimeType:
+				case ffjtInlineQueryResultPhotoMimeType:
 					goto handle_MimeType
 
-				case ffj_t_InlineQueryResultPhoto_Width:
+				case ffjtInlineQueryResultPhotoWidth:
 					goto handle_Width
 
-				case ffj_t_InlineQueryResultPhoto_Height:
+				case ffjtInlineQueryResultPhotoHeight:
 					goto handle_Height
 
-				case ffj_t_InlineQueryResultPhoto_ThumbURL:
+				case ffjtInlineQueryResultPhotoThumbURL:
 					goto handle_ThumbURL
 
-				case ffj_t_InlineQueryResultPhoto_Title:
+				case ffjtInlineQueryResultPhotoTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultPhoto_Description:
+				case ffjtInlineQueryResultPhotoDescription:
 					goto handle_Description
 
-				case ffj_t_InlineQueryResultPhoto_Caption:
+				case ffjtInlineQueryResultPhotoCaption:
 					goto handle_Caption
 
-				case ffj_t_InlineQueryResultPhoto_ReplyMarkup:
+				case ffjtInlineQueryResultPhotoReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultPhoto_InputMessageContent:
+				case ffjtInlineQueryResultPhotoInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultPhotono_such_key:
+				case ffjtInlineQueryResultPhotonosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -9133,7 +9233,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -9149,7 +9249,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -9159,7 +9259,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -9175,7 +9275,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -9185,7 +9285,7 @@ handle_ID:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -9201,7 +9301,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -9211,7 +9311,7 @@ handle_URL:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -9227,7 +9327,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -9237,7 +9337,7 @@ handle_MimeType:
 
 handle_Width:
 
-	/* handler: uj.Width type=int kind=int quoted=false*/
+	/* handler: j.Width type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9257,7 +9357,7 @@ handle_Width:
 				return fs.WrapErr(err)
 			}
 
-			uj.Width = int(tval)
+			j.Width = int(tval)
 
 		}
 	}
@@ -9267,7 +9367,7 @@ handle_Width:
 
 handle_Height:
 
-	/* handler: uj.Height type=int kind=int quoted=false*/
+	/* handler: j.Height type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9287,7 +9387,7 @@ handle_Height:
 				return fs.WrapErr(err)
 			}
 
-			uj.Height = int(tval)
+			j.Height = int(tval)
 
 		}
 	}
@@ -9297,7 +9397,7 @@ handle_Height:
 
 handle_ThumbURL:
 
-	/* handler: uj.ThumbURL type=string kind=string quoted=false*/
+	/* handler: j.ThumbURL type=string kind=string quoted=false*/
 
 	{
 
@@ -9313,7 +9413,7 @@ handle_ThumbURL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ThumbURL = string(string(outBuf))
+			j.ThumbURL = string(string(outBuf))
 
 		}
 	}
@@ -9323,7 +9423,7 @@ handle_ThumbURL:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -9339,7 +9439,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -9349,7 +9449,7 @@ handle_Title:
 
 handle_Description:
 
-	/* handler: uj.Description type=string kind=string quoted=false*/
+	/* handler: j.Description type=string kind=string quoted=false*/
 
 	{
 
@@ -9365,7 +9465,7 @@ handle_Description:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Description = string(string(outBuf))
+			j.Description = string(string(outBuf))
 
 		}
 	}
@@ -9375,7 +9475,7 @@ handle_Description:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -9391,7 +9491,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -9401,22 +9501,22 @@ handle_Caption:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -9428,7 +9528,7 @@ handle_ReplyMarkup:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -9437,7 +9537,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -9464,20 +9564,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultVideo) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultVideo) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultVideo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultVideo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -9486,35 +9589,35 @@ func (mj *InlineQueryResultVideo) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"video_url":`)
-	fflib.WriteJsonString(buf, string(mj.URL))
+	fflib.WriteJsonString(buf, string(j.URL))
 	buf.WriteString(`,"mime_type":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"thumb_url":`)
-	fflib.WriteJsonString(buf, string(mj.ThumbURL))
+	fflib.WriteJsonString(buf, string(j.ThumbURL))
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"caption":`)
-	fflib.WriteJsonString(buf, string(mj.Caption))
+	fflib.WriteJsonString(buf, string(j.Caption))
 	buf.WriteString(`,"video_width":`)
-	fflib.FormatBits2(buf, uint64(mj.Width), 10, mj.Width < 0)
+	fflib.FormatBits2(buf, uint64(j.Width), 10, j.Width < 0)
 	buf.WriteString(`,"video_height":`)
-	fflib.FormatBits2(buf, uint64(mj.Height), 10, mj.Height < 0)
+	fflib.FormatBits2(buf, uint64(j.Height), 10, j.Height < 0)
 	buf.WriteString(`,"video_duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteString(`,"description":`)
-	fflib.WriteJsonString(buf, string(mj.Description))
+	fflib.WriteJsonString(buf, string(j.Description))
 	buf.WriteByte(',')
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -9523,10 +9626,10 @@ func (mj *InlineQueryResultVideo) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 			buf.WriteByte(',')
 		}
 	}
-	if mj.InputMessageContent != nil {
+	if j.InputMessageContent != nil {
 		buf.WriteString(`"input_message_content":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.InputMessageContent)
+		err = buf.Encode(j.InputMessageContent)
 		if err != nil {
 			return err
 		}
@@ -9538,70 +9641,72 @@ func (mj *InlineQueryResultVideo) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 }
 
 const (
-	ffj_t_InlineQueryResultVideobase = iota
-	ffj_t_InlineQueryResultVideono_such_key
+	ffjtInlineQueryResultVideobase = iota
+	ffjtInlineQueryResultVideonosuchkey
 
-	ffj_t_InlineQueryResultVideo_Type
+	ffjtInlineQueryResultVideoType
 
-	ffj_t_InlineQueryResultVideo_ID
+	ffjtInlineQueryResultVideoID
 
-	ffj_t_InlineQueryResultVideo_URL
+	ffjtInlineQueryResultVideoURL
 
-	ffj_t_InlineQueryResultVideo_MimeType
+	ffjtInlineQueryResultVideoMimeType
 
-	ffj_t_InlineQueryResultVideo_ThumbURL
+	ffjtInlineQueryResultVideoThumbURL
 
-	ffj_t_InlineQueryResultVideo_Title
+	ffjtInlineQueryResultVideoTitle
 
-	ffj_t_InlineQueryResultVideo_Caption
+	ffjtInlineQueryResultVideoCaption
 
-	ffj_t_InlineQueryResultVideo_Width
+	ffjtInlineQueryResultVideoWidth
 
-	ffj_t_InlineQueryResultVideo_Height
+	ffjtInlineQueryResultVideoHeight
 
-	ffj_t_InlineQueryResultVideo_Duration
+	ffjtInlineQueryResultVideoDuration
 
-	ffj_t_InlineQueryResultVideo_Description
+	ffjtInlineQueryResultVideoDescription
 
-	ffj_t_InlineQueryResultVideo_ReplyMarkup
+	ffjtInlineQueryResultVideoReplyMarkup
 
-	ffj_t_InlineQueryResultVideo_InputMessageContent
+	ffjtInlineQueryResultVideoInputMessageContent
 )
 
-var ffj_key_InlineQueryResultVideo_Type = []byte("type")
+var ffjKeyInlineQueryResultVideoType = []byte("type")
 
-var ffj_key_InlineQueryResultVideo_ID = []byte("id")
+var ffjKeyInlineQueryResultVideoID = []byte("id")
 
-var ffj_key_InlineQueryResultVideo_URL = []byte("video_url")
+var ffjKeyInlineQueryResultVideoURL = []byte("video_url")
 
-var ffj_key_InlineQueryResultVideo_MimeType = []byte("mime_type")
+var ffjKeyInlineQueryResultVideoMimeType = []byte("mime_type")
 
-var ffj_key_InlineQueryResultVideo_ThumbURL = []byte("thumb_url")
+var ffjKeyInlineQueryResultVideoThumbURL = []byte("thumb_url")
 
-var ffj_key_InlineQueryResultVideo_Title = []byte("title")
+var ffjKeyInlineQueryResultVideoTitle = []byte("title")
 
-var ffj_key_InlineQueryResultVideo_Caption = []byte("caption")
+var ffjKeyInlineQueryResultVideoCaption = []byte("caption")
 
-var ffj_key_InlineQueryResultVideo_Width = []byte("video_width")
+var ffjKeyInlineQueryResultVideoWidth = []byte("video_width")
 
-var ffj_key_InlineQueryResultVideo_Height = []byte("video_height")
+var ffjKeyInlineQueryResultVideoHeight = []byte("video_height")
 
-var ffj_key_InlineQueryResultVideo_Duration = []byte("video_duration")
+var ffjKeyInlineQueryResultVideoDuration = []byte("video_duration")
 
-var ffj_key_InlineQueryResultVideo_Description = []byte("description")
+var ffjKeyInlineQueryResultVideoDescription = []byte("description")
 
-var ffj_key_InlineQueryResultVideo_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultVideoReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultVideo_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultVideoInputMessageContent = []byte("input_message_content")
 
-func (uj *InlineQueryResultVideo) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultVideo) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultVideo) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultVideobase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultVideo) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultVideobase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -9647,7 +9752,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultVideono_such_key
+				currentKey = ffjtInlineQueryResultVideonosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -9655,171 +9760,171 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVideo_Caption, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_Caption
+					if bytes.Equal(ffjKeyInlineQueryResultVideoCaption, kn) {
+						currentKey = ffjtInlineQueryResultVideoCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVideo_Description, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_Description
+					if bytes.Equal(ffjKeyInlineQueryResultVideoDescription, kn) {
+						currentKey = ffjtInlineQueryResultVideoDescription
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVideo_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_ID
+					if bytes.Equal(ffjKeyInlineQueryResultVideoID, kn) {
+						currentKey = ffjtInlineQueryResultVideoID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVideo_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultVideoInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultVideoInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVideo_MimeType, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_MimeType
+					if bytes.Equal(ffjKeyInlineQueryResultVideoMimeType, kn) {
+						currentKey = ffjtInlineQueryResultVideoMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVideo_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultVideoReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultVideoReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVideo_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_Type
+					if bytes.Equal(ffjKeyInlineQueryResultVideoType, kn) {
+						currentKey = ffjtInlineQueryResultVideoType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVideo_ThumbURL, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_ThumbURL
+					} else if bytes.Equal(ffjKeyInlineQueryResultVideoThumbURL, kn) {
+						currentKey = ffjtInlineQueryResultVideoThumbURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVideo_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultVideoTitle, kn) {
+						currentKey = ffjtInlineQueryResultVideoTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'v':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVideo_URL, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_URL
+					if bytes.Equal(ffjKeyInlineQueryResultVideoURL, kn) {
+						currentKey = ffjtInlineQueryResultVideoURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVideo_Width, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_Width
+					} else if bytes.Equal(ffjKeyInlineQueryResultVideoWidth, kn) {
+						currentKey = ffjtInlineQueryResultVideoWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVideo_Height, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_Height
+					} else if bytes.Equal(ffjKeyInlineQueryResultVideoHeight, kn) {
+						currentKey = ffjtInlineQueryResultVideoHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVideo_Duration, kn) {
-						currentKey = ffj_t_InlineQueryResultVideo_Duration
+					} else if bytes.Equal(ffjKeyInlineQueryResultVideoDuration, kn) {
+						currentKey = ffjtInlineQueryResultVideoDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultVideo_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultVideoInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultVideoInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultVideo_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultVideoReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultVideoReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultVideo_Description, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_Description
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultVideoDescription, kn) {
+					currentKey = ffjtInlineQueryResultVideoDescription
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultVideo_Duration, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_Duration
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultVideoDuration, kn) {
+					currentKey = ffjtInlineQueryResultVideoDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultVideo_Height, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_Height
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultVideoHeight, kn) {
+					currentKey = ffjtInlineQueryResultVideoHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultVideo_Width, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_Width
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultVideoWidth, kn) {
+					currentKey = ffjtInlineQueryResultVideoWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultVideo_Caption, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultVideoCaption, kn) {
+					currentKey = ffjtInlineQueryResultVideoCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultVideo_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultVideoTitle, kn) {
+					currentKey = ffjtInlineQueryResultVideoTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultVideo_ThumbURL, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_ThumbURL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultVideoThumbURL, kn) {
+					currentKey = ffjtInlineQueryResultVideoThumbURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultVideo_MimeType, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_MimeType
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultVideoMimeType, kn) {
+					currentKey = ffjtInlineQueryResultVideoMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultVideo_URL, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_URL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultVideoURL, kn) {
+					currentKey = ffjtInlineQueryResultVideoURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultVideo_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultVideoID, kn) {
+					currentKey = ffjtInlineQueryResultVideoID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultVideo_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultVideo_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultVideoType, kn) {
+					currentKey = ffjtInlineQueryResultVideoType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultVideono_such_key
+				currentKey = ffjtInlineQueryResultVideonosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -9836,46 +9941,46 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultVideo_Type:
+				case ffjtInlineQueryResultVideoType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultVideo_ID:
+				case ffjtInlineQueryResultVideoID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultVideo_URL:
+				case ffjtInlineQueryResultVideoURL:
 					goto handle_URL
 
-				case ffj_t_InlineQueryResultVideo_MimeType:
+				case ffjtInlineQueryResultVideoMimeType:
 					goto handle_MimeType
 
-				case ffj_t_InlineQueryResultVideo_ThumbURL:
+				case ffjtInlineQueryResultVideoThumbURL:
 					goto handle_ThumbURL
 
-				case ffj_t_InlineQueryResultVideo_Title:
+				case ffjtInlineQueryResultVideoTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultVideo_Caption:
+				case ffjtInlineQueryResultVideoCaption:
 					goto handle_Caption
 
-				case ffj_t_InlineQueryResultVideo_Width:
+				case ffjtInlineQueryResultVideoWidth:
 					goto handle_Width
 
-				case ffj_t_InlineQueryResultVideo_Height:
+				case ffjtInlineQueryResultVideoHeight:
 					goto handle_Height
 
-				case ffj_t_InlineQueryResultVideo_Duration:
+				case ffjtInlineQueryResultVideoDuration:
 					goto handle_Duration
 
-				case ffj_t_InlineQueryResultVideo_Description:
+				case ffjtInlineQueryResultVideoDescription:
 					goto handle_Description
 
-				case ffj_t_InlineQueryResultVideo_ReplyMarkup:
+				case ffjtInlineQueryResultVideoReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultVideo_InputMessageContent:
+				case ffjtInlineQueryResultVideoInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultVideono_such_key:
+				case ffjtInlineQueryResultVideonosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -9891,7 +9996,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -9907,7 +10012,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -9917,7 +10022,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -9933,7 +10038,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -9943,7 +10048,7 @@ handle_ID:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -9959,7 +10064,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -9969,7 +10074,7 @@ handle_URL:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -9985,7 +10090,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -9995,7 +10100,7 @@ handle_MimeType:
 
 handle_ThumbURL:
 
-	/* handler: uj.ThumbURL type=string kind=string quoted=false*/
+	/* handler: j.ThumbURL type=string kind=string quoted=false*/
 
 	{
 
@@ -10011,7 +10116,7 @@ handle_ThumbURL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ThumbURL = string(string(outBuf))
+			j.ThumbURL = string(string(outBuf))
 
 		}
 	}
@@ -10021,7 +10126,7 @@ handle_ThumbURL:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -10037,7 +10142,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -10047,7 +10152,7 @@ handle_Title:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -10063,7 +10168,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -10073,7 +10178,7 @@ handle_Caption:
 
 handle_Width:
 
-	/* handler: uj.Width type=int kind=int quoted=false*/
+	/* handler: j.Width type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10093,7 +10198,7 @@ handle_Width:
 				return fs.WrapErr(err)
 			}
 
-			uj.Width = int(tval)
+			j.Width = int(tval)
 
 		}
 	}
@@ -10103,7 +10208,7 @@ handle_Width:
 
 handle_Height:
 
-	/* handler: uj.Height type=int kind=int quoted=false*/
+	/* handler: j.Height type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10123,7 +10228,7 @@ handle_Height:
 				return fs.WrapErr(err)
 			}
 
-			uj.Height = int(tval)
+			j.Height = int(tval)
 
 		}
 	}
@@ -10133,7 +10238,7 @@ handle_Height:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10153,7 +10258,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -10163,7 +10268,7 @@ handle_Duration:
 
 handle_Description:
 
-	/* handler: uj.Description type=string kind=string quoted=false*/
+	/* handler: j.Description type=string kind=string quoted=false*/
 
 	{
 
@@ -10179,7 +10284,7 @@ handle_Description:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Description = string(string(outBuf))
+			j.Description = string(string(outBuf))
 
 		}
 	}
@@ -10189,22 +10294,22 @@ handle_Description:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -10216,7 +10321,7 @@ handle_ReplyMarkup:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -10225,7 +10330,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -10252,20 +10357,23 @@ done:
 	return nil
 }
 
-func (mj *InlineQueryResultVoice) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineQueryResultVoice) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineQueryResultVoice) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineQueryResultVoice) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -10274,23 +10382,23 @@ func (mj *InlineQueryResultVoice) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"id":`)
-	fflib.WriteJsonString(buf, string(mj.ID))
+	fflib.WriteJsonString(buf, string(j.ID))
 	buf.WriteString(`,"voice_url":`)
-	fflib.WriteJsonString(buf, string(mj.URL))
+	fflib.WriteJsonString(buf, string(j.URL))
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"voice_duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteByte(',')
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"reply_markup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -10299,10 +10407,10 @@ func (mj *InlineQueryResultVoice) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 			buf.WriteByte(',')
 		}
 	}
-	if mj.InputMessageContent != nil {
+	if j.InputMessageContent != nil {
 		buf.WriteString(`"input_message_content":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.InputMessageContent)
+		err = buf.Encode(j.InputMessageContent)
 		if err != nil {
 			return err
 		}
@@ -10314,46 +10422,48 @@ func (mj *InlineQueryResultVoice) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 }
 
 const (
-	ffj_t_InlineQueryResultVoicebase = iota
-	ffj_t_InlineQueryResultVoiceno_such_key
+	ffjtInlineQueryResultVoicebase = iota
+	ffjtInlineQueryResultVoicenosuchkey
 
-	ffj_t_InlineQueryResultVoice_Type
+	ffjtInlineQueryResultVoiceType
 
-	ffj_t_InlineQueryResultVoice_ID
+	ffjtInlineQueryResultVoiceID
 
-	ffj_t_InlineQueryResultVoice_URL
+	ffjtInlineQueryResultVoiceURL
 
-	ffj_t_InlineQueryResultVoice_Title
+	ffjtInlineQueryResultVoiceTitle
 
-	ffj_t_InlineQueryResultVoice_Duration
+	ffjtInlineQueryResultVoiceDuration
 
-	ffj_t_InlineQueryResultVoice_ReplyMarkup
+	ffjtInlineQueryResultVoiceReplyMarkup
 
-	ffj_t_InlineQueryResultVoice_InputMessageContent
+	ffjtInlineQueryResultVoiceInputMessageContent
 )
 
-var ffj_key_InlineQueryResultVoice_Type = []byte("type")
+var ffjKeyInlineQueryResultVoiceType = []byte("type")
 
-var ffj_key_InlineQueryResultVoice_ID = []byte("id")
+var ffjKeyInlineQueryResultVoiceID = []byte("id")
 
-var ffj_key_InlineQueryResultVoice_URL = []byte("voice_url")
+var ffjKeyInlineQueryResultVoiceURL = []byte("voice_url")
 
-var ffj_key_InlineQueryResultVoice_Title = []byte("title")
+var ffjKeyInlineQueryResultVoiceTitle = []byte("title")
 
-var ffj_key_InlineQueryResultVoice_Duration = []byte("voice_duration")
+var ffjKeyInlineQueryResultVoiceDuration = []byte("voice_duration")
 
-var ffj_key_InlineQueryResultVoice_ReplyMarkup = []byte("reply_markup")
+var ffjKeyInlineQueryResultVoiceReplyMarkup = []byte("reply_markup")
 
-var ffj_key_InlineQueryResultVoice_InputMessageContent = []byte("input_message_content")
+var ffjKeyInlineQueryResultVoiceInputMessageContent = []byte("input_message_content")
 
-func (uj *InlineQueryResultVoice) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineQueryResultVoice) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineQueryResultVoice) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineQueryResultVoicebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineQueryResultVoice) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineQueryResultVoicebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -10399,7 +10509,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineQueryResultVoiceno_such_key
+				currentKey = ffjtInlineQueryResultVoicenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -10407,96 +10517,96 @@ mainparse:
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVoice_ID, kn) {
-						currentKey = ffj_t_InlineQueryResultVoice_ID
+					if bytes.Equal(ffjKeyInlineQueryResultVoiceID, kn) {
+						currentKey = ffjtInlineQueryResultVoiceID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVoice_InputMessageContent, kn) {
-						currentKey = ffj_t_InlineQueryResultVoice_InputMessageContent
+					} else if bytes.Equal(ffjKeyInlineQueryResultVoiceInputMessageContent, kn) {
+						currentKey = ffjtInlineQueryResultVoiceInputMessageContent
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVoice_ReplyMarkup, kn) {
-						currentKey = ffj_t_InlineQueryResultVoice_ReplyMarkup
+					if bytes.Equal(ffjKeyInlineQueryResultVoiceReplyMarkup, kn) {
+						currentKey = ffjtInlineQueryResultVoiceReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVoice_Type, kn) {
-						currentKey = ffj_t_InlineQueryResultVoice_Type
+					if bytes.Equal(ffjKeyInlineQueryResultVoiceType, kn) {
+						currentKey = ffjtInlineQueryResultVoiceType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVoice_Title, kn) {
-						currentKey = ffj_t_InlineQueryResultVoice_Title
+					} else if bytes.Equal(ffjKeyInlineQueryResultVoiceTitle, kn) {
+						currentKey = ffjtInlineQueryResultVoiceTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'v':
 
-					if bytes.Equal(ffj_key_InlineQueryResultVoice_URL, kn) {
-						currentKey = ffj_t_InlineQueryResultVoice_URL
+					if bytes.Equal(ffjKeyInlineQueryResultVoiceURL, kn) {
+						currentKey = ffjtInlineQueryResultVoiceURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineQueryResultVoice_Duration, kn) {
-						currentKey = ffj_t_InlineQueryResultVoice_Duration
+					} else if bytes.Equal(ffjKeyInlineQueryResultVoiceDuration, kn) {
+						currentKey = ffjtInlineQueryResultVoiceDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultVoice_InputMessageContent, kn) {
-					currentKey = ffj_t_InlineQueryResultVoice_InputMessageContent
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultVoiceInputMessageContent, kn) {
+					currentKey = ffjtInlineQueryResultVoiceInputMessageContent
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineQueryResultVoice_ReplyMarkup, kn) {
-					currentKey = ffj_t_InlineQueryResultVoice_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyInlineQueryResultVoiceReplyMarkup, kn) {
+					currentKey = ffjtInlineQueryResultVoiceReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultVoice_Duration, kn) {
-					currentKey = ffj_t_InlineQueryResultVoice_Duration
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultVoiceDuration, kn) {
+					currentKey = ffjtInlineQueryResultVoiceDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultVoice_Title, kn) {
-					currentKey = ffj_t_InlineQueryResultVoice_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultVoiceTitle, kn) {
+					currentKey = ffjtInlineQueryResultVoiceTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineQueryResultVoice_URL, kn) {
-					currentKey = ffj_t_InlineQueryResultVoice_URL
+				if fflib.AsciiEqualFold(ffjKeyInlineQueryResultVoiceURL, kn) {
+					currentKey = ffjtInlineQueryResultVoiceURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultVoice_ID, kn) {
-					currentKey = ffj_t_InlineQueryResultVoice_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultVoiceID, kn) {
+					currentKey = ffjtInlineQueryResultVoiceID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InlineQueryResultVoice_Type, kn) {
-					currentKey = ffj_t_InlineQueryResultVoice_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyInlineQueryResultVoiceType, kn) {
+					currentKey = ffjtInlineQueryResultVoiceType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineQueryResultVoiceno_such_key
+				currentKey = ffjtInlineQueryResultVoicenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -10513,28 +10623,28 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineQueryResultVoice_Type:
+				case ffjtInlineQueryResultVoiceType:
 					goto handle_Type
 
-				case ffj_t_InlineQueryResultVoice_ID:
+				case ffjtInlineQueryResultVoiceID:
 					goto handle_ID
 
-				case ffj_t_InlineQueryResultVoice_URL:
+				case ffjtInlineQueryResultVoiceURL:
 					goto handle_URL
 
-				case ffj_t_InlineQueryResultVoice_Title:
+				case ffjtInlineQueryResultVoiceTitle:
 					goto handle_Title
 
-				case ffj_t_InlineQueryResultVoice_Duration:
+				case ffjtInlineQueryResultVoiceDuration:
 					goto handle_Duration
 
-				case ffj_t_InlineQueryResultVoice_ReplyMarkup:
+				case ffjtInlineQueryResultVoiceReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_InlineQueryResultVoice_InputMessageContent:
+				case ffjtInlineQueryResultVoiceInputMessageContent:
 					goto handle_InputMessageContent
 
-				case ffj_t_InlineQueryResultVoiceno_such_key:
+				case ffjtInlineQueryResultVoicenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -10550,7 +10660,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -10566,7 +10676,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -10576,7 +10686,7 @@ handle_Type:
 
 handle_ID:
 
-	/* handler: uj.ID type=string kind=string quoted=false*/
+	/* handler: j.ID type=string kind=string quoted=false*/
 
 	{
 
@@ -10592,7 +10702,7 @@ handle_ID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ID = string(string(outBuf))
+			j.ID = string(string(outBuf))
 
 		}
 	}
@@ -10602,7 +10712,7 @@ handle_ID:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -10618,7 +10728,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -10628,7 +10738,7 @@ handle_URL:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -10644,7 +10754,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -10654,7 +10764,7 @@ handle_Title:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10674,7 +10784,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -10684,22 +10794,22 @@ handle_Duration:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -10711,7 +10821,7 @@ handle_ReplyMarkup:
 
 handle_InputMessageContent:
 
-	/* handler: uj.InputMessageContent type=interface {} kind=interface quoted=false*/
+	/* handler: j.InputMessageContent type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -10720,7 +10830,7 @@ handle_InputMessageContent:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.InputMessageContent)
+		err = json.Unmarshal(tbuf, &j.InputMessageContent)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -10747,20 +10857,23 @@ done:
 	return nil
 }
 
-func (mj *InputContactMessageContent) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InputContactMessageContent) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InputContactMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InputContactMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -10769,40 +10882,42 @@ func (mj *InputContactMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) e
 	_ = obj
 	_ = err
 	buf.WriteString(`{"phone_number":`)
-	fflib.WriteJsonString(buf, string(mj.PhoneNumber))
+	fflib.WriteJsonString(buf, string(j.PhoneNumber))
 	buf.WriteString(`,"first_name":`)
-	fflib.WriteJsonString(buf, string(mj.FirstName))
+	fflib.WriteJsonString(buf, string(j.FirstName))
 	buf.WriteString(`,"last_name":`)
-	fflib.WriteJsonString(buf, string(mj.LastName))
+	fflib.WriteJsonString(buf, string(j.LastName))
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_InputContactMessageContentbase = iota
-	ffj_t_InputContactMessageContentno_such_key
+	ffjtInputContactMessageContentbase = iota
+	ffjtInputContactMessageContentnosuchkey
 
-	ffj_t_InputContactMessageContent_PhoneNumber
+	ffjtInputContactMessageContentPhoneNumber
 
-	ffj_t_InputContactMessageContent_FirstName
+	ffjtInputContactMessageContentFirstName
 
-	ffj_t_InputContactMessageContent_LastName
+	ffjtInputContactMessageContentLastName
 )
 
-var ffj_key_InputContactMessageContent_PhoneNumber = []byte("phone_number")
+var ffjKeyInputContactMessageContentPhoneNumber = []byte("phone_number")
 
-var ffj_key_InputContactMessageContent_FirstName = []byte("first_name")
+var ffjKeyInputContactMessageContentFirstName = []byte("first_name")
 
-var ffj_key_InputContactMessageContent_LastName = []byte("last_name")
+var ffjKeyInputContactMessageContentLastName = []byte("last_name")
 
-func (uj *InputContactMessageContent) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InputContactMessageContent) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InputContactMessageContent) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InputContactMessageContentbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InputContactMessageContent) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInputContactMessageContentbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -10848,7 +10963,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InputContactMessageContentno_such_key
+				currentKey = ffjtInputContactMessageContentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -10856,49 +10971,49 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_InputContactMessageContent_FirstName, kn) {
-						currentKey = ffj_t_InputContactMessageContent_FirstName
+					if bytes.Equal(ffjKeyInputContactMessageContentFirstName, kn) {
+						currentKey = ffjtInputContactMessageContentFirstName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_InputContactMessageContent_LastName, kn) {
-						currentKey = ffj_t_InputContactMessageContent_LastName
+					if bytes.Equal(ffjKeyInputContactMessageContentLastName, kn) {
+						currentKey = ffjtInputContactMessageContentLastName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_InputContactMessageContent_PhoneNumber, kn) {
-						currentKey = ffj_t_InputContactMessageContent_PhoneNumber
+					if bytes.Equal(ffjKeyInputContactMessageContentPhoneNumber, kn) {
+						currentKey = ffjtInputContactMessageContentPhoneNumber
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InputContactMessageContent_LastName, kn) {
-					currentKey = ffj_t_InputContactMessageContent_LastName
+				if fflib.EqualFoldRight(ffjKeyInputContactMessageContentLastName, kn) {
+					currentKey = ffjtInputContactMessageContentLastName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InputContactMessageContent_FirstName, kn) {
-					currentKey = ffj_t_InputContactMessageContent_FirstName
+				if fflib.EqualFoldRight(ffjKeyInputContactMessageContentFirstName, kn) {
+					currentKey = ffjtInputContactMessageContentFirstName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InputContactMessageContent_PhoneNumber, kn) {
-					currentKey = ffj_t_InputContactMessageContent_PhoneNumber
+				if fflib.AsciiEqualFold(ffjKeyInputContactMessageContentPhoneNumber, kn) {
+					currentKey = ffjtInputContactMessageContentPhoneNumber
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InputContactMessageContentno_such_key
+				currentKey = ffjtInputContactMessageContentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -10915,16 +11030,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InputContactMessageContent_PhoneNumber:
+				case ffjtInputContactMessageContentPhoneNumber:
 					goto handle_PhoneNumber
 
-				case ffj_t_InputContactMessageContent_FirstName:
+				case ffjtInputContactMessageContentFirstName:
 					goto handle_FirstName
 
-				case ffj_t_InputContactMessageContent_LastName:
+				case ffjtInputContactMessageContentLastName:
 					goto handle_LastName
 
-				case ffj_t_InputContactMessageContentno_such_key:
+				case ffjtInputContactMessageContentnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -10940,7 +11055,7 @@ mainparse:
 
 handle_PhoneNumber:
 
-	/* handler: uj.PhoneNumber type=string kind=string quoted=false*/
+	/* handler: j.PhoneNumber type=string kind=string quoted=false*/
 
 	{
 
@@ -10956,7 +11071,7 @@ handle_PhoneNumber:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.PhoneNumber = string(string(outBuf))
+			j.PhoneNumber = string(string(outBuf))
 
 		}
 	}
@@ -10966,7 +11081,7 @@ handle_PhoneNumber:
 
 handle_FirstName:
 
-	/* handler: uj.FirstName type=string kind=string quoted=false*/
+	/* handler: j.FirstName type=string kind=string quoted=false*/
 
 	{
 
@@ -10982,7 +11097,7 @@ handle_FirstName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FirstName = string(string(outBuf))
+			j.FirstName = string(string(outBuf))
 
 		}
 	}
@@ -10992,7 +11107,7 @@ handle_FirstName:
 
 handle_LastName:
 
-	/* handler: uj.LastName type=string kind=string quoted=false*/
+	/* handler: j.LastName type=string kind=string quoted=false*/
 
 	{
 
@@ -11008,7 +11123,7 @@ handle_LastName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.LastName = string(string(outBuf))
+			j.LastName = string(string(outBuf))
 
 		}
 	}
@@ -11034,20 +11149,23 @@ done:
 	return nil
 }
 
-func (mj *InputLocationMessageContent) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InputLocationMessageContent) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InputLocationMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InputLocationMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -11056,34 +11174,36 @@ func (mj *InputLocationMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) 
 	_ = obj
 	_ = err
 	buf.WriteString(`{"latitude":`)
-	fflib.AppendFloat(buf, float64(mj.Latitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Latitude), 'g', -1, 64)
 	buf.WriteString(`,"longitude":`)
-	fflib.AppendFloat(buf, float64(mj.Longitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Longitude), 'g', -1, 64)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_InputLocationMessageContentbase = iota
-	ffj_t_InputLocationMessageContentno_such_key
+	ffjtInputLocationMessageContentbase = iota
+	ffjtInputLocationMessageContentnosuchkey
 
-	ffj_t_InputLocationMessageContent_Latitude
+	ffjtInputLocationMessageContentLatitude
 
-	ffj_t_InputLocationMessageContent_Longitude
+	ffjtInputLocationMessageContentLongitude
 )
 
-var ffj_key_InputLocationMessageContent_Latitude = []byte("latitude")
+var ffjKeyInputLocationMessageContentLatitude = []byte("latitude")
 
-var ffj_key_InputLocationMessageContent_Longitude = []byte("longitude")
+var ffjKeyInputLocationMessageContentLongitude = []byte("longitude")
 
-func (uj *InputLocationMessageContent) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InputLocationMessageContent) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InputLocationMessageContent) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InputLocationMessageContentbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InputLocationMessageContent) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInputLocationMessageContentbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -11129,7 +11249,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InputLocationMessageContentno_such_key
+				currentKey = ffjtInputLocationMessageContentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -11137,32 +11257,32 @@ mainparse:
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_InputLocationMessageContent_Latitude, kn) {
-						currentKey = ffj_t_InputLocationMessageContent_Latitude
+					if bytes.Equal(ffjKeyInputLocationMessageContentLatitude, kn) {
+						currentKey = ffjtInputLocationMessageContentLatitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InputLocationMessageContent_Longitude, kn) {
-						currentKey = ffj_t_InputLocationMessageContent_Longitude
+					} else if bytes.Equal(ffjKeyInputLocationMessageContentLongitude, kn) {
+						currentKey = ffjtInputLocationMessageContentLongitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InputLocationMessageContent_Longitude, kn) {
-					currentKey = ffj_t_InputLocationMessageContent_Longitude
+				if fflib.SimpleLetterEqualFold(ffjKeyInputLocationMessageContentLongitude, kn) {
+					currentKey = ffjtInputLocationMessageContentLongitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InputLocationMessageContent_Latitude, kn) {
-					currentKey = ffj_t_InputLocationMessageContent_Latitude
+				if fflib.SimpleLetterEqualFold(ffjKeyInputLocationMessageContentLatitude, kn) {
+					currentKey = ffjtInputLocationMessageContentLatitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InputLocationMessageContentno_such_key
+				currentKey = ffjtInputLocationMessageContentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -11179,13 +11299,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InputLocationMessageContent_Latitude:
+				case ffjtInputLocationMessageContentLatitude:
 					goto handle_Latitude
 
-				case ffj_t_InputLocationMessageContent_Longitude:
+				case ffjtInputLocationMessageContentLongitude:
 					goto handle_Longitude
 
-				case ffj_t_InputLocationMessageContentno_such_key:
+				case ffjtInputLocationMessageContentnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -11201,7 +11321,7 @@ mainparse:
 
 handle_Latitude:
 
-	/* handler: uj.Latitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Latitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11221,7 +11341,7 @@ handle_Latitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Latitude = float64(tval)
+			j.Latitude = float64(tval)
 
 		}
 	}
@@ -11231,7 +11351,7 @@ handle_Latitude:
 
 handle_Longitude:
 
-	/* handler: uj.Longitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Longitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11251,7 +11371,7 @@ handle_Longitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Longitude = float64(tval)
+			j.Longitude = float64(tval)
 
 		}
 	}
@@ -11277,20 +11397,23 @@ done:
 	return nil
 }
 
-func (mj *InputTextMessageContent) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InputTextMessageContent) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InputTextMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InputTextMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -11299,10 +11422,10 @@ func (mj *InputTextMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) erro
 	_ = obj
 	_ = err
 	buf.WriteString(`{"message_text":`)
-	fflib.WriteJsonString(buf, string(mj.Text))
+	fflib.WriteJsonString(buf, string(j.Text))
 	buf.WriteString(`,"parse_mode":`)
-	fflib.WriteJsonString(buf, string(mj.ParseMode))
-	if mj.DisableWebPagePreview {
+	fflib.WriteJsonString(buf, string(j.ParseMode))
+	if j.DisableWebPagePreview {
 		buf.WriteString(`,"disable_web_page_preview":true`)
 	} else {
 		buf.WriteString(`,"disable_web_page_preview":false`)
@@ -11312,30 +11435,32 @@ func (mj *InputTextMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) erro
 }
 
 const (
-	ffj_t_InputTextMessageContentbase = iota
-	ffj_t_InputTextMessageContentno_such_key
+	ffjtInputTextMessageContentbase = iota
+	ffjtInputTextMessageContentnosuchkey
 
-	ffj_t_InputTextMessageContent_Text
+	ffjtInputTextMessageContentText
 
-	ffj_t_InputTextMessageContent_ParseMode
+	ffjtInputTextMessageContentParseMode
 
-	ffj_t_InputTextMessageContent_DisableWebPagePreview
+	ffjtInputTextMessageContentDisableWebPagePreview
 )
 
-var ffj_key_InputTextMessageContent_Text = []byte("message_text")
+var ffjKeyInputTextMessageContentText = []byte("message_text")
 
-var ffj_key_InputTextMessageContent_ParseMode = []byte("parse_mode")
+var ffjKeyInputTextMessageContentParseMode = []byte("parse_mode")
 
-var ffj_key_InputTextMessageContent_DisableWebPagePreview = []byte("disable_web_page_preview")
+var ffjKeyInputTextMessageContentDisableWebPagePreview = []byte("disable_web_page_preview")
 
-func (uj *InputTextMessageContent) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InputTextMessageContent) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InputTextMessageContent) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InputTextMessageContentbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InputTextMessageContent) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInputTextMessageContentbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -11381,7 +11506,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InputTextMessageContentno_such_key
+				currentKey = ffjtInputTextMessageContentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -11389,49 +11514,49 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_InputTextMessageContent_DisableWebPagePreview, kn) {
-						currentKey = ffj_t_InputTextMessageContent_DisableWebPagePreview
+					if bytes.Equal(ffjKeyInputTextMessageContentDisableWebPagePreview, kn) {
+						currentKey = ffjtInputTextMessageContentDisableWebPagePreview
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_InputTextMessageContent_Text, kn) {
-						currentKey = ffj_t_InputTextMessageContent_Text
+					if bytes.Equal(ffjKeyInputTextMessageContentText, kn) {
+						currentKey = ffjtInputTextMessageContentText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_InputTextMessageContent_ParseMode, kn) {
-						currentKey = ffj_t_InputTextMessageContent_ParseMode
+					if bytes.Equal(ffjKeyInputTextMessageContentParseMode, kn) {
+						currentKey = ffjtInputTextMessageContentParseMode
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InputTextMessageContent_DisableWebPagePreview, kn) {
-					currentKey = ffj_t_InputTextMessageContent_DisableWebPagePreview
+				if fflib.EqualFoldRight(ffjKeyInputTextMessageContentDisableWebPagePreview, kn) {
+					currentKey = ffjtInputTextMessageContentDisableWebPagePreview
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InputTextMessageContent_ParseMode, kn) {
-					currentKey = ffj_t_InputTextMessageContent_ParseMode
+				if fflib.EqualFoldRight(ffjKeyInputTextMessageContentParseMode, kn) {
+					currentKey = ffjtInputTextMessageContentParseMode
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InputTextMessageContent_Text, kn) {
-					currentKey = ffj_t_InputTextMessageContent_Text
+				if fflib.EqualFoldRight(ffjKeyInputTextMessageContentText, kn) {
+					currentKey = ffjtInputTextMessageContentText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InputTextMessageContentno_such_key
+				currentKey = ffjtInputTextMessageContentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -11448,16 +11573,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InputTextMessageContent_Text:
+				case ffjtInputTextMessageContentText:
 					goto handle_Text
 
-				case ffj_t_InputTextMessageContent_ParseMode:
+				case ffjtInputTextMessageContentParseMode:
 					goto handle_ParseMode
 
-				case ffj_t_InputTextMessageContent_DisableWebPagePreview:
+				case ffjtInputTextMessageContentDisableWebPagePreview:
 					goto handle_DisableWebPagePreview
 
-				case ffj_t_InputTextMessageContentno_such_key:
+				case ffjtInputTextMessageContentnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -11473,7 +11598,7 @@ mainparse:
 
 handle_Text:
 
-	/* handler: uj.Text type=string kind=string quoted=false*/
+	/* handler: j.Text type=string kind=string quoted=false*/
 
 	{
 
@@ -11489,7 +11614,7 @@ handle_Text:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Text = string(string(outBuf))
+			j.Text = string(string(outBuf))
 
 		}
 	}
@@ -11499,7 +11624,7 @@ handle_Text:
 
 handle_ParseMode:
 
-	/* handler: uj.ParseMode type=string kind=string quoted=false*/
+	/* handler: j.ParseMode type=string kind=string quoted=false*/
 
 	{
 
@@ -11515,7 +11640,7 @@ handle_ParseMode:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ParseMode = string(string(outBuf))
+			j.ParseMode = string(string(outBuf))
 
 		}
 	}
@@ -11525,7 +11650,7 @@ handle_ParseMode:
 
 handle_DisableWebPagePreview:
 
-	/* handler: uj.DisableWebPagePreview type=bool kind=bool quoted=false*/
+	/* handler: j.DisableWebPagePreview type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -11541,11 +11666,11 @@ handle_DisableWebPagePreview:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableWebPagePreview = true
+				j.DisableWebPagePreview = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableWebPagePreview = false
+				j.DisableWebPagePreview = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -11576,20 +11701,23 @@ done:
 	return nil
 }
 
-func (mj *InputVenueMessageContent) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InputVenueMessageContent) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InputVenueMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InputVenueMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -11598,52 +11726,54 @@ func (mj *InputVenueMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 	_ = obj
 	_ = err
 	buf.WriteString(`{"latitude":`)
-	fflib.AppendFloat(buf, float64(mj.Latitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Latitude), 'g', -1, 64)
 	buf.WriteString(`,"longitude":`)
-	fflib.AppendFloat(buf, float64(mj.Longitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Longitude), 'g', -1, 64)
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"address":`)
-	fflib.WriteJsonString(buf, string(mj.Address))
+	fflib.WriteJsonString(buf, string(j.Address))
 	buf.WriteString(`,"foursquare_id":`)
-	fflib.WriteJsonString(buf, string(mj.FoursquareID))
+	fflib.WriteJsonString(buf, string(j.FoursquareID))
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_InputVenueMessageContentbase = iota
-	ffj_t_InputVenueMessageContentno_such_key
+	ffjtInputVenueMessageContentbase = iota
+	ffjtInputVenueMessageContentnosuchkey
 
-	ffj_t_InputVenueMessageContent_Latitude
+	ffjtInputVenueMessageContentLatitude
 
-	ffj_t_InputVenueMessageContent_Longitude
+	ffjtInputVenueMessageContentLongitude
 
-	ffj_t_InputVenueMessageContent_Title
+	ffjtInputVenueMessageContentTitle
 
-	ffj_t_InputVenueMessageContent_Address
+	ffjtInputVenueMessageContentAddress
 
-	ffj_t_InputVenueMessageContent_FoursquareID
+	ffjtInputVenueMessageContentFoursquareID
 )
 
-var ffj_key_InputVenueMessageContent_Latitude = []byte("latitude")
+var ffjKeyInputVenueMessageContentLatitude = []byte("latitude")
 
-var ffj_key_InputVenueMessageContent_Longitude = []byte("longitude")
+var ffjKeyInputVenueMessageContentLongitude = []byte("longitude")
 
-var ffj_key_InputVenueMessageContent_Title = []byte("title")
+var ffjKeyInputVenueMessageContentTitle = []byte("title")
 
-var ffj_key_InputVenueMessageContent_Address = []byte("address")
+var ffjKeyInputVenueMessageContentAddress = []byte("address")
 
-var ffj_key_InputVenueMessageContent_FoursquareID = []byte("foursquare_id")
+var ffjKeyInputVenueMessageContentFoursquareID = []byte("foursquare_id")
 
-func (uj *InputVenueMessageContent) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InputVenueMessageContent) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InputVenueMessageContent) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InputVenueMessageContentbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InputVenueMessageContent) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInputVenueMessageContentbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -11689,7 +11819,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InputVenueMessageContentno_such_key
+				currentKey = ffjtInputVenueMessageContentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -11697,74 +11827,74 @@ mainparse:
 
 				case 'a':
 
-					if bytes.Equal(ffj_key_InputVenueMessageContent_Address, kn) {
-						currentKey = ffj_t_InputVenueMessageContent_Address
+					if bytes.Equal(ffjKeyInputVenueMessageContentAddress, kn) {
+						currentKey = ffjtInputVenueMessageContentAddress
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_InputVenueMessageContent_FoursquareID, kn) {
-						currentKey = ffj_t_InputVenueMessageContent_FoursquareID
+					if bytes.Equal(ffjKeyInputVenueMessageContentFoursquareID, kn) {
+						currentKey = ffjtInputVenueMessageContentFoursquareID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_InputVenueMessageContent_Latitude, kn) {
-						currentKey = ffj_t_InputVenueMessageContent_Latitude
+					if bytes.Equal(ffjKeyInputVenueMessageContentLatitude, kn) {
+						currentKey = ffjtInputVenueMessageContentLatitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InputVenueMessageContent_Longitude, kn) {
-						currentKey = ffj_t_InputVenueMessageContent_Longitude
+					} else if bytes.Equal(ffjKeyInputVenueMessageContentLongitude, kn) {
+						currentKey = ffjtInputVenueMessageContentLongitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_InputVenueMessageContent_Title, kn) {
-						currentKey = ffj_t_InputVenueMessageContent_Title
+					if bytes.Equal(ffjKeyInputVenueMessageContentTitle, kn) {
+						currentKey = ffjtInputVenueMessageContentTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InputVenueMessageContent_FoursquareID, kn) {
-					currentKey = ffj_t_InputVenueMessageContent_FoursquareID
+				if fflib.EqualFoldRight(ffjKeyInputVenueMessageContentFoursquareID, kn) {
+					currentKey = ffjtInputVenueMessageContentFoursquareID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InputVenueMessageContent_Address, kn) {
-					currentKey = ffj_t_InputVenueMessageContent_Address
+				if fflib.EqualFoldRight(ffjKeyInputVenueMessageContentAddress, kn) {
+					currentKey = ffjtInputVenueMessageContentAddress
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InputVenueMessageContent_Title, kn) {
-					currentKey = ffj_t_InputVenueMessageContent_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyInputVenueMessageContentTitle, kn) {
+					currentKey = ffjtInputVenueMessageContentTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InputVenueMessageContent_Longitude, kn) {
-					currentKey = ffj_t_InputVenueMessageContent_Longitude
+				if fflib.SimpleLetterEqualFold(ffjKeyInputVenueMessageContentLongitude, kn) {
+					currentKey = ffjtInputVenueMessageContentLongitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_InputVenueMessageContent_Latitude, kn) {
-					currentKey = ffj_t_InputVenueMessageContent_Latitude
+				if fflib.SimpleLetterEqualFold(ffjKeyInputVenueMessageContentLatitude, kn) {
+					currentKey = ffjtInputVenueMessageContentLatitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InputVenueMessageContentno_such_key
+				currentKey = ffjtInputVenueMessageContentnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -11781,22 +11911,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InputVenueMessageContent_Latitude:
+				case ffjtInputVenueMessageContentLatitude:
 					goto handle_Latitude
 
-				case ffj_t_InputVenueMessageContent_Longitude:
+				case ffjtInputVenueMessageContentLongitude:
 					goto handle_Longitude
 
-				case ffj_t_InputVenueMessageContent_Title:
+				case ffjtInputVenueMessageContentTitle:
 					goto handle_Title
 
-				case ffj_t_InputVenueMessageContent_Address:
+				case ffjtInputVenueMessageContentAddress:
 					goto handle_Address
 
-				case ffj_t_InputVenueMessageContent_FoursquareID:
+				case ffjtInputVenueMessageContentFoursquareID:
 					goto handle_FoursquareID
 
-				case ffj_t_InputVenueMessageContentno_such_key:
+				case ffjtInputVenueMessageContentnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -11812,7 +11942,7 @@ mainparse:
 
 handle_Latitude:
 
-	/* handler: uj.Latitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Latitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11832,7 +11962,7 @@ handle_Latitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Latitude = float64(tval)
+			j.Latitude = float64(tval)
 
 		}
 	}
@@ -11842,7 +11972,7 @@ handle_Latitude:
 
 handle_Longitude:
 
-	/* handler: uj.Longitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Longitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11862,7 +11992,7 @@ handle_Longitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Longitude = float64(tval)
+			j.Longitude = float64(tval)
 
 		}
 	}
@@ -11872,7 +12002,7 @@ handle_Longitude:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -11888,7 +12018,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -11898,7 +12028,7 @@ handle_Title:
 
 handle_Address:
 
-	/* handler: uj.Address type=string kind=string quoted=false*/
+	/* handler: j.Address type=string kind=string quoted=false*/
 
 	{
 
@@ -11914,7 +12044,7 @@ handle_Address:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Address = string(string(outBuf))
+			j.Address = string(string(outBuf))
 
 		}
 	}
@@ -11924,7 +12054,7 @@ handle_Address:
 
 handle_FoursquareID:
 
-	/* handler: uj.FoursquareID type=string kind=string quoted=false*/
+	/* handler: j.FoursquareID type=string kind=string quoted=false*/
 
 	{
 
@@ -11940,7 +12070,7 @@ handle_FoursquareID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FoursquareID = string(string(outBuf))
+			j.FoursquareID = string(string(outBuf))
 
 		}
 	}
@@ -11966,20 +12096,23 @@ done:
 	return nil
 }
 
-func (mj *KeyboardButton) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *KeyboardButton) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *KeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *KeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -11988,13 +12121,13 @@ func (mj *KeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"text":`)
-	fflib.WriteJsonString(buf, string(mj.Text))
-	if mj.RequestContact {
+	fflib.WriteJsonString(buf, string(j.Text))
+	if j.RequestContact {
 		buf.WriteString(`,"request_contact":true`)
 	} else {
 		buf.WriteString(`,"request_contact":false`)
 	}
-	if mj.RequestLocation {
+	if j.RequestLocation {
 		buf.WriteString(`,"request_location":true`)
 	} else {
 		buf.WriteString(`,"request_location":false`)
@@ -12004,30 +12137,32 @@ func (mj *KeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_KeyboardButtonbase = iota
-	ffj_t_KeyboardButtonno_such_key
+	ffjtKeyboardButtonbase = iota
+	ffjtKeyboardButtonnosuchkey
 
-	ffj_t_KeyboardButton_Text
+	ffjtKeyboardButtonText
 
-	ffj_t_KeyboardButton_RequestContact
+	ffjtKeyboardButtonRequestContact
 
-	ffj_t_KeyboardButton_RequestLocation
+	ffjtKeyboardButtonRequestLocation
 )
 
-var ffj_key_KeyboardButton_Text = []byte("text")
+var ffjKeyKeyboardButtonText = []byte("text")
 
-var ffj_key_KeyboardButton_RequestContact = []byte("request_contact")
+var ffjKeyKeyboardButtonRequestContact = []byte("request_contact")
 
-var ffj_key_KeyboardButton_RequestLocation = []byte("request_location")
+var ffjKeyKeyboardButtonRequestLocation = []byte("request_location")
 
-func (uj *KeyboardButton) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *KeyboardButton) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *KeyboardButton) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_KeyboardButtonbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *KeyboardButton) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtKeyboardButtonbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -12073,7 +12208,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_KeyboardButtonno_such_key
+				currentKey = ffjtKeyboardButtonnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -12081,46 +12216,46 @@ mainparse:
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_KeyboardButton_RequestContact, kn) {
-						currentKey = ffj_t_KeyboardButton_RequestContact
+					if bytes.Equal(ffjKeyKeyboardButtonRequestContact, kn) {
+						currentKey = ffjtKeyboardButtonRequestContact
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_KeyboardButton_RequestLocation, kn) {
-						currentKey = ffj_t_KeyboardButton_RequestLocation
+					} else if bytes.Equal(ffjKeyKeyboardButtonRequestLocation, kn) {
+						currentKey = ffjtKeyboardButtonRequestLocation
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_KeyboardButton_Text, kn) {
-						currentKey = ffj_t_KeyboardButton_Text
+					if bytes.Equal(ffjKeyKeyboardButtonText, kn) {
+						currentKey = ffjtKeyboardButtonText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_KeyboardButton_RequestLocation, kn) {
-					currentKey = ffj_t_KeyboardButton_RequestLocation
+				if fflib.EqualFoldRight(ffjKeyKeyboardButtonRequestLocation, kn) {
+					currentKey = ffjtKeyboardButtonRequestLocation
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_KeyboardButton_RequestContact, kn) {
-					currentKey = ffj_t_KeyboardButton_RequestContact
+				if fflib.EqualFoldRight(ffjKeyKeyboardButtonRequestContact, kn) {
+					currentKey = ffjtKeyboardButtonRequestContact
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_KeyboardButton_Text, kn) {
-					currentKey = ffj_t_KeyboardButton_Text
+				if fflib.SimpleLetterEqualFold(ffjKeyKeyboardButtonText, kn) {
+					currentKey = ffjtKeyboardButtonText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_KeyboardButtonno_such_key
+				currentKey = ffjtKeyboardButtonnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -12137,16 +12272,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_KeyboardButton_Text:
+				case ffjtKeyboardButtonText:
 					goto handle_Text
 
-				case ffj_t_KeyboardButton_RequestContact:
+				case ffjtKeyboardButtonRequestContact:
 					goto handle_RequestContact
 
-				case ffj_t_KeyboardButton_RequestLocation:
+				case ffjtKeyboardButtonRequestLocation:
 					goto handle_RequestLocation
 
-				case ffj_t_KeyboardButtonno_such_key:
+				case ffjtKeyboardButtonnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -12162,7 +12297,7 @@ mainparse:
 
 handle_Text:
 
-	/* handler: uj.Text type=string kind=string quoted=false*/
+	/* handler: j.Text type=string kind=string quoted=false*/
 
 	{
 
@@ -12178,7 +12313,7 @@ handle_Text:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Text = string(string(outBuf))
+			j.Text = string(string(outBuf))
 
 		}
 	}
@@ -12188,7 +12323,7 @@ handle_Text:
 
 handle_RequestContact:
 
-	/* handler: uj.RequestContact type=bool kind=bool quoted=false*/
+	/* handler: j.RequestContact type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -12204,11 +12339,11 @@ handle_RequestContact:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.RequestContact = true
+				j.RequestContact = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.RequestContact = false
+				j.RequestContact = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -12223,7 +12358,7 @@ handle_RequestContact:
 
 handle_RequestLocation:
 
-	/* handler: uj.RequestLocation type=bool kind=bool quoted=false*/
+	/* handler: j.RequestLocation type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -12239,11 +12374,11 @@ handle_RequestLocation:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.RequestLocation = true
+				j.RequestLocation = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.RequestLocation = false
+				j.RequestLocation = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -12274,20 +12409,23 @@ done:
 	return nil
 }
 
-func (mj *Location) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Location) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Location) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Location) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -12296,34 +12434,36 @@ func (mj *Location) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"longitude":`)
-	fflib.AppendFloat(buf, float64(mj.Longitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Longitude), 'g', -1, 64)
 	buf.WriteString(`,"latitude":`)
-	fflib.AppendFloat(buf, float64(mj.Latitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Latitude), 'g', -1, 64)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_Locationbase = iota
-	ffj_t_Locationno_such_key
+	ffjtLocationbase = iota
+	ffjtLocationnosuchkey
 
-	ffj_t_Location_Longitude
+	ffjtLocationLongitude
 
-	ffj_t_Location_Latitude
+	ffjtLocationLatitude
 )
 
-var ffj_key_Location_Longitude = []byte("longitude")
+var ffjKeyLocationLongitude = []byte("longitude")
 
-var ffj_key_Location_Latitude = []byte("latitude")
+var ffjKeyLocationLatitude = []byte("latitude")
 
-func (uj *Location) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Location) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Location) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Locationbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Location) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtLocationbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -12369,7 +12509,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Locationno_such_key
+				currentKey = ffjtLocationnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -12377,32 +12517,32 @@ mainparse:
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_Location_Longitude, kn) {
-						currentKey = ffj_t_Location_Longitude
+					if bytes.Equal(ffjKeyLocationLongitude, kn) {
+						currentKey = ffjtLocationLongitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Location_Latitude, kn) {
-						currentKey = ffj_t_Location_Latitude
+					} else if bytes.Equal(ffjKeyLocationLatitude, kn) {
+						currentKey = ffjtLocationLatitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Location_Latitude, kn) {
-					currentKey = ffj_t_Location_Latitude
+				if fflib.SimpleLetterEqualFold(ffjKeyLocationLatitude, kn) {
+					currentKey = ffjtLocationLatitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Location_Longitude, kn) {
-					currentKey = ffj_t_Location_Longitude
+				if fflib.SimpleLetterEqualFold(ffjKeyLocationLongitude, kn) {
+					currentKey = ffjtLocationLongitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Locationno_such_key
+				currentKey = ffjtLocationnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -12419,13 +12559,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Location_Longitude:
+				case ffjtLocationLongitude:
 					goto handle_Longitude
 
-				case ffj_t_Location_Latitude:
+				case ffjtLocationLatitude:
 					goto handle_Latitude
 
-				case ffj_t_Locationno_such_key:
+				case ffjtLocationnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -12441,7 +12581,7 @@ mainparse:
 
 handle_Longitude:
 
-	/* handler: uj.Longitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Longitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -12461,7 +12601,7 @@ handle_Longitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Longitude = float64(tval)
+			j.Longitude = float64(tval)
 
 		}
 	}
@@ -12471,7 +12611,7 @@ handle_Longitude:
 
 handle_Latitude:
 
-	/* handler: uj.Latitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Latitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -12491,7 +12631,7 @@ handle_Latitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Latitude = float64(tval)
+			j.Latitude = float64(tval)
 
 		}
 	}
@@ -12517,20 +12657,23 @@ done:
 	return nil
 }
 
-func (mj *Message) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Message) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -12539,13 +12682,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "message_id":`)
-	fflib.FormatBits2(buf, uint64(mj.MessageID), 10, mj.MessageID < 0)
-	if mj.From != nil {
+	fflib.FormatBits2(buf, uint64(j.MessageID), 10, j.MessageID < 0)
+	if j.From != nil {
 		buf.WriteString(`,"from":`)
 
 		{
 
-			err = mj.From.MarshalJSONBuf(buf)
+			err = j.From.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -12555,13 +12698,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteString(`,"from":null`)
 	}
 	buf.WriteString(`,"date":`)
-	fflib.FormatBits2(buf, uint64(mj.Date), 10, mj.Date < 0)
-	if mj.Chat != nil {
+	fflib.FormatBits2(buf, uint64(j.Date), 10, j.Date < 0)
+	if j.Chat != nil {
 		buf.WriteString(`,"chat":`)
 
 		{
 
-			err = mj.Chat.MarshalJSONBuf(buf)
+			err = j.Chat.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -12571,13 +12714,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteString(`,"chat":null`)
 	}
 	buf.WriteByte(',')
-	if mj.ForwardFrom != nil {
+	if j.ForwardFrom != nil {
 		if true {
 			buf.WriteString(`"forward_from":`)
 
 			{
 
-				err = mj.ForwardFrom.MarshalJSONBuf(buf)
+				err = j.ForwardFrom.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12586,18 +12729,18 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.ForwardDate != 0 {
+	if j.ForwardDate != 0 {
 		buf.WriteString(`"forward_date":`)
-		fflib.FormatBits2(buf, uint64(mj.ForwardDate), 10, mj.ForwardDate < 0)
+		fflib.FormatBits2(buf, uint64(j.ForwardDate), 10, j.ForwardDate < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyToMessage != nil {
+	if j.ReplyToMessage != nil {
 		if true {
 			buf.WriteString(`"reply_to_message":`)
 
 			{
 
-				err = mj.ReplyToMessage.MarshalJSONBuf(buf)
+				err = j.ReplyToMessage.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12606,17 +12749,17 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if len(mj.Text) != 0 {
+	if len(j.Text) != 0 {
 		buf.WriteString(`"text":`)
-		fflib.WriteJsonString(buf, string(mj.Text))
+		fflib.WriteJsonString(buf, string(j.Text))
 		buf.WriteByte(',')
 	}
-	if mj.Entities != nil {
+	if j.Entities != nil {
 		if true {
 			buf.WriteString(`"entities":`)
-			if mj.Entities != nil {
+			if j.Entities != nil {
 				buf.WriteString(`[`)
-				for i, v := range *mj.Entities {
+				for i, v := range *j.Entities {
 					if i != 0 {
 						buf.WriteString(`,`)
 					}
@@ -12637,13 +12780,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.Audio != nil {
+	if j.Audio != nil {
 		if true {
 			buf.WriteString(`"audio":`)
 
 			{
 
-				err = mj.Audio.MarshalJSONBuf(buf)
+				err = j.Audio.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12652,13 +12795,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.Document != nil {
+	if j.Document != nil {
 		if true {
 			buf.WriteString(`"document":`)
 
 			{
 
-				err = mj.Document.MarshalJSONBuf(buf)
+				err = j.Document.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12667,12 +12810,12 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.Photo != nil {
+	if j.Photo != nil {
 		if true {
 			buf.WriteString(`"photo":`)
-			if mj.Photo != nil {
+			if j.Photo != nil {
 				buf.WriteString(`[`)
-				for i, v := range *mj.Photo {
+				for i, v := range *j.Photo {
 					if i != 0 {
 						buf.WriteString(`,`)
 					}
@@ -12693,13 +12836,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.Sticker != nil {
+	if j.Sticker != nil {
 		if true {
 			buf.WriteString(`"sticker":`)
 
 			{
 
-				err = mj.Sticker.MarshalJSONBuf(buf)
+				err = j.Sticker.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12708,13 +12851,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.Video != nil {
+	if j.Video != nil {
 		if true {
 			buf.WriteString(`"video":`)
 
 			{
 
-				err = mj.Video.MarshalJSONBuf(buf)
+				err = j.Video.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12723,13 +12866,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.Voice != nil {
+	if j.Voice != nil {
 		if true {
 			buf.WriteString(`"voice":`)
 
 			{
 
-				err = mj.Voice.MarshalJSONBuf(buf)
+				err = j.Voice.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12738,18 +12881,18 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if len(mj.Caption) != 0 {
+	if len(j.Caption) != 0 {
 		buf.WriteString(`"caption":`)
-		fflib.WriteJsonString(buf, string(mj.Caption))
+		fflib.WriteJsonString(buf, string(j.Caption))
 		buf.WriteByte(',')
 	}
-	if mj.Contact != nil {
+	if j.Contact != nil {
 		if true {
 			buf.WriteString(`"contact":`)
 
 			{
 
-				err = mj.Contact.MarshalJSONBuf(buf)
+				err = j.Contact.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12758,13 +12901,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.Location != nil {
+	if j.Location != nil {
 		if true {
 			buf.WriteString(`"location":`)
 
 			{
 
-				err = mj.Location.MarshalJSONBuf(buf)
+				err = j.Location.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12773,13 +12916,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.Venue != nil {
+	if j.Venue != nil {
 		if true {
 			buf.WriteString(`"venue":`)
 
 			{
 
-				err = mj.Venue.MarshalJSONBuf(buf)
+				err = j.Venue.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12788,13 +12931,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.NewChatMember != nil {
+	if j.NewChatMember != nil {
 		if true {
 			buf.WriteString(`"new_chat_member":`)
 
 			{
 
-				err = mj.NewChatMember.MarshalJSONBuf(buf)
+				err = j.NewChatMember.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12803,11 +12946,11 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if len(mj.NewChatMembers) != 0 {
+	if len(j.NewChatMembers) != 0 {
 		buf.WriteString(`"new_chat_members":`)
-		if mj.NewChatMembers != nil {
+		if j.NewChatMembers != nil {
 			buf.WriteString(`[`)
-			for i, v := range mj.NewChatMembers {
+			for i, v := range j.NewChatMembers {
 				if i != 0 {
 					buf.WriteString(`,`)
 				}
@@ -12832,13 +12975,13 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		}
 		buf.WriteByte(',')
 	}
-	if mj.LeftChatMember != nil {
+	if j.LeftChatMember != nil {
 		if true {
 			buf.WriteString(`"left_chat_member":`)
 
 			{
 
-				err = mj.LeftChatMember.MarshalJSONBuf(buf)
+				err = j.LeftChatMember.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12847,17 +12990,17 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if len(mj.NewChatTitle) != 0 {
+	if len(j.NewChatTitle) != 0 {
 		buf.WriteString(`"new_chat_title":`)
-		fflib.WriteJsonString(buf, string(mj.NewChatTitle))
+		fflib.WriteJsonString(buf, string(j.NewChatTitle))
 		buf.WriteByte(',')
 	}
-	if mj.NewChatPhoto != nil {
+	if j.NewChatPhoto != nil {
 		if true {
 			buf.WriteString(`"new_chat_photo":`)
-			if mj.NewChatPhoto != nil {
+			if j.NewChatPhoto != nil {
 				buf.WriteString(`[`)
-				for i, v := range *mj.NewChatPhoto {
+				for i, v := range *j.NewChatPhoto {
 					if i != 0 {
 						buf.WriteString(`,`)
 					}
@@ -12878,55 +13021,55 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.DeleteChatPhoto != false {
-		if mj.DeleteChatPhoto {
+	if j.DeleteChatPhoto != false {
+		if j.DeleteChatPhoto {
 			buf.WriteString(`"delete_chat_photo":true`)
 		} else {
 			buf.WriteString(`"delete_chat_photo":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if mj.GroupChatCreated != false {
-		if mj.GroupChatCreated {
+	if j.GroupChatCreated != false {
+		if j.GroupChatCreated {
 			buf.WriteString(`"group_chat_created":true`)
 		} else {
 			buf.WriteString(`"group_chat_created":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if mj.SuperGroupChatCreated != false {
-		if mj.SuperGroupChatCreated {
+	if j.SuperGroupChatCreated != false {
+		if j.SuperGroupChatCreated {
 			buf.WriteString(`"supergroup_chat_created":true`)
 		} else {
 			buf.WriteString(`"supergroup_chat_created":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if mj.ChannelChatCreated != false {
-		if mj.ChannelChatCreated {
+	if j.ChannelChatCreated != false {
+		if j.ChannelChatCreated {
 			buf.WriteString(`"channel_chat_created":true`)
 		} else {
 			buf.WriteString(`"channel_chat_created":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if mj.MigrateToChatID != 0 {
+	if j.MigrateToChatID != 0 {
 		buf.WriteString(`"migrate_to_chat_id":`)
-		fflib.FormatBits2(buf, uint64(mj.MigrateToChatID), 10, mj.MigrateToChatID < 0)
+		fflib.FormatBits2(buf, uint64(j.MigrateToChatID), 10, j.MigrateToChatID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.MigrateFromChatID != 0 {
+	if j.MigrateFromChatID != 0 {
 		buf.WriteString(`"migrate_from_chat_id":`)
-		fflib.FormatBits2(buf, uint64(mj.MigrateFromChatID), 10, mj.MigrateFromChatID < 0)
+		fflib.FormatBits2(buf, uint64(j.MigrateFromChatID), 10, j.MigrateFromChatID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.PinnedMessage != nil {
+	if j.PinnedMessage != nil {
 		if true {
 			buf.WriteString(`"pinned_message":`)
 
 			{
 
-				err = mj.PinnedMessage.MarshalJSONBuf(buf)
+				err = j.PinnedMessage.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -12941,142 +13084,144 @@ func (mj *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Messagebase = iota
-	ffj_t_Messageno_such_key
+	ffjtMessagebase = iota
+	ffjtMessagenosuchkey
 
-	ffj_t_Message_MessageID
+	ffjtMessageMessageID
 
-	ffj_t_Message_From
+	ffjtMessageFrom
 
-	ffj_t_Message_Date
+	ffjtMessageDate
 
-	ffj_t_Message_Chat
+	ffjtMessageChat
 
-	ffj_t_Message_ForwardFrom
+	ffjtMessageForwardFrom
 
-	ffj_t_Message_ForwardDate
+	ffjtMessageForwardDate
 
-	ffj_t_Message_ReplyToMessage
+	ffjtMessageReplyToMessage
 
-	ffj_t_Message_Text
+	ffjtMessageText
 
-	ffj_t_Message_Entities
+	ffjtMessageEntities
 
-	ffj_t_Message_Audio
+	ffjtMessageAudio
 
-	ffj_t_Message_Document
+	ffjtMessageDocument
 
-	ffj_t_Message_Photo
+	ffjtMessagePhoto
 
-	ffj_t_Message_Sticker
+	ffjtMessageSticker
 
-	ffj_t_Message_Video
+	ffjtMessageVideo
 
-	ffj_t_Message_Voice
+	ffjtMessageVoice
 
-	ffj_t_Message_Caption
+	ffjtMessageCaption
 
-	ffj_t_Message_Contact
+	ffjtMessageContact
 
-	ffj_t_Message_Location
+	ffjtMessageLocation
 
-	ffj_t_Message_Venue
+	ffjtMessageVenue
 
-	ffj_t_Message_NewChatMember
+	ffjtMessageNewChatMember
 
-	ffj_t_Message_NewChatMembers
+	ffjtMessageNewChatMembers
 
-	ffj_t_Message_LeftChatMember
+	ffjtMessageLeftChatMember
 
-	ffj_t_Message_NewChatTitle
+	ffjtMessageNewChatTitle
 
-	ffj_t_Message_NewChatPhoto
+	ffjtMessageNewChatPhoto
 
-	ffj_t_Message_DeleteChatPhoto
+	ffjtMessageDeleteChatPhoto
 
-	ffj_t_Message_GroupChatCreated
+	ffjtMessageGroupChatCreated
 
-	ffj_t_Message_SuperGroupChatCreated
+	ffjtMessageSuperGroupChatCreated
 
-	ffj_t_Message_ChannelChatCreated
+	ffjtMessageChannelChatCreated
 
-	ffj_t_Message_MigrateToChatID
+	ffjtMessageMigrateToChatID
 
-	ffj_t_Message_MigrateFromChatID
+	ffjtMessageMigrateFromChatID
 
-	ffj_t_Message_PinnedMessage
+	ffjtMessagePinnedMessage
 )
 
-var ffj_key_Message_MessageID = []byte("message_id")
+var ffjKeyMessageMessageID = []byte("message_id")
 
-var ffj_key_Message_From = []byte("from")
+var ffjKeyMessageFrom = []byte("from")
 
-var ffj_key_Message_Date = []byte("date")
+var ffjKeyMessageDate = []byte("date")
 
-var ffj_key_Message_Chat = []byte("chat")
+var ffjKeyMessageChat = []byte("chat")
 
-var ffj_key_Message_ForwardFrom = []byte("forward_from")
+var ffjKeyMessageForwardFrom = []byte("forward_from")
 
-var ffj_key_Message_ForwardDate = []byte("forward_date")
+var ffjKeyMessageForwardDate = []byte("forward_date")
 
-var ffj_key_Message_ReplyToMessage = []byte("reply_to_message")
+var ffjKeyMessageReplyToMessage = []byte("reply_to_message")
 
-var ffj_key_Message_Text = []byte("text")
+var ffjKeyMessageText = []byte("text")
 
-var ffj_key_Message_Entities = []byte("entities")
+var ffjKeyMessageEntities = []byte("entities")
 
-var ffj_key_Message_Audio = []byte("audio")
+var ffjKeyMessageAudio = []byte("audio")
 
-var ffj_key_Message_Document = []byte("document")
+var ffjKeyMessageDocument = []byte("document")
 
-var ffj_key_Message_Photo = []byte("photo")
+var ffjKeyMessagePhoto = []byte("photo")
 
-var ffj_key_Message_Sticker = []byte("sticker")
+var ffjKeyMessageSticker = []byte("sticker")
 
-var ffj_key_Message_Video = []byte("video")
+var ffjKeyMessageVideo = []byte("video")
 
-var ffj_key_Message_Voice = []byte("voice")
+var ffjKeyMessageVoice = []byte("voice")
 
-var ffj_key_Message_Caption = []byte("caption")
+var ffjKeyMessageCaption = []byte("caption")
 
-var ffj_key_Message_Contact = []byte("contact")
+var ffjKeyMessageContact = []byte("contact")
 
-var ffj_key_Message_Location = []byte("location")
+var ffjKeyMessageLocation = []byte("location")
 
-var ffj_key_Message_Venue = []byte("venue")
+var ffjKeyMessageVenue = []byte("venue")
 
-var ffj_key_Message_NewChatMember = []byte("new_chat_member")
+var ffjKeyMessageNewChatMember = []byte("new_chat_member")
 
-var ffj_key_Message_NewChatMembers = []byte("new_chat_members")
+var ffjKeyMessageNewChatMembers = []byte("new_chat_members")
 
-var ffj_key_Message_LeftChatMember = []byte("left_chat_member")
+var ffjKeyMessageLeftChatMember = []byte("left_chat_member")
 
-var ffj_key_Message_NewChatTitle = []byte("new_chat_title")
+var ffjKeyMessageNewChatTitle = []byte("new_chat_title")
 
-var ffj_key_Message_NewChatPhoto = []byte("new_chat_photo")
+var ffjKeyMessageNewChatPhoto = []byte("new_chat_photo")
 
-var ffj_key_Message_DeleteChatPhoto = []byte("delete_chat_photo")
+var ffjKeyMessageDeleteChatPhoto = []byte("delete_chat_photo")
 
-var ffj_key_Message_GroupChatCreated = []byte("group_chat_created")
+var ffjKeyMessageGroupChatCreated = []byte("group_chat_created")
 
-var ffj_key_Message_SuperGroupChatCreated = []byte("supergroup_chat_created")
+var ffjKeyMessageSuperGroupChatCreated = []byte("supergroup_chat_created")
 
-var ffj_key_Message_ChannelChatCreated = []byte("channel_chat_created")
+var ffjKeyMessageChannelChatCreated = []byte("channel_chat_created")
 
-var ffj_key_Message_MigrateToChatID = []byte("migrate_to_chat_id")
+var ffjKeyMessageMigrateToChatID = []byte("migrate_to_chat_id")
 
-var ffj_key_Message_MigrateFromChatID = []byte("migrate_from_chat_id")
+var ffjKeyMessageMigrateFromChatID = []byte("migrate_from_chat_id")
 
-var ffj_key_Message_PinnedMessage = []byte("pinned_message")
+var ffjKeyMessagePinnedMessage = []byte("pinned_message")
 
-func (uj *Message) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Message) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Message) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Messagebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Message) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtMessagebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -13122,7 +13267,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Messageno_such_key
+				currentKey = ffjtMessagenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -13130,390 +13275,390 @@ mainparse:
 
 				case 'a':
 
-					if bytes.Equal(ffj_key_Message_Audio, kn) {
-						currentKey = ffj_t_Message_Audio
+					if bytes.Equal(ffjKeyMessageAudio, kn) {
+						currentKey = ffjtMessageAudio
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_Message_Chat, kn) {
-						currentKey = ffj_t_Message_Chat
+					if bytes.Equal(ffjKeyMessageChat, kn) {
+						currentKey = ffjtMessageChat
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_Caption, kn) {
-						currentKey = ffj_t_Message_Caption
+					} else if bytes.Equal(ffjKeyMessageCaption, kn) {
+						currentKey = ffjtMessageCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_Contact, kn) {
-						currentKey = ffj_t_Message_Contact
+					} else if bytes.Equal(ffjKeyMessageContact, kn) {
+						currentKey = ffjtMessageContact
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_ChannelChatCreated, kn) {
-						currentKey = ffj_t_Message_ChannelChatCreated
+					} else if bytes.Equal(ffjKeyMessageChannelChatCreated, kn) {
+						currentKey = ffjtMessageChannelChatCreated
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_Message_Date, kn) {
-						currentKey = ffj_t_Message_Date
+					if bytes.Equal(ffjKeyMessageDate, kn) {
+						currentKey = ffjtMessageDate
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_Document, kn) {
-						currentKey = ffj_t_Message_Document
+					} else if bytes.Equal(ffjKeyMessageDocument, kn) {
+						currentKey = ffjtMessageDocument
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_DeleteChatPhoto, kn) {
-						currentKey = ffj_t_Message_DeleteChatPhoto
+					} else if bytes.Equal(ffjKeyMessageDeleteChatPhoto, kn) {
+						currentKey = ffjtMessageDeleteChatPhoto
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'e':
 
-					if bytes.Equal(ffj_key_Message_Entities, kn) {
-						currentKey = ffj_t_Message_Entities
+					if bytes.Equal(ffjKeyMessageEntities, kn) {
+						currentKey = ffjtMessageEntities
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Message_From, kn) {
-						currentKey = ffj_t_Message_From
+					if bytes.Equal(ffjKeyMessageFrom, kn) {
+						currentKey = ffjtMessageFrom
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_ForwardFrom, kn) {
-						currentKey = ffj_t_Message_ForwardFrom
+					} else if bytes.Equal(ffjKeyMessageForwardFrom, kn) {
+						currentKey = ffjtMessageForwardFrom
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_ForwardDate, kn) {
-						currentKey = ffj_t_Message_ForwardDate
+					} else if bytes.Equal(ffjKeyMessageForwardDate, kn) {
+						currentKey = ffjtMessageForwardDate
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'g':
 
-					if bytes.Equal(ffj_key_Message_GroupChatCreated, kn) {
-						currentKey = ffj_t_Message_GroupChatCreated
+					if bytes.Equal(ffjKeyMessageGroupChatCreated, kn) {
+						currentKey = ffjtMessageGroupChatCreated
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_Message_Location, kn) {
-						currentKey = ffj_t_Message_Location
+					if bytes.Equal(ffjKeyMessageLocation, kn) {
+						currentKey = ffjtMessageLocation
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_LeftChatMember, kn) {
-						currentKey = ffj_t_Message_LeftChatMember
+					} else if bytes.Equal(ffjKeyMessageLeftChatMember, kn) {
+						currentKey = ffjtMessageLeftChatMember
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_Message_MessageID, kn) {
-						currentKey = ffj_t_Message_MessageID
+					if bytes.Equal(ffjKeyMessageMessageID, kn) {
+						currentKey = ffjtMessageMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_MigrateToChatID, kn) {
-						currentKey = ffj_t_Message_MigrateToChatID
+					} else if bytes.Equal(ffjKeyMessageMigrateToChatID, kn) {
+						currentKey = ffjtMessageMigrateToChatID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_MigrateFromChatID, kn) {
-						currentKey = ffj_t_Message_MigrateFromChatID
+					} else if bytes.Equal(ffjKeyMessageMigrateFromChatID, kn) {
+						currentKey = ffjtMessageMigrateFromChatID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'n':
 
-					if bytes.Equal(ffj_key_Message_NewChatMember, kn) {
-						currentKey = ffj_t_Message_NewChatMember
+					if bytes.Equal(ffjKeyMessageNewChatMember, kn) {
+						currentKey = ffjtMessageNewChatMember
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_NewChatMembers, kn) {
-						currentKey = ffj_t_Message_NewChatMembers
+					} else if bytes.Equal(ffjKeyMessageNewChatMembers, kn) {
+						currentKey = ffjtMessageNewChatMembers
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_NewChatTitle, kn) {
-						currentKey = ffj_t_Message_NewChatTitle
+					} else if bytes.Equal(ffjKeyMessageNewChatTitle, kn) {
+						currentKey = ffjtMessageNewChatTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_NewChatPhoto, kn) {
-						currentKey = ffj_t_Message_NewChatPhoto
+					} else if bytes.Equal(ffjKeyMessageNewChatPhoto, kn) {
+						currentKey = ffjtMessageNewChatPhoto
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_Message_Photo, kn) {
-						currentKey = ffj_t_Message_Photo
+					if bytes.Equal(ffjKeyMessagePhoto, kn) {
+						currentKey = ffjtMessagePhoto
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_PinnedMessage, kn) {
-						currentKey = ffj_t_Message_PinnedMessage
+					} else if bytes.Equal(ffjKeyMessagePinnedMessage, kn) {
+						currentKey = ffjtMessagePinnedMessage
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_Message_ReplyToMessage, kn) {
-						currentKey = ffj_t_Message_ReplyToMessage
+					if bytes.Equal(ffjKeyMessageReplyToMessage, kn) {
+						currentKey = ffjtMessageReplyToMessage
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 's':
 
-					if bytes.Equal(ffj_key_Message_Sticker, kn) {
-						currentKey = ffj_t_Message_Sticker
+					if bytes.Equal(ffjKeyMessageSticker, kn) {
+						currentKey = ffjtMessageSticker
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_SuperGroupChatCreated, kn) {
-						currentKey = ffj_t_Message_SuperGroupChatCreated
+					} else if bytes.Equal(ffjKeyMessageSuperGroupChatCreated, kn) {
+						currentKey = ffjtMessageSuperGroupChatCreated
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_Message_Text, kn) {
-						currentKey = ffj_t_Message_Text
+					if bytes.Equal(ffjKeyMessageText, kn) {
+						currentKey = ffjtMessageText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'v':
 
-					if bytes.Equal(ffj_key_Message_Video, kn) {
-						currentKey = ffj_t_Message_Video
+					if bytes.Equal(ffjKeyMessageVideo, kn) {
+						currentKey = ffjtMessageVideo
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_Voice, kn) {
-						currentKey = ffj_t_Message_Voice
+					} else if bytes.Equal(ffjKeyMessageVoice, kn) {
+						currentKey = ffjtMessageVoice
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Message_Venue, kn) {
-						currentKey = ffj_t_Message_Venue
+					} else if bytes.Equal(ffjKeyMessageVenue, kn) {
+						currentKey = ffjtMessageVenue
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Message_PinnedMessage, kn) {
-					currentKey = ffj_t_Message_PinnedMessage
+				if fflib.EqualFoldRight(ffjKeyMessagePinnedMessage, kn) {
+					currentKey = ffjtMessagePinnedMessage
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_MigrateFromChatID, kn) {
-					currentKey = ffj_t_Message_MigrateFromChatID
+				if fflib.AsciiEqualFold(ffjKeyMessageMigrateFromChatID, kn) {
+					currentKey = ffjtMessageMigrateFromChatID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_MigrateToChatID, kn) {
-					currentKey = ffj_t_Message_MigrateToChatID
+				if fflib.AsciiEqualFold(ffjKeyMessageMigrateToChatID, kn) {
+					currentKey = ffjtMessageMigrateToChatID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_ChannelChatCreated, kn) {
-					currentKey = ffj_t_Message_ChannelChatCreated
+				if fflib.AsciiEqualFold(ffjKeyMessageChannelChatCreated, kn) {
+					currentKey = ffjtMessageChannelChatCreated
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Message_SuperGroupChatCreated, kn) {
-					currentKey = ffj_t_Message_SuperGroupChatCreated
+				if fflib.EqualFoldRight(ffjKeyMessageSuperGroupChatCreated, kn) {
+					currentKey = ffjtMessageSuperGroupChatCreated
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_GroupChatCreated, kn) {
-					currentKey = ffj_t_Message_GroupChatCreated
+				if fflib.AsciiEqualFold(ffjKeyMessageGroupChatCreated, kn) {
+					currentKey = ffjtMessageGroupChatCreated
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_DeleteChatPhoto, kn) {
-					currentKey = ffj_t_Message_DeleteChatPhoto
+				if fflib.AsciiEqualFold(ffjKeyMessageDeleteChatPhoto, kn) {
+					currentKey = ffjtMessageDeleteChatPhoto
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_NewChatPhoto, kn) {
-					currentKey = ffj_t_Message_NewChatPhoto
+				if fflib.AsciiEqualFold(ffjKeyMessageNewChatPhoto, kn) {
+					currentKey = ffjtMessageNewChatPhoto
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_NewChatTitle, kn) {
-					currentKey = ffj_t_Message_NewChatTitle
+				if fflib.AsciiEqualFold(ffjKeyMessageNewChatTitle, kn) {
+					currentKey = ffjtMessageNewChatTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_LeftChatMember, kn) {
-					currentKey = ffj_t_Message_LeftChatMember
+				if fflib.AsciiEqualFold(ffjKeyMessageLeftChatMember, kn) {
+					currentKey = ffjtMessageLeftChatMember
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Message_NewChatMembers, kn) {
-					currentKey = ffj_t_Message_NewChatMembers
+				if fflib.EqualFoldRight(ffjKeyMessageNewChatMembers, kn) {
+					currentKey = ffjtMessageNewChatMembers
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_NewChatMember, kn) {
-					currentKey = ffj_t_Message_NewChatMember
+				if fflib.AsciiEqualFold(ffjKeyMessageNewChatMember, kn) {
+					currentKey = ffjtMessageNewChatMember
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Venue, kn) {
-					currentKey = ffj_t_Message_Venue
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageVenue, kn) {
+					currentKey = ffjtMessageVenue
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Location, kn) {
-					currentKey = ffj_t_Message_Location
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageLocation, kn) {
+					currentKey = ffjtMessageLocation
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Contact, kn) {
-					currentKey = ffj_t_Message_Contact
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageContact, kn) {
+					currentKey = ffjtMessageContact
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Caption, kn) {
-					currentKey = ffj_t_Message_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageCaption, kn) {
+					currentKey = ffjtMessageCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Voice, kn) {
-					currentKey = ffj_t_Message_Voice
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageVoice, kn) {
+					currentKey = ffjtMessageVoice
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Video, kn) {
-					currentKey = ffj_t_Message_Video
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageVideo, kn) {
+					currentKey = ffjtMessageVideo
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Message_Sticker, kn) {
-					currentKey = ffj_t_Message_Sticker
+				if fflib.EqualFoldRight(ffjKeyMessageSticker, kn) {
+					currentKey = ffjtMessageSticker
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Photo, kn) {
-					currentKey = ffj_t_Message_Photo
+				if fflib.SimpleLetterEqualFold(ffjKeyMessagePhoto, kn) {
+					currentKey = ffjtMessagePhoto
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Document, kn) {
-					currentKey = ffj_t_Message_Document
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageDocument, kn) {
+					currentKey = ffjtMessageDocument
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Audio, kn) {
-					currentKey = ffj_t_Message_Audio
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageAudio, kn) {
+					currentKey = ffjtMessageAudio
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Message_Entities, kn) {
-					currentKey = ffj_t_Message_Entities
+				if fflib.EqualFoldRight(ffjKeyMessageEntities, kn) {
+					currentKey = ffjtMessageEntities
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Text, kn) {
-					currentKey = ffj_t_Message_Text
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageText, kn) {
+					currentKey = ffjtMessageText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Message_ReplyToMessage, kn) {
-					currentKey = ffj_t_Message_ReplyToMessage
+				if fflib.EqualFoldRight(ffjKeyMessageReplyToMessage, kn) {
+					currentKey = ffjtMessageReplyToMessage
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_ForwardDate, kn) {
-					currentKey = ffj_t_Message_ForwardDate
+				if fflib.AsciiEqualFold(ffjKeyMessageForwardDate, kn) {
+					currentKey = ffjtMessageForwardDate
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Message_ForwardFrom, kn) {
-					currentKey = ffj_t_Message_ForwardFrom
+				if fflib.AsciiEqualFold(ffjKeyMessageForwardFrom, kn) {
+					currentKey = ffjtMessageForwardFrom
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Chat, kn) {
-					currentKey = ffj_t_Message_Chat
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageChat, kn) {
+					currentKey = ffjtMessageChat
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_Date, kn) {
-					currentKey = ffj_t_Message_Date
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageDate, kn) {
+					currentKey = ffjtMessageDate
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Message_From, kn) {
-					currentKey = ffj_t_Message_From
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageFrom, kn) {
+					currentKey = ffjtMessageFrom
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Message_MessageID, kn) {
-					currentKey = ffj_t_Message_MessageID
+				if fflib.EqualFoldRight(ffjKeyMessageMessageID, kn) {
+					currentKey = ffjtMessageMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Messageno_such_key
+				currentKey = ffjtMessagenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -13530,100 +13675,100 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Message_MessageID:
+				case ffjtMessageMessageID:
 					goto handle_MessageID
 
-				case ffj_t_Message_From:
+				case ffjtMessageFrom:
 					goto handle_From
 
-				case ffj_t_Message_Date:
+				case ffjtMessageDate:
 					goto handle_Date
 
-				case ffj_t_Message_Chat:
+				case ffjtMessageChat:
 					goto handle_Chat
 
-				case ffj_t_Message_ForwardFrom:
+				case ffjtMessageForwardFrom:
 					goto handle_ForwardFrom
 
-				case ffj_t_Message_ForwardDate:
+				case ffjtMessageForwardDate:
 					goto handle_ForwardDate
 
-				case ffj_t_Message_ReplyToMessage:
+				case ffjtMessageReplyToMessage:
 					goto handle_ReplyToMessage
 
-				case ffj_t_Message_Text:
+				case ffjtMessageText:
 					goto handle_Text
 
-				case ffj_t_Message_Entities:
+				case ffjtMessageEntities:
 					goto handle_Entities
 
-				case ffj_t_Message_Audio:
+				case ffjtMessageAudio:
 					goto handle_Audio
 
-				case ffj_t_Message_Document:
+				case ffjtMessageDocument:
 					goto handle_Document
 
-				case ffj_t_Message_Photo:
+				case ffjtMessagePhoto:
 					goto handle_Photo
 
-				case ffj_t_Message_Sticker:
+				case ffjtMessageSticker:
 					goto handle_Sticker
 
-				case ffj_t_Message_Video:
+				case ffjtMessageVideo:
 					goto handle_Video
 
-				case ffj_t_Message_Voice:
+				case ffjtMessageVoice:
 					goto handle_Voice
 
-				case ffj_t_Message_Caption:
+				case ffjtMessageCaption:
 					goto handle_Caption
 
-				case ffj_t_Message_Contact:
+				case ffjtMessageContact:
 					goto handle_Contact
 
-				case ffj_t_Message_Location:
+				case ffjtMessageLocation:
 					goto handle_Location
 
-				case ffj_t_Message_Venue:
+				case ffjtMessageVenue:
 					goto handle_Venue
 
-				case ffj_t_Message_NewChatMember:
+				case ffjtMessageNewChatMember:
 					goto handle_NewChatMember
 
-				case ffj_t_Message_NewChatMembers:
+				case ffjtMessageNewChatMembers:
 					goto handle_NewChatMembers
 
-				case ffj_t_Message_LeftChatMember:
+				case ffjtMessageLeftChatMember:
 					goto handle_LeftChatMember
 
-				case ffj_t_Message_NewChatTitle:
+				case ffjtMessageNewChatTitle:
 					goto handle_NewChatTitle
 
-				case ffj_t_Message_NewChatPhoto:
+				case ffjtMessageNewChatPhoto:
 					goto handle_NewChatPhoto
 
-				case ffj_t_Message_DeleteChatPhoto:
+				case ffjtMessageDeleteChatPhoto:
 					goto handle_DeleteChatPhoto
 
-				case ffj_t_Message_GroupChatCreated:
+				case ffjtMessageGroupChatCreated:
 					goto handle_GroupChatCreated
 
-				case ffj_t_Message_SuperGroupChatCreated:
+				case ffjtMessageSuperGroupChatCreated:
 					goto handle_SuperGroupChatCreated
 
-				case ffj_t_Message_ChannelChatCreated:
+				case ffjtMessageChannelChatCreated:
 					goto handle_ChannelChatCreated
 
-				case ffj_t_Message_MigrateToChatID:
+				case ffjtMessageMigrateToChatID:
 					goto handle_MigrateToChatID
 
-				case ffj_t_Message_MigrateFromChatID:
+				case ffjtMessageMigrateFromChatID:
 					goto handle_MigrateFromChatID
 
-				case ffj_t_Message_PinnedMessage:
+				case ffjtMessagePinnedMessage:
 					goto handle_PinnedMessage
 
-				case ffj_t_Messageno_such_key:
+				case ffjtMessagenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -13639,7 +13784,7 @@ mainparse:
 
 handle_MessageID:
 
-	/* handler: uj.MessageID type=int kind=int quoted=false*/
+	/* handler: j.MessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -13659,7 +13804,7 @@ handle_MessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.MessageID = int(tval)
+			j.MessageID = int(tval)
 
 		}
 	}
@@ -13669,22 +13814,22 @@ handle_MessageID:
 
 handle_From:
 
-	/* handler: uj.From type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.From = nil
+			j.From = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.From == nil {
-			uj.From = new(User)
+		if j.From == nil {
+			j.From = new(User)
 		}
 
-		err = uj.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -13696,7 +13841,7 @@ handle_From:
 
 handle_Date:
 
-	/* handler: uj.Date type=int kind=int quoted=false*/
+	/* handler: j.Date type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -13716,7 +13861,7 @@ handle_Date:
 				return fs.WrapErr(err)
 			}
 
-			uj.Date = int(tval)
+			j.Date = int(tval)
 
 		}
 	}
@@ -13726,22 +13871,22 @@ handle_Date:
 
 handle_Chat:
 
-	/* handler: uj.Chat type=tgbotapi.Chat kind=struct quoted=false*/
+	/* handler: j.Chat type=tgbotapi.Chat kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Chat = nil
+			j.Chat = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Chat == nil {
-			uj.Chat = new(Chat)
+		if j.Chat == nil {
+			j.Chat = new(Chat)
 		}
 
-		err = uj.Chat.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Chat.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -13753,22 +13898,22 @@ handle_Chat:
 
 handle_ForwardFrom:
 
-	/* handler: uj.ForwardFrom type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.ForwardFrom type=tgbotapi.User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ForwardFrom = nil
+			j.ForwardFrom = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ForwardFrom == nil {
-			uj.ForwardFrom = new(User)
+		if j.ForwardFrom == nil {
+			j.ForwardFrom = new(User)
 		}
 
-		err = uj.ForwardFrom.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ForwardFrom.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -13780,7 +13925,7 @@ handle_ForwardFrom:
 
 handle_ForwardDate:
 
-	/* handler: uj.ForwardDate type=int kind=int quoted=false*/
+	/* handler: j.ForwardDate type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -13800,7 +13945,7 @@ handle_ForwardDate:
 				return fs.WrapErr(err)
 			}
 
-			uj.ForwardDate = int(tval)
+			j.ForwardDate = int(tval)
 
 		}
 	}
@@ -13810,22 +13955,22 @@ handle_ForwardDate:
 
 handle_ReplyToMessage:
 
-	/* handler: uj.ReplyToMessage type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.ReplyToMessage type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyToMessage = nil
+			j.ReplyToMessage = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyToMessage == nil {
-			uj.ReplyToMessage = new(Message)
+		if j.ReplyToMessage == nil {
+			j.ReplyToMessage = new(Message)
 		}
 
-		err = uj.ReplyToMessage.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyToMessage.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -13837,7 +13982,7 @@ handle_ReplyToMessage:
 
 handle_Text:
 
-	/* handler: uj.Text type=string kind=string quoted=false*/
+	/* handler: j.Text type=string kind=string quoted=false*/
 
 	{
 
@@ -13853,7 +13998,7 @@ handle_Text:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Text = string(string(outBuf))
+			j.Text = string(string(outBuf))
 
 		}
 	}
@@ -13863,7 +14008,7 @@ handle_Text:
 
 handle_Entities:
 
-	/* handler: uj.Entities type=[]tgbotapi.MessageEntity kind=slice quoted=false*/
+	/* handler: j.Entities type=[]tgbotapi.MessageEntity kind=slice quoted=false*/
 
 	{
 
@@ -13874,16 +14019,16 @@ handle_Entities:
 		}
 
 		if tok == fflib.FFTok_null {
-			uj.Entities = nil
+			j.Entities = nil
 		} else {
 
-			uj.Entities = &[]MessageEntity{}
+			j.Entities = &[]MessageEntity{}
 
 			wantVal := true
 
 			for {
 
-				var tmp_uj__Entities MessageEntity
+				var tmpJEntities MessageEntity
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -13904,7 +14049,7 @@ handle_Entities:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__Entities type=tgbotapi.MessageEntity kind=struct quoted=false*/
+				/* handler: tmpJEntities type=tgbotapi.MessageEntity kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -13913,14 +14058,14 @@ handle_Entities:
 						goto mainparse
 					}
 
-					err = tmp_uj__Entities.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmpJEntities.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				*uj.Entities = append(*uj.Entities, tmp_uj__Entities)
+				*j.Entities = append(*j.Entities, tmpJEntities)
 
 				wantVal = false
 			}
@@ -13932,22 +14077,22 @@ handle_Entities:
 
 handle_Audio:
 
-	/* handler: uj.Audio type=tgbotapi.Audio kind=struct quoted=false*/
+	/* handler: j.Audio type=tgbotapi.Audio kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Audio = nil
+			j.Audio = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Audio == nil {
-			uj.Audio = new(Audio)
+		if j.Audio == nil {
+			j.Audio = new(Audio)
 		}
 
-		err = uj.Audio.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Audio.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -13959,22 +14104,22 @@ handle_Audio:
 
 handle_Document:
 
-	/* handler: uj.Document type=tgbotapi.Document kind=struct quoted=false*/
+	/* handler: j.Document type=tgbotapi.Document kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Document = nil
+			j.Document = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Document == nil {
-			uj.Document = new(Document)
+		if j.Document == nil {
+			j.Document = new(Document)
 		}
 
-		err = uj.Document.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Document.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -13986,7 +14131,7 @@ handle_Document:
 
 handle_Photo:
 
-	/* handler: uj.Photo type=[]tgbotapi.PhotoSize kind=slice quoted=false*/
+	/* handler: j.Photo type=[]tgbotapi.PhotoSize kind=slice quoted=false*/
 
 	{
 
@@ -13997,16 +14142,16 @@ handle_Photo:
 		}
 
 		if tok == fflib.FFTok_null {
-			uj.Photo = nil
+			j.Photo = nil
 		} else {
 
-			uj.Photo = &[]PhotoSize{}
+			j.Photo = &[]PhotoSize{}
 
 			wantVal := true
 
 			for {
 
-				var tmp_uj__Photo PhotoSize
+				var tmpJPhoto PhotoSize
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -14027,7 +14172,7 @@ handle_Photo:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__Photo type=tgbotapi.PhotoSize kind=struct quoted=false*/
+				/* handler: tmpJPhoto type=tgbotapi.PhotoSize kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -14036,14 +14181,14 @@ handle_Photo:
 						goto mainparse
 					}
 
-					err = tmp_uj__Photo.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmpJPhoto.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				*uj.Photo = append(*uj.Photo, tmp_uj__Photo)
+				*j.Photo = append(*j.Photo, tmpJPhoto)
 
 				wantVal = false
 			}
@@ -14055,22 +14200,22 @@ handle_Photo:
 
 handle_Sticker:
 
-	/* handler: uj.Sticker type=tgbotapi.Sticker kind=struct quoted=false*/
+	/* handler: j.Sticker type=tgbotapi.Sticker kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Sticker = nil
+			j.Sticker = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Sticker == nil {
-			uj.Sticker = new(Sticker)
+		if j.Sticker == nil {
+			j.Sticker = new(Sticker)
 		}
 
-		err = uj.Sticker.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Sticker.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14082,22 +14227,22 @@ handle_Sticker:
 
 handle_Video:
 
-	/* handler: uj.Video type=tgbotapi.Video kind=struct quoted=false*/
+	/* handler: j.Video type=tgbotapi.Video kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Video = nil
+			j.Video = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Video == nil {
-			uj.Video = new(Video)
+		if j.Video == nil {
+			j.Video = new(Video)
 		}
 
-		err = uj.Video.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Video.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14109,22 +14254,22 @@ handle_Video:
 
 handle_Voice:
 
-	/* handler: uj.Voice type=tgbotapi.Voice kind=struct quoted=false*/
+	/* handler: j.Voice type=tgbotapi.Voice kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Voice = nil
+			j.Voice = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Voice == nil {
-			uj.Voice = new(Voice)
+		if j.Voice == nil {
+			j.Voice = new(Voice)
 		}
 
-		err = uj.Voice.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Voice.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14136,7 +14281,7 @@ handle_Voice:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -14152,7 +14297,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -14162,22 +14307,22 @@ handle_Caption:
 
 handle_Contact:
 
-	/* handler: uj.Contact type=tgbotapi.Contact kind=struct quoted=false*/
+	/* handler: j.Contact type=tgbotapi.Contact kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Contact = nil
+			j.Contact = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Contact == nil {
-			uj.Contact = new(Contact)
+		if j.Contact == nil {
+			j.Contact = new(Contact)
 		}
 
-		err = uj.Contact.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Contact.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14189,22 +14334,22 @@ handle_Contact:
 
 handle_Location:
 
-	/* handler: uj.Location type=tgbotapi.Location kind=struct quoted=false*/
+	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Location = nil
+			j.Location = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Location == nil {
-			uj.Location = new(Location)
+		if j.Location == nil {
+			j.Location = new(Location)
 		}
 
-		err = uj.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14216,22 +14361,22 @@ handle_Location:
 
 handle_Venue:
 
-	/* handler: uj.Venue type=tgbotapi.Venue kind=struct quoted=false*/
+	/* handler: j.Venue type=tgbotapi.Venue kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Venue = nil
+			j.Venue = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Venue == nil {
-			uj.Venue = new(Venue)
+		if j.Venue == nil {
+			j.Venue = new(Venue)
 		}
 
-		err = uj.Venue.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Venue.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14243,22 +14388,22 @@ handle_Venue:
 
 handle_NewChatMember:
 
-	/* handler: uj.NewChatMember type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.NewChatMember type=tgbotapi.User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.NewChatMember = nil
+			j.NewChatMember = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.NewChatMember == nil {
-			uj.NewChatMember = new(User)
+		if j.NewChatMember == nil {
+			j.NewChatMember = new(User)
 		}
 
-		err = uj.NewChatMember.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.NewChatMember.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14270,7 +14415,7 @@ handle_NewChatMember:
 
 handle_NewChatMembers:
 
-	/* handler: uj.NewChatMembers type=[]*tgbotapi.User kind=slice quoted=false*/
+	/* handler: j.NewChatMembers type=[]*tgbotapi.User kind=slice quoted=false*/
 
 	{
 
@@ -14281,16 +14426,16 @@ handle_NewChatMembers:
 		}
 
 		if tok == fflib.FFTok_null {
-			uj.NewChatMembers = nil
+			j.NewChatMembers = nil
 		} else {
 
-			uj.NewChatMembers = []*User{}
+			j.NewChatMembers = []*User{}
 
 			wantVal := true
 
 			for {
 
-				var tmp_uj__NewChatMembers *User
+				var tmpJNewChatMembers *User
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -14311,29 +14456,29 @@ handle_NewChatMembers:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__NewChatMembers type=*tgbotapi.User kind=ptr quoted=false*/
+				/* handler: tmpJNewChatMembers type=*tgbotapi.User kind=ptr quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
 
-						tmp_uj__NewChatMembers = nil
+						tmpJNewChatMembers = nil
 
 						state = fflib.FFParse_after_value
 						goto mainparse
 					}
 
-					if tmp_uj__NewChatMembers == nil {
-						tmp_uj__NewChatMembers = new(User)
+					if tmpJNewChatMembers == nil {
+						tmpJNewChatMembers = new(User)
 					}
 
-					err = tmp_uj__NewChatMembers.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmpJNewChatMembers.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.NewChatMembers = append(uj.NewChatMembers, tmp_uj__NewChatMembers)
+				j.NewChatMembers = append(j.NewChatMembers, tmpJNewChatMembers)
 
 				wantVal = false
 			}
@@ -14345,22 +14490,22 @@ handle_NewChatMembers:
 
 handle_LeftChatMember:
 
-	/* handler: uj.LeftChatMember type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.LeftChatMember type=tgbotapi.User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.LeftChatMember = nil
+			j.LeftChatMember = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.LeftChatMember == nil {
-			uj.LeftChatMember = new(User)
+		if j.LeftChatMember == nil {
+			j.LeftChatMember = new(User)
 		}
 
-		err = uj.LeftChatMember.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.LeftChatMember.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14372,7 +14517,7 @@ handle_LeftChatMember:
 
 handle_NewChatTitle:
 
-	/* handler: uj.NewChatTitle type=string kind=string quoted=false*/
+	/* handler: j.NewChatTitle type=string kind=string quoted=false*/
 
 	{
 
@@ -14388,7 +14533,7 @@ handle_NewChatTitle:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.NewChatTitle = string(string(outBuf))
+			j.NewChatTitle = string(string(outBuf))
 
 		}
 	}
@@ -14398,7 +14543,7 @@ handle_NewChatTitle:
 
 handle_NewChatPhoto:
 
-	/* handler: uj.NewChatPhoto type=[]tgbotapi.PhotoSize kind=slice quoted=false*/
+	/* handler: j.NewChatPhoto type=[]tgbotapi.PhotoSize kind=slice quoted=false*/
 
 	{
 
@@ -14409,16 +14554,16 @@ handle_NewChatPhoto:
 		}
 
 		if tok == fflib.FFTok_null {
-			uj.NewChatPhoto = nil
+			j.NewChatPhoto = nil
 		} else {
 
-			uj.NewChatPhoto = &[]PhotoSize{}
+			j.NewChatPhoto = &[]PhotoSize{}
 
 			wantVal := true
 
 			for {
 
-				var tmp_uj__NewChatPhoto PhotoSize
+				var tmpJNewChatPhoto PhotoSize
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -14439,7 +14584,7 @@ handle_NewChatPhoto:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__NewChatPhoto type=tgbotapi.PhotoSize kind=struct quoted=false*/
+				/* handler: tmpJNewChatPhoto type=tgbotapi.PhotoSize kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -14448,14 +14593,14 @@ handle_NewChatPhoto:
 						goto mainparse
 					}
 
-					err = tmp_uj__NewChatPhoto.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmpJNewChatPhoto.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				*uj.NewChatPhoto = append(*uj.NewChatPhoto, tmp_uj__NewChatPhoto)
+				*j.NewChatPhoto = append(*j.NewChatPhoto, tmpJNewChatPhoto)
 
 				wantVal = false
 			}
@@ -14467,7 +14612,7 @@ handle_NewChatPhoto:
 
 handle_DeleteChatPhoto:
 
-	/* handler: uj.DeleteChatPhoto type=bool kind=bool quoted=false*/
+	/* handler: j.DeleteChatPhoto type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -14483,11 +14628,11 @@ handle_DeleteChatPhoto:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DeleteChatPhoto = true
+				j.DeleteChatPhoto = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DeleteChatPhoto = false
+				j.DeleteChatPhoto = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -14502,7 +14647,7 @@ handle_DeleteChatPhoto:
 
 handle_GroupChatCreated:
 
-	/* handler: uj.GroupChatCreated type=bool kind=bool quoted=false*/
+	/* handler: j.GroupChatCreated type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -14518,11 +14663,11 @@ handle_GroupChatCreated:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.GroupChatCreated = true
+				j.GroupChatCreated = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.GroupChatCreated = false
+				j.GroupChatCreated = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -14537,7 +14682,7 @@ handle_GroupChatCreated:
 
 handle_SuperGroupChatCreated:
 
-	/* handler: uj.SuperGroupChatCreated type=bool kind=bool quoted=false*/
+	/* handler: j.SuperGroupChatCreated type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -14553,11 +14698,11 @@ handle_SuperGroupChatCreated:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.SuperGroupChatCreated = true
+				j.SuperGroupChatCreated = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.SuperGroupChatCreated = false
+				j.SuperGroupChatCreated = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -14572,7 +14717,7 @@ handle_SuperGroupChatCreated:
 
 handle_ChannelChatCreated:
 
-	/* handler: uj.ChannelChatCreated type=bool kind=bool quoted=false*/
+	/* handler: j.ChannelChatCreated type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -14588,11 +14733,11 @@ handle_ChannelChatCreated:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.ChannelChatCreated = true
+				j.ChannelChatCreated = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.ChannelChatCreated = false
+				j.ChannelChatCreated = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -14607,7 +14752,7 @@ handle_ChannelChatCreated:
 
 handle_MigrateToChatID:
 
-	/* handler: uj.MigrateToChatID type=int64 kind=int64 quoted=false*/
+	/* handler: j.MigrateToChatID type=int64 kind=int64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -14627,7 +14772,7 @@ handle_MigrateToChatID:
 				return fs.WrapErr(err)
 			}
 
-			uj.MigrateToChatID = int64(tval)
+			j.MigrateToChatID = int64(tval)
 
 		}
 	}
@@ -14637,7 +14782,7 @@ handle_MigrateToChatID:
 
 handle_MigrateFromChatID:
 
-	/* handler: uj.MigrateFromChatID type=int64 kind=int64 quoted=false*/
+	/* handler: j.MigrateFromChatID type=int64 kind=int64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -14657,7 +14802,7 @@ handle_MigrateFromChatID:
 				return fs.WrapErr(err)
 			}
 
-			uj.MigrateFromChatID = int64(tval)
+			j.MigrateFromChatID = int64(tval)
 
 		}
 	}
@@ -14667,22 +14812,22 @@ handle_MigrateFromChatID:
 
 handle_PinnedMessage:
 
-	/* handler: uj.PinnedMessage type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.PinnedMessage type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.PinnedMessage = nil
+			j.PinnedMessage = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.PinnedMessage == nil {
-			uj.PinnedMessage = new(Message)
+		if j.PinnedMessage == nil {
+			j.PinnedMessage = new(Message)
 		}
 
-		err = uj.PinnedMessage.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.PinnedMessage.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -14710,20 +14855,23 @@ done:
 	return nil
 }
 
-func (mj *MessageEntity) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *MessageEntity) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *MessageEntity) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *MessageEntity) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -14732,15 +14880,15 @@ func (mj *MessageEntity) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "type":`)
-	fflib.WriteJsonString(buf, string(mj.Type))
+	fflib.WriteJsonString(buf, string(j.Type))
 	buf.WriteString(`,"offset":`)
-	fflib.FormatBits2(buf, uint64(mj.Offset), 10, mj.Offset < 0)
+	fflib.FormatBits2(buf, uint64(j.Offset), 10, j.Offset < 0)
 	buf.WriteString(`,"length":`)
-	fflib.FormatBits2(buf, uint64(mj.Length), 10, mj.Length < 0)
+	fflib.FormatBits2(buf, uint64(j.Length), 10, j.Length < 0)
 	buf.WriteByte(',')
-	if len(mj.URL) != 0 {
+	if len(j.URL) != 0 {
 		buf.WriteString(`"url":`)
-		fflib.WriteJsonString(buf, string(mj.URL))
+		fflib.WriteJsonString(buf, string(j.URL))
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -14749,34 +14897,36 @@ func (mj *MessageEntity) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_MessageEntitybase = iota
-	ffj_t_MessageEntityno_such_key
+	ffjtMessageEntitybase = iota
+	ffjtMessageEntitynosuchkey
 
-	ffj_t_MessageEntity_Type
+	ffjtMessageEntityType
 
-	ffj_t_MessageEntity_Offset
+	ffjtMessageEntityOffset
 
-	ffj_t_MessageEntity_Length
+	ffjtMessageEntityLength
 
-	ffj_t_MessageEntity_URL
+	ffjtMessageEntityURL
 )
 
-var ffj_key_MessageEntity_Type = []byte("type")
+var ffjKeyMessageEntityType = []byte("type")
 
-var ffj_key_MessageEntity_Offset = []byte("offset")
+var ffjKeyMessageEntityOffset = []byte("offset")
 
-var ffj_key_MessageEntity_Length = []byte("length")
+var ffjKeyMessageEntityLength = []byte("length")
 
-var ffj_key_MessageEntity_URL = []byte("url")
+var ffjKeyMessageEntityURL = []byte("url")
 
-func (uj *MessageEntity) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *MessageEntity) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *MessageEntity) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_MessageEntitybase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *MessageEntity) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtMessageEntitybase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -14822,7 +14972,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_MessageEntityno_such_key
+				currentKey = ffjtMessageEntitynosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -14830,63 +14980,63 @@ mainparse:
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_MessageEntity_Length, kn) {
-						currentKey = ffj_t_MessageEntity_Length
+					if bytes.Equal(ffjKeyMessageEntityLength, kn) {
+						currentKey = ffjtMessageEntityLength
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'o':
 
-					if bytes.Equal(ffj_key_MessageEntity_Offset, kn) {
-						currentKey = ffj_t_MessageEntity_Offset
+					if bytes.Equal(ffjKeyMessageEntityOffset, kn) {
+						currentKey = ffjtMessageEntityOffset
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_MessageEntity_Type, kn) {
-						currentKey = ffj_t_MessageEntity_Type
+					if bytes.Equal(ffjKeyMessageEntityType, kn) {
+						currentKey = ffjtMessageEntityType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_MessageEntity_URL, kn) {
-						currentKey = ffj_t_MessageEntity_URL
+					if bytes.Equal(ffjKeyMessageEntityURL, kn) {
+						currentKey = ffjtMessageEntityURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_MessageEntity_URL, kn) {
-					currentKey = ffj_t_MessageEntity_URL
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageEntityURL, kn) {
+					currentKey = ffjtMessageEntityURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_MessageEntity_Length, kn) {
-					currentKey = ffj_t_MessageEntity_Length
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageEntityLength, kn) {
+					currentKey = ffjtMessageEntityLength
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_MessageEntity_Offset, kn) {
-					currentKey = ffj_t_MessageEntity_Offset
+				if fflib.EqualFoldRight(ffjKeyMessageEntityOffset, kn) {
+					currentKey = ffjtMessageEntityOffset
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_MessageEntity_Type, kn) {
-					currentKey = ffj_t_MessageEntity_Type
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageEntityType, kn) {
+					currentKey = ffjtMessageEntityType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_MessageEntityno_such_key
+				currentKey = ffjtMessageEntitynosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -14903,19 +15053,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_MessageEntity_Type:
+				case ffjtMessageEntityType:
 					goto handle_Type
 
-				case ffj_t_MessageEntity_Offset:
+				case ffjtMessageEntityOffset:
 					goto handle_Offset
 
-				case ffj_t_MessageEntity_Length:
+				case ffjtMessageEntityLength:
 					goto handle_Length
 
-				case ffj_t_MessageEntity_URL:
+				case ffjtMessageEntityURL:
 					goto handle_URL
 
-				case ffj_t_MessageEntityno_such_key:
+				case ffjtMessageEntitynosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -14931,7 +15081,7 @@ mainparse:
 
 handle_Type:
 
-	/* handler: uj.Type type=string kind=string quoted=false*/
+	/* handler: j.Type type=string kind=string quoted=false*/
 
 	{
 
@@ -14947,7 +15097,7 @@ handle_Type:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Type = string(string(outBuf))
+			j.Type = string(string(outBuf))
 
 		}
 	}
@@ -14957,7 +15107,7 @@ handle_Type:
 
 handle_Offset:
 
-	/* handler: uj.Offset type=int kind=int quoted=false*/
+	/* handler: j.Offset type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -14977,7 +15127,7 @@ handle_Offset:
 				return fs.WrapErr(err)
 			}
 
-			uj.Offset = int(tval)
+			j.Offset = int(tval)
 
 		}
 	}
@@ -14987,7 +15137,7 @@ handle_Offset:
 
 handle_Length:
 
-	/* handler: uj.Length type=int kind=int quoted=false*/
+	/* handler: j.Length type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -15007,7 +15157,7 @@ handle_Length:
 				return fs.WrapErr(err)
 			}
 
-			uj.Length = int(tval)
+			j.Length = int(tval)
 
 		}
 	}
@@ -15017,7 +15167,7 @@ handle_Length:
 
 handle_URL:
 
-	/* handler: uj.URL type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -15033,7 +15183,7 @@ handle_URL:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.URL = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}
@@ -15059,20 +15209,23 @@ done:
 	return nil
 }
 
-func (mj *PhotoSize) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *PhotoSize) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *PhotoSize) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *PhotoSize) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -15081,15 +15234,15 @@ func (mj *PhotoSize) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "file_id":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
+	fflib.WriteJsonString(buf, string(j.FileID))
 	buf.WriteString(`,"width":`)
-	fflib.FormatBits2(buf, uint64(mj.Width), 10, mj.Width < 0)
+	fflib.FormatBits2(buf, uint64(j.Width), 10, j.Width < 0)
 	buf.WriteString(`,"height":`)
-	fflib.FormatBits2(buf, uint64(mj.Height), 10, mj.Height < 0)
+	fflib.FormatBits2(buf, uint64(j.Height), 10, j.Height < 0)
 	buf.WriteByte(',')
-	if mj.FileSize != 0 {
+	if j.FileSize != 0 {
 		buf.WriteString(`"file_size":`)
-		fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+		fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -15098,34 +15251,36 @@ func (mj *PhotoSize) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_PhotoSizebase = iota
-	ffj_t_PhotoSizeno_such_key
+	ffjtPhotoSizebase = iota
+	ffjtPhotoSizenosuchkey
 
-	ffj_t_PhotoSize_FileID
+	ffjtPhotoSizeFileID
 
-	ffj_t_PhotoSize_Width
+	ffjtPhotoSizeWidth
 
-	ffj_t_PhotoSize_Height
+	ffjtPhotoSizeHeight
 
-	ffj_t_PhotoSize_FileSize
+	ffjtPhotoSizeFileSize
 )
 
-var ffj_key_PhotoSize_FileID = []byte("file_id")
+var ffjKeyPhotoSizeFileID = []byte("file_id")
 
-var ffj_key_PhotoSize_Width = []byte("width")
+var ffjKeyPhotoSizeWidth = []byte("width")
 
-var ffj_key_PhotoSize_Height = []byte("height")
+var ffjKeyPhotoSizeHeight = []byte("height")
 
-var ffj_key_PhotoSize_FileSize = []byte("file_size")
+var ffjKeyPhotoSizeFileSize = []byte("file_size")
 
-func (uj *PhotoSize) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *PhotoSize) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *PhotoSize) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_PhotoSizebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *PhotoSize) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtPhotoSizebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -15171,7 +15326,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_PhotoSizeno_such_key
+				currentKey = ffjtPhotoSizenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -15179,60 +15334,60 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_PhotoSize_FileID, kn) {
-						currentKey = ffj_t_PhotoSize_FileID
+					if bytes.Equal(ffjKeyPhotoSizeFileID, kn) {
+						currentKey = ffjtPhotoSizeFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_PhotoSize_FileSize, kn) {
-						currentKey = ffj_t_PhotoSize_FileSize
+					} else if bytes.Equal(ffjKeyPhotoSizeFileSize, kn) {
+						currentKey = ffjtPhotoSizeFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'h':
 
-					if bytes.Equal(ffj_key_PhotoSize_Height, kn) {
-						currentKey = ffj_t_PhotoSize_Height
+					if bytes.Equal(ffjKeyPhotoSizeHeight, kn) {
+						currentKey = ffjtPhotoSizeHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'w':
 
-					if bytes.Equal(ffj_key_PhotoSize_Width, kn) {
-						currentKey = ffj_t_PhotoSize_Width
+					if bytes.Equal(ffjKeyPhotoSizeWidth, kn) {
+						currentKey = ffjtPhotoSizeWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_PhotoSize_FileSize, kn) {
-					currentKey = ffj_t_PhotoSize_FileSize
+				if fflib.EqualFoldRight(ffjKeyPhotoSizeFileSize, kn) {
+					currentKey = ffjtPhotoSizeFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_PhotoSize_Height, kn) {
-					currentKey = ffj_t_PhotoSize_Height
+				if fflib.SimpleLetterEqualFold(ffjKeyPhotoSizeHeight, kn) {
+					currentKey = ffjtPhotoSizeHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_PhotoSize_Width, kn) {
-					currentKey = ffj_t_PhotoSize_Width
+				if fflib.SimpleLetterEqualFold(ffjKeyPhotoSizeWidth, kn) {
+					currentKey = ffjtPhotoSizeWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_PhotoSize_FileID, kn) {
-					currentKey = ffj_t_PhotoSize_FileID
+				if fflib.AsciiEqualFold(ffjKeyPhotoSizeFileID, kn) {
+					currentKey = ffjtPhotoSizeFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_PhotoSizeno_such_key
+				currentKey = ffjtPhotoSizenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -15249,19 +15404,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_PhotoSize_FileID:
+				case ffjtPhotoSizeFileID:
 					goto handle_FileID
 
-				case ffj_t_PhotoSize_Width:
+				case ffjtPhotoSizeWidth:
 					goto handle_Width
 
-				case ffj_t_PhotoSize_Height:
+				case ffjtPhotoSizeHeight:
 					goto handle_Height
 
-				case ffj_t_PhotoSize_FileSize:
+				case ffjtPhotoSizeFileSize:
 					goto handle_FileSize
 
-				case ffj_t_PhotoSizeno_such_key:
+				case ffjtPhotoSizenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -15277,7 +15432,7 @@ mainparse:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -15293,7 +15448,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -15303,7 +15458,7 @@ handle_FileID:
 
 handle_Width:
 
-	/* handler: uj.Width type=int kind=int quoted=false*/
+	/* handler: j.Width type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -15323,7 +15478,7 @@ handle_Width:
 				return fs.WrapErr(err)
 			}
 
-			uj.Width = int(tval)
+			j.Width = int(tval)
 
 		}
 	}
@@ -15333,7 +15488,7 @@ handle_Width:
 
 handle_Height:
 
-	/* handler: uj.Height type=int kind=int quoted=false*/
+	/* handler: j.Height type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -15353,7 +15508,7 @@ handle_Height:
 				return fs.WrapErr(err)
 			}
 
-			uj.Height = int(tval)
+			j.Height = int(tval)
 
 		}
 	}
@@ -15363,7 +15518,7 @@ handle_Height:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -15383,7 +15538,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -15409,20 +15564,23 @@ done:
 	return nil
 }
 
-func (mj *ReplyKeyboardHide) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ReplyKeyboardHide) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ReplyKeyboardHide) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ReplyKeyboardHide) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -15430,14 +15588,14 @@ func (mj *ReplyKeyboardHide) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	if mj.HideKeyboard {
+	if j.HideKeyboard {
 		buf.WriteString(`{ "hide_keyboard":true`)
 	} else {
 		buf.WriteString(`{ "hide_keyboard":false`)
 	}
 	buf.WriteByte(',')
-	if mj.Selective != false {
-		if mj.Selective {
+	if j.Selective != false {
+		if j.Selective {
 			buf.WriteString(`"selective":true`)
 		} else {
 			buf.WriteString(`"selective":false`)
@@ -15450,26 +15608,28 @@ func (mj *ReplyKeyboardHide) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ReplyKeyboardHidebase = iota
-	ffj_t_ReplyKeyboardHideno_such_key
+	ffjtReplyKeyboardHidebase = iota
+	ffjtReplyKeyboardHidenosuchkey
 
-	ffj_t_ReplyKeyboardHide_HideKeyboard
+	ffjtReplyKeyboardHideHideKeyboard
 
-	ffj_t_ReplyKeyboardHide_Selective
+	ffjtReplyKeyboardHideSelective
 )
 
-var ffj_key_ReplyKeyboardHide_HideKeyboard = []byte("hide_keyboard")
+var ffjKeyReplyKeyboardHideHideKeyboard = []byte("hide_keyboard")
 
-var ffj_key_ReplyKeyboardHide_Selective = []byte("selective")
+var ffjKeyReplyKeyboardHideSelective = []byte("selective")
 
-func (uj *ReplyKeyboardHide) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ReplyKeyboardHide) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ReplyKeyboardHide) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ReplyKeyboardHidebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ReplyKeyboardHide) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtReplyKeyboardHidebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -15515,7 +15675,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ReplyKeyboardHideno_such_key
+				currentKey = ffjtReplyKeyboardHidenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -15523,35 +15683,35 @@ mainparse:
 
 				case 'h':
 
-					if bytes.Equal(ffj_key_ReplyKeyboardHide_HideKeyboard, kn) {
-						currentKey = ffj_t_ReplyKeyboardHide_HideKeyboard
+					if bytes.Equal(ffjKeyReplyKeyboardHideHideKeyboard, kn) {
+						currentKey = ffjtReplyKeyboardHideHideKeyboard
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 's':
 
-					if bytes.Equal(ffj_key_ReplyKeyboardHide_Selective, kn) {
-						currentKey = ffj_t_ReplyKeyboardHide_Selective
+					if bytes.Equal(ffjKeyReplyKeyboardHideSelective, kn) {
+						currentKey = ffjtReplyKeyboardHideSelective
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ReplyKeyboardHide_Selective, kn) {
-					currentKey = ffj_t_ReplyKeyboardHide_Selective
+				if fflib.EqualFoldRight(ffjKeyReplyKeyboardHideSelective, kn) {
+					currentKey = ffjtReplyKeyboardHideSelective
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ReplyKeyboardHide_HideKeyboard, kn) {
-					currentKey = ffj_t_ReplyKeyboardHide_HideKeyboard
+				if fflib.EqualFoldRight(ffjKeyReplyKeyboardHideHideKeyboard, kn) {
+					currentKey = ffjtReplyKeyboardHideHideKeyboard
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ReplyKeyboardHideno_such_key
+				currentKey = ffjtReplyKeyboardHidenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -15568,13 +15728,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ReplyKeyboardHide_HideKeyboard:
+				case ffjtReplyKeyboardHideHideKeyboard:
 					goto handle_HideKeyboard
 
-				case ffj_t_ReplyKeyboardHide_Selective:
+				case ffjtReplyKeyboardHideSelective:
 					goto handle_Selective
 
-				case ffj_t_ReplyKeyboardHideno_such_key:
+				case ffjtReplyKeyboardHidenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -15590,7 +15750,7 @@ mainparse:
 
 handle_HideKeyboard:
 
-	/* handler: uj.HideKeyboard type=bool kind=bool quoted=false*/
+	/* handler: j.HideKeyboard type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -15606,11 +15766,11 @@ handle_HideKeyboard:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.HideKeyboard = true
+				j.HideKeyboard = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.HideKeyboard = false
+				j.HideKeyboard = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -15625,7 +15785,7 @@ handle_HideKeyboard:
 
 handle_Selective:
 
-	/* handler: uj.Selective type=bool kind=bool quoted=false*/
+	/* handler: j.Selective type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -15641,11 +15801,11 @@ handle_Selective:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.Selective = true
+				j.Selective = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.Selective = false
+				j.Selective = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -15676,20 +15836,23 @@ done:
 	return nil
 }
 
-func (mj *ReplyKeyboardMarkup) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ReplyKeyboardMarkup) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ReplyKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ReplyKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -15698,9 +15861,9 @@ func (mj *ReplyKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "keyboard":`)
-	if mj.Keyboard != nil {
+	if j.Keyboard != nil {
 		buf.WriteString(`[`)
-		for i, v := range mj.Keyboard {
+		for i, v := range j.Keyboard {
 			if i != 0 {
 				buf.WriteString(`,`)
 			}
@@ -15730,24 +15893,24 @@ func (mj *ReplyKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteString(`null`)
 	}
 	buf.WriteByte(',')
-	if mj.ResizeKeyboard != false {
-		if mj.ResizeKeyboard {
+	if j.ResizeKeyboard != false {
+		if j.ResizeKeyboard {
 			buf.WriteString(`"resize_keyboard":true`)
 		} else {
 			buf.WriteString(`"resize_keyboard":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if mj.OneTimeKeyboard != false {
-		if mj.OneTimeKeyboard {
+	if j.OneTimeKeyboard != false {
+		if j.OneTimeKeyboard {
 			buf.WriteString(`"one_time_keyboard":true`)
 		} else {
 			buf.WriteString(`"one_time_keyboard":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if mj.Selective != false {
-		if mj.Selective {
+	if j.Selective != false {
+		if j.Selective {
 			buf.WriteString(`"selective":true`)
 		} else {
 			buf.WriteString(`"selective":false`)
@@ -15760,34 +15923,36 @@ func (mj *ReplyKeyboardMarkup) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ReplyKeyboardMarkupbase = iota
-	ffj_t_ReplyKeyboardMarkupno_such_key
+	ffjtReplyKeyboardMarkupbase = iota
+	ffjtReplyKeyboardMarkupnosuchkey
 
-	ffj_t_ReplyKeyboardMarkup_Keyboard
+	ffjtReplyKeyboardMarkupKeyboard
 
-	ffj_t_ReplyKeyboardMarkup_ResizeKeyboard
+	ffjtReplyKeyboardMarkupResizeKeyboard
 
-	ffj_t_ReplyKeyboardMarkup_OneTimeKeyboard
+	ffjtReplyKeyboardMarkupOneTimeKeyboard
 
-	ffj_t_ReplyKeyboardMarkup_Selective
+	ffjtReplyKeyboardMarkupSelective
 )
 
-var ffj_key_ReplyKeyboardMarkup_Keyboard = []byte("keyboard")
+var ffjKeyReplyKeyboardMarkupKeyboard = []byte("keyboard")
 
-var ffj_key_ReplyKeyboardMarkup_ResizeKeyboard = []byte("resize_keyboard")
+var ffjKeyReplyKeyboardMarkupResizeKeyboard = []byte("resize_keyboard")
 
-var ffj_key_ReplyKeyboardMarkup_OneTimeKeyboard = []byte("one_time_keyboard")
+var ffjKeyReplyKeyboardMarkupOneTimeKeyboard = []byte("one_time_keyboard")
 
-var ffj_key_ReplyKeyboardMarkup_Selective = []byte("selective")
+var ffjKeyReplyKeyboardMarkupSelective = []byte("selective")
 
-func (uj *ReplyKeyboardMarkup) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ReplyKeyboardMarkup) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ReplyKeyboardMarkup) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ReplyKeyboardMarkupbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ReplyKeyboardMarkup) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtReplyKeyboardMarkupbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -15833,7 +15998,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ReplyKeyboardMarkupno_such_key
+				currentKey = ffjtReplyKeyboardMarkupnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -15841,63 +16006,63 @@ mainparse:
 
 				case 'k':
 
-					if bytes.Equal(ffj_key_ReplyKeyboardMarkup_Keyboard, kn) {
-						currentKey = ffj_t_ReplyKeyboardMarkup_Keyboard
+					if bytes.Equal(ffjKeyReplyKeyboardMarkupKeyboard, kn) {
+						currentKey = ffjtReplyKeyboardMarkupKeyboard
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'o':
 
-					if bytes.Equal(ffj_key_ReplyKeyboardMarkup_OneTimeKeyboard, kn) {
-						currentKey = ffj_t_ReplyKeyboardMarkup_OneTimeKeyboard
+					if bytes.Equal(ffjKeyReplyKeyboardMarkupOneTimeKeyboard, kn) {
+						currentKey = ffjtReplyKeyboardMarkupOneTimeKeyboard
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_ReplyKeyboardMarkup_ResizeKeyboard, kn) {
-						currentKey = ffj_t_ReplyKeyboardMarkup_ResizeKeyboard
+					if bytes.Equal(ffjKeyReplyKeyboardMarkupResizeKeyboard, kn) {
+						currentKey = ffjtReplyKeyboardMarkupResizeKeyboard
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 's':
 
-					if bytes.Equal(ffj_key_ReplyKeyboardMarkup_Selective, kn) {
-						currentKey = ffj_t_ReplyKeyboardMarkup_Selective
+					if bytes.Equal(ffjKeyReplyKeyboardMarkupSelective, kn) {
+						currentKey = ffjtReplyKeyboardMarkupSelective
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ReplyKeyboardMarkup_Selective, kn) {
-					currentKey = ffj_t_ReplyKeyboardMarkup_Selective
+				if fflib.EqualFoldRight(ffjKeyReplyKeyboardMarkupSelective, kn) {
+					currentKey = ffjtReplyKeyboardMarkupSelective
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ReplyKeyboardMarkup_OneTimeKeyboard, kn) {
-					currentKey = ffj_t_ReplyKeyboardMarkup_OneTimeKeyboard
+				if fflib.EqualFoldRight(ffjKeyReplyKeyboardMarkupOneTimeKeyboard, kn) {
+					currentKey = ffjtReplyKeyboardMarkupOneTimeKeyboard
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ReplyKeyboardMarkup_ResizeKeyboard, kn) {
-					currentKey = ffj_t_ReplyKeyboardMarkup_ResizeKeyboard
+				if fflib.EqualFoldRight(ffjKeyReplyKeyboardMarkupResizeKeyboard, kn) {
+					currentKey = ffjtReplyKeyboardMarkupResizeKeyboard
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ReplyKeyboardMarkup_Keyboard, kn) {
-					currentKey = ffj_t_ReplyKeyboardMarkup_Keyboard
+				if fflib.EqualFoldRight(ffjKeyReplyKeyboardMarkupKeyboard, kn) {
+					currentKey = ffjtReplyKeyboardMarkupKeyboard
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ReplyKeyboardMarkupno_such_key
+				currentKey = ffjtReplyKeyboardMarkupnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -15914,19 +16079,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ReplyKeyboardMarkup_Keyboard:
+				case ffjtReplyKeyboardMarkupKeyboard:
 					goto handle_Keyboard
 
-				case ffj_t_ReplyKeyboardMarkup_ResizeKeyboard:
+				case ffjtReplyKeyboardMarkupResizeKeyboard:
 					goto handle_ResizeKeyboard
 
-				case ffj_t_ReplyKeyboardMarkup_OneTimeKeyboard:
+				case ffjtReplyKeyboardMarkupOneTimeKeyboard:
 					goto handle_OneTimeKeyboard
 
-				case ffj_t_ReplyKeyboardMarkup_Selective:
+				case ffjtReplyKeyboardMarkupSelective:
 					goto handle_Selective
 
-				case ffj_t_ReplyKeyboardMarkupno_such_key:
+				case ffjtReplyKeyboardMarkupnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -15942,7 +16107,7 @@ mainparse:
 
 handle_Keyboard:
 
-	/* handler: uj.Keyboard type=[][]tgbotapi.KeyboardButton kind=slice quoted=false*/
+	/* handler: j.Keyboard type=[][]tgbotapi.KeyboardButton kind=slice quoted=false*/
 
 	{
 		/* Falling back. type=[][]tgbotapi.KeyboardButton kind=slice */
@@ -15951,7 +16116,7 @@ handle_Keyboard:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Keyboard)
+		err = json.Unmarshal(tbuf, &j.Keyboard)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -15962,7 +16127,7 @@ handle_Keyboard:
 
 handle_ResizeKeyboard:
 
-	/* handler: uj.ResizeKeyboard type=bool kind=bool quoted=false*/
+	/* handler: j.ResizeKeyboard type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -15978,11 +16143,11 @@ handle_ResizeKeyboard:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.ResizeKeyboard = true
+				j.ResizeKeyboard = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.ResizeKeyboard = false
+				j.ResizeKeyboard = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -15997,7 +16162,7 @@ handle_ResizeKeyboard:
 
 handle_OneTimeKeyboard:
 
-	/* handler: uj.OneTimeKeyboard type=bool kind=bool quoted=false*/
+	/* handler: j.OneTimeKeyboard type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -16013,11 +16178,11 @@ handle_OneTimeKeyboard:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.OneTimeKeyboard = true
+				j.OneTimeKeyboard = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.OneTimeKeyboard = false
+				j.OneTimeKeyboard = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -16032,7 +16197,7 @@ handle_OneTimeKeyboard:
 
 handle_Selective:
 
-	/* handler: uj.Selective type=bool kind=bool quoted=false*/
+	/* handler: j.Selective type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -16048,11 +16213,11 @@ handle_Selective:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.Selective = true
+				j.Selective = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.Selective = false
+				j.Selective = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -16083,20 +16248,23 @@ done:
 	return nil
 }
 
-func (mj *Sticker) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Sticker) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Sticker) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Sticker) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -16105,19 +16273,19 @@ func (mj *Sticker) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "file_id":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
+	fflib.WriteJsonString(buf, string(j.FileID))
 	buf.WriteString(`,"width":`)
-	fflib.FormatBits2(buf, uint64(mj.Width), 10, mj.Width < 0)
+	fflib.FormatBits2(buf, uint64(j.Width), 10, j.Width < 0)
 	buf.WriteString(`,"height":`)
-	fflib.FormatBits2(buf, uint64(mj.Height), 10, mj.Height < 0)
+	fflib.FormatBits2(buf, uint64(j.Height), 10, j.Height < 0)
 	buf.WriteByte(',')
-	if mj.Thumbnail != nil {
+	if j.Thumbnail != nil {
 		if true {
 			buf.WriteString(`"thumb":`)
 
 			{
 
-				err = mj.Thumbnail.MarshalJSONBuf(buf)
+				err = j.Thumbnail.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -16126,9 +16294,9 @@ func (mj *Sticker) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if mj.FileSize != 0 {
+	if j.FileSize != 0 {
 		buf.WriteString(`"file_size":`)
-		fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+		fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -16137,38 +16305,40 @@ func (mj *Sticker) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Stickerbase = iota
-	ffj_t_Stickerno_such_key
+	ffjtStickerbase = iota
+	ffjtStickernosuchkey
 
-	ffj_t_Sticker_FileID
+	ffjtStickerFileID
 
-	ffj_t_Sticker_Width
+	ffjtStickerWidth
 
-	ffj_t_Sticker_Height
+	ffjtStickerHeight
 
-	ffj_t_Sticker_Thumbnail
+	ffjtStickerThumbnail
 
-	ffj_t_Sticker_FileSize
+	ffjtStickerFileSize
 )
 
-var ffj_key_Sticker_FileID = []byte("file_id")
+var ffjKeyStickerFileID = []byte("file_id")
 
-var ffj_key_Sticker_Width = []byte("width")
+var ffjKeyStickerWidth = []byte("width")
 
-var ffj_key_Sticker_Height = []byte("height")
+var ffjKeyStickerHeight = []byte("height")
 
-var ffj_key_Sticker_Thumbnail = []byte("thumb")
+var ffjKeyStickerThumbnail = []byte("thumb")
 
-var ffj_key_Sticker_FileSize = []byte("file_size")
+var ffjKeyStickerFileSize = []byte("file_size")
 
-func (uj *Sticker) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Sticker) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Sticker) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Stickerbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Sticker) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtStickerbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -16214,7 +16384,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Stickerno_such_key
+				currentKey = ffjtStickernosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -16222,74 +16392,74 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Sticker_FileID, kn) {
-						currentKey = ffj_t_Sticker_FileID
+					if bytes.Equal(ffjKeyStickerFileID, kn) {
+						currentKey = ffjtStickerFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Sticker_FileSize, kn) {
-						currentKey = ffj_t_Sticker_FileSize
+					} else if bytes.Equal(ffjKeyStickerFileSize, kn) {
+						currentKey = ffjtStickerFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'h':
 
-					if bytes.Equal(ffj_key_Sticker_Height, kn) {
-						currentKey = ffj_t_Sticker_Height
+					if bytes.Equal(ffjKeyStickerHeight, kn) {
+						currentKey = ffjtStickerHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_Sticker_Thumbnail, kn) {
-						currentKey = ffj_t_Sticker_Thumbnail
+					if bytes.Equal(ffjKeyStickerThumbnail, kn) {
+						currentKey = ffjtStickerThumbnail
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'w':
 
-					if bytes.Equal(ffj_key_Sticker_Width, kn) {
-						currentKey = ffj_t_Sticker_Width
+					if bytes.Equal(ffjKeyStickerWidth, kn) {
+						currentKey = ffjtStickerWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Sticker_FileSize, kn) {
-					currentKey = ffj_t_Sticker_FileSize
+				if fflib.EqualFoldRight(ffjKeyStickerFileSize, kn) {
+					currentKey = ffjtStickerFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Sticker_Thumbnail, kn) {
-					currentKey = ffj_t_Sticker_Thumbnail
+				if fflib.SimpleLetterEqualFold(ffjKeyStickerThumbnail, kn) {
+					currentKey = ffjtStickerThumbnail
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Sticker_Height, kn) {
-					currentKey = ffj_t_Sticker_Height
+				if fflib.SimpleLetterEqualFold(ffjKeyStickerHeight, kn) {
+					currentKey = ffjtStickerHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Sticker_Width, kn) {
-					currentKey = ffj_t_Sticker_Width
+				if fflib.SimpleLetterEqualFold(ffjKeyStickerWidth, kn) {
+					currentKey = ffjtStickerWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Sticker_FileID, kn) {
-					currentKey = ffj_t_Sticker_FileID
+				if fflib.AsciiEqualFold(ffjKeyStickerFileID, kn) {
+					currentKey = ffjtStickerFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Stickerno_such_key
+				currentKey = ffjtStickernosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -16306,22 +16476,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Sticker_FileID:
+				case ffjtStickerFileID:
 					goto handle_FileID
 
-				case ffj_t_Sticker_Width:
+				case ffjtStickerWidth:
 					goto handle_Width
 
-				case ffj_t_Sticker_Height:
+				case ffjtStickerHeight:
 					goto handle_Height
 
-				case ffj_t_Sticker_Thumbnail:
+				case ffjtStickerThumbnail:
 					goto handle_Thumbnail
 
-				case ffj_t_Sticker_FileSize:
+				case ffjtStickerFileSize:
 					goto handle_FileSize
 
-				case ffj_t_Stickerno_such_key:
+				case ffjtStickernosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -16337,7 +16507,7 @@ mainparse:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -16353,7 +16523,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -16363,7 +16533,7 @@ handle_FileID:
 
 handle_Width:
 
-	/* handler: uj.Width type=int kind=int quoted=false*/
+	/* handler: j.Width type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -16383,7 +16553,7 @@ handle_Width:
 				return fs.WrapErr(err)
 			}
 
-			uj.Width = int(tval)
+			j.Width = int(tval)
 
 		}
 	}
@@ -16393,7 +16563,7 @@ handle_Width:
 
 handle_Height:
 
-	/* handler: uj.Height type=int kind=int quoted=false*/
+	/* handler: j.Height type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -16413,7 +16583,7 @@ handle_Height:
 				return fs.WrapErr(err)
 			}
 
-			uj.Height = int(tval)
+			j.Height = int(tval)
 
 		}
 	}
@@ -16423,22 +16593,22 @@ handle_Height:
 
 handle_Thumbnail:
 
-	/* handler: uj.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
+	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Thumbnail = nil
+			j.Thumbnail = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Thumbnail == nil {
-			uj.Thumbnail = new(PhotoSize)
+		if j.Thumbnail == nil {
+			j.Thumbnail = new(PhotoSize)
 		}
 
-		err = uj.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -16450,7 +16620,7 @@ handle_Thumbnail:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -16470,7 +16640,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -16496,20 +16666,23 @@ done:
 	return nil
 }
 
-func (mj *Update) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Update) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -16518,13 +16691,13 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"update_id":`)
-	fflib.FormatBits2(buf, uint64(mj.UpdateID), 10, mj.UpdateID < 0)
-	if mj.Message != nil {
+	fflib.FormatBits2(buf, uint64(j.UpdateID), 10, j.UpdateID < 0)
+	if j.Message != nil {
 		buf.WriteString(`,"message":`)
 
 		{
 
-			err = mj.Message.MarshalJSONBuf(buf)
+			err = j.Message.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -16533,12 +16706,12 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`,"message":null`)
 	}
-	if mj.EditedMessage != nil {
+	if j.EditedMessage != nil {
 		buf.WriteString(`,"edited_message":`)
 
 		{
 
-			err = mj.EditedMessage.MarshalJSONBuf(buf)
+			err = j.EditedMessage.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -16547,12 +16720,12 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`,"edited_message":null`)
 	}
-	if mj.ChannelPost != nil {
+	if j.ChannelPost != nil {
 		buf.WriteString(`,"channel_post":`)
 
 		{
 
-			err = mj.ChannelPost.MarshalJSONBuf(buf)
+			err = j.ChannelPost.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -16561,12 +16734,12 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`,"channel_post":null`)
 	}
-	if mj.EditedChannelPost != nil {
+	if j.EditedChannelPost != nil {
 		buf.WriteString(`,"edited_channel_post":`)
 
 		{
 
-			err = mj.EditedChannelPost.MarshalJSONBuf(buf)
+			err = j.EditedChannelPost.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -16575,12 +16748,12 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`,"edited_channel_post":null`)
 	}
-	if mj.InlineQuery != nil {
+	if j.InlineQuery != nil {
 		buf.WriteString(`,"inline_query":`)
 
 		{
 
-			err = mj.InlineQuery.MarshalJSONBuf(buf)
+			err = j.InlineQuery.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -16589,12 +16762,12 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`,"inline_query":null`)
 	}
-	if mj.ChosenInlineResult != nil {
+	if j.ChosenInlineResult != nil {
 		buf.WriteString(`,"chosen_inline_result":`)
 
 		{
 
-			err = mj.ChosenInlineResult.MarshalJSONBuf(buf)
+			err = j.ChosenInlineResult.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -16603,12 +16776,12 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`,"chosen_inline_result":null`)
 	}
-	if mj.CallbackQuery != nil {
+	if j.CallbackQuery != nil {
 		buf.WriteString(`,"callback_query":`)
 
 		{
 
-			err = mj.CallbackQuery.MarshalJSONBuf(buf)
+			err = j.CallbackQuery.MarshalJSONBuf(buf)
 			if err != nil {
 				return err
 			}
@@ -16622,50 +16795,52 @@ func (mj *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Updatebase = iota
-	ffj_t_Updateno_such_key
+	ffjtUpdatebase = iota
+	ffjtUpdatenosuchkey
 
-	ffj_t_Update_UpdateID
+	ffjtUpdateUpdateID
 
-	ffj_t_Update_Message
+	ffjtUpdateMessage
 
-	ffj_t_Update_EditedMessage
+	ffjtUpdateEditedMessage
 
-	ffj_t_Update_ChannelPost
+	ffjtUpdateChannelPost
 
-	ffj_t_Update_EditedChannelPost
+	ffjtUpdateEditedChannelPost
 
-	ffj_t_Update_InlineQuery
+	ffjtUpdateInlineQuery
 
-	ffj_t_Update_ChosenInlineResult
+	ffjtUpdateChosenInlineResult
 
-	ffj_t_Update_CallbackQuery
+	ffjtUpdateCallbackQuery
 )
 
-var ffj_key_Update_UpdateID = []byte("update_id")
+var ffjKeyUpdateUpdateID = []byte("update_id")
 
-var ffj_key_Update_Message = []byte("message")
+var ffjKeyUpdateMessage = []byte("message")
 
-var ffj_key_Update_EditedMessage = []byte("edited_message")
+var ffjKeyUpdateEditedMessage = []byte("edited_message")
 
-var ffj_key_Update_ChannelPost = []byte("channel_post")
+var ffjKeyUpdateChannelPost = []byte("channel_post")
 
-var ffj_key_Update_EditedChannelPost = []byte("edited_channel_post")
+var ffjKeyUpdateEditedChannelPost = []byte("edited_channel_post")
 
-var ffj_key_Update_InlineQuery = []byte("inline_query")
+var ffjKeyUpdateInlineQuery = []byte("inline_query")
 
-var ffj_key_Update_ChosenInlineResult = []byte("chosen_inline_result")
+var ffjKeyUpdateChosenInlineResult = []byte("chosen_inline_result")
 
-var ffj_key_Update_CallbackQuery = []byte("callback_query")
+var ffjKeyUpdateCallbackQuery = []byte("callback_query")
 
-func (uj *Update) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Update) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Update) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Updatebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Update) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtUpdatebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -16711,7 +16886,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Updateno_such_key
+				currentKey = ffjtUpdatenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -16719,110 +16894,110 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_Update_ChannelPost, kn) {
-						currentKey = ffj_t_Update_ChannelPost
+					if bytes.Equal(ffjKeyUpdateChannelPost, kn) {
+						currentKey = ffjtUpdateChannelPost
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Update_ChosenInlineResult, kn) {
-						currentKey = ffj_t_Update_ChosenInlineResult
+					} else if bytes.Equal(ffjKeyUpdateChosenInlineResult, kn) {
+						currentKey = ffjtUpdateChosenInlineResult
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Update_CallbackQuery, kn) {
-						currentKey = ffj_t_Update_CallbackQuery
+					} else if bytes.Equal(ffjKeyUpdateCallbackQuery, kn) {
+						currentKey = ffjtUpdateCallbackQuery
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'e':
 
-					if bytes.Equal(ffj_key_Update_EditedMessage, kn) {
-						currentKey = ffj_t_Update_EditedMessage
+					if bytes.Equal(ffjKeyUpdateEditedMessage, kn) {
+						currentKey = ffjtUpdateEditedMessage
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Update_EditedChannelPost, kn) {
-						currentKey = ffj_t_Update_EditedChannelPost
+					} else if bytes.Equal(ffjKeyUpdateEditedChannelPost, kn) {
+						currentKey = ffjtUpdateEditedChannelPost
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_Update_InlineQuery, kn) {
-						currentKey = ffj_t_Update_InlineQuery
+					if bytes.Equal(ffjKeyUpdateInlineQuery, kn) {
+						currentKey = ffjtUpdateInlineQuery
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_Update_Message, kn) {
-						currentKey = ffj_t_Update_Message
+					if bytes.Equal(ffjKeyUpdateMessage, kn) {
+						currentKey = ffjtUpdateMessage
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_Update_UpdateID, kn) {
-						currentKey = ffj_t_Update_UpdateID
+					if bytes.Equal(ffjKeyUpdateUpdateID, kn) {
+						currentKey = ffjtUpdateUpdateID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Update_CallbackQuery, kn) {
-					currentKey = ffj_t_Update_CallbackQuery
+				if fflib.EqualFoldRight(ffjKeyUpdateCallbackQuery, kn) {
+					currentKey = ffjtUpdateCallbackQuery
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Update_ChosenInlineResult, kn) {
-					currentKey = ffj_t_Update_ChosenInlineResult
+				if fflib.EqualFoldRight(ffjKeyUpdateChosenInlineResult, kn) {
+					currentKey = ffjtUpdateChosenInlineResult
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Update_InlineQuery, kn) {
-					currentKey = ffj_t_Update_InlineQuery
+				if fflib.AsciiEqualFold(ffjKeyUpdateInlineQuery, kn) {
+					currentKey = ffjtUpdateInlineQuery
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Update_EditedChannelPost, kn) {
-					currentKey = ffj_t_Update_EditedChannelPost
+				if fflib.EqualFoldRight(ffjKeyUpdateEditedChannelPost, kn) {
+					currentKey = ffjtUpdateEditedChannelPost
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Update_ChannelPost, kn) {
-					currentKey = ffj_t_Update_ChannelPost
+				if fflib.EqualFoldRight(ffjKeyUpdateChannelPost, kn) {
+					currentKey = ffjtUpdateChannelPost
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Update_EditedMessage, kn) {
-					currentKey = ffj_t_Update_EditedMessage
+				if fflib.EqualFoldRight(ffjKeyUpdateEditedMessage, kn) {
+					currentKey = ffjtUpdateEditedMessage
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Update_Message, kn) {
-					currentKey = ffj_t_Update_Message
+				if fflib.EqualFoldRight(ffjKeyUpdateMessage, kn) {
+					currentKey = ffjtUpdateMessage
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Update_UpdateID, kn) {
-					currentKey = ffj_t_Update_UpdateID
+				if fflib.AsciiEqualFold(ffjKeyUpdateUpdateID, kn) {
+					currentKey = ffjtUpdateUpdateID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Updateno_such_key
+				currentKey = ffjtUpdatenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -16839,31 +17014,31 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Update_UpdateID:
+				case ffjtUpdateUpdateID:
 					goto handle_UpdateID
 
-				case ffj_t_Update_Message:
+				case ffjtUpdateMessage:
 					goto handle_Message
 
-				case ffj_t_Update_EditedMessage:
+				case ffjtUpdateEditedMessage:
 					goto handle_EditedMessage
 
-				case ffj_t_Update_ChannelPost:
+				case ffjtUpdateChannelPost:
 					goto handle_ChannelPost
 
-				case ffj_t_Update_EditedChannelPost:
+				case ffjtUpdateEditedChannelPost:
 					goto handle_EditedChannelPost
 
-				case ffj_t_Update_InlineQuery:
+				case ffjtUpdateInlineQuery:
 					goto handle_InlineQuery
 
-				case ffj_t_Update_ChosenInlineResult:
+				case ffjtUpdateChosenInlineResult:
 					goto handle_ChosenInlineResult
 
-				case ffj_t_Update_CallbackQuery:
+				case ffjtUpdateCallbackQuery:
 					goto handle_CallbackQuery
 
-				case ffj_t_Updateno_such_key:
+				case ffjtUpdatenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -16879,7 +17054,7 @@ mainparse:
 
 handle_UpdateID:
 
-	/* handler: uj.UpdateID type=int kind=int quoted=false*/
+	/* handler: j.UpdateID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -16899,7 +17074,7 @@ handle_UpdateID:
 				return fs.WrapErr(err)
 			}
 
-			uj.UpdateID = int(tval)
+			j.UpdateID = int(tval)
 
 		}
 	}
@@ -16909,22 +17084,22 @@ handle_UpdateID:
 
 handle_Message:
 
-	/* handler: uj.Message type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.Message type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Message = nil
+			j.Message = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Message == nil {
-			uj.Message = new(Message)
+		if j.Message == nil {
+			j.Message = new(Message)
 		}
 
-		err = uj.Message.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Message.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -16936,22 +17111,22 @@ handle_Message:
 
 handle_EditedMessage:
 
-	/* handler: uj.EditedMessage type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.EditedMessage type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.EditedMessage = nil
+			j.EditedMessage = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.EditedMessage == nil {
-			uj.EditedMessage = new(Message)
+		if j.EditedMessage == nil {
+			j.EditedMessage = new(Message)
 		}
 
-		err = uj.EditedMessage.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.EditedMessage.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -16963,22 +17138,22 @@ handle_EditedMessage:
 
 handle_ChannelPost:
 
-	/* handler: uj.ChannelPost type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.ChannelPost type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ChannelPost = nil
+			j.ChannelPost = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ChannelPost == nil {
-			uj.ChannelPost = new(Message)
+		if j.ChannelPost == nil {
+			j.ChannelPost = new(Message)
 		}
 
-		err = uj.ChannelPost.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ChannelPost.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -16990,22 +17165,22 @@ handle_ChannelPost:
 
 handle_EditedChannelPost:
 
-	/* handler: uj.EditedChannelPost type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.EditedChannelPost type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.EditedChannelPost = nil
+			j.EditedChannelPost = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.EditedChannelPost == nil {
-			uj.EditedChannelPost = new(Message)
+		if j.EditedChannelPost == nil {
+			j.EditedChannelPost = new(Message)
 		}
 
-		err = uj.EditedChannelPost.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.EditedChannelPost.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -17017,22 +17192,22 @@ handle_EditedChannelPost:
 
 handle_InlineQuery:
 
-	/* handler: uj.InlineQuery type=tgbotapi.InlineQuery kind=struct quoted=false*/
+	/* handler: j.InlineQuery type=tgbotapi.InlineQuery kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.InlineQuery = nil
+			j.InlineQuery = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.InlineQuery == nil {
-			uj.InlineQuery = new(InlineQuery)
+		if j.InlineQuery == nil {
+			j.InlineQuery = new(InlineQuery)
 		}
 
-		err = uj.InlineQuery.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.InlineQuery.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -17044,22 +17219,22 @@ handle_InlineQuery:
 
 handle_ChosenInlineResult:
 
-	/* handler: uj.ChosenInlineResult type=tgbotapi.ChosenInlineResult kind=struct quoted=false*/
+	/* handler: j.ChosenInlineResult type=tgbotapi.ChosenInlineResult kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ChosenInlineResult = nil
+			j.ChosenInlineResult = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ChosenInlineResult == nil {
-			uj.ChosenInlineResult = new(ChosenInlineResult)
+		if j.ChosenInlineResult == nil {
+			j.ChosenInlineResult = new(ChosenInlineResult)
 		}
 
-		err = uj.ChosenInlineResult.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ChosenInlineResult.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -17071,22 +17246,22 @@ handle_ChosenInlineResult:
 
 handle_CallbackQuery:
 
-	/* handler: uj.CallbackQuery type=tgbotapi.CallbackQuery kind=struct quoted=false*/
+	/* handler: j.CallbackQuery type=tgbotapi.CallbackQuery kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.CallbackQuery = nil
+			j.CallbackQuery = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.CallbackQuery == nil {
-			uj.CallbackQuery = new(CallbackQuery)
+		if j.CallbackQuery == nil {
+			j.CallbackQuery = new(CallbackQuery)
 		}
 
-		err = uj.CallbackQuery.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.CallbackQuery.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -17114,20 +17289,23 @@ done:
 	return nil
 }
 
-func (mj *User) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *User) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *User) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *User) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -17136,26 +17314,26 @@ func (mj *User) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "id":`)
-	fflib.FormatBits2(buf, uint64(mj.ID), 10, mj.ID < 0)
+	fflib.FormatBits2(buf, uint64(j.ID), 10, j.ID < 0)
 	buf.WriteByte(',')
-	if len(mj.FirstName) != 0 {
+	if len(j.FirstName) != 0 {
 		buf.WriteString(`"first_name":`)
-		fflib.WriteJsonString(buf, string(mj.FirstName))
+		fflib.WriteJsonString(buf, string(j.FirstName))
 		buf.WriteByte(',')
 	}
-	if len(mj.LastName) != 0 {
+	if len(j.LastName) != 0 {
 		buf.WriteString(`"last_name":`)
-		fflib.WriteJsonString(buf, string(mj.LastName))
+		fflib.WriteJsonString(buf, string(j.LastName))
 		buf.WriteByte(',')
 	}
-	if len(mj.UserName) != 0 {
+	if len(j.UserName) != 0 {
 		buf.WriteString(`"username":`)
-		fflib.WriteJsonString(buf, string(mj.UserName))
+		fflib.WriteJsonString(buf, string(j.UserName))
 		buf.WriteByte(',')
 	}
-	if len(mj.LanguageCode) != 0 {
+	if len(j.LanguageCode) != 0 {
 		buf.WriteString(`"language_code":`)
-		fflib.WriteJsonString(buf, string(mj.LanguageCode))
+		fflib.WriteJsonString(buf, string(j.LanguageCode))
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -17164,38 +17342,40 @@ func (mj *User) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Userbase = iota
-	ffj_t_Userno_such_key
+	ffjtUserbase = iota
+	ffjtUsernosuchkey
 
-	ffj_t_User_ID
+	ffjtUserID
 
-	ffj_t_User_FirstName
+	ffjtUserFirstName
 
-	ffj_t_User_LastName
+	ffjtUserLastName
 
-	ffj_t_User_UserName
+	ffjtUserUserName
 
-	ffj_t_User_LanguageCode
+	ffjtUserLanguageCode
 )
 
-var ffj_key_User_ID = []byte("id")
+var ffjKeyUserID = []byte("id")
 
-var ffj_key_User_FirstName = []byte("first_name")
+var ffjKeyUserFirstName = []byte("first_name")
 
-var ffj_key_User_LastName = []byte("last_name")
+var ffjKeyUserLastName = []byte("last_name")
 
-var ffj_key_User_UserName = []byte("username")
+var ffjKeyUserUserName = []byte("username")
 
-var ffj_key_User_LanguageCode = []byte("language_code")
+var ffjKeyUserLanguageCode = []byte("language_code")
 
-func (uj *User) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *User) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *User) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Userbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *User) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtUserbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -17241,7 +17421,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Userno_such_key
+				currentKey = ffjtUsernosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -17249,74 +17429,74 @@ mainparse:
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_User_FirstName, kn) {
-						currentKey = ffj_t_User_FirstName
+					if bytes.Equal(ffjKeyUserFirstName, kn) {
+						currentKey = ffjtUserFirstName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_User_ID, kn) {
-						currentKey = ffj_t_User_ID
+					if bytes.Equal(ffjKeyUserID, kn) {
+						currentKey = ffjtUserID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_User_LastName, kn) {
-						currentKey = ffj_t_User_LastName
+					if bytes.Equal(ffjKeyUserLastName, kn) {
+						currentKey = ffjtUserLastName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_User_LanguageCode, kn) {
-						currentKey = ffj_t_User_LanguageCode
+					} else if bytes.Equal(ffjKeyUserLanguageCode, kn) {
+						currentKey = ffjtUserLanguageCode
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_User_UserName, kn) {
-						currentKey = ffj_t_User_UserName
+					if bytes.Equal(ffjKeyUserUserName, kn) {
+						currentKey = ffjtUserUserName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_User_LanguageCode, kn) {
-					currentKey = ffj_t_User_LanguageCode
+				if fflib.AsciiEqualFold(ffjKeyUserLanguageCode, kn) {
+					currentKey = ffjtUserLanguageCode
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_User_UserName, kn) {
-					currentKey = ffj_t_User_UserName
+				if fflib.EqualFoldRight(ffjKeyUserUserName, kn) {
+					currentKey = ffjtUserUserName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_User_LastName, kn) {
-					currentKey = ffj_t_User_LastName
+				if fflib.EqualFoldRight(ffjKeyUserLastName, kn) {
+					currentKey = ffjtUserLastName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_User_FirstName, kn) {
-					currentKey = ffj_t_User_FirstName
+				if fflib.EqualFoldRight(ffjKeyUserFirstName, kn) {
+					currentKey = ffjtUserFirstName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_User_ID, kn) {
-					currentKey = ffj_t_User_ID
+				if fflib.SimpleLetterEqualFold(ffjKeyUserID, kn) {
+					currentKey = ffjtUserID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Userno_such_key
+				currentKey = ffjtUsernosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -17333,22 +17513,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_User_ID:
+				case ffjtUserID:
 					goto handle_ID
 
-				case ffj_t_User_FirstName:
+				case ffjtUserFirstName:
 					goto handle_FirstName
 
-				case ffj_t_User_LastName:
+				case ffjtUserLastName:
 					goto handle_LastName
 
-				case ffj_t_User_UserName:
+				case ffjtUserUserName:
 					goto handle_UserName
 
-				case ffj_t_User_LanguageCode:
+				case ffjtUserLanguageCode:
 					goto handle_LanguageCode
 
-				case ffj_t_Userno_such_key:
+				case ffjtUsernosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -17364,7 +17544,7 @@ mainparse:
 
 handle_ID:
 
-	/* handler: uj.ID type=int kind=int quoted=false*/
+	/* handler: j.ID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -17384,7 +17564,7 @@ handle_ID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ID = int(tval)
+			j.ID = int(tval)
 
 		}
 	}
@@ -17394,7 +17574,7 @@ handle_ID:
 
 handle_FirstName:
 
-	/* handler: uj.FirstName type=string kind=string quoted=false*/
+	/* handler: j.FirstName type=string kind=string quoted=false*/
 
 	{
 
@@ -17410,7 +17590,7 @@ handle_FirstName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FirstName = string(string(outBuf))
+			j.FirstName = string(string(outBuf))
 
 		}
 	}
@@ -17420,7 +17600,7 @@ handle_FirstName:
 
 handle_LastName:
 
-	/* handler: uj.LastName type=string kind=string quoted=false*/
+	/* handler: j.LastName type=string kind=string quoted=false*/
 
 	{
 
@@ -17436,7 +17616,7 @@ handle_LastName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.LastName = string(string(outBuf))
+			j.LastName = string(string(outBuf))
 
 		}
 	}
@@ -17446,7 +17626,7 @@ handle_LastName:
 
 handle_UserName:
 
-	/* handler: uj.UserName type=string kind=string quoted=false*/
+	/* handler: j.UserName type=string kind=string quoted=false*/
 
 	{
 
@@ -17462,7 +17642,7 @@ handle_UserName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.UserName = string(string(outBuf))
+			j.UserName = string(string(outBuf))
 
 		}
 	}
@@ -17472,7 +17652,7 @@ handle_UserName:
 
 handle_LanguageCode:
 
-	/* handler: uj.LanguageCode type=string kind=string quoted=false*/
+	/* handler: j.LanguageCode type=string kind=string quoted=false*/
 
 	{
 
@@ -17488,7 +17668,7 @@ handle_LanguageCode:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.LanguageCode = string(string(outBuf))
+			j.LanguageCode = string(string(outBuf))
 
 		}
 	}
@@ -17514,20 +17694,23 @@ done:
 	return nil
 }
 
-func (mj *UserProfilePhotos) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *UserProfilePhotos) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *UserProfilePhotos) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *UserProfilePhotos) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -17536,11 +17719,11 @@ func (mj *UserProfilePhotos) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"total_count":`)
-	fflib.FormatBits2(buf, uint64(mj.TotalCount), 10, mj.TotalCount < 0)
+	fflib.FormatBits2(buf, uint64(j.TotalCount), 10, j.TotalCount < 0)
 	buf.WriteString(`,"photos":`)
-	if mj.Photos != nil {
+	if j.Photos != nil {
 		buf.WriteString(`[`)
-		for i, v := range mj.Photos {
+		for i, v := range j.Photos {
 			if i != 0 {
 				buf.WriteString(`,`)
 			}
@@ -17574,26 +17757,28 @@ func (mj *UserProfilePhotos) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_UserProfilePhotosbase = iota
-	ffj_t_UserProfilePhotosno_such_key
+	ffjtUserProfilePhotosbase = iota
+	ffjtUserProfilePhotosnosuchkey
 
-	ffj_t_UserProfilePhotos_TotalCount
+	ffjtUserProfilePhotosTotalCount
 
-	ffj_t_UserProfilePhotos_Photos
+	ffjtUserProfilePhotosPhotos
 )
 
-var ffj_key_UserProfilePhotos_TotalCount = []byte("total_count")
+var ffjKeyUserProfilePhotosTotalCount = []byte("total_count")
 
-var ffj_key_UserProfilePhotos_Photos = []byte("photos")
+var ffjKeyUserProfilePhotosPhotos = []byte("photos")
 
-func (uj *UserProfilePhotos) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *UserProfilePhotos) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *UserProfilePhotos) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_UserProfilePhotosbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *UserProfilePhotos) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtUserProfilePhotosbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -17639,7 +17824,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_UserProfilePhotosno_such_key
+				currentKey = ffjtUserProfilePhotosnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -17647,35 +17832,35 @@ mainparse:
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_UserProfilePhotos_Photos, kn) {
-						currentKey = ffj_t_UserProfilePhotos_Photos
+					if bytes.Equal(ffjKeyUserProfilePhotosPhotos, kn) {
+						currentKey = ffjtUserProfilePhotosPhotos
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_UserProfilePhotos_TotalCount, kn) {
-						currentKey = ffj_t_UserProfilePhotos_TotalCount
+					if bytes.Equal(ffjKeyUserProfilePhotosTotalCount, kn) {
+						currentKey = ffjtUserProfilePhotosTotalCount
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_UserProfilePhotos_Photos, kn) {
-					currentKey = ffj_t_UserProfilePhotos_Photos
+				if fflib.EqualFoldRight(ffjKeyUserProfilePhotosPhotos, kn) {
+					currentKey = ffjtUserProfilePhotosPhotos
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_UserProfilePhotos_TotalCount, kn) {
-					currentKey = ffj_t_UserProfilePhotos_TotalCount
+				if fflib.AsciiEqualFold(ffjKeyUserProfilePhotosTotalCount, kn) {
+					currentKey = ffjtUserProfilePhotosTotalCount
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_UserProfilePhotosno_such_key
+				currentKey = ffjtUserProfilePhotosnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -17692,13 +17877,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_UserProfilePhotos_TotalCount:
+				case ffjtUserProfilePhotosTotalCount:
 					goto handle_TotalCount
 
-				case ffj_t_UserProfilePhotos_Photos:
+				case ffjtUserProfilePhotosPhotos:
 					goto handle_Photos
 
-				case ffj_t_UserProfilePhotosno_such_key:
+				case ffjtUserProfilePhotosnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -17714,7 +17899,7 @@ mainparse:
 
 handle_TotalCount:
 
-	/* handler: uj.TotalCount type=int kind=int quoted=false*/
+	/* handler: j.TotalCount type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -17734,7 +17919,7 @@ handle_TotalCount:
 				return fs.WrapErr(err)
 			}
 
-			uj.TotalCount = int(tval)
+			j.TotalCount = int(tval)
 
 		}
 	}
@@ -17744,7 +17929,7 @@ handle_TotalCount:
 
 handle_Photos:
 
-	/* handler: uj.Photos type=[][]tgbotapi.PhotoSize kind=slice quoted=false*/
+	/* handler: j.Photos type=[][]tgbotapi.PhotoSize kind=slice quoted=false*/
 
 	{
 		/* Falling back. type=[][]tgbotapi.PhotoSize kind=slice */
@@ -17753,7 +17938,7 @@ handle_Photos:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Photos)
+		err = json.Unmarshal(tbuf, &j.Photos)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -17780,20 +17965,23 @@ done:
 	return nil
 }
 
-func (mj *Venue) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Venue) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Venue) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Venue) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -17805,20 +17993,20 @@ func (mj *Venue) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 
 	{
 
-		err = mj.Location.MarshalJSONBuf(buf)
+		err = j.Location.MarshalJSONBuf(buf)
 		if err != nil {
 			return err
 		}
 
 	}
 	buf.WriteString(`,"title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"address":`)
-	fflib.WriteJsonString(buf, string(mj.Address))
+	fflib.WriteJsonString(buf, string(j.Address))
 	buf.WriteByte(',')
-	if len(mj.FoursquareID) != 0 {
+	if len(j.FoursquareID) != 0 {
 		buf.WriteString(`"foursquare_id":`)
-		fflib.WriteJsonString(buf, string(mj.FoursquareID))
+		fflib.WriteJsonString(buf, string(j.FoursquareID))
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -17827,34 +18015,36 @@ func (mj *Venue) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Venuebase = iota
-	ffj_t_Venueno_such_key
+	ffjtVenuebase = iota
+	ffjtVenuenosuchkey
 
-	ffj_t_Venue_Location
+	ffjtVenueLocation
 
-	ffj_t_Venue_Title
+	ffjtVenueTitle
 
-	ffj_t_Venue_Address
+	ffjtVenueAddress
 
-	ffj_t_Venue_FoursquareID
+	ffjtVenueFoursquareID
 )
 
-var ffj_key_Venue_Location = []byte("location")
+var ffjKeyVenueLocation = []byte("location")
 
-var ffj_key_Venue_Title = []byte("title")
+var ffjKeyVenueTitle = []byte("title")
 
-var ffj_key_Venue_Address = []byte("address")
+var ffjKeyVenueAddress = []byte("address")
 
-var ffj_key_Venue_FoursquareID = []byte("foursquare_id")
+var ffjKeyVenueFoursquareID = []byte("foursquare_id")
 
-func (uj *Venue) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Venue) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Venue) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Venuebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Venue) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtVenuebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -17900,7 +18090,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Venueno_such_key
+				currentKey = ffjtVenuenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -17908,63 +18098,63 @@ mainparse:
 
 				case 'a':
 
-					if bytes.Equal(ffj_key_Venue_Address, kn) {
-						currentKey = ffj_t_Venue_Address
+					if bytes.Equal(ffjKeyVenueAddress, kn) {
+						currentKey = ffjtVenueAddress
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Venue_FoursquareID, kn) {
-						currentKey = ffj_t_Venue_FoursquareID
+					if bytes.Equal(ffjKeyVenueFoursquareID, kn) {
+						currentKey = ffjtVenueFoursquareID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'l':
 
-					if bytes.Equal(ffj_key_Venue_Location, kn) {
-						currentKey = ffj_t_Venue_Location
+					if bytes.Equal(ffjKeyVenueLocation, kn) {
+						currentKey = ffjtVenueLocation
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_Venue_Title, kn) {
-						currentKey = ffj_t_Venue_Title
+					if bytes.Equal(ffjKeyVenueTitle, kn) {
+						currentKey = ffjtVenueTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Venue_FoursquareID, kn) {
-					currentKey = ffj_t_Venue_FoursquareID
+				if fflib.EqualFoldRight(ffjKeyVenueFoursquareID, kn) {
+					currentKey = ffjtVenueFoursquareID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Venue_Address, kn) {
-					currentKey = ffj_t_Venue_Address
+				if fflib.EqualFoldRight(ffjKeyVenueAddress, kn) {
+					currentKey = ffjtVenueAddress
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Venue_Title, kn) {
-					currentKey = ffj_t_Venue_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyVenueTitle, kn) {
+					currentKey = ffjtVenueTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Venue_Location, kn) {
-					currentKey = ffj_t_Venue_Location
+				if fflib.SimpleLetterEqualFold(ffjKeyVenueLocation, kn) {
+					currentKey = ffjtVenueLocation
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Venueno_such_key
+				currentKey = ffjtVenuenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -17981,19 +18171,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Venue_Location:
+				case ffjtVenueLocation:
 					goto handle_Location
 
-				case ffj_t_Venue_Title:
+				case ffjtVenueTitle:
 					goto handle_Title
 
-				case ffj_t_Venue_Address:
+				case ffjtVenueAddress:
 					goto handle_Address
 
-				case ffj_t_Venue_FoursquareID:
+				case ffjtVenueFoursquareID:
 					goto handle_FoursquareID
 
-				case ffj_t_Venueno_such_key:
+				case ffjtVenuenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -18009,7 +18199,7 @@ mainparse:
 
 handle_Location:
 
-	/* handler: uj.Location type=tgbotapi.Location kind=struct quoted=false*/
+	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -18018,7 +18208,7 @@ handle_Location:
 			goto mainparse
 		}
 
-		err = uj.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -18030,7 +18220,7 @@ handle_Location:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -18046,7 +18236,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -18056,7 +18246,7 @@ handle_Title:
 
 handle_Address:
 
-	/* handler: uj.Address type=string kind=string quoted=false*/
+	/* handler: j.Address type=string kind=string quoted=false*/
 
 	{
 
@@ -18072,7 +18262,7 @@ handle_Address:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Address = string(string(outBuf))
+			j.Address = string(string(outBuf))
 
 		}
 	}
@@ -18082,7 +18272,7 @@ handle_Address:
 
 handle_FoursquareID:
 
-	/* handler: uj.FoursquareID type=string kind=string quoted=false*/
+	/* handler: j.FoursquareID type=string kind=string quoted=false*/
 
 	{
 
@@ -18098,7 +18288,7 @@ handle_FoursquareID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FoursquareID = string(string(outBuf))
+			j.FoursquareID = string(string(outBuf))
 
 		}
 	}
@@ -18124,20 +18314,23 @@ done:
 	return nil
 }
 
-func (mj *Video) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Video) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Video) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Video) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -18146,21 +18339,21 @@ func (mj *Video) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "file_id":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
+	fflib.WriteJsonString(buf, string(j.FileID))
 	buf.WriteString(`,"width":`)
-	fflib.FormatBits2(buf, uint64(mj.Width), 10, mj.Width < 0)
+	fflib.FormatBits2(buf, uint64(j.Width), 10, j.Width < 0)
 	buf.WriteString(`,"height":`)
-	fflib.FormatBits2(buf, uint64(mj.Height), 10, mj.Height < 0)
+	fflib.FormatBits2(buf, uint64(j.Height), 10, j.Height < 0)
 	buf.WriteString(`,"duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteByte(',')
-	if mj.Thumbnail != nil {
+	if j.Thumbnail != nil {
 		if true {
 			buf.WriteString(`"thumb":`)
 
 			{
 
-				err = mj.Thumbnail.MarshalJSONBuf(buf)
+				err = j.Thumbnail.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -18169,14 +18362,14 @@ func (mj *Video) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
-	if len(mj.MimeType) != 0 {
+	if len(j.MimeType) != 0 {
 		buf.WriteString(`"mime_type":`)
-		fflib.WriteJsonString(buf, string(mj.MimeType))
+		fflib.WriteJsonString(buf, string(j.MimeType))
 		buf.WriteByte(',')
 	}
-	if mj.FileSize != 0 {
+	if j.FileSize != 0 {
 		buf.WriteString(`"file_size":`)
-		fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+		fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -18185,46 +18378,48 @@ func (mj *Video) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Videobase = iota
-	ffj_t_Videono_such_key
+	ffjtVideobase = iota
+	ffjtVideonosuchkey
 
-	ffj_t_Video_FileID
+	ffjtVideoFileID
 
-	ffj_t_Video_Width
+	ffjtVideoWidth
 
-	ffj_t_Video_Height
+	ffjtVideoHeight
 
-	ffj_t_Video_Duration
+	ffjtVideoDuration
 
-	ffj_t_Video_Thumbnail
+	ffjtVideoThumbnail
 
-	ffj_t_Video_MimeType
+	ffjtVideoMimeType
 
-	ffj_t_Video_FileSize
+	ffjtVideoFileSize
 )
 
-var ffj_key_Video_FileID = []byte("file_id")
+var ffjKeyVideoFileID = []byte("file_id")
 
-var ffj_key_Video_Width = []byte("width")
+var ffjKeyVideoWidth = []byte("width")
 
-var ffj_key_Video_Height = []byte("height")
+var ffjKeyVideoHeight = []byte("height")
 
-var ffj_key_Video_Duration = []byte("duration")
+var ffjKeyVideoDuration = []byte("duration")
 
-var ffj_key_Video_Thumbnail = []byte("thumb")
+var ffjKeyVideoThumbnail = []byte("thumb")
 
-var ffj_key_Video_MimeType = []byte("mime_type")
+var ffjKeyVideoMimeType = []byte("mime_type")
 
-var ffj_key_Video_FileSize = []byte("file_size")
+var ffjKeyVideoFileSize = []byte("file_size")
 
-func (uj *Video) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Video) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Video) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Videobase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Video) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtVideobase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -18270,7 +18465,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Videono_such_key
+				currentKey = ffjtVideonosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -18278,102 +18473,102 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_Video_Duration, kn) {
-						currentKey = ffj_t_Video_Duration
+					if bytes.Equal(ffjKeyVideoDuration, kn) {
+						currentKey = ffjtVideoDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Video_FileID, kn) {
-						currentKey = ffj_t_Video_FileID
+					if bytes.Equal(ffjKeyVideoFileID, kn) {
+						currentKey = ffjtVideoFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Video_FileSize, kn) {
-						currentKey = ffj_t_Video_FileSize
+					} else if bytes.Equal(ffjKeyVideoFileSize, kn) {
+						currentKey = ffjtVideoFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'h':
 
-					if bytes.Equal(ffj_key_Video_Height, kn) {
-						currentKey = ffj_t_Video_Height
+					if bytes.Equal(ffjKeyVideoHeight, kn) {
+						currentKey = ffjtVideoHeight
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_Video_MimeType, kn) {
-						currentKey = ffj_t_Video_MimeType
+					if bytes.Equal(ffjKeyVideoMimeType, kn) {
+						currentKey = ffjtVideoMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_Video_Thumbnail, kn) {
-						currentKey = ffj_t_Video_Thumbnail
+					if bytes.Equal(ffjKeyVideoThumbnail, kn) {
+						currentKey = ffjtVideoThumbnail
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'w':
 
-					if bytes.Equal(ffj_key_Video_Width, kn) {
-						currentKey = ffj_t_Video_Width
+					if bytes.Equal(ffjKeyVideoWidth, kn) {
+						currentKey = ffjtVideoWidth
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Video_FileSize, kn) {
-					currentKey = ffj_t_Video_FileSize
+				if fflib.EqualFoldRight(ffjKeyVideoFileSize, kn) {
+					currentKey = ffjtVideoFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Video_MimeType, kn) {
-					currentKey = ffj_t_Video_MimeType
+				if fflib.AsciiEqualFold(ffjKeyVideoMimeType, kn) {
+					currentKey = ffjtVideoMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Video_Thumbnail, kn) {
-					currentKey = ffj_t_Video_Thumbnail
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoThumbnail, kn) {
+					currentKey = ffjtVideoThumbnail
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Video_Duration, kn) {
-					currentKey = ffj_t_Video_Duration
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoDuration, kn) {
+					currentKey = ffjtVideoDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Video_Height, kn) {
-					currentKey = ffj_t_Video_Height
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoHeight, kn) {
+					currentKey = ffjtVideoHeight
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Video_Width, kn) {
-					currentKey = ffj_t_Video_Width
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoWidth, kn) {
+					currentKey = ffjtVideoWidth
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Video_FileID, kn) {
-					currentKey = ffj_t_Video_FileID
+				if fflib.AsciiEqualFold(ffjKeyVideoFileID, kn) {
+					currentKey = ffjtVideoFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Videono_such_key
+				currentKey = ffjtVideonosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -18390,28 +18585,28 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Video_FileID:
+				case ffjtVideoFileID:
 					goto handle_FileID
 
-				case ffj_t_Video_Width:
+				case ffjtVideoWidth:
 					goto handle_Width
 
-				case ffj_t_Video_Height:
+				case ffjtVideoHeight:
 					goto handle_Height
 
-				case ffj_t_Video_Duration:
+				case ffjtVideoDuration:
 					goto handle_Duration
 
-				case ffj_t_Video_Thumbnail:
+				case ffjtVideoThumbnail:
 					goto handle_Thumbnail
 
-				case ffj_t_Video_MimeType:
+				case ffjtVideoMimeType:
 					goto handle_MimeType
 
-				case ffj_t_Video_FileSize:
+				case ffjtVideoFileSize:
 					goto handle_FileSize
 
-				case ffj_t_Videono_such_key:
+				case ffjtVideonosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -18427,7 +18622,7 @@ mainparse:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -18443,7 +18638,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -18453,7 +18648,7 @@ handle_FileID:
 
 handle_Width:
 
-	/* handler: uj.Width type=int kind=int quoted=false*/
+	/* handler: j.Width type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -18473,7 +18668,7 @@ handle_Width:
 				return fs.WrapErr(err)
 			}
 
-			uj.Width = int(tval)
+			j.Width = int(tval)
 
 		}
 	}
@@ -18483,7 +18678,7 @@ handle_Width:
 
 handle_Height:
 
-	/* handler: uj.Height type=int kind=int quoted=false*/
+	/* handler: j.Height type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -18503,7 +18698,7 @@ handle_Height:
 				return fs.WrapErr(err)
 			}
 
-			uj.Height = int(tval)
+			j.Height = int(tval)
 
 		}
 	}
@@ -18513,7 +18708,7 @@ handle_Height:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -18533,7 +18728,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -18543,22 +18738,22 @@ handle_Duration:
 
 handle_Thumbnail:
 
-	/* handler: uj.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
+	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.Thumbnail = nil
+			j.Thumbnail = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.Thumbnail == nil {
-			uj.Thumbnail = new(PhotoSize)
+		if j.Thumbnail == nil {
+			j.Thumbnail = new(PhotoSize)
 		}
 
-		err = uj.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -18570,7 +18765,7 @@ handle_Thumbnail:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -18586,7 +18781,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -18596,7 +18791,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -18616,7 +18811,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -18642,20 +18837,23 @@ done:
 	return nil
 }
 
-func (mj *Voice) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *Voice) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Voice) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *Voice) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -18664,18 +18862,18 @@ func (mj *Voice) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "file_id":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
+	fflib.WriteJsonString(buf, string(j.FileID))
 	buf.WriteString(`,"duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteByte(',')
-	if len(mj.MimeType) != 0 {
+	if len(j.MimeType) != 0 {
 		buf.WriteString(`"mime_type":`)
-		fflib.WriteJsonString(buf, string(mj.MimeType))
+		fflib.WriteJsonString(buf, string(j.MimeType))
 		buf.WriteByte(',')
 	}
-	if mj.FileSize != 0 {
+	if j.FileSize != 0 {
 		buf.WriteString(`"file_size":`)
-		fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+		fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -18684,34 +18882,36 @@ func (mj *Voice) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Voicebase = iota
-	ffj_t_Voiceno_such_key
+	ffjtVoicebase = iota
+	ffjtVoicenosuchkey
 
-	ffj_t_Voice_FileID
+	ffjtVoiceFileID
 
-	ffj_t_Voice_Duration
+	ffjtVoiceDuration
 
-	ffj_t_Voice_MimeType
+	ffjtVoiceMimeType
 
-	ffj_t_Voice_FileSize
+	ffjtVoiceFileSize
 )
 
-var ffj_key_Voice_FileID = []byte("file_id")
+var ffjKeyVoiceFileID = []byte("file_id")
 
-var ffj_key_Voice_Duration = []byte("duration")
+var ffjKeyVoiceDuration = []byte("duration")
 
-var ffj_key_Voice_MimeType = []byte("mime_type")
+var ffjKeyVoiceMimeType = []byte("mime_type")
 
-var ffj_key_Voice_FileSize = []byte("file_size")
+var ffjKeyVoiceFileSize = []byte("file_size")
 
-func (uj *Voice) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *Voice) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Voice) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_Voicebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *Voice) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtVoicebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -18757,7 +18957,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Voiceno_such_key
+				currentKey = ffjtVoicenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -18765,60 +18965,60 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_Voice_Duration, kn) {
-						currentKey = ffj_t_Voice_Duration
+					if bytes.Equal(ffjKeyVoiceDuration, kn) {
+						currentKey = ffjtVoiceDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'f':
 
-					if bytes.Equal(ffj_key_Voice_FileID, kn) {
-						currentKey = ffj_t_Voice_FileID
+					if bytes.Equal(ffjKeyVoiceFileID, kn) {
+						currentKey = ffjtVoiceFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_Voice_FileSize, kn) {
-						currentKey = ffj_t_Voice_FileSize
+					} else if bytes.Equal(ffjKeyVoiceFileSize, kn) {
+						currentKey = ffjtVoiceFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_Voice_MimeType, kn) {
-						currentKey = ffj_t_Voice_MimeType
+					if bytes.Equal(ffjKeyVoiceMimeType, kn) {
+						currentKey = ffjtVoiceMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Voice_FileSize, kn) {
-					currentKey = ffj_t_Voice_FileSize
+				if fflib.EqualFoldRight(ffjKeyVoiceFileSize, kn) {
+					currentKey = ffjtVoiceFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Voice_MimeType, kn) {
-					currentKey = ffj_t_Voice_MimeType
+				if fflib.AsciiEqualFold(ffjKeyVoiceMimeType, kn) {
+					currentKey = ffjtVoiceMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Voice_Duration, kn) {
-					currentKey = ffj_t_Voice_Duration
+				if fflib.SimpleLetterEqualFold(ffjKeyVoiceDuration, kn) {
+					currentKey = ffjtVoiceDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_Voice_FileID, kn) {
-					currentKey = ffj_t_Voice_FileID
+				if fflib.AsciiEqualFold(ffjKeyVoiceFileID, kn) {
+					currentKey = ffjtVoiceFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Voiceno_such_key
+				currentKey = ffjtVoicenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -18835,19 +19035,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Voice_FileID:
+				case ffjtVoiceFileID:
 					goto handle_FileID
 
-				case ffj_t_Voice_Duration:
+				case ffjtVoiceDuration:
 					goto handle_Duration
 
-				case ffj_t_Voice_MimeType:
+				case ffjtVoiceMimeType:
 					goto handle_MimeType
 
-				case ffj_t_Voice_FileSize:
+				case ffjtVoiceFileSize:
 					goto handle_FileSize
 
-				case ffj_t_Voiceno_such_key:
+				case ffjtVoicenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -18863,7 +19063,7 @@ mainparse:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -18879,7 +19079,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -18889,7 +19089,7 @@ handle_FileID:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -18909,7 +19109,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -18919,7 +19119,7 @@ handle_Duration:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -18935,7 +19135,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -18945,7 +19145,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -18965,7 +19165,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}

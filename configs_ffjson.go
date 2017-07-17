@@ -15,20 +15,23 @@ import (
 	"reflect"
 )
 
-func (mj *AnswerCallbackQueryConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *AnswerCallbackQueryConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *AnswerCallbackQueryConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *AnswerCallbackQueryConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -37,29 +40,29 @@ func (mj *AnswerCallbackQueryConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "callback_query_id":`)
-	fflib.WriteJsonString(buf, string(mj.CallbackQueryID))
+	fflib.WriteJsonString(buf, string(j.CallbackQueryID))
 	buf.WriteByte(',')
-	if len(mj.Text) != 0 {
+	if len(j.Text) != 0 {
 		buf.WriteString(`"text":`)
-		fflib.WriteJsonString(buf, string(mj.Text))
+		fflib.WriteJsonString(buf, string(j.Text))
 		buf.WriteByte(',')
 	}
-	if mj.ShowAlert != false {
-		if mj.ShowAlert {
+	if j.ShowAlert != false {
+		if j.ShowAlert {
 			buf.WriteString(`"show_alert":true`)
 		} else {
 			buf.WriteString(`"show_alert":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if len(mj.Url) != 0 {
+	if len(j.Url) != 0 {
 		buf.WriteString(`"url":`)
-		fflib.WriteJsonString(buf, string(mj.Url))
+		fflib.WriteJsonString(buf, string(j.Url))
 		buf.WriteByte(',')
 	}
-	if mj.CacheTime != 0 {
+	if j.CacheTime != 0 {
 		buf.WriteString(`"cache_time":`)
-		fflib.FormatBits2(buf, uint64(mj.CacheTime), 10, mj.CacheTime < 0)
+		fflib.FormatBits2(buf, uint64(j.CacheTime), 10, j.CacheTime < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -68,38 +71,40 @@ func (mj *AnswerCallbackQueryConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) er
 }
 
 const (
-	ffj_t_AnswerCallbackQueryConfigbase = iota
-	ffj_t_AnswerCallbackQueryConfigno_such_key
+	ffjtAnswerCallbackQueryConfigbase = iota
+	ffjtAnswerCallbackQueryConfignosuchkey
 
-	ffj_t_AnswerCallbackQueryConfig_CallbackQueryID
+	ffjtAnswerCallbackQueryConfigCallbackQueryID
 
-	ffj_t_AnswerCallbackQueryConfig_Text
+	ffjtAnswerCallbackQueryConfigText
 
-	ffj_t_AnswerCallbackQueryConfig_ShowAlert
+	ffjtAnswerCallbackQueryConfigShowAlert
 
-	ffj_t_AnswerCallbackQueryConfig_Url
+	ffjtAnswerCallbackQueryConfigUrl
 
-	ffj_t_AnswerCallbackQueryConfig_CacheTime
+	ffjtAnswerCallbackQueryConfigCacheTime
 )
 
-var ffj_key_AnswerCallbackQueryConfig_CallbackQueryID = []byte("callback_query_id")
+var ffjKeyAnswerCallbackQueryConfigCallbackQueryID = []byte("callback_query_id")
 
-var ffj_key_AnswerCallbackQueryConfig_Text = []byte("text")
+var ffjKeyAnswerCallbackQueryConfigText = []byte("text")
 
-var ffj_key_AnswerCallbackQueryConfig_ShowAlert = []byte("show_alert")
+var ffjKeyAnswerCallbackQueryConfigShowAlert = []byte("show_alert")
 
-var ffj_key_AnswerCallbackQueryConfig_Url = []byte("url")
+var ffjKeyAnswerCallbackQueryConfigUrl = []byte("url")
 
-var ffj_key_AnswerCallbackQueryConfig_CacheTime = []byte("cache_time")
+var ffjKeyAnswerCallbackQueryConfigCacheTime = []byte("cache_time")
 
-func (uj *AnswerCallbackQueryConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *AnswerCallbackQueryConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *AnswerCallbackQueryConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_AnswerCallbackQueryConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *AnswerCallbackQueryConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtAnswerCallbackQueryConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -145,7 +150,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_AnswerCallbackQueryConfigno_such_key
+				currentKey = ffjtAnswerCallbackQueryConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -153,74 +158,74 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_CallbackQueryID, kn) {
-						currentKey = ffj_t_AnswerCallbackQueryConfig_CallbackQueryID
+					if bytes.Equal(ffjKeyAnswerCallbackQueryConfigCallbackQueryID, kn) {
+						currentKey = ffjtAnswerCallbackQueryConfigCallbackQueryID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_CacheTime, kn) {
-						currentKey = ffj_t_AnswerCallbackQueryConfig_CacheTime
+					} else if bytes.Equal(ffjKeyAnswerCallbackQueryConfigCacheTime, kn) {
+						currentKey = ffjtAnswerCallbackQueryConfigCacheTime
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 's':
 
-					if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_ShowAlert, kn) {
-						currentKey = ffj_t_AnswerCallbackQueryConfig_ShowAlert
+					if bytes.Equal(ffjKeyAnswerCallbackQueryConfigShowAlert, kn) {
+						currentKey = ffjtAnswerCallbackQueryConfigShowAlert
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 't':
 
-					if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_Text, kn) {
-						currentKey = ffj_t_AnswerCallbackQueryConfig_Text
+					if bytes.Equal(ffjKeyAnswerCallbackQueryConfigText, kn) {
+						currentKey = ffjtAnswerCallbackQueryConfigText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'u':
 
-					if bytes.Equal(ffj_key_AnswerCallbackQueryConfig_Url, kn) {
-						currentKey = ffj_t_AnswerCallbackQueryConfig_Url
+					if bytes.Equal(ffjKeyAnswerCallbackQueryConfigUrl, kn) {
+						currentKey = ffjtAnswerCallbackQueryConfigUrl
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_AnswerCallbackQueryConfig_CacheTime, kn) {
-					currentKey = ffj_t_AnswerCallbackQueryConfig_CacheTime
+				if fflib.AsciiEqualFold(ffjKeyAnswerCallbackQueryConfigCacheTime, kn) {
+					currentKey = ffjtAnswerCallbackQueryConfigCacheTime
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_AnswerCallbackQueryConfig_Url, kn) {
-					currentKey = ffj_t_AnswerCallbackQueryConfig_Url
+				if fflib.SimpleLetterEqualFold(ffjKeyAnswerCallbackQueryConfigUrl, kn) {
+					currentKey = ffjtAnswerCallbackQueryConfigUrl
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_AnswerCallbackQueryConfig_ShowAlert, kn) {
-					currentKey = ffj_t_AnswerCallbackQueryConfig_ShowAlert
+				if fflib.EqualFoldRight(ffjKeyAnswerCallbackQueryConfigShowAlert, kn) {
+					currentKey = ffjtAnswerCallbackQueryConfigShowAlert
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_AnswerCallbackQueryConfig_Text, kn) {
-					currentKey = ffj_t_AnswerCallbackQueryConfig_Text
+				if fflib.SimpleLetterEqualFold(ffjKeyAnswerCallbackQueryConfigText, kn) {
+					currentKey = ffjtAnswerCallbackQueryConfigText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_AnswerCallbackQueryConfig_CallbackQueryID, kn) {
-					currentKey = ffj_t_AnswerCallbackQueryConfig_CallbackQueryID
+				if fflib.EqualFoldRight(ffjKeyAnswerCallbackQueryConfigCallbackQueryID, kn) {
+					currentKey = ffjtAnswerCallbackQueryConfigCallbackQueryID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_AnswerCallbackQueryConfigno_such_key
+				currentKey = ffjtAnswerCallbackQueryConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -237,22 +242,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_AnswerCallbackQueryConfig_CallbackQueryID:
+				case ffjtAnswerCallbackQueryConfigCallbackQueryID:
 					goto handle_CallbackQueryID
 
-				case ffj_t_AnswerCallbackQueryConfig_Text:
+				case ffjtAnswerCallbackQueryConfigText:
 					goto handle_Text
 
-				case ffj_t_AnswerCallbackQueryConfig_ShowAlert:
+				case ffjtAnswerCallbackQueryConfigShowAlert:
 					goto handle_ShowAlert
 
-				case ffj_t_AnswerCallbackQueryConfig_Url:
+				case ffjtAnswerCallbackQueryConfigUrl:
 					goto handle_Url
 
-				case ffj_t_AnswerCallbackQueryConfig_CacheTime:
+				case ffjtAnswerCallbackQueryConfigCacheTime:
 					goto handle_CacheTime
 
-				case ffj_t_AnswerCallbackQueryConfigno_such_key:
+				case ffjtAnswerCallbackQueryConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -268,7 +273,7 @@ mainparse:
 
 handle_CallbackQueryID:
 
-	/* handler: uj.CallbackQueryID type=string kind=string quoted=false*/
+	/* handler: j.CallbackQueryID type=string kind=string quoted=false*/
 
 	{
 
@@ -284,7 +289,7 @@ handle_CallbackQueryID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.CallbackQueryID = string(string(outBuf))
+			j.CallbackQueryID = string(string(outBuf))
 
 		}
 	}
@@ -294,7 +299,7 @@ handle_CallbackQueryID:
 
 handle_Text:
 
-	/* handler: uj.Text type=string kind=string quoted=false*/
+	/* handler: j.Text type=string kind=string quoted=false*/
 
 	{
 
@@ -310,7 +315,7 @@ handle_Text:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Text = string(string(outBuf))
+			j.Text = string(string(outBuf))
 
 		}
 	}
@@ -320,7 +325,7 @@ handle_Text:
 
 handle_ShowAlert:
 
-	/* handler: uj.ShowAlert type=bool kind=bool quoted=false*/
+	/* handler: j.ShowAlert type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -336,11 +341,11 @@ handle_ShowAlert:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.ShowAlert = true
+				j.ShowAlert = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.ShowAlert = false
+				j.ShowAlert = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -355,7 +360,7 @@ handle_ShowAlert:
 
 handle_Url:
 
-	/* handler: uj.Url type=string kind=string quoted=false*/
+	/* handler: j.Url type=string kind=string quoted=false*/
 
 	{
 
@@ -371,7 +376,7 @@ handle_Url:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Url = string(string(outBuf))
+			j.Url = string(string(outBuf))
 
 		}
 	}
@@ -381,7 +386,7 @@ handle_Url:
 
 handle_CacheTime:
 
-	/* handler: uj.CacheTime type=int kind=int quoted=false*/
+	/* handler: j.CacheTime type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -401,7 +406,7 @@ handle_CacheTime:
 				return fs.WrapErr(err)
 			}
 
-			uj.CacheTime = int(tval)
+			j.CacheTime = int(tval)
 
 		}
 	}
@@ -427,20 +432,23 @@ done:
 	return nil
 }
 
-func (mj *AudioConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *AudioConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *AudioConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *AudioConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -449,45 +457,45 @@ func (mj *AudioConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteString(`,"Performer":`)
-	fflib.WriteJsonString(buf, string(mj.Performer))
+	fflib.WriteJsonString(buf, string(j.Performer))
 	buf.WriteString(`,"Title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"File":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.File)
+	err = buf.Encode(j.File)
 	if err != nil {
 		return err
 	}
 	buf.WriteString(`,"FileID":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
-	if mj.UseExisting {
+	fflib.WriteJsonString(buf, string(j.FileID))
+	if j.UseExisting {
 		buf.WriteString(`,"UseExisting":true`)
 	} else {
 		buf.WriteString(`,"UseExisting":false`)
 	}
 	buf.WriteString(`,"MimeType":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"FileSize":`)
-	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+	fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -500,62 +508,64 @@ func (mj *AudioConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_AudioConfigbase = iota
-	ffj_t_AudioConfigno_such_key
+	ffjtAudioConfigbase = iota
+	ffjtAudioConfignosuchkey
 
-	ffj_t_AudioConfig_Duration
+	ffjtAudioConfigDuration
 
-	ffj_t_AudioConfig_Performer
+	ffjtAudioConfigPerformer
 
-	ffj_t_AudioConfig_Title
+	ffjtAudioConfigTitle
 
-	ffj_t_AudioConfig_File
+	ffjtAudioConfigFile
 
-	ffj_t_AudioConfig_FileID
+	ffjtAudioConfigFileID
 
-	ffj_t_AudioConfig_UseExisting
+	ffjtAudioConfigUseExisting
 
-	ffj_t_AudioConfig_MimeType
+	ffjtAudioConfigMimeType
 
-	ffj_t_AudioConfig_FileSize
+	ffjtAudioConfigFileSize
 
-	ffj_t_AudioConfig_ReplyToMessageID
+	ffjtAudioConfigReplyToMessageID
 
-	ffj_t_AudioConfig_ReplyMarkup
+	ffjtAudioConfigReplyMarkup
 
-	ffj_t_AudioConfig_DisableNotification
+	ffjtAudioConfigDisableNotification
 )
 
-var ffj_key_AudioConfig_Duration = []byte("Duration")
+var ffjKeyAudioConfigDuration = []byte("Duration")
 
-var ffj_key_AudioConfig_Performer = []byte("Performer")
+var ffjKeyAudioConfigPerformer = []byte("Performer")
 
-var ffj_key_AudioConfig_Title = []byte("Title")
+var ffjKeyAudioConfigTitle = []byte("Title")
 
-var ffj_key_AudioConfig_File = []byte("File")
+var ffjKeyAudioConfigFile = []byte("File")
 
-var ffj_key_AudioConfig_FileID = []byte("FileID")
+var ffjKeyAudioConfigFileID = []byte("FileID")
 
-var ffj_key_AudioConfig_UseExisting = []byte("UseExisting")
+var ffjKeyAudioConfigUseExisting = []byte("UseExisting")
 
-var ffj_key_AudioConfig_MimeType = []byte("MimeType")
+var ffjKeyAudioConfigMimeType = []byte("MimeType")
 
-var ffj_key_AudioConfig_FileSize = []byte("FileSize")
+var ffjKeyAudioConfigFileSize = []byte("FileSize")
 
-var ffj_key_AudioConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyAudioConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_AudioConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyAudioConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_AudioConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyAudioConfigDisableNotification = []byte("disable_notification")
 
-func (uj *AudioConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *AudioConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *AudioConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_AudioConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *AudioConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtAudioConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -601,7 +611,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_AudioConfigno_such_key
+				currentKey = ffjtAudioConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -609,152 +619,152 @@ mainparse:
 
 				case 'D':
 
-					if bytes.Equal(ffj_key_AudioConfig_Duration, kn) {
-						currentKey = ffj_t_AudioConfig_Duration
+					if bytes.Equal(ffjKeyAudioConfigDuration, kn) {
+						currentKey = ffjtAudioConfigDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_AudioConfig_File, kn) {
-						currentKey = ffj_t_AudioConfig_File
+					if bytes.Equal(ffjKeyAudioConfigFile, kn) {
+						currentKey = ffjtAudioConfigFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_AudioConfig_FileID, kn) {
-						currentKey = ffj_t_AudioConfig_FileID
+					} else if bytes.Equal(ffjKeyAudioConfigFileID, kn) {
+						currentKey = ffjtAudioConfigFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_AudioConfig_FileSize, kn) {
-						currentKey = ffj_t_AudioConfig_FileSize
+					} else if bytes.Equal(ffjKeyAudioConfigFileSize, kn) {
+						currentKey = ffjtAudioConfigFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'M':
 
-					if bytes.Equal(ffj_key_AudioConfig_MimeType, kn) {
-						currentKey = ffj_t_AudioConfig_MimeType
+					if bytes.Equal(ffjKeyAudioConfigMimeType, kn) {
+						currentKey = ffjtAudioConfigMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'P':
 
-					if bytes.Equal(ffj_key_AudioConfig_Performer, kn) {
-						currentKey = ffj_t_AudioConfig_Performer
+					if bytes.Equal(ffjKeyAudioConfigPerformer, kn) {
+						currentKey = ffjtAudioConfigPerformer
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'T':
 
-					if bytes.Equal(ffj_key_AudioConfig_Title, kn) {
-						currentKey = ffj_t_AudioConfig_Title
+					if bytes.Equal(ffjKeyAudioConfigTitle, kn) {
+						currentKey = ffjtAudioConfigTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_AudioConfig_UseExisting, kn) {
-						currentKey = ffj_t_AudioConfig_UseExisting
+					if bytes.Equal(ffjKeyAudioConfigUseExisting, kn) {
+						currentKey = ffjtAudioConfigUseExisting
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_AudioConfig_DisableNotification, kn) {
-						currentKey = ffj_t_AudioConfig_DisableNotification
+					if bytes.Equal(ffjKeyAudioConfigDisableNotification, kn) {
+						currentKey = ffjtAudioConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_AudioConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_AudioConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyAudioConfigReplyToMessageID, kn) {
+						currentKey = ffjtAudioConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_AudioConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_AudioConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyAudioConfigReplyMarkup, kn) {
+						currentKey = ffjtAudioConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_AudioConfig_DisableNotification, kn) {
-					currentKey = ffj_t_AudioConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyAudioConfigDisableNotification, kn) {
+					currentKey = ffjtAudioConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_AudioConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_AudioConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyAudioConfigReplyMarkup, kn) {
+					currentKey = ffjtAudioConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_AudioConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_AudioConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyAudioConfigReplyToMessageID, kn) {
+					currentKey = ffjtAudioConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_AudioConfig_FileSize, kn) {
-					currentKey = ffj_t_AudioConfig_FileSize
+				if fflib.EqualFoldRight(ffjKeyAudioConfigFileSize, kn) {
+					currentKey = ffjtAudioConfigFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_AudioConfig_MimeType, kn) {
-					currentKey = ffj_t_AudioConfig_MimeType
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioConfigMimeType, kn) {
+					currentKey = ffjtAudioConfigMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_AudioConfig_UseExisting, kn) {
-					currentKey = ffj_t_AudioConfig_UseExisting
+				if fflib.EqualFoldRight(ffjKeyAudioConfigUseExisting, kn) {
+					currentKey = ffjtAudioConfigUseExisting
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_AudioConfig_FileID, kn) {
-					currentKey = ffj_t_AudioConfig_FileID
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioConfigFileID, kn) {
+					currentKey = ffjtAudioConfigFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_AudioConfig_File, kn) {
-					currentKey = ffj_t_AudioConfig_File
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioConfigFile, kn) {
+					currentKey = ffjtAudioConfigFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_AudioConfig_Title, kn) {
-					currentKey = ffj_t_AudioConfig_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioConfigTitle, kn) {
+					currentKey = ffjtAudioConfigTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_AudioConfig_Performer, kn) {
-					currentKey = ffj_t_AudioConfig_Performer
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioConfigPerformer, kn) {
+					currentKey = ffjtAudioConfigPerformer
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_AudioConfig_Duration, kn) {
-					currentKey = ffj_t_AudioConfig_Duration
+				if fflib.SimpleLetterEqualFold(ffjKeyAudioConfigDuration, kn) {
+					currentKey = ffjtAudioConfigDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_AudioConfigno_such_key
+				currentKey = ffjtAudioConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -771,40 +781,40 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_AudioConfig_Duration:
+				case ffjtAudioConfigDuration:
 					goto handle_Duration
 
-				case ffj_t_AudioConfig_Performer:
+				case ffjtAudioConfigPerformer:
 					goto handle_Performer
 
-				case ffj_t_AudioConfig_Title:
+				case ffjtAudioConfigTitle:
 					goto handle_Title
 
-				case ffj_t_AudioConfig_File:
+				case ffjtAudioConfigFile:
 					goto handle_File
 
-				case ffj_t_AudioConfig_FileID:
+				case ffjtAudioConfigFileID:
 					goto handle_FileID
 
-				case ffj_t_AudioConfig_UseExisting:
+				case ffjtAudioConfigUseExisting:
 					goto handle_UseExisting
 
-				case ffj_t_AudioConfig_MimeType:
+				case ffjtAudioConfigMimeType:
 					goto handle_MimeType
 
-				case ffj_t_AudioConfig_FileSize:
+				case ffjtAudioConfigFileSize:
 					goto handle_FileSize
 
-				case ffj_t_AudioConfig_ReplyToMessageID:
+				case ffjtAudioConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_AudioConfig_ReplyMarkup:
+				case ffjtAudioConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_AudioConfig_DisableNotification:
+				case ffjtAudioConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_AudioConfigno_such_key:
+				case ffjtAudioConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -820,7 +830,7 @@ mainparse:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -840,7 +850,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -850,7 +860,7 @@ handle_Duration:
 
 handle_Performer:
 
-	/* handler: uj.Performer type=string kind=string quoted=false*/
+	/* handler: j.Performer type=string kind=string quoted=false*/
 
 	{
 
@@ -866,7 +876,7 @@ handle_Performer:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Performer = string(string(outBuf))
+			j.Performer = string(string(outBuf))
 
 		}
 	}
@@ -876,7 +886,7 @@ handle_Performer:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -892,7 +902,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -902,7 +912,7 @@ handle_Title:
 
 handle_File:
 
-	/* handler: uj.File type=interface {} kind=interface quoted=false*/
+	/* handler: j.File type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -911,7 +921,7 @@ handle_File:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.File)
+		err = json.Unmarshal(tbuf, &j.File)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -922,7 +932,7 @@ handle_File:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -938,7 +948,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -948,7 +958,7 @@ handle_FileID:
 
 handle_UseExisting:
 
-	/* handler: uj.UseExisting type=bool kind=bool quoted=false*/
+	/* handler: j.UseExisting type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -964,11 +974,11 @@ handle_UseExisting:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = true
+				j.UseExisting = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = false
+				j.UseExisting = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -983,7 +993,7 @@ handle_UseExisting:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -999,7 +1009,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -1009,7 +1019,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -1029,7 +1039,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -1039,7 +1049,7 @@ handle_FileSize:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -1059,7 +1069,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -1069,7 +1079,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -1078,7 +1088,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -1089,7 +1099,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -1105,11 +1115,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -1140,20 +1150,23 @@ done:
 	return nil
 }
 
-func (mj *BaseChat) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *BaseChat) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *BaseChat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *BaseChat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -1162,22 +1175,22 @@ func (mj *BaseChat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -1190,30 +1203,32 @@ func (mj *BaseChat) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_BaseChatbase = iota
-	ffj_t_BaseChatno_such_key
+	ffjtBaseChatbase = iota
+	ffjtBaseChatnosuchkey
 
-	ffj_t_BaseChat_ReplyToMessageID
+	ffjtBaseChatReplyToMessageID
 
-	ffj_t_BaseChat_ReplyMarkup
+	ffjtBaseChatReplyMarkup
 
-	ffj_t_BaseChat_DisableNotification
+	ffjtBaseChatDisableNotification
 )
 
-var ffj_key_BaseChat_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyBaseChatReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_BaseChat_ReplyMarkup = []byte("reply_markup")
+var ffjKeyBaseChatReplyMarkup = []byte("reply_markup")
 
-var ffj_key_BaseChat_DisableNotification = []byte("disable_notification")
+var ffjKeyBaseChatDisableNotification = []byte("disable_notification")
 
-func (uj *BaseChat) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *BaseChat) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *BaseChat) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_BaseChatbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *BaseChat) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtBaseChatbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -1259,7 +1274,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_BaseChatno_such_key
+				currentKey = ffjtBaseChatnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -1267,46 +1282,46 @@ mainparse:
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_BaseChat_DisableNotification, kn) {
-						currentKey = ffj_t_BaseChat_DisableNotification
+					if bytes.Equal(ffjKeyBaseChatDisableNotification, kn) {
+						currentKey = ffjtBaseChatDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_BaseChat_ReplyToMessageID, kn) {
-						currentKey = ffj_t_BaseChat_ReplyToMessageID
+					if bytes.Equal(ffjKeyBaseChatReplyToMessageID, kn) {
+						currentKey = ffjtBaseChatReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_BaseChat_ReplyMarkup, kn) {
-						currentKey = ffj_t_BaseChat_ReplyMarkup
+					} else if bytes.Equal(ffjKeyBaseChatReplyMarkup, kn) {
+						currentKey = ffjtBaseChatReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseChat_DisableNotification, kn) {
-					currentKey = ffj_t_BaseChat_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyBaseChatDisableNotification, kn) {
+					currentKey = ffjtBaseChatDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseChat_ReplyMarkup, kn) {
-					currentKey = ffj_t_BaseChat_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyBaseChatReplyMarkup, kn) {
+					currentKey = ffjtBaseChatReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseChat_ReplyToMessageID, kn) {
-					currentKey = ffj_t_BaseChat_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyBaseChatReplyToMessageID, kn) {
+					currentKey = ffjtBaseChatReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_BaseChatno_such_key
+				currentKey = ffjtBaseChatnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -1323,16 +1338,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_BaseChat_ReplyToMessageID:
+				case ffjtBaseChatReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_BaseChat_ReplyMarkup:
+				case ffjtBaseChatReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_BaseChat_DisableNotification:
+				case ffjtBaseChatDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_BaseChatno_such_key:
+				case ffjtBaseChatnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -1348,7 +1363,7 @@ mainparse:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -1368,7 +1383,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -1378,7 +1393,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -1387,7 +1402,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -1398,7 +1413,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -1414,11 +1429,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -1449,20 +1464,23 @@ done:
 	return nil
 }
 
-func (mj *BaseEdit) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *BaseEdit) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *BaseEdit) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *BaseEdit) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -1471,23 +1489,23 @@ func (mj *BaseEdit) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if len(mj.ChannelUsername) != 0 {
+	if len(j.ChannelUsername) != 0 {
 		buf.WriteString(`"ChannelUsername":`)
-		fflib.WriteJsonString(buf, string(mj.ChannelUsername))
+		fflib.WriteJsonString(buf, string(j.ChannelUsername))
 		buf.WriteByte(',')
 	}
-	if len(mj.InlineMessageID) != 0 {
+	if len(j.InlineMessageID) != 0 {
 		buf.WriteString(`"inline_message_id":`)
-		fflib.WriteJsonString(buf, string(mj.InlineMessageID))
+		fflib.WriteJsonString(buf, string(j.InlineMessageID))
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"ReplyMarkup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -1502,30 +1520,32 @@ func (mj *BaseEdit) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_BaseEditbase = iota
-	ffj_t_BaseEditno_such_key
+	ffjtBaseEditbase = iota
+	ffjtBaseEditnosuchkey
 
-	ffj_t_BaseEdit_ChannelUsername
+	ffjtBaseEditChannelUsername
 
-	ffj_t_BaseEdit_InlineMessageID
+	ffjtBaseEditInlineMessageID
 
-	ffj_t_BaseEdit_ReplyMarkup
+	ffjtBaseEditReplyMarkup
 )
 
-var ffj_key_BaseEdit_ChannelUsername = []byte("ChannelUsername")
+var ffjKeyBaseEditChannelUsername = []byte("ChannelUsername")
 
-var ffj_key_BaseEdit_InlineMessageID = []byte("inline_message_id")
+var ffjKeyBaseEditInlineMessageID = []byte("inline_message_id")
 
-var ffj_key_BaseEdit_ReplyMarkup = []byte("ReplyMarkup")
+var ffjKeyBaseEditReplyMarkup = []byte("ReplyMarkup")
 
-func (uj *BaseEdit) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *BaseEdit) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *BaseEdit) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_BaseEditbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *BaseEdit) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtBaseEditbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -1571,7 +1591,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_BaseEditno_such_key
+				currentKey = ffjtBaseEditnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -1579,49 +1599,49 @@ mainparse:
 
 				case 'C':
 
-					if bytes.Equal(ffj_key_BaseEdit_ChannelUsername, kn) {
-						currentKey = ffj_t_BaseEdit_ChannelUsername
+					if bytes.Equal(ffjKeyBaseEditChannelUsername, kn) {
+						currentKey = ffjtBaseEditChannelUsername
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'R':
 
-					if bytes.Equal(ffj_key_BaseEdit_ReplyMarkup, kn) {
-						currentKey = ffj_t_BaseEdit_ReplyMarkup
+					if bytes.Equal(ffjKeyBaseEditReplyMarkup, kn) {
+						currentKey = ffjtBaseEditReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_BaseEdit_InlineMessageID, kn) {
-						currentKey = ffj_t_BaseEdit_InlineMessageID
+					if bytes.Equal(ffjKeyBaseEditInlineMessageID, kn) {
+						currentKey = ffjtBaseEditInlineMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseEdit_ReplyMarkup, kn) {
-					currentKey = ffj_t_BaseEdit_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyBaseEditReplyMarkup, kn) {
+					currentKey = ffjtBaseEditReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseEdit_InlineMessageID, kn) {
-					currentKey = ffj_t_BaseEdit_InlineMessageID
+				if fflib.EqualFoldRight(ffjKeyBaseEditInlineMessageID, kn) {
+					currentKey = ffjtBaseEditInlineMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseEdit_ChannelUsername, kn) {
-					currentKey = ffj_t_BaseEdit_ChannelUsername
+				if fflib.EqualFoldRight(ffjKeyBaseEditChannelUsername, kn) {
+					currentKey = ffjtBaseEditChannelUsername
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_BaseEditno_such_key
+				currentKey = ffjtBaseEditnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -1638,16 +1658,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_BaseEdit_ChannelUsername:
+				case ffjtBaseEditChannelUsername:
 					goto handle_ChannelUsername
 
-				case ffj_t_BaseEdit_InlineMessageID:
+				case ffjtBaseEditInlineMessageID:
 					goto handle_InlineMessageID
 
-				case ffj_t_BaseEdit_ReplyMarkup:
+				case ffjtBaseEditReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_BaseEditno_such_key:
+				case ffjtBaseEditnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -1663,7 +1683,7 @@ mainparse:
 
 handle_ChannelUsername:
 
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
+	/* handler: j.ChannelUsername type=string kind=string quoted=false*/
 
 	{
 
@@ -1679,7 +1699,7 @@ handle_ChannelUsername:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ChannelUsername = string(string(outBuf))
+			j.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -1689,7 +1709,7 @@ handle_ChannelUsername:
 
 handle_InlineMessageID:
 
-	/* handler: uj.InlineMessageID type=string kind=string quoted=false*/
+	/* handler: j.InlineMessageID type=string kind=string quoted=false*/
 
 	{
 
@@ -1705,7 +1725,7 @@ handle_InlineMessageID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.InlineMessageID = string(string(outBuf))
+			j.InlineMessageID = string(string(outBuf))
 
 		}
 	}
@@ -1715,22 +1735,22 @@ handle_InlineMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -1758,20 +1778,23 @@ done:
 	return nil
 }
 
-func (mj *BaseFile) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *BaseFile) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *BaseFile) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *BaseFile) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -1781,38 +1804,38 @@ func (mj *BaseFile) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = err
 	buf.WriteString(`{ "File":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.File)
+	err = buf.Encode(j.File)
 	if err != nil {
 		return err
 	}
 	buf.WriteString(`,"FileID":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
-	if mj.UseExisting {
+	fflib.WriteJsonString(buf, string(j.FileID))
+	if j.UseExisting {
 		buf.WriteString(`,"UseExisting":true`)
 	} else {
 		buf.WriteString(`,"UseExisting":false`)
 	}
 	buf.WriteString(`,"MimeType":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"FileSize":`)
-	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+	fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -1825,50 +1848,52 @@ func (mj *BaseFile) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_BaseFilebase = iota
-	ffj_t_BaseFileno_such_key
+	ffjtBaseFilebase = iota
+	ffjtBaseFilenosuchkey
 
-	ffj_t_BaseFile_File
+	ffjtBaseFileFile
 
-	ffj_t_BaseFile_FileID
+	ffjtBaseFileFileID
 
-	ffj_t_BaseFile_UseExisting
+	ffjtBaseFileUseExisting
 
-	ffj_t_BaseFile_MimeType
+	ffjtBaseFileMimeType
 
-	ffj_t_BaseFile_FileSize
+	ffjtBaseFileFileSize
 
-	ffj_t_BaseFile_ReplyToMessageID
+	ffjtBaseFileReplyToMessageID
 
-	ffj_t_BaseFile_ReplyMarkup
+	ffjtBaseFileReplyMarkup
 
-	ffj_t_BaseFile_DisableNotification
+	ffjtBaseFileDisableNotification
 )
 
-var ffj_key_BaseFile_File = []byte("File")
+var ffjKeyBaseFileFile = []byte("File")
 
-var ffj_key_BaseFile_FileID = []byte("FileID")
+var ffjKeyBaseFileFileID = []byte("FileID")
 
-var ffj_key_BaseFile_UseExisting = []byte("UseExisting")
+var ffjKeyBaseFileUseExisting = []byte("UseExisting")
 
-var ffj_key_BaseFile_MimeType = []byte("MimeType")
+var ffjKeyBaseFileMimeType = []byte("MimeType")
 
-var ffj_key_BaseFile_FileSize = []byte("FileSize")
+var ffjKeyBaseFileFileSize = []byte("FileSize")
 
-var ffj_key_BaseFile_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyBaseFileReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_BaseFile_ReplyMarkup = []byte("reply_markup")
+var ffjKeyBaseFileReplyMarkup = []byte("reply_markup")
 
-var ffj_key_BaseFile_DisableNotification = []byte("disable_notification")
+var ffjKeyBaseFileDisableNotification = []byte("disable_notification")
 
-func (uj *BaseFile) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *BaseFile) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *BaseFile) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_BaseFilebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *BaseFile) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtBaseFilebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -1914,7 +1939,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_BaseFileno_such_key
+				currentKey = ffjtBaseFilenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -1922,110 +1947,110 @@ mainparse:
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_BaseFile_File, kn) {
-						currentKey = ffj_t_BaseFile_File
+					if bytes.Equal(ffjKeyBaseFileFile, kn) {
+						currentKey = ffjtBaseFileFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_BaseFile_FileID, kn) {
-						currentKey = ffj_t_BaseFile_FileID
+					} else if bytes.Equal(ffjKeyBaseFileFileID, kn) {
+						currentKey = ffjtBaseFileFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_BaseFile_FileSize, kn) {
-						currentKey = ffj_t_BaseFile_FileSize
+					} else if bytes.Equal(ffjKeyBaseFileFileSize, kn) {
+						currentKey = ffjtBaseFileFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'M':
 
-					if bytes.Equal(ffj_key_BaseFile_MimeType, kn) {
-						currentKey = ffj_t_BaseFile_MimeType
+					if bytes.Equal(ffjKeyBaseFileMimeType, kn) {
+						currentKey = ffjtBaseFileMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_BaseFile_UseExisting, kn) {
-						currentKey = ffj_t_BaseFile_UseExisting
+					if bytes.Equal(ffjKeyBaseFileUseExisting, kn) {
+						currentKey = ffjtBaseFileUseExisting
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_BaseFile_DisableNotification, kn) {
-						currentKey = ffj_t_BaseFile_DisableNotification
+					if bytes.Equal(ffjKeyBaseFileDisableNotification, kn) {
+						currentKey = ffjtBaseFileDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_BaseFile_ReplyToMessageID, kn) {
-						currentKey = ffj_t_BaseFile_ReplyToMessageID
+					if bytes.Equal(ffjKeyBaseFileReplyToMessageID, kn) {
+						currentKey = ffjtBaseFileReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_BaseFile_ReplyMarkup, kn) {
-						currentKey = ffj_t_BaseFile_ReplyMarkup
+					} else if bytes.Equal(ffjKeyBaseFileReplyMarkup, kn) {
+						currentKey = ffjtBaseFileReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseFile_DisableNotification, kn) {
-					currentKey = ffj_t_BaseFile_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyBaseFileDisableNotification, kn) {
+					currentKey = ffjtBaseFileDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseFile_ReplyMarkup, kn) {
-					currentKey = ffj_t_BaseFile_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyBaseFileReplyMarkup, kn) {
+					currentKey = ffjtBaseFileReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseFile_ReplyToMessageID, kn) {
-					currentKey = ffj_t_BaseFile_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyBaseFileReplyToMessageID, kn) {
+					currentKey = ffjtBaseFileReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseFile_FileSize, kn) {
-					currentKey = ffj_t_BaseFile_FileSize
+				if fflib.EqualFoldRight(ffjKeyBaseFileFileSize, kn) {
+					currentKey = ffjtBaseFileFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_BaseFile_MimeType, kn) {
-					currentKey = ffj_t_BaseFile_MimeType
+				if fflib.SimpleLetterEqualFold(ffjKeyBaseFileMimeType, kn) {
+					currentKey = ffjtBaseFileMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_BaseFile_UseExisting, kn) {
-					currentKey = ffj_t_BaseFile_UseExisting
+				if fflib.EqualFoldRight(ffjKeyBaseFileUseExisting, kn) {
+					currentKey = ffjtBaseFileUseExisting
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_BaseFile_FileID, kn) {
-					currentKey = ffj_t_BaseFile_FileID
+				if fflib.SimpleLetterEqualFold(ffjKeyBaseFileFileID, kn) {
+					currentKey = ffjtBaseFileFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_BaseFile_File, kn) {
-					currentKey = ffj_t_BaseFile_File
+				if fflib.SimpleLetterEqualFold(ffjKeyBaseFileFile, kn) {
+					currentKey = ffjtBaseFileFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_BaseFileno_such_key
+				currentKey = ffjtBaseFilenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -2042,31 +2067,31 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_BaseFile_File:
+				case ffjtBaseFileFile:
 					goto handle_File
 
-				case ffj_t_BaseFile_FileID:
+				case ffjtBaseFileFileID:
 					goto handle_FileID
 
-				case ffj_t_BaseFile_UseExisting:
+				case ffjtBaseFileUseExisting:
 					goto handle_UseExisting
 
-				case ffj_t_BaseFile_MimeType:
+				case ffjtBaseFileMimeType:
 					goto handle_MimeType
 
-				case ffj_t_BaseFile_FileSize:
+				case ffjtBaseFileFileSize:
 					goto handle_FileSize
 
-				case ffj_t_BaseFile_ReplyToMessageID:
+				case ffjtBaseFileReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_BaseFile_ReplyMarkup:
+				case ffjtBaseFileReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_BaseFile_DisableNotification:
+				case ffjtBaseFileDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_BaseFileno_such_key:
+				case ffjtBaseFilenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -2082,7 +2107,7 @@ mainparse:
 
 handle_File:
 
-	/* handler: uj.File type=interface {} kind=interface quoted=false*/
+	/* handler: j.File type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -2091,7 +2116,7 @@ handle_File:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.File)
+		err = json.Unmarshal(tbuf, &j.File)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -2102,7 +2127,7 @@ handle_File:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -2118,7 +2143,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -2128,7 +2153,7 @@ handle_FileID:
 
 handle_UseExisting:
 
-	/* handler: uj.UseExisting type=bool kind=bool quoted=false*/
+	/* handler: j.UseExisting type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -2144,11 +2169,11 @@ handle_UseExisting:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = true
+				j.UseExisting = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = false
+				j.UseExisting = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -2163,7 +2188,7 @@ handle_UseExisting:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -2179,7 +2204,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -2189,7 +2214,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -2209,7 +2234,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -2219,7 +2244,7 @@ handle_FileSize:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -2239,7 +2264,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -2249,7 +2274,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -2258,7 +2283,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -2269,7 +2294,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -2285,11 +2310,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -2320,20 +2345,23 @@ done:
 	return nil
 }
 
-func (mj *ChatActionConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ChatActionConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ChatActionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ChatActionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -2342,24 +2370,24 @@ func (mj *ChatActionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Action":`)
-	fflib.WriteJsonString(buf, string(mj.Action))
+	fflib.WriteJsonString(buf, string(j.Action))
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -2372,34 +2400,36 @@ func (mj *ChatActionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ChatActionConfigbase = iota
-	ffj_t_ChatActionConfigno_such_key
+	ffjtChatActionConfigbase = iota
+	ffjtChatActionConfignosuchkey
 
-	ffj_t_ChatActionConfig_Action
+	ffjtChatActionConfigAction
 
-	ffj_t_ChatActionConfig_ReplyToMessageID
+	ffjtChatActionConfigReplyToMessageID
 
-	ffj_t_ChatActionConfig_ReplyMarkup
+	ffjtChatActionConfigReplyMarkup
 
-	ffj_t_ChatActionConfig_DisableNotification
+	ffjtChatActionConfigDisableNotification
 )
 
-var ffj_key_ChatActionConfig_Action = []byte("Action")
+var ffjKeyChatActionConfigAction = []byte("Action")
 
-var ffj_key_ChatActionConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyChatActionConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_ChatActionConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyChatActionConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_ChatActionConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyChatActionConfigDisableNotification = []byte("disable_notification")
 
-func (uj *ChatActionConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ChatActionConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ChatActionConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ChatActionConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ChatActionConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtChatActionConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -2445,7 +2475,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ChatActionConfigno_such_key
+				currentKey = ffjtChatActionConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -2453,60 +2483,60 @@ mainparse:
 
 				case 'A':
 
-					if bytes.Equal(ffj_key_ChatActionConfig_Action, kn) {
-						currentKey = ffj_t_ChatActionConfig_Action
+					if bytes.Equal(ffjKeyChatActionConfigAction, kn) {
+						currentKey = ffjtChatActionConfigAction
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_ChatActionConfig_DisableNotification, kn) {
-						currentKey = ffj_t_ChatActionConfig_DisableNotification
+					if bytes.Equal(ffjKeyChatActionConfigDisableNotification, kn) {
+						currentKey = ffjtChatActionConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_ChatActionConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_ChatActionConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyChatActionConfigReplyToMessageID, kn) {
+						currentKey = ffjtChatActionConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ChatActionConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_ChatActionConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyChatActionConfigReplyMarkup, kn) {
+						currentKey = ffjtChatActionConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ChatActionConfig_DisableNotification, kn) {
-					currentKey = ffj_t_ChatActionConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyChatActionConfigDisableNotification, kn) {
+					currentKey = ffjtChatActionConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ChatActionConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_ChatActionConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyChatActionConfigReplyMarkup, kn) {
+					currentKey = ffjtChatActionConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ChatActionConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_ChatActionConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyChatActionConfigReplyToMessageID, kn) {
+					currentKey = ffjtChatActionConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ChatActionConfig_Action, kn) {
-					currentKey = ffj_t_ChatActionConfig_Action
+				if fflib.SimpleLetterEqualFold(ffjKeyChatActionConfigAction, kn) {
+					currentKey = ffjtChatActionConfigAction
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ChatActionConfigno_such_key
+				currentKey = ffjtChatActionConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -2523,19 +2553,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ChatActionConfig_Action:
+				case ffjtChatActionConfigAction:
 					goto handle_Action
 
-				case ffj_t_ChatActionConfig_ReplyToMessageID:
+				case ffjtChatActionConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_ChatActionConfig_ReplyMarkup:
+				case ffjtChatActionConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_ChatActionConfig_DisableNotification:
+				case ffjtChatActionConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_ChatActionConfigno_such_key:
+				case ffjtChatActionConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -2551,7 +2581,7 @@ mainparse:
 
 handle_Action:
 
-	/* handler: uj.Action type=string kind=string quoted=false*/
+	/* handler: j.Action type=string kind=string quoted=false*/
 
 	{
 
@@ -2567,7 +2597,7 @@ handle_Action:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Action = string(string(outBuf))
+			j.Action = string(string(outBuf))
 
 		}
 	}
@@ -2577,7 +2607,7 @@ handle_Action:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -2597,7 +2627,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -2607,7 +2637,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -2616,7 +2646,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -2627,7 +2657,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -2643,11 +2673,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -2678,20 +2708,23 @@ done:
 	return nil
 }
 
-func (mj *ChatMemberConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ChatMemberConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ChatMemberConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ChatMemberConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -2700,40 +2733,42 @@ func (mj *ChatMemberConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"ChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
+	fflib.FormatBits2(buf, uint64(j.ChatID), 10, j.ChatID < 0)
 	buf.WriteString(`,"SuperGroupUsername":`)
-	fflib.WriteJsonString(buf, string(mj.SuperGroupUsername))
+	fflib.WriteJsonString(buf, string(j.SuperGroupUsername))
 	buf.WriteString(`,"UserID":`)
-	fflib.FormatBits2(buf, uint64(mj.UserID), 10, mj.UserID < 0)
+	fflib.FormatBits2(buf, uint64(j.UserID), 10, j.UserID < 0)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_ChatMemberConfigbase = iota
-	ffj_t_ChatMemberConfigno_such_key
+	ffjtChatMemberConfigbase = iota
+	ffjtChatMemberConfignosuchkey
 
-	ffj_t_ChatMemberConfig_ChatID
+	ffjtChatMemberConfigChatID
 
-	ffj_t_ChatMemberConfig_SuperGroupUsername
+	ffjtChatMemberConfigSuperGroupUsername
 
-	ffj_t_ChatMemberConfig_UserID
+	ffjtChatMemberConfigUserID
 )
 
-var ffj_key_ChatMemberConfig_ChatID = []byte("ChatID")
+var ffjKeyChatMemberConfigChatID = []byte("ChatID")
 
-var ffj_key_ChatMemberConfig_SuperGroupUsername = []byte("SuperGroupUsername")
+var ffjKeyChatMemberConfigSuperGroupUsername = []byte("SuperGroupUsername")
 
-var ffj_key_ChatMemberConfig_UserID = []byte("UserID")
+var ffjKeyChatMemberConfigUserID = []byte("UserID")
 
-func (uj *ChatMemberConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ChatMemberConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ChatMemberConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ChatMemberConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ChatMemberConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtChatMemberConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -2779,7 +2814,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ChatMemberConfigno_such_key
+				currentKey = ffjtChatMemberConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -2787,49 +2822,49 @@ mainparse:
 
 				case 'C':
 
-					if bytes.Equal(ffj_key_ChatMemberConfig_ChatID, kn) {
-						currentKey = ffj_t_ChatMemberConfig_ChatID
+					if bytes.Equal(ffjKeyChatMemberConfigChatID, kn) {
+						currentKey = ffjtChatMemberConfigChatID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'S':
 
-					if bytes.Equal(ffj_key_ChatMemberConfig_SuperGroupUsername, kn) {
-						currentKey = ffj_t_ChatMemberConfig_SuperGroupUsername
+					if bytes.Equal(ffjKeyChatMemberConfigSuperGroupUsername, kn) {
+						currentKey = ffjtChatMemberConfigSuperGroupUsername
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_ChatMemberConfig_UserID, kn) {
-						currentKey = ffj_t_ChatMemberConfig_UserID
+					if bytes.Equal(ffjKeyChatMemberConfigUserID, kn) {
+						currentKey = ffjtChatMemberConfigUserID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ChatMemberConfig_UserID, kn) {
-					currentKey = ffj_t_ChatMemberConfig_UserID
+				if fflib.EqualFoldRight(ffjKeyChatMemberConfigUserID, kn) {
+					currentKey = ffjtChatMemberConfigUserID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ChatMemberConfig_SuperGroupUsername, kn) {
-					currentKey = ffj_t_ChatMemberConfig_SuperGroupUsername
+				if fflib.EqualFoldRight(ffjKeyChatMemberConfigSuperGroupUsername, kn) {
+					currentKey = ffjtChatMemberConfigSuperGroupUsername
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ChatMemberConfig_ChatID, kn) {
-					currentKey = ffj_t_ChatMemberConfig_ChatID
+				if fflib.SimpleLetterEqualFold(ffjKeyChatMemberConfigChatID, kn) {
+					currentKey = ffjtChatMemberConfigChatID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ChatMemberConfigno_such_key
+				currentKey = ffjtChatMemberConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -2846,16 +2881,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ChatMemberConfig_ChatID:
+				case ffjtChatMemberConfigChatID:
 					goto handle_ChatID
 
-				case ffj_t_ChatMemberConfig_SuperGroupUsername:
+				case ffjtChatMemberConfigSuperGroupUsername:
 					goto handle_SuperGroupUsername
 
-				case ffj_t_ChatMemberConfig_UserID:
+				case ffjtChatMemberConfigUserID:
 					goto handle_UserID
 
-				case ffj_t_ChatMemberConfigno_such_key:
+				case ffjtChatMemberConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -2871,7 +2906,7 @@ mainparse:
 
 handle_ChatID:
 
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
+	/* handler: j.ChatID type=int64 kind=int64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -2891,7 +2926,7 @@ handle_ChatID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ChatID = int64(tval)
+			j.ChatID = int64(tval)
 
 		}
 	}
@@ -2901,7 +2936,7 @@ handle_ChatID:
 
 handle_SuperGroupUsername:
 
-	/* handler: uj.SuperGroupUsername type=string kind=string quoted=false*/
+	/* handler: j.SuperGroupUsername type=string kind=string quoted=false*/
 
 	{
 
@@ -2917,7 +2952,7 @@ handle_SuperGroupUsername:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.SuperGroupUsername = string(string(outBuf))
+			j.SuperGroupUsername = string(string(outBuf))
 
 		}
 	}
@@ -2927,7 +2962,7 @@ handle_SuperGroupUsername:
 
 handle_UserID:
 
-	/* handler: uj.UserID type=int kind=int quoted=false*/
+	/* handler: j.UserID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -2947,7 +2982,7 @@ handle_UserID:
 				return fs.WrapErr(err)
 			}
 
-			uj.UserID = int(tval)
+			j.UserID = int(tval)
 
 		}
 	}
@@ -2973,20 +3008,23 @@ done:
 	return nil
 }
 
-func (mj *ContactConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ContactConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ContactConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ContactConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -2995,28 +3033,28 @@ func (mj *ContactConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "PhoneNumber":`)
-	fflib.WriteJsonString(buf, string(mj.PhoneNumber))
+	fflib.WriteJsonString(buf, string(j.PhoneNumber))
 	buf.WriteString(`,"FirstName":`)
-	fflib.WriteJsonString(buf, string(mj.FirstName))
+	fflib.WriteJsonString(buf, string(j.FirstName))
 	buf.WriteString(`,"LastName":`)
-	fflib.WriteJsonString(buf, string(mj.LastName))
+	fflib.WriteJsonString(buf, string(j.LastName))
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -3029,42 +3067,44 @@ func (mj *ContactConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ContactConfigbase = iota
-	ffj_t_ContactConfigno_such_key
+	ffjtContactConfigbase = iota
+	ffjtContactConfignosuchkey
 
-	ffj_t_ContactConfig_PhoneNumber
+	ffjtContactConfigPhoneNumber
 
-	ffj_t_ContactConfig_FirstName
+	ffjtContactConfigFirstName
 
-	ffj_t_ContactConfig_LastName
+	ffjtContactConfigLastName
 
-	ffj_t_ContactConfig_ReplyToMessageID
+	ffjtContactConfigReplyToMessageID
 
-	ffj_t_ContactConfig_ReplyMarkup
+	ffjtContactConfigReplyMarkup
 
-	ffj_t_ContactConfig_DisableNotification
+	ffjtContactConfigDisableNotification
 )
 
-var ffj_key_ContactConfig_PhoneNumber = []byte("PhoneNumber")
+var ffjKeyContactConfigPhoneNumber = []byte("PhoneNumber")
 
-var ffj_key_ContactConfig_FirstName = []byte("FirstName")
+var ffjKeyContactConfigFirstName = []byte("FirstName")
 
-var ffj_key_ContactConfig_LastName = []byte("LastName")
+var ffjKeyContactConfigLastName = []byte("LastName")
 
-var ffj_key_ContactConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyContactConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_ContactConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyContactConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_ContactConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyContactConfigDisableNotification = []byte("disable_notification")
 
-func (uj *ContactConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ContactConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ContactConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ContactConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ContactConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtContactConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -3110,7 +3150,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ContactConfigno_such_key
+				currentKey = ffjtContactConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -3118,88 +3158,88 @@ mainparse:
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_ContactConfig_FirstName, kn) {
-						currentKey = ffj_t_ContactConfig_FirstName
+					if bytes.Equal(ffjKeyContactConfigFirstName, kn) {
+						currentKey = ffjtContactConfigFirstName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'L':
 
-					if bytes.Equal(ffj_key_ContactConfig_LastName, kn) {
-						currentKey = ffj_t_ContactConfig_LastName
+					if bytes.Equal(ffjKeyContactConfigLastName, kn) {
+						currentKey = ffjtContactConfigLastName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'P':
 
-					if bytes.Equal(ffj_key_ContactConfig_PhoneNumber, kn) {
-						currentKey = ffj_t_ContactConfig_PhoneNumber
+					if bytes.Equal(ffjKeyContactConfigPhoneNumber, kn) {
+						currentKey = ffjtContactConfigPhoneNumber
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_ContactConfig_DisableNotification, kn) {
-						currentKey = ffj_t_ContactConfig_DisableNotification
+					if bytes.Equal(ffjKeyContactConfigDisableNotification, kn) {
+						currentKey = ffjtContactConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_ContactConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_ContactConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyContactConfigReplyToMessageID, kn) {
+						currentKey = ffjtContactConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ContactConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_ContactConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyContactConfigReplyMarkup, kn) {
+						currentKey = ffjtContactConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ContactConfig_DisableNotification, kn) {
-					currentKey = ffj_t_ContactConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyContactConfigDisableNotification, kn) {
+					currentKey = ffjtContactConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ContactConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_ContactConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyContactConfigReplyMarkup, kn) {
+					currentKey = ffjtContactConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ContactConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_ContactConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyContactConfigReplyToMessageID, kn) {
+					currentKey = ffjtContactConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ContactConfig_LastName, kn) {
-					currentKey = ffj_t_ContactConfig_LastName
+				if fflib.EqualFoldRight(ffjKeyContactConfigLastName, kn) {
+					currentKey = ffjtContactConfigLastName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ContactConfig_FirstName, kn) {
-					currentKey = ffj_t_ContactConfig_FirstName
+				if fflib.EqualFoldRight(ffjKeyContactConfigFirstName, kn) {
+					currentKey = ffjtContactConfigFirstName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ContactConfig_PhoneNumber, kn) {
-					currentKey = ffj_t_ContactConfig_PhoneNumber
+				if fflib.SimpleLetterEqualFold(ffjKeyContactConfigPhoneNumber, kn) {
+					currentKey = ffjtContactConfigPhoneNumber
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ContactConfigno_such_key
+				currentKey = ffjtContactConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -3216,25 +3256,25 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ContactConfig_PhoneNumber:
+				case ffjtContactConfigPhoneNumber:
 					goto handle_PhoneNumber
 
-				case ffj_t_ContactConfig_FirstName:
+				case ffjtContactConfigFirstName:
 					goto handle_FirstName
 
-				case ffj_t_ContactConfig_LastName:
+				case ffjtContactConfigLastName:
 					goto handle_LastName
 
-				case ffj_t_ContactConfig_ReplyToMessageID:
+				case ffjtContactConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_ContactConfig_ReplyMarkup:
+				case ffjtContactConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_ContactConfig_DisableNotification:
+				case ffjtContactConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_ContactConfigno_such_key:
+				case ffjtContactConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -3250,7 +3290,7 @@ mainparse:
 
 handle_PhoneNumber:
 
-	/* handler: uj.PhoneNumber type=string kind=string quoted=false*/
+	/* handler: j.PhoneNumber type=string kind=string quoted=false*/
 
 	{
 
@@ -3266,7 +3306,7 @@ handle_PhoneNumber:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.PhoneNumber = string(string(outBuf))
+			j.PhoneNumber = string(string(outBuf))
 
 		}
 	}
@@ -3276,7 +3316,7 @@ handle_PhoneNumber:
 
 handle_FirstName:
 
-	/* handler: uj.FirstName type=string kind=string quoted=false*/
+	/* handler: j.FirstName type=string kind=string quoted=false*/
 
 	{
 
@@ -3292,7 +3332,7 @@ handle_FirstName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FirstName = string(string(outBuf))
+			j.FirstName = string(string(outBuf))
 
 		}
 	}
@@ -3302,7 +3342,7 @@ handle_FirstName:
 
 handle_LastName:
 
-	/* handler: uj.LastName type=string kind=string quoted=false*/
+	/* handler: j.LastName type=string kind=string quoted=false*/
 
 	{
 
@@ -3318,7 +3358,7 @@ handle_LastName:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.LastName = string(string(outBuf))
+			j.LastName = string(string(outBuf))
 
 		}
 	}
@@ -3328,7 +3368,7 @@ handle_LastName:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -3348,7 +3388,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -3358,7 +3398,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -3367,7 +3407,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -3378,7 +3418,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -3394,11 +3434,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -3429,20 +3469,23 @@ done:
 	return nil
 }
 
-func (mj *DeleteMessage) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *DeleteMessage) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *DeleteMessage) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *DeleteMessage) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -3451,14 +3494,14 @@ func (mj *DeleteMessage) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if mj.ChatID != 0 {
+	if j.ChatID != 0 {
 		buf.WriteString(`"chat_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
+		fflib.FormatBits2(buf, uint64(j.ChatID), 10, j.ChatID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.MessageID != 0 {
+	if j.MessageID != 0 {
 		buf.WriteString(`"message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.MessageID), 10, mj.MessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.MessageID), 10, j.MessageID < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -3467,26 +3510,28 @@ func (mj *DeleteMessage) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_DeleteMessagebase = iota
-	ffj_t_DeleteMessageno_such_key
+	ffjtDeleteMessagebase = iota
+	ffjtDeleteMessagenosuchkey
 
-	ffj_t_DeleteMessage_ChatID
+	ffjtDeleteMessageChatID
 
-	ffj_t_DeleteMessage_MessageID
+	ffjtDeleteMessageMessageID
 )
 
-var ffj_key_DeleteMessage_ChatID = []byte("chat_id")
+var ffjKeyDeleteMessageChatID = []byte("chat_id")
 
-var ffj_key_DeleteMessage_MessageID = []byte("message_id")
+var ffjKeyDeleteMessageMessageID = []byte("message_id")
 
-func (uj *DeleteMessage) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *DeleteMessage) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *DeleteMessage) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_DeleteMessagebase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *DeleteMessage) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtDeleteMessagebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -3532,7 +3577,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_DeleteMessageno_such_key
+				currentKey = ffjtDeleteMessagenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -3540,35 +3585,35 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_DeleteMessage_ChatID, kn) {
-						currentKey = ffj_t_DeleteMessage_ChatID
+					if bytes.Equal(ffjKeyDeleteMessageChatID, kn) {
+						currentKey = ffjtDeleteMessageChatID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_DeleteMessage_MessageID, kn) {
-						currentKey = ffj_t_DeleteMessage_MessageID
+					if bytes.Equal(ffjKeyDeleteMessageMessageID, kn) {
+						currentKey = ffjtDeleteMessageMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_DeleteMessage_MessageID, kn) {
-					currentKey = ffj_t_DeleteMessage_MessageID
+				if fflib.EqualFoldRight(ffjKeyDeleteMessageMessageID, kn) {
+					currentKey = ffjtDeleteMessageMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_DeleteMessage_ChatID, kn) {
-					currentKey = ffj_t_DeleteMessage_ChatID
+				if fflib.AsciiEqualFold(ffjKeyDeleteMessageChatID, kn) {
+					currentKey = ffjtDeleteMessageChatID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_DeleteMessageno_such_key
+				currentKey = ffjtDeleteMessagenosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -3585,13 +3630,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_DeleteMessage_ChatID:
+				case ffjtDeleteMessageChatID:
 					goto handle_ChatID
 
-				case ffj_t_DeleteMessage_MessageID:
+				case ffjtDeleteMessageMessageID:
 					goto handle_MessageID
 
-				case ffj_t_DeleteMessageno_such_key:
+				case ffjtDeleteMessagenosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -3607,7 +3652,7 @@ mainparse:
 
 handle_ChatID:
 
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
+	/* handler: j.ChatID type=int64 kind=int64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -3627,7 +3672,7 @@ handle_ChatID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ChatID = int64(tval)
+			j.ChatID = int64(tval)
 
 		}
 	}
@@ -3637,7 +3682,7 @@ handle_ChatID:
 
 handle_MessageID:
 
-	/* handler: uj.MessageID type=int kind=int quoted=false*/
+	/* handler: j.MessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -3657,7 +3702,7 @@ handle_MessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.MessageID = int(tval)
+			j.MessageID = int(tval)
 
 		}
 	}
@@ -3683,20 +3728,23 @@ done:
 	return nil
 }
 
-func (mj *DocumentConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *DocumentConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *DocumentConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *DocumentConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -3706,38 +3754,38 @@ func (mj *DocumentConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = err
 	buf.WriteString(`{ "File":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.File)
+	err = buf.Encode(j.File)
 	if err != nil {
 		return err
 	}
 	buf.WriteString(`,"FileID":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
-	if mj.UseExisting {
+	fflib.WriteJsonString(buf, string(j.FileID))
+	if j.UseExisting {
 		buf.WriteString(`,"UseExisting":true`)
 	} else {
 		buf.WriteString(`,"UseExisting":false`)
 	}
 	buf.WriteString(`,"MimeType":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"FileSize":`)
-	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+	fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -3750,50 +3798,52 @@ func (mj *DocumentConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_DocumentConfigbase = iota
-	ffj_t_DocumentConfigno_such_key
+	ffjtDocumentConfigbase = iota
+	ffjtDocumentConfignosuchkey
 
-	ffj_t_DocumentConfig_File
+	ffjtDocumentConfigFile
 
-	ffj_t_DocumentConfig_FileID
+	ffjtDocumentConfigFileID
 
-	ffj_t_DocumentConfig_UseExisting
+	ffjtDocumentConfigUseExisting
 
-	ffj_t_DocumentConfig_MimeType
+	ffjtDocumentConfigMimeType
 
-	ffj_t_DocumentConfig_FileSize
+	ffjtDocumentConfigFileSize
 
-	ffj_t_DocumentConfig_ReplyToMessageID
+	ffjtDocumentConfigReplyToMessageID
 
-	ffj_t_DocumentConfig_ReplyMarkup
+	ffjtDocumentConfigReplyMarkup
 
-	ffj_t_DocumentConfig_DisableNotification
+	ffjtDocumentConfigDisableNotification
 )
 
-var ffj_key_DocumentConfig_File = []byte("File")
+var ffjKeyDocumentConfigFile = []byte("File")
 
-var ffj_key_DocumentConfig_FileID = []byte("FileID")
+var ffjKeyDocumentConfigFileID = []byte("FileID")
 
-var ffj_key_DocumentConfig_UseExisting = []byte("UseExisting")
+var ffjKeyDocumentConfigUseExisting = []byte("UseExisting")
 
-var ffj_key_DocumentConfig_MimeType = []byte("MimeType")
+var ffjKeyDocumentConfigMimeType = []byte("MimeType")
 
-var ffj_key_DocumentConfig_FileSize = []byte("FileSize")
+var ffjKeyDocumentConfigFileSize = []byte("FileSize")
 
-var ffj_key_DocumentConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyDocumentConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_DocumentConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyDocumentConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_DocumentConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyDocumentConfigDisableNotification = []byte("disable_notification")
 
-func (uj *DocumentConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *DocumentConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *DocumentConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_DocumentConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *DocumentConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtDocumentConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -3839,7 +3889,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_DocumentConfigno_such_key
+				currentKey = ffjtDocumentConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -3847,110 +3897,110 @@ mainparse:
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_DocumentConfig_File, kn) {
-						currentKey = ffj_t_DocumentConfig_File
+					if bytes.Equal(ffjKeyDocumentConfigFile, kn) {
+						currentKey = ffjtDocumentConfigFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_DocumentConfig_FileID, kn) {
-						currentKey = ffj_t_DocumentConfig_FileID
+					} else if bytes.Equal(ffjKeyDocumentConfigFileID, kn) {
+						currentKey = ffjtDocumentConfigFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_DocumentConfig_FileSize, kn) {
-						currentKey = ffj_t_DocumentConfig_FileSize
+					} else if bytes.Equal(ffjKeyDocumentConfigFileSize, kn) {
+						currentKey = ffjtDocumentConfigFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'M':
 
-					if bytes.Equal(ffj_key_DocumentConfig_MimeType, kn) {
-						currentKey = ffj_t_DocumentConfig_MimeType
+					if bytes.Equal(ffjKeyDocumentConfigMimeType, kn) {
+						currentKey = ffjtDocumentConfigMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_DocumentConfig_UseExisting, kn) {
-						currentKey = ffj_t_DocumentConfig_UseExisting
+					if bytes.Equal(ffjKeyDocumentConfigUseExisting, kn) {
+						currentKey = ffjtDocumentConfigUseExisting
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_DocumentConfig_DisableNotification, kn) {
-						currentKey = ffj_t_DocumentConfig_DisableNotification
+					if bytes.Equal(ffjKeyDocumentConfigDisableNotification, kn) {
+						currentKey = ffjtDocumentConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_DocumentConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_DocumentConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyDocumentConfigReplyToMessageID, kn) {
+						currentKey = ffjtDocumentConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_DocumentConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_DocumentConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyDocumentConfigReplyMarkup, kn) {
+						currentKey = ffjtDocumentConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_DocumentConfig_DisableNotification, kn) {
-					currentKey = ffj_t_DocumentConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyDocumentConfigDisableNotification, kn) {
+					currentKey = ffjtDocumentConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_DocumentConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_DocumentConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyDocumentConfigReplyMarkup, kn) {
+					currentKey = ffjtDocumentConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_DocumentConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_DocumentConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyDocumentConfigReplyToMessageID, kn) {
+					currentKey = ffjtDocumentConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_DocumentConfig_FileSize, kn) {
-					currentKey = ffj_t_DocumentConfig_FileSize
+				if fflib.EqualFoldRight(ffjKeyDocumentConfigFileSize, kn) {
+					currentKey = ffjtDocumentConfigFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_DocumentConfig_MimeType, kn) {
-					currentKey = ffj_t_DocumentConfig_MimeType
+				if fflib.SimpleLetterEqualFold(ffjKeyDocumentConfigMimeType, kn) {
+					currentKey = ffjtDocumentConfigMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_DocumentConfig_UseExisting, kn) {
-					currentKey = ffj_t_DocumentConfig_UseExisting
+				if fflib.EqualFoldRight(ffjKeyDocumentConfigUseExisting, kn) {
+					currentKey = ffjtDocumentConfigUseExisting
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_DocumentConfig_FileID, kn) {
-					currentKey = ffj_t_DocumentConfig_FileID
+				if fflib.SimpleLetterEqualFold(ffjKeyDocumentConfigFileID, kn) {
+					currentKey = ffjtDocumentConfigFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_DocumentConfig_File, kn) {
-					currentKey = ffj_t_DocumentConfig_File
+				if fflib.SimpleLetterEqualFold(ffjKeyDocumentConfigFile, kn) {
+					currentKey = ffjtDocumentConfigFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_DocumentConfigno_such_key
+				currentKey = ffjtDocumentConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -3967,31 +4017,31 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_DocumentConfig_File:
+				case ffjtDocumentConfigFile:
 					goto handle_File
 
-				case ffj_t_DocumentConfig_FileID:
+				case ffjtDocumentConfigFileID:
 					goto handle_FileID
 
-				case ffj_t_DocumentConfig_UseExisting:
+				case ffjtDocumentConfigUseExisting:
 					goto handle_UseExisting
 
-				case ffj_t_DocumentConfig_MimeType:
+				case ffjtDocumentConfigMimeType:
 					goto handle_MimeType
 
-				case ffj_t_DocumentConfig_FileSize:
+				case ffjtDocumentConfigFileSize:
 					goto handle_FileSize
 
-				case ffj_t_DocumentConfig_ReplyToMessageID:
+				case ffjtDocumentConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_DocumentConfig_ReplyMarkup:
+				case ffjtDocumentConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_DocumentConfig_DisableNotification:
+				case ffjtDocumentConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_DocumentConfigno_such_key:
+				case ffjtDocumentConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -4007,7 +4057,7 @@ mainparse:
 
 handle_File:
 
-	/* handler: uj.File type=interface {} kind=interface quoted=false*/
+	/* handler: j.File type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -4016,7 +4066,7 @@ handle_File:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.File)
+		err = json.Unmarshal(tbuf, &j.File)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -4027,7 +4077,7 @@ handle_File:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -4043,7 +4093,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -4053,7 +4103,7 @@ handle_FileID:
 
 handle_UseExisting:
 
-	/* handler: uj.UseExisting type=bool kind=bool quoted=false*/
+	/* handler: j.UseExisting type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -4069,11 +4119,11 @@ handle_UseExisting:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = true
+				j.UseExisting = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = false
+				j.UseExisting = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -4088,7 +4138,7 @@ handle_UseExisting:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -4104,7 +4154,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -4114,7 +4164,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -4134,7 +4184,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -4144,7 +4194,7 @@ handle_FileSize:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -4164,7 +4214,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -4174,7 +4224,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -4183,7 +4233,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -4194,7 +4244,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -4210,11 +4260,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -4245,20 +4295,23 @@ done:
 	return nil
 }
 
-func (mj *EditMessageCaptionConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *EditMessageCaptionConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *EditMessageCaptionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *EditMessageCaptionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -4267,25 +4320,25 @@ func (mj *EditMessageCaptionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Caption":`)
-	fflib.WriteJsonString(buf, string(mj.Caption))
+	fflib.WriteJsonString(buf, string(j.Caption))
 	buf.WriteByte(',')
-	if len(mj.ChannelUsername) != 0 {
+	if len(j.ChannelUsername) != 0 {
 		buf.WriteString(`"ChannelUsername":`)
-		fflib.WriteJsonString(buf, string(mj.ChannelUsername))
+		fflib.WriteJsonString(buf, string(j.ChannelUsername))
 		buf.WriteByte(',')
 	}
-	if len(mj.InlineMessageID) != 0 {
+	if len(j.InlineMessageID) != 0 {
 		buf.WriteString(`"inline_message_id":`)
-		fflib.WriteJsonString(buf, string(mj.InlineMessageID))
+		fflib.WriteJsonString(buf, string(j.InlineMessageID))
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"ReplyMarkup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -4300,34 +4353,36 @@ func (mj *EditMessageCaptionConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 }
 
 const (
-	ffj_t_EditMessageCaptionConfigbase = iota
-	ffj_t_EditMessageCaptionConfigno_such_key
+	ffjtEditMessageCaptionConfigbase = iota
+	ffjtEditMessageCaptionConfignosuchkey
 
-	ffj_t_EditMessageCaptionConfig_Caption
+	ffjtEditMessageCaptionConfigCaption
 
-	ffj_t_EditMessageCaptionConfig_ChannelUsername
+	ffjtEditMessageCaptionConfigChannelUsername
 
-	ffj_t_EditMessageCaptionConfig_InlineMessageID
+	ffjtEditMessageCaptionConfigInlineMessageID
 
-	ffj_t_EditMessageCaptionConfig_ReplyMarkup
+	ffjtEditMessageCaptionConfigReplyMarkup
 )
 
-var ffj_key_EditMessageCaptionConfig_Caption = []byte("Caption")
+var ffjKeyEditMessageCaptionConfigCaption = []byte("Caption")
 
-var ffj_key_EditMessageCaptionConfig_ChannelUsername = []byte("ChannelUsername")
+var ffjKeyEditMessageCaptionConfigChannelUsername = []byte("ChannelUsername")
 
-var ffj_key_EditMessageCaptionConfig_InlineMessageID = []byte("inline_message_id")
+var ffjKeyEditMessageCaptionConfigInlineMessageID = []byte("inline_message_id")
 
-var ffj_key_EditMessageCaptionConfig_ReplyMarkup = []byte("ReplyMarkup")
+var ffjKeyEditMessageCaptionConfigReplyMarkup = []byte("ReplyMarkup")
 
-func (uj *EditMessageCaptionConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *EditMessageCaptionConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *EditMessageCaptionConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_EditMessageCaptionConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *EditMessageCaptionConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtEditMessageCaptionConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -4373,7 +4428,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_EditMessageCaptionConfigno_such_key
+				currentKey = ffjtEditMessageCaptionConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -4381,60 +4436,60 @@ mainparse:
 
 				case 'C':
 
-					if bytes.Equal(ffj_key_EditMessageCaptionConfig_Caption, kn) {
-						currentKey = ffj_t_EditMessageCaptionConfig_Caption
+					if bytes.Equal(ffjKeyEditMessageCaptionConfigCaption, kn) {
+						currentKey = ffjtEditMessageCaptionConfigCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_EditMessageCaptionConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_EditMessageCaptionConfig_ChannelUsername
+					} else if bytes.Equal(ffjKeyEditMessageCaptionConfigChannelUsername, kn) {
+						currentKey = ffjtEditMessageCaptionConfigChannelUsername
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'R':
 
-					if bytes.Equal(ffj_key_EditMessageCaptionConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_EditMessageCaptionConfig_ReplyMarkup
+					if bytes.Equal(ffjKeyEditMessageCaptionConfigReplyMarkup, kn) {
+						currentKey = ffjtEditMessageCaptionConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_EditMessageCaptionConfig_InlineMessageID, kn) {
-						currentKey = ffj_t_EditMessageCaptionConfig_InlineMessageID
+					if bytes.Equal(ffjKeyEditMessageCaptionConfigInlineMessageID, kn) {
+						currentKey = ffjtEditMessageCaptionConfigInlineMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageCaptionConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_EditMessageCaptionConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyEditMessageCaptionConfigReplyMarkup, kn) {
+					currentKey = ffjtEditMessageCaptionConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageCaptionConfig_InlineMessageID, kn) {
-					currentKey = ffj_t_EditMessageCaptionConfig_InlineMessageID
+				if fflib.EqualFoldRight(ffjKeyEditMessageCaptionConfigInlineMessageID, kn) {
+					currentKey = ffjtEditMessageCaptionConfigInlineMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageCaptionConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_EditMessageCaptionConfig_ChannelUsername
+				if fflib.EqualFoldRight(ffjKeyEditMessageCaptionConfigChannelUsername, kn) {
+					currentKey = ffjtEditMessageCaptionConfigChannelUsername
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_EditMessageCaptionConfig_Caption, kn) {
-					currentKey = ffj_t_EditMessageCaptionConfig_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyEditMessageCaptionConfigCaption, kn) {
+					currentKey = ffjtEditMessageCaptionConfigCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_EditMessageCaptionConfigno_such_key
+				currentKey = ffjtEditMessageCaptionConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -4451,19 +4506,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_EditMessageCaptionConfig_Caption:
+				case ffjtEditMessageCaptionConfigCaption:
 					goto handle_Caption
 
-				case ffj_t_EditMessageCaptionConfig_ChannelUsername:
+				case ffjtEditMessageCaptionConfigChannelUsername:
 					goto handle_ChannelUsername
 
-				case ffj_t_EditMessageCaptionConfig_InlineMessageID:
+				case ffjtEditMessageCaptionConfigInlineMessageID:
 					goto handle_InlineMessageID
 
-				case ffj_t_EditMessageCaptionConfig_ReplyMarkup:
+				case ffjtEditMessageCaptionConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_EditMessageCaptionConfigno_such_key:
+				case ffjtEditMessageCaptionConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -4479,7 +4534,7 @@ mainparse:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -4495,7 +4550,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -4505,7 +4560,7 @@ handle_Caption:
 
 handle_ChannelUsername:
 
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
+	/* handler: j.ChannelUsername type=string kind=string quoted=false*/
 
 	{
 
@@ -4521,7 +4576,7 @@ handle_ChannelUsername:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ChannelUsername = string(string(outBuf))
+			j.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -4531,7 +4586,7 @@ handle_ChannelUsername:
 
 handle_InlineMessageID:
 
-	/* handler: uj.InlineMessageID type=string kind=string quoted=false*/
+	/* handler: j.InlineMessageID type=string kind=string quoted=false*/
 
 	{
 
@@ -4547,7 +4602,7 @@ handle_InlineMessageID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.InlineMessageID = string(string(outBuf))
+			j.InlineMessageID = string(string(outBuf))
 
 		}
 	}
@@ -4557,22 +4612,22 @@ handle_InlineMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -4600,20 +4655,23 @@ done:
 	return nil
 }
 
-func (mj *EditMessageReplyMarkupConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *EditMessageReplyMarkupConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *EditMessageReplyMarkupConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *EditMessageReplyMarkupConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -4622,23 +4680,23 @@ func (mj *EditMessageReplyMarkupConfig) MarshalJSONBuf(buf fflib.EncodingBuffer)
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if len(mj.ChannelUsername) != 0 {
+	if len(j.ChannelUsername) != 0 {
 		buf.WriteString(`"ChannelUsername":`)
-		fflib.WriteJsonString(buf, string(mj.ChannelUsername))
+		fflib.WriteJsonString(buf, string(j.ChannelUsername))
 		buf.WriteByte(',')
 	}
-	if len(mj.InlineMessageID) != 0 {
+	if len(j.InlineMessageID) != 0 {
 		buf.WriteString(`"inline_message_id":`)
-		fflib.WriteJsonString(buf, string(mj.InlineMessageID))
+		fflib.WriteJsonString(buf, string(j.InlineMessageID))
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"ReplyMarkup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -4653,30 +4711,32 @@ func (mj *EditMessageReplyMarkupConfig) MarshalJSONBuf(buf fflib.EncodingBuffer)
 }
 
 const (
-	ffj_t_EditMessageReplyMarkupConfigbase = iota
-	ffj_t_EditMessageReplyMarkupConfigno_such_key
+	ffjtEditMessageReplyMarkupConfigbase = iota
+	ffjtEditMessageReplyMarkupConfignosuchkey
 
-	ffj_t_EditMessageReplyMarkupConfig_ChannelUsername
+	ffjtEditMessageReplyMarkupConfigChannelUsername
 
-	ffj_t_EditMessageReplyMarkupConfig_InlineMessageID
+	ffjtEditMessageReplyMarkupConfigInlineMessageID
 
-	ffj_t_EditMessageReplyMarkupConfig_ReplyMarkup
+	ffjtEditMessageReplyMarkupConfigReplyMarkup
 )
 
-var ffj_key_EditMessageReplyMarkupConfig_ChannelUsername = []byte("ChannelUsername")
+var ffjKeyEditMessageReplyMarkupConfigChannelUsername = []byte("ChannelUsername")
 
-var ffj_key_EditMessageReplyMarkupConfig_InlineMessageID = []byte("inline_message_id")
+var ffjKeyEditMessageReplyMarkupConfigInlineMessageID = []byte("inline_message_id")
 
-var ffj_key_EditMessageReplyMarkupConfig_ReplyMarkup = []byte("ReplyMarkup")
+var ffjKeyEditMessageReplyMarkupConfigReplyMarkup = []byte("ReplyMarkup")
 
-func (uj *EditMessageReplyMarkupConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *EditMessageReplyMarkupConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *EditMessageReplyMarkupConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_EditMessageReplyMarkupConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *EditMessageReplyMarkupConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtEditMessageReplyMarkupConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -4722,7 +4782,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_EditMessageReplyMarkupConfigno_such_key
+				currentKey = ffjtEditMessageReplyMarkupConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -4730,49 +4790,49 @@ mainparse:
 
 				case 'C':
 
-					if bytes.Equal(ffj_key_EditMessageReplyMarkupConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_EditMessageReplyMarkupConfig_ChannelUsername
+					if bytes.Equal(ffjKeyEditMessageReplyMarkupConfigChannelUsername, kn) {
+						currentKey = ffjtEditMessageReplyMarkupConfigChannelUsername
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'R':
 
-					if bytes.Equal(ffj_key_EditMessageReplyMarkupConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_EditMessageReplyMarkupConfig_ReplyMarkup
+					if bytes.Equal(ffjKeyEditMessageReplyMarkupConfigReplyMarkup, kn) {
+						currentKey = ffjtEditMessageReplyMarkupConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_EditMessageReplyMarkupConfig_InlineMessageID, kn) {
-						currentKey = ffj_t_EditMessageReplyMarkupConfig_InlineMessageID
+					if bytes.Equal(ffjKeyEditMessageReplyMarkupConfigInlineMessageID, kn) {
+						currentKey = ffjtEditMessageReplyMarkupConfigInlineMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageReplyMarkupConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_EditMessageReplyMarkupConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyEditMessageReplyMarkupConfigReplyMarkup, kn) {
+					currentKey = ffjtEditMessageReplyMarkupConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageReplyMarkupConfig_InlineMessageID, kn) {
-					currentKey = ffj_t_EditMessageReplyMarkupConfig_InlineMessageID
+				if fflib.EqualFoldRight(ffjKeyEditMessageReplyMarkupConfigInlineMessageID, kn) {
+					currentKey = ffjtEditMessageReplyMarkupConfigInlineMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageReplyMarkupConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_EditMessageReplyMarkupConfig_ChannelUsername
+				if fflib.EqualFoldRight(ffjKeyEditMessageReplyMarkupConfigChannelUsername, kn) {
+					currentKey = ffjtEditMessageReplyMarkupConfigChannelUsername
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_EditMessageReplyMarkupConfigno_such_key
+				currentKey = ffjtEditMessageReplyMarkupConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -4789,16 +4849,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_EditMessageReplyMarkupConfig_ChannelUsername:
+				case ffjtEditMessageReplyMarkupConfigChannelUsername:
 					goto handle_ChannelUsername
 
-				case ffj_t_EditMessageReplyMarkupConfig_InlineMessageID:
+				case ffjtEditMessageReplyMarkupConfigInlineMessageID:
 					goto handle_InlineMessageID
 
-				case ffj_t_EditMessageReplyMarkupConfig_ReplyMarkup:
+				case ffjtEditMessageReplyMarkupConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_EditMessageReplyMarkupConfigno_such_key:
+				case ffjtEditMessageReplyMarkupConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -4814,7 +4874,7 @@ mainparse:
 
 handle_ChannelUsername:
 
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
+	/* handler: j.ChannelUsername type=string kind=string quoted=false*/
 
 	{
 
@@ -4830,7 +4890,7 @@ handle_ChannelUsername:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ChannelUsername = string(string(outBuf))
+			j.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -4840,7 +4900,7 @@ handle_ChannelUsername:
 
 handle_InlineMessageID:
 
-	/* handler: uj.InlineMessageID type=string kind=string quoted=false*/
+	/* handler: j.InlineMessageID type=string kind=string quoted=false*/
 
 	{
 
@@ -4856,7 +4916,7 @@ handle_InlineMessageID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.InlineMessageID = string(string(outBuf))
+			j.InlineMessageID = string(string(outBuf))
 
 		}
 	}
@@ -4866,22 +4926,22 @@ handle_InlineMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -4909,20 +4969,23 @@ done:
 	return nil
 }
 
-func (mj *EditMessageTextConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *EditMessageTextConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *EditMessageTextConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *EditMessageTextConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -4931,32 +4994,32 @@ func (mj *EditMessageTextConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error 
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Text":`)
-	fflib.WriteJsonString(buf, string(mj.Text))
+	fflib.WriteJsonString(buf, string(j.Text))
 	buf.WriteString(`,"ParseMode":`)
-	fflib.WriteJsonString(buf, string(mj.ParseMode))
-	if mj.DisableWebPagePreview {
+	fflib.WriteJsonString(buf, string(j.ParseMode))
+	if j.DisableWebPagePreview {
 		buf.WriteString(`,"DisableWebPagePreview":true`)
 	} else {
 		buf.WriteString(`,"DisableWebPagePreview":false`)
 	}
 	buf.WriteByte(',')
-	if len(mj.ChannelUsername) != 0 {
+	if len(j.ChannelUsername) != 0 {
 		buf.WriteString(`"ChannelUsername":`)
-		fflib.WriteJsonString(buf, string(mj.ChannelUsername))
+		fflib.WriteJsonString(buf, string(j.ChannelUsername))
 		buf.WriteByte(',')
 	}
-	if len(mj.InlineMessageID) != 0 {
+	if len(j.InlineMessageID) != 0 {
 		buf.WriteString(`"inline_message_id":`)
-		fflib.WriteJsonString(buf, string(mj.InlineMessageID))
+		fflib.WriteJsonString(buf, string(j.InlineMessageID))
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		if true {
 			buf.WriteString(`"ReplyMarkup":`)
 
 			{
 
-				err = mj.ReplyMarkup.MarshalJSONBuf(buf)
+				err = j.ReplyMarkup.MarshalJSONBuf(buf)
 				if err != nil {
 					return err
 				}
@@ -4971,42 +5034,44 @@ func (mj *EditMessageTextConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error 
 }
 
 const (
-	ffj_t_EditMessageTextConfigbase = iota
-	ffj_t_EditMessageTextConfigno_such_key
+	ffjtEditMessageTextConfigbase = iota
+	ffjtEditMessageTextConfignosuchkey
 
-	ffj_t_EditMessageTextConfig_Text
+	ffjtEditMessageTextConfigText
 
-	ffj_t_EditMessageTextConfig_ParseMode
+	ffjtEditMessageTextConfigParseMode
 
-	ffj_t_EditMessageTextConfig_DisableWebPagePreview
+	ffjtEditMessageTextConfigDisableWebPagePreview
 
-	ffj_t_EditMessageTextConfig_ChannelUsername
+	ffjtEditMessageTextConfigChannelUsername
 
-	ffj_t_EditMessageTextConfig_InlineMessageID
+	ffjtEditMessageTextConfigInlineMessageID
 
-	ffj_t_EditMessageTextConfig_ReplyMarkup
+	ffjtEditMessageTextConfigReplyMarkup
 )
 
-var ffj_key_EditMessageTextConfig_Text = []byte("Text")
+var ffjKeyEditMessageTextConfigText = []byte("Text")
 
-var ffj_key_EditMessageTextConfig_ParseMode = []byte("ParseMode")
+var ffjKeyEditMessageTextConfigParseMode = []byte("ParseMode")
 
-var ffj_key_EditMessageTextConfig_DisableWebPagePreview = []byte("DisableWebPagePreview")
+var ffjKeyEditMessageTextConfigDisableWebPagePreview = []byte("DisableWebPagePreview")
 
-var ffj_key_EditMessageTextConfig_ChannelUsername = []byte("ChannelUsername")
+var ffjKeyEditMessageTextConfigChannelUsername = []byte("ChannelUsername")
 
-var ffj_key_EditMessageTextConfig_InlineMessageID = []byte("inline_message_id")
+var ffjKeyEditMessageTextConfigInlineMessageID = []byte("inline_message_id")
 
-var ffj_key_EditMessageTextConfig_ReplyMarkup = []byte("ReplyMarkup")
+var ffjKeyEditMessageTextConfigReplyMarkup = []byte("ReplyMarkup")
 
-func (uj *EditMessageTextConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *EditMessageTextConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *EditMessageTextConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_EditMessageTextConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *EditMessageTextConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtEditMessageTextConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -5052,7 +5117,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_EditMessageTextConfigno_such_key
+				currentKey = ffjtEditMessageTextConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -5060,91 +5125,91 @@ mainparse:
 
 				case 'C':
 
-					if bytes.Equal(ffj_key_EditMessageTextConfig_ChannelUsername, kn) {
-						currentKey = ffj_t_EditMessageTextConfig_ChannelUsername
+					if bytes.Equal(ffjKeyEditMessageTextConfigChannelUsername, kn) {
+						currentKey = ffjtEditMessageTextConfigChannelUsername
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'D':
 
-					if bytes.Equal(ffj_key_EditMessageTextConfig_DisableWebPagePreview, kn) {
-						currentKey = ffj_t_EditMessageTextConfig_DisableWebPagePreview
+					if bytes.Equal(ffjKeyEditMessageTextConfigDisableWebPagePreview, kn) {
+						currentKey = ffjtEditMessageTextConfigDisableWebPagePreview
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'P':
 
-					if bytes.Equal(ffj_key_EditMessageTextConfig_ParseMode, kn) {
-						currentKey = ffj_t_EditMessageTextConfig_ParseMode
+					if bytes.Equal(ffjKeyEditMessageTextConfigParseMode, kn) {
+						currentKey = ffjtEditMessageTextConfigParseMode
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'R':
 
-					if bytes.Equal(ffj_key_EditMessageTextConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_EditMessageTextConfig_ReplyMarkup
+					if bytes.Equal(ffjKeyEditMessageTextConfigReplyMarkup, kn) {
+						currentKey = ffjtEditMessageTextConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'T':
 
-					if bytes.Equal(ffj_key_EditMessageTextConfig_Text, kn) {
-						currentKey = ffj_t_EditMessageTextConfig_Text
+					if bytes.Equal(ffjKeyEditMessageTextConfigText, kn) {
+						currentKey = ffjtEditMessageTextConfigText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_EditMessageTextConfig_InlineMessageID, kn) {
-						currentKey = ffj_t_EditMessageTextConfig_InlineMessageID
+					if bytes.Equal(ffjKeyEditMessageTextConfigInlineMessageID, kn) {
+						currentKey = ffjtEditMessageTextConfigInlineMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageTextConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_EditMessageTextConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyEditMessageTextConfigReplyMarkup, kn) {
+					currentKey = ffjtEditMessageTextConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageTextConfig_InlineMessageID, kn) {
-					currentKey = ffj_t_EditMessageTextConfig_InlineMessageID
+				if fflib.EqualFoldRight(ffjKeyEditMessageTextConfigInlineMessageID, kn) {
+					currentKey = ffjtEditMessageTextConfigInlineMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageTextConfig_ChannelUsername, kn) {
-					currentKey = ffj_t_EditMessageTextConfig_ChannelUsername
+				if fflib.EqualFoldRight(ffjKeyEditMessageTextConfigChannelUsername, kn) {
+					currentKey = ffjtEditMessageTextConfigChannelUsername
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageTextConfig_DisableWebPagePreview, kn) {
-					currentKey = ffj_t_EditMessageTextConfig_DisableWebPagePreview
+				if fflib.EqualFoldRight(ffjKeyEditMessageTextConfigDisableWebPagePreview, kn) {
+					currentKey = ffjtEditMessageTextConfigDisableWebPagePreview
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_EditMessageTextConfig_ParseMode, kn) {
-					currentKey = ffj_t_EditMessageTextConfig_ParseMode
+				if fflib.EqualFoldRight(ffjKeyEditMessageTextConfigParseMode, kn) {
+					currentKey = ffjtEditMessageTextConfigParseMode
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_EditMessageTextConfig_Text, kn) {
-					currentKey = ffj_t_EditMessageTextConfig_Text
+				if fflib.SimpleLetterEqualFold(ffjKeyEditMessageTextConfigText, kn) {
+					currentKey = ffjtEditMessageTextConfigText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_EditMessageTextConfigno_such_key
+				currentKey = ffjtEditMessageTextConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -5161,25 +5226,25 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_EditMessageTextConfig_Text:
+				case ffjtEditMessageTextConfigText:
 					goto handle_Text
 
-				case ffj_t_EditMessageTextConfig_ParseMode:
+				case ffjtEditMessageTextConfigParseMode:
 					goto handle_ParseMode
 
-				case ffj_t_EditMessageTextConfig_DisableWebPagePreview:
+				case ffjtEditMessageTextConfigDisableWebPagePreview:
 					goto handle_DisableWebPagePreview
 
-				case ffj_t_EditMessageTextConfig_ChannelUsername:
+				case ffjtEditMessageTextConfigChannelUsername:
 					goto handle_ChannelUsername
 
-				case ffj_t_EditMessageTextConfig_InlineMessageID:
+				case ffjtEditMessageTextConfigInlineMessageID:
 					goto handle_InlineMessageID
 
-				case ffj_t_EditMessageTextConfig_ReplyMarkup:
+				case ffjtEditMessageTextConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_EditMessageTextConfigno_such_key:
+				case ffjtEditMessageTextConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -5195,7 +5260,7 @@ mainparse:
 
 handle_Text:
 
-	/* handler: uj.Text type=string kind=string quoted=false*/
+	/* handler: j.Text type=string kind=string quoted=false*/
 
 	{
 
@@ -5211,7 +5276,7 @@ handle_Text:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Text = string(string(outBuf))
+			j.Text = string(string(outBuf))
 
 		}
 	}
@@ -5221,7 +5286,7 @@ handle_Text:
 
 handle_ParseMode:
 
-	/* handler: uj.ParseMode type=string kind=string quoted=false*/
+	/* handler: j.ParseMode type=string kind=string quoted=false*/
 
 	{
 
@@ -5237,7 +5302,7 @@ handle_ParseMode:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ParseMode = string(string(outBuf))
+			j.ParseMode = string(string(outBuf))
 
 		}
 	}
@@ -5247,7 +5312,7 @@ handle_ParseMode:
 
 handle_DisableWebPagePreview:
 
-	/* handler: uj.DisableWebPagePreview type=bool kind=bool quoted=false*/
+	/* handler: j.DisableWebPagePreview type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -5263,11 +5328,11 @@ handle_DisableWebPagePreview:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableWebPagePreview = true
+				j.DisableWebPagePreview = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableWebPagePreview = false
+				j.DisableWebPagePreview = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -5282,7 +5347,7 @@ handle_DisableWebPagePreview:
 
 handle_ChannelUsername:
 
-	/* handler: uj.ChannelUsername type=string kind=string quoted=false*/
+	/* handler: j.ChannelUsername type=string kind=string quoted=false*/
 
 	{
 
@@ -5298,7 +5363,7 @@ handle_ChannelUsername:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ChannelUsername = string(string(outBuf))
+			j.ChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -5308,7 +5373,7 @@ handle_ChannelUsername:
 
 handle_InlineMessageID:
 
-	/* handler: uj.InlineMessageID type=string kind=string quoted=false*/
+	/* handler: j.InlineMessageID type=string kind=string quoted=false*/
 
 	{
 
@@ -5324,7 +5389,7 @@ handle_InlineMessageID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.InlineMessageID = string(string(outBuf))
+			j.InlineMessageID = string(string(outBuf))
 
 		}
 	}
@@ -5334,22 +5399,22 @@ handle_InlineMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
 
-			uj.ReplyMarkup = nil
+			j.ReplyMarkup = nil
 
 			state = fflib.FFParse_after_value
 			goto mainparse
 		}
 
-		if uj.ReplyMarkup == nil {
-			uj.ReplyMarkup = new(InlineKeyboardMarkup)
+		if j.ReplyMarkup == nil {
+			j.ReplyMarkup = new(InlineKeyboardMarkup)
 		}
 
-		err = uj.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
 			return err
 		}
@@ -5377,20 +5442,23 @@ done:
 	return nil
 }
 
-func (mj *ErrAPIForbidden) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ErrAPIForbidden) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ErrAPIForbidden) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ErrAPIForbidden) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -5403,18 +5471,20 @@ func (mj *ErrAPIForbidden) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ErrAPIForbiddenbase = iota
-	ffj_t_ErrAPIForbiddenno_such_key
+	ffjtErrAPIForbiddenbase = iota
+	ffjtErrAPIForbiddennosuchkey
 )
 
-func (uj *ErrAPIForbidden) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ErrAPIForbidden) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ErrAPIForbidden) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ErrAPIForbiddenbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ErrAPIForbidden) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtErrAPIForbiddenbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -5460,7 +5530,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ErrAPIForbiddenno_such_key
+				currentKey = ffjtErrAPIForbiddennosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -5468,7 +5538,7 @@ mainparse:
 
 				}
 
-				currentKey = ffj_t_ErrAPIForbiddenno_such_key
+				currentKey = ffjtErrAPIForbiddennosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -5485,7 +5555,7 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ErrAPIForbiddenno_such_key:
+				case ffjtErrAPIForbiddennosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -5517,20 +5587,23 @@ done:
 	return nil
 }
 
-func (mj *FileBytes) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *FileBytes) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *FileBytes) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *FileBytes) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -5539,13 +5612,13 @@ func (mj *FileBytes) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"Name":`)
-	fflib.WriteJsonString(buf, string(mj.Name))
+	fflib.WriteJsonString(buf, string(j.Name))
 	buf.WriteString(`,"Bytes":`)
-	if mj.Bytes != nil {
+	if j.Bytes != nil {
 		buf.WriteString(`"`)
 		{
 			enc := base64.NewEncoder(base64.StdEncoding, buf)
-			enc.Write(reflect.Indirect(reflect.ValueOf(mj.Bytes)).Bytes())
+			enc.Write(reflect.Indirect(reflect.ValueOf(j.Bytes)).Bytes())
 			enc.Close()
 		}
 		buf.WriteString(`"`)
@@ -5557,26 +5630,28 @@ func (mj *FileBytes) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_FileBytesbase = iota
-	ffj_t_FileBytesno_such_key
+	ffjtFileBytesbase = iota
+	ffjtFileBytesnosuchkey
 
-	ffj_t_FileBytes_Name
+	ffjtFileBytesName
 
-	ffj_t_FileBytes_Bytes
+	ffjtFileBytesBytes
 )
 
-var ffj_key_FileBytes_Name = []byte("Name")
+var ffjKeyFileBytesName = []byte("Name")
 
-var ffj_key_FileBytes_Bytes = []byte("Bytes")
+var ffjKeyFileBytesBytes = []byte("Bytes")
 
-func (uj *FileBytes) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *FileBytes) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *FileBytes) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_FileBytesbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *FileBytes) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtFileBytesbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -5622,7 +5697,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_FileBytesno_such_key
+				currentKey = ffjtFileBytesnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -5630,35 +5705,35 @@ mainparse:
 
 				case 'B':
 
-					if bytes.Equal(ffj_key_FileBytes_Bytes, kn) {
-						currentKey = ffj_t_FileBytes_Bytes
+					if bytes.Equal(ffjKeyFileBytesBytes, kn) {
+						currentKey = ffjtFileBytesBytes
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'N':
 
-					if bytes.Equal(ffj_key_FileBytes_Name, kn) {
-						currentKey = ffj_t_FileBytes_Name
+					if bytes.Equal(ffjKeyFileBytesName, kn) {
+						currentKey = ffjtFileBytesName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_FileBytes_Bytes, kn) {
-					currentKey = ffj_t_FileBytes_Bytes
+				if fflib.EqualFoldRight(ffjKeyFileBytesBytes, kn) {
+					currentKey = ffjtFileBytesBytes
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_FileBytes_Name, kn) {
-					currentKey = ffj_t_FileBytes_Name
+				if fflib.SimpleLetterEqualFold(ffjKeyFileBytesName, kn) {
+					currentKey = ffjtFileBytesName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_FileBytesno_such_key
+				currentKey = ffjtFileBytesnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -5675,13 +5750,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_FileBytes_Name:
+				case ffjtFileBytesName:
 					goto handle_Name
 
-				case ffj_t_FileBytes_Bytes:
+				case ffjtFileBytesBytes:
 					goto handle_Bytes
 
-				case ffj_t_FileBytesno_such_key:
+				case ffjtFileBytesnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -5697,7 +5772,7 @@ mainparse:
 
 handle_Name:
 
-	/* handler: uj.Name type=string kind=string quoted=false*/
+	/* handler: j.Name type=string kind=string quoted=false*/
 
 	{
 
@@ -5713,7 +5788,7 @@ handle_Name:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Name = string(string(outBuf))
+			j.Name = string(string(outBuf))
 
 		}
 	}
@@ -5723,7 +5798,7 @@ handle_Name:
 
 handle_Bytes:
 
-	/* handler: uj.Bytes type=[]uint8 kind=slice quoted=false*/
+	/* handler: j.Bytes type=[]uint8 kind=slice quoted=false*/
 
 	{
 
@@ -5734,7 +5809,7 @@ handle_Bytes:
 		}
 
 		if tok == fflib.FFTok_null {
-			uj.Bytes = nil
+			j.Bytes = nil
 		} else {
 			b := make([]byte, base64.StdEncoding.DecodedLen(fs.Output.Len()))
 			n, err := base64.StdEncoding.Decode(b, fs.Output.Bytes())
@@ -5742,7 +5817,7 @@ handle_Bytes:
 				return fs.WrapErr(err)
 			}
 
-			v := reflect.ValueOf(&uj.Bytes).Elem()
+			v := reflect.ValueOf(&j.Bytes).Elem()
 			v.SetBytes(b[0:n])
 
 		}
@@ -5769,20 +5844,23 @@ done:
 	return nil
 }
 
-func (mj *FileConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *FileConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *FileConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *FileConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -5791,28 +5869,30 @@ func (mj *FileConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"FileID":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
+	fflib.WriteJsonString(buf, string(j.FileID))
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_FileConfigbase = iota
-	ffj_t_FileConfigno_such_key
+	ffjtFileConfigbase = iota
+	ffjtFileConfignosuchkey
 
-	ffj_t_FileConfig_FileID
+	ffjtFileConfigFileID
 )
 
-var ffj_key_FileConfig_FileID = []byte("FileID")
+var ffjKeyFileConfigFileID = []byte("FileID")
 
-func (uj *FileConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *FileConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *FileConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_FileConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *FileConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtFileConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -5858,7 +5938,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_FileConfigno_such_key
+				currentKey = ffjtFileConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -5866,21 +5946,21 @@ mainparse:
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_FileConfig_FileID, kn) {
-						currentKey = ffj_t_FileConfig_FileID
+					if bytes.Equal(ffjKeyFileConfigFileID, kn) {
+						currentKey = ffjtFileConfigFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_FileConfig_FileID, kn) {
-					currentKey = ffj_t_FileConfig_FileID
+				if fflib.SimpleLetterEqualFold(ffjKeyFileConfigFileID, kn) {
+					currentKey = ffjtFileConfigFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_FileConfigno_such_key
+				currentKey = ffjtFileConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -5897,10 +5977,10 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_FileConfig_FileID:
+				case ffjtFileConfigFileID:
 					goto handle_FileID
 
-				case ffj_t_FileConfigno_such_key:
+				case ffjtFileConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -5916,7 +5996,7 @@ mainparse:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -5932,7 +6012,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -5958,20 +6038,23 @@ done:
 	return nil
 }
 
-func (mj *FileReader) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *FileReader) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *FileReader) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *FileReader) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -5980,44 +6063,46 @@ func (mj *FileReader) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"Name":`)
-	fflib.WriteJsonString(buf, string(mj.Name))
+	fflib.WriteJsonString(buf, string(j.Name))
 	buf.WriteString(`,"Reader":`)
 	/* Interface types must use runtime reflection. type=io.Reader kind=interface */
-	err = buf.Encode(mj.Reader)
+	err = buf.Encode(j.Reader)
 	if err != nil {
 		return err
 	}
 	buf.WriteString(`,"Size":`)
-	fflib.FormatBits2(buf, uint64(mj.Size), 10, mj.Size < 0)
+	fflib.FormatBits2(buf, uint64(j.Size), 10, j.Size < 0)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_FileReaderbase = iota
-	ffj_t_FileReaderno_such_key
+	ffjtFileReaderbase = iota
+	ffjtFileReadernosuchkey
 
-	ffj_t_FileReader_Name
+	ffjtFileReaderName
 
-	ffj_t_FileReader_Reader
+	ffjtFileReaderReader
 
-	ffj_t_FileReader_Size
+	ffjtFileReaderSize
 )
 
-var ffj_key_FileReader_Name = []byte("Name")
+var ffjKeyFileReaderName = []byte("Name")
 
-var ffj_key_FileReader_Reader = []byte("Reader")
+var ffjKeyFileReaderReader = []byte("Reader")
 
-var ffj_key_FileReader_Size = []byte("Size")
+var ffjKeyFileReaderSize = []byte("Size")
 
-func (uj *FileReader) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *FileReader) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *FileReader) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_FileReaderbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *FileReader) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtFileReaderbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -6063,7 +6148,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_FileReaderno_such_key
+				currentKey = ffjtFileReadernosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -6071,49 +6156,49 @@ mainparse:
 
 				case 'N':
 
-					if bytes.Equal(ffj_key_FileReader_Name, kn) {
-						currentKey = ffj_t_FileReader_Name
+					if bytes.Equal(ffjKeyFileReaderName, kn) {
+						currentKey = ffjtFileReaderName
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'R':
 
-					if bytes.Equal(ffj_key_FileReader_Reader, kn) {
-						currentKey = ffj_t_FileReader_Reader
+					if bytes.Equal(ffjKeyFileReaderReader, kn) {
+						currentKey = ffjtFileReaderReader
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'S':
 
-					if bytes.Equal(ffj_key_FileReader_Size, kn) {
-						currentKey = ffj_t_FileReader_Size
+					if bytes.Equal(ffjKeyFileReaderSize, kn) {
+						currentKey = ffjtFileReaderSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_FileReader_Size, kn) {
-					currentKey = ffj_t_FileReader_Size
+				if fflib.EqualFoldRight(ffjKeyFileReaderSize, kn) {
+					currentKey = ffjtFileReaderSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_FileReader_Reader, kn) {
-					currentKey = ffj_t_FileReader_Reader
+				if fflib.SimpleLetterEqualFold(ffjKeyFileReaderReader, kn) {
+					currentKey = ffjtFileReaderReader
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_FileReader_Name, kn) {
-					currentKey = ffj_t_FileReader_Name
+				if fflib.SimpleLetterEqualFold(ffjKeyFileReaderName, kn) {
+					currentKey = ffjtFileReaderName
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_FileReaderno_such_key
+				currentKey = ffjtFileReadernosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -6130,16 +6215,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_FileReader_Name:
+				case ffjtFileReaderName:
 					goto handle_Name
 
-				case ffj_t_FileReader_Reader:
+				case ffjtFileReaderReader:
 					goto handle_Reader
 
-				case ffj_t_FileReader_Size:
+				case ffjtFileReaderSize:
 					goto handle_Size
 
-				case ffj_t_FileReaderno_such_key:
+				case ffjtFileReadernosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -6155,7 +6240,7 @@ mainparse:
 
 handle_Name:
 
-	/* handler: uj.Name type=string kind=string quoted=false*/
+	/* handler: j.Name type=string kind=string quoted=false*/
 
 	{
 
@@ -6171,7 +6256,7 @@ handle_Name:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Name = string(string(outBuf))
+			j.Name = string(string(outBuf))
 
 		}
 	}
@@ -6181,7 +6266,7 @@ handle_Name:
 
 handle_Reader:
 
-	/* handler: uj.Reader type=io.Reader kind=interface quoted=false*/
+	/* handler: j.Reader type=io.Reader kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=io.Reader kind=interface */
@@ -6190,7 +6275,7 @@ handle_Reader:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Reader)
+		err = json.Unmarshal(tbuf, &j.Reader)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -6201,7 +6286,7 @@ handle_Reader:
 
 handle_Size:
 
-	/* handler: uj.Size type=int64 kind=int64 quoted=false*/
+	/* handler: j.Size type=int64 kind=int64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -6221,7 +6306,7 @@ handle_Size:
 				return fs.WrapErr(err)
 			}
 
-			uj.Size = int64(tval)
+			j.Size = int64(tval)
 
 		}
 	}
@@ -6247,20 +6332,23 @@ done:
 	return nil
 }
 
-func (mj *ForwardConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *ForwardConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *ForwardConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ForwardConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -6269,28 +6357,28 @@ func (mj *ForwardConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "FromChatID":`)
-	fflib.FormatBits2(buf, uint64(mj.FromChatID), 10, mj.FromChatID < 0)
+	fflib.FormatBits2(buf, uint64(j.FromChatID), 10, j.FromChatID < 0)
 	buf.WriteString(`,"FromChannelUsername":`)
-	fflib.WriteJsonString(buf, string(mj.FromChannelUsername))
+	fflib.WriteJsonString(buf, string(j.FromChannelUsername))
 	buf.WriteString(`,"MessageID":`)
-	fflib.FormatBits2(buf, uint64(mj.MessageID), 10, mj.MessageID < 0)
+	fflib.FormatBits2(buf, uint64(j.MessageID), 10, j.MessageID < 0)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -6303,42 +6391,44 @@ func (mj *ForwardConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_ForwardConfigbase = iota
-	ffj_t_ForwardConfigno_such_key
+	ffjtForwardConfigbase = iota
+	ffjtForwardConfignosuchkey
 
-	ffj_t_ForwardConfig_FromChatID
+	ffjtForwardConfigFromChatID
 
-	ffj_t_ForwardConfig_FromChannelUsername
+	ffjtForwardConfigFromChannelUsername
 
-	ffj_t_ForwardConfig_MessageID
+	ffjtForwardConfigMessageID
 
-	ffj_t_ForwardConfig_ReplyToMessageID
+	ffjtForwardConfigReplyToMessageID
 
-	ffj_t_ForwardConfig_ReplyMarkup
+	ffjtForwardConfigReplyMarkup
 
-	ffj_t_ForwardConfig_DisableNotification
+	ffjtForwardConfigDisableNotification
 )
 
-var ffj_key_ForwardConfig_FromChatID = []byte("FromChatID")
+var ffjKeyForwardConfigFromChatID = []byte("FromChatID")
 
-var ffj_key_ForwardConfig_FromChannelUsername = []byte("FromChannelUsername")
+var ffjKeyForwardConfigFromChannelUsername = []byte("FromChannelUsername")
 
-var ffj_key_ForwardConfig_MessageID = []byte("MessageID")
+var ffjKeyForwardConfigMessageID = []byte("MessageID")
 
-var ffj_key_ForwardConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyForwardConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_ForwardConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyForwardConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_ForwardConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyForwardConfigDisableNotification = []byte("disable_notification")
 
-func (uj *ForwardConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ForwardConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *ForwardConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_ForwardConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ForwardConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtForwardConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -6384,7 +6474,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_ForwardConfigno_such_key
+				currentKey = ffjtForwardConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -6392,85 +6482,85 @@ mainparse:
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_ForwardConfig_FromChatID, kn) {
-						currentKey = ffj_t_ForwardConfig_FromChatID
+					if bytes.Equal(ffjKeyForwardConfigFromChatID, kn) {
+						currentKey = ffjtForwardConfigFromChatID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ForwardConfig_FromChannelUsername, kn) {
-						currentKey = ffj_t_ForwardConfig_FromChannelUsername
+					} else if bytes.Equal(ffjKeyForwardConfigFromChannelUsername, kn) {
+						currentKey = ffjtForwardConfigFromChannelUsername
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'M':
 
-					if bytes.Equal(ffj_key_ForwardConfig_MessageID, kn) {
-						currentKey = ffj_t_ForwardConfig_MessageID
+					if bytes.Equal(ffjKeyForwardConfigMessageID, kn) {
+						currentKey = ffjtForwardConfigMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_ForwardConfig_DisableNotification, kn) {
-						currentKey = ffj_t_ForwardConfig_DisableNotification
+					if bytes.Equal(ffjKeyForwardConfigDisableNotification, kn) {
+						currentKey = ffjtForwardConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_ForwardConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_ForwardConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyForwardConfigReplyToMessageID, kn) {
+						currentKey = ffjtForwardConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_ForwardConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_ForwardConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyForwardConfigReplyMarkup, kn) {
+						currentKey = ffjtForwardConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ForwardConfig_DisableNotification, kn) {
-					currentKey = ffj_t_ForwardConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyForwardConfigDisableNotification, kn) {
+					currentKey = ffjtForwardConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ForwardConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_ForwardConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyForwardConfigReplyMarkup, kn) {
+					currentKey = ffjtForwardConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ForwardConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_ForwardConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyForwardConfigReplyToMessageID, kn) {
+					currentKey = ffjtForwardConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ForwardConfig_MessageID, kn) {
-					currentKey = ffj_t_ForwardConfig_MessageID
+				if fflib.EqualFoldRight(ffjKeyForwardConfigMessageID, kn) {
+					currentKey = ffjtForwardConfigMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_ForwardConfig_FromChannelUsername, kn) {
-					currentKey = ffj_t_ForwardConfig_FromChannelUsername
+				if fflib.EqualFoldRight(ffjKeyForwardConfigFromChannelUsername, kn) {
+					currentKey = ffjtForwardConfigFromChannelUsername
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_ForwardConfig_FromChatID, kn) {
-					currentKey = ffj_t_ForwardConfig_FromChatID
+				if fflib.SimpleLetterEqualFold(ffjKeyForwardConfigFromChatID, kn) {
+					currentKey = ffjtForwardConfigFromChatID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_ForwardConfigno_such_key
+				currentKey = ffjtForwardConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -6487,25 +6577,25 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_ForwardConfig_FromChatID:
+				case ffjtForwardConfigFromChatID:
 					goto handle_FromChatID
 
-				case ffj_t_ForwardConfig_FromChannelUsername:
+				case ffjtForwardConfigFromChannelUsername:
 					goto handle_FromChannelUsername
 
-				case ffj_t_ForwardConfig_MessageID:
+				case ffjtForwardConfigMessageID:
 					goto handle_MessageID
 
-				case ffj_t_ForwardConfig_ReplyToMessageID:
+				case ffjtForwardConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_ForwardConfig_ReplyMarkup:
+				case ffjtForwardConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_ForwardConfig_DisableNotification:
+				case ffjtForwardConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_ForwardConfigno_such_key:
+				case ffjtForwardConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -6521,7 +6611,7 @@ mainparse:
 
 handle_FromChatID:
 
-	/* handler: uj.FromChatID type=int64 kind=int64 quoted=false*/
+	/* handler: j.FromChatID type=int64 kind=int64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -6541,7 +6631,7 @@ handle_FromChatID:
 				return fs.WrapErr(err)
 			}
 
-			uj.FromChatID = int64(tval)
+			j.FromChatID = int64(tval)
 
 		}
 	}
@@ -6551,7 +6641,7 @@ handle_FromChatID:
 
 handle_FromChannelUsername:
 
-	/* handler: uj.FromChannelUsername type=string kind=string quoted=false*/
+	/* handler: j.FromChannelUsername type=string kind=string quoted=false*/
 
 	{
 
@@ -6567,7 +6657,7 @@ handle_FromChannelUsername:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FromChannelUsername = string(string(outBuf))
+			j.FromChannelUsername = string(string(outBuf))
 
 		}
 	}
@@ -6577,7 +6667,7 @@ handle_FromChannelUsername:
 
 handle_MessageID:
 
-	/* handler: uj.MessageID type=int kind=int quoted=false*/
+	/* handler: j.MessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -6597,7 +6687,7 @@ handle_MessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.MessageID = int(tval)
+			j.MessageID = int(tval)
 
 		}
 	}
@@ -6607,7 +6697,7 @@ handle_MessageID:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -6627,7 +6717,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -6637,7 +6727,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -6646,7 +6736,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -6657,7 +6747,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -6673,11 +6763,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -6708,20 +6798,23 @@ done:
 	return nil
 }
 
-func (mj *InlineConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *InlineConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *InlineConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *InlineConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -6730,13 +6823,13 @@ func (mj *InlineConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "inline_query_id":`)
-	fflib.WriteJsonString(buf, string(mj.InlineQueryID))
+	fflib.WriteJsonString(buf, string(j.InlineQueryID))
 	buf.WriteByte(',')
-	if len(mj.Results) != 0 {
+	if len(j.Results) != 0 {
 		buf.WriteString(`"results":`)
-		if mj.Results != nil {
+		if j.Results != nil {
 			buf.WriteString(`[`)
-			for i, v := range mj.Results {
+			for i, v := range j.Results {
 				if i != 0 {
 					buf.WriteString(`,`)
 				}
@@ -6753,29 +6846,29 @@ func (mj *InlineConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteByte(',')
 	}
 	buf.WriteString(`"cache_time":`)
-	fflib.FormatBits2(buf, uint64(mj.CacheTime), 10, mj.CacheTime < 0)
+	fflib.FormatBits2(buf, uint64(j.CacheTime), 10, j.CacheTime < 0)
 	buf.WriteByte(',')
-	if mj.IsPersonal != false {
-		if mj.IsPersonal {
+	if j.IsPersonal != false {
+		if j.IsPersonal {
 			buf.WriteString(`"is_personal":true`)
 		} else {
 			buf.WriteString(`"is_personal":false`)
 		}
 		buf.WriteByte(',')
 	}
-	if len(mj.NextOffset) != 0 {
+	if len(j.NextOffset) != 0 {
 		buf.WriteString(`"next_offset":`)
-		fflib.WriteJsonString(buf, string(mj.NextOffset))
+		fflib.WriteJsonString(buf, string(j.NextOffset))
 		buf.WriteByte(',')
 	}
-	if len(mj.SwitchPMText) != 0 {
+	if len(j.SwitchPMText) != 0 {
 		buf.WriteString(`"switch_pm_text":`)
-		fflib.WriteJsonString(buf, string(mj.SwitchPMText))
+		fflib.WriteJsonString(buf, string(j.SwitchPMText))
 		buf.WriteByte(',')
 	}
-	if len(mj.SwitchPMParameter) != 0 {
+	if len(j.SwitchPMParameter) != 0 {
 		buf.WriteString(`"switch_pm_parameter":`)
-		fflib.WriteJsonString(buf, string(mj.SwitchPMParameter))
+		fflib.WriteJsonString(buf, string(j.SwitchPMParameter))
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -6784,46 +6877,48 @@ func (mj *InlineConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_InlineConfigbase = iota
-	ffj_t_InlineConfigno_such_key
+	ffjtInlineConfigbase = iota
+	ffjtInlineConfignosuchkey
 
-	ffj_t_InlineConfig_InlineQueryID
+	ffjtInlineConfigInlineQueryID
 
-	ffj_t_InlineConfig_Results
+	ffjtInlineConfigResults
 
-	ffj_t_InlineConfig_CacheTime
+	ffjtInlineConfigCacheTime
 
-	ffj_t_InlineConfig_IsPersonal
+	ffjtInlineConfigIsPersonal
 
-	ffj_t_InlineConfig_NextOffset
+	ffjtInlineConfigNextOffset
 
-	ffj_t_InlineConfig_SwitchPMText
+	ffjtInlineConfigSwitchPMText
 
-	ffj_t_InlineConfig_SwitchPMParameter
+	ffjtInlineConfigSwitchPMParameter
 )
 
-var ffj_key_InlineConfig_InlineQueryID = []byte("inline_query_id")
+var ffjKeyInlineConfigInlineQueryID = []byte("inline_query_id")
 
-var ffj_key_InlineConfig_Results = []byte("results")
+var ffjKeyInlineConfigResults = []byte("results")
 
-var ffj_key_InlineConfig_CacheTime = []byte("cache_time")
+var ffjKeyInlineConfigCacheTime = []byte("cache_time")
 
-var ffj_key_InlineConfig_IsPersonal = []byte("is_personal")
+var ffjKeyInlineConfigIsPersonal = []byte("is_personal")
 
-var ffj_key_InlineConfig_NextOffset = []byte("next_offset")
+var ffjKeyInlineConfigNextOffset = []byte("next_offset")
 
-var ffj_key_InlineConfig_SwitchPMText = []byte("switch_pm_text")
+var ffjKeyInlineConfigSwitchPMText = []byte("switch_pm_text")
 
-var ffj_key_InlineConfig_SwitchPMParameter = []byte("switch_pm_parameter")
+var ffjKeyInlineConfigSwitchPMParameter = []byte("switch_pm_parameter")
 
-func (uj *InlineConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *InlineConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *InlineConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_InlineConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *InlineConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtInlineConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -6869,7 +6964,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_InlineConfigno_such_key
+				currentKey = ffjtInlineConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -6877,99 +6972,99 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_InlineConfig_CacheTime, kn) {
-						currentKey = ffj_t_InlineConfig_CacheTime
+					if bytes.Equal(ffjKeyInlineConfigCacheTime, kn) {
+						currentKey = ffjtInlineConfigCacheTime
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'i':
 
-					if bytes.Equal(ffj_key_InlineConfig_InlineQueryID, kn) {
-						currentKey = ffj_t_InlineConfig_InlineQueryID
+					if bytes.Equal(ffjKeyInlineConfigInlineQueryID, kn) {
+						currentKey = ffjtInlineConfigInlineQueryID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineConfig_IsPersonal, kn) {
-						currentKey = ffj_t_InlineConfig_IsPersonal
+					} else if bytes.Equal(ffjKeyInlineConfigIsPersonal, kn) {
+						currentKey = ffjtInlineConfigIsPersonal
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'n':
 
-					if bytes.Equal(ffj_key_InlineConfig_NextOffset, kn) {
-						currentKey = ffj_t_InlineConfig_NextOffset
+					if bytes.Equal(ffjKeyInlineConfigNextOffset, kn) {
+						currentKey = ffjtInlineConfigNextOffset
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_InlineConfig_Results, kn) {
-						currentKey = ffj_t_InlineConfig_Results
+					if bytes.Equal(ffjKeyInlineConfigResults, kn) {
+						currentKey = ffjtInlineConfigResults
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 's':
 
-					if bytes.Equal(ffj_key_InlineConfig_SwitchPMText, kn) {
-						currentKey = ffj_t_InlineConfig_SwitchPMText
+					if bytes.Equal(ffjKeyInlineConfigSwitchPMText, kn) {
+						currentKey = ffjtInlineConfigSwitchPMText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_InlineConfig_SwitchPMParameter, kn) {
-						currentKey = ffj_t_InlineConfig_SwitchPMParameter
+					} else if bytes.Equal(ffjKeyInlineConfigSwitchPMParameter, kn) {
+						currentKey = ffjtInlineConfigSwitchPMParameter
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineConfig_SwitchPMParameter, kn) {
-					currentKey = ffj_t_InlineConfig_SwitchPMParameter
+				if fflib.EqualFoldRight(ffjKeyInlineConfigSwitchPMParameter, kn) {
+					currentKey = ffjtInlineConfigSwitchPMParameter
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineConfig_SwitchPMText, kn) {
-					currentKey = ffj_t_InlineConfig_SwitchPMText
+				if fflib.EqualFoldRight(ffjKeyInlineConfigSwitchPMText, kn) {
+					currentKey = ffjtInlineConfigSwitchPMText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineConfig_NextOffset, kn) {
-					currentKey = ffj_t_InlineConfig_NextOffset
+				if fflib.EqualFoldRight(ffjKeyInlineConfigNextOffset, kn) {
+					currentKey = ffjtInlineConfigNextOffset
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineConfig_IsPersonal, kn) {
-					currentKey = ffj_t_InlineConfig_IsPersonal
+				if fflib.EqualFoldRight(ffjKeyInlineConfigIsPersonal, kn) {
+					currentKey = ffjtInlineConfigIsPersonal
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineConfig_CacheTime, kn) {
-					currentKey = ffj_t_InlineConfig_CacheTime
+				if fflib.AsciiEqualFold(ffjKeyInlineConfigCacheTime, kn) {
+					currentKey = ffjtInlineConfigCacheTime
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_InlineConfig_Results, kn) {
-					currentKey = ffj_t_InlineConfig_Results
+				if fflib.EqualFoldRight(ffjKeyInlineConfigResults, kn) {
+					currentKey = ffjtInlineConfigResults
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_InlineConfig_InlineQueryID, kn) {
-					currentKey = ffj_t_InlineConfig_InlineQueryID
+				if fflib.AsciiEqualFold(ffjKeyInlineConfigInlineQueryID, kn) {
+					currentKey = ffjtInlineConfigInlineQueryID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_InlineConfigno_such_key
+				currentKey = ffjtInlineConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -6986,28 +7081,28 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_InlineConfig_InlineQueryID:
+				case ffjtInlineConfigInlineQueryID:
 					goto handle_InlineQueryID
 
-				case ffj_t_InlineConfig_Results:
+				case ffjtInlineConfigResults:
 					goto handle_Results
 
-				case ffj_t_InlineConfig_CacheTime:
+				case ffjtInlineConfigCacheTime:
 					goto handle_CacheTime
 
-				case ffj_t_InlineConfig_IsPersonal:
+				case ffjtInlineConfigIsPersonal:
 					goto handle_IsPersonal
 
-				case ffj_t_InlineConfig_NextOffset:
+				case ffjtInlineConfigNextOffset:
 					goto handle_NextOffset
 
-				case ffj_t_InlineConfig_SwitchPMText:
+				case ffjtInlineConfigSwitchPMText:
 					goto handle_SwitchPMText
 
-				case ffj_t_InlineConfig_SwitchPMParameter:
+				case ffjtInlineConfigSwitchPMParameter:
 					goto handle_SwitchPMParameter
 
-				case ffj_t_InlineConfigno_such_key:
+				case ffjtInlineConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -7023,7 +7118,7 @@ mainparse:
 
 handle_InlineQueryID:
 
-	/* handler: uj.InlineQueryID type=string kind=string quoted=false*/
+	/* handler: j.InlineQueryID type=string kind=string quoted=false*/
 
 	{
 
@@ -7039,7 +7134,7 @@ handle_InlineQueryID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.InlineQueryID = string(string(outBuf))
+			j.InlineQueryID = string(string(outBuf))
 
 		}
 	}
@@ -7049,7 +7144,7 @@ handle_InlineQueryID:
 
 handle_Results:
 
-	/* handler: uj.Results type=[]interface {} kind=slice quoted=false*/
+	/* handler: j.Results type=[]interface {} kind=slice quoted=false*/
 
 	{
 
@@ -7060,16 +7155,16 @@ handle_Results:
 		}
 
 		if tok == fflib.FFTok_null {
-			uj.Results = nil
+			j.Results = nil
 		} else {
 
-			uj.Results = []interface{}{}
+			j.Results = []interface{}{}
 
 			wantVal := true
 
 			for {
 
-				var tmp_uj__Results interface{}
+				var tmpJResults interface{}
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -7090,7 +7185,7 @@ handle_Results:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__Results type=interface {} kind=interface quoted=false*/
+				/* handler: tmpJResults type=interface {} kind=interface quoted=false*/
 
 				{
 					/* Falling back. type=interface {} kind=interface */
@@ -7099,13 +7194,13 @@ handle_Results:
 						return fs.WrapErr(err)
 					}
 
-					err = json.Unmarshal(tbuf, &tmp_uj__Results)
+					err = json.Unmarshal(tbuf, &tmpJResults)
 					if err != nil {
 						return fs.WrapErr(err)
 					}
 				}
 
-				uj.Results = append(uj.Results, tmp_uj__Results)
+				j.Results = append(j.Results, tmpJResults)
 
 				wantVal = false
 			}
@@ -7117,7 +7212,7 @@ handle_Results:
 
 handle_CacheTime:
 
-	/* handler: uj.CacheTime type=int kind=int quoted=false*/
+	/* handler: j.CacheTime type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -7137,7 +7232,7 @@ handle_CacheTime:
 				return fs.WrapErr(err)
 			}
 
-			uj.CacheTime = int(tval)
+			j.CacheTime = int(tval)
 
 		}
 	}
@@ -7147,7 +7242,7 @@ handle_CacheTime:
 
 handle_IsPersonal:
 
-	/* handler: uj.IsPersonal type=bool kind=bool quoted=false*/
+	/* handler: j.IsPersonal type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -7163,11 +7258,11 @@ handle_IsPersonal:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.IsPersonal = true
+				j.IsPersonal = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.IsPersonal = false
+				j.IsPersonal = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -7182,7 +7277,7 @@ handle_IsPersonal:
 
 handle_NextOffset:
 
-	/* handler: uj.NextOffset type=string kind=string quoted=false*/
+	/* handler: j.NextOffset type=string kind=string quoted=false*/
 
 	{
 
@@ -7198,7 +7293,7 @@ handle_NextOffset:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.NextOffset = string(string(outBuf))
+			j.NextOffset = string(string(outBuf))
 
 		}
 	}
@@ -7208,7 +7303,7 @@ handle_NextOffset:
 
 handle_SwitchPMText:
 
-	/* handler: uj.SwitchPMText type=string kind=string quoted=false*/
+	/* handler: j.SwitchPMText type=string kind=string quoted=false*/
 
 	{
 
@@ -7224,7 +7319,7 @@ handle_SwitchPMText:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.SwitchPMText = string(string(outBuf))
+			j.SwitchPMText = string(string(outBuf))
 
 		}
 	}
@@ -7234,7 +7329,7 @@ handle_SwitchPMText:
 
 handle_SwitchPMParameter:
 
-	/* handler: uj.SwitchPMParameter type=string kind=string quoted=false*/
+	/* handler: j.SwitchPMParameter type=string kind=string quoted=false*/
 
 	{
 
@@ -7250,7 +7345,7 @@ handle_SwitchPMParameter:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.SwitchPMParameter = string(string(outBuf))
+			j.SwitchPMParameter = string(string(outBuf))
 
 		}
 	}
@@ -7276,20 +7371,23 @@ done:
 	return nil
 }
 
-func (mj *LocationConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *LocationConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *LocationConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *LocationConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -7298,26 +7396,26 @@ func (mj *LocationConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Latitude":`)
-	fflib.AppendFloat(buf, float64(mj.Latitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Latitude), 'g', -1, 64)
 	buf.WriteString(`,"Longitude":`)
-	fflib.AppendFloat(buf, float64(mj.Longitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Longitude), 'g', -1, 64)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -7330,38 +7428,40 @@ func (mj *LocationConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_LocationConfigbase = iota
-	ffj_t_LocationConfigno_such_key
+	ffjtLocationConfigbase = iota
+	ffjtLocationConfignosuchkey
 
-	ffj_t_LocationConfig_Latitude
+	ffjtLocationConfigLatitude
 
-	ffj_t_LocationConfig_Longitude
+	ffjtLocationConfigLongitude
 
-	ffj_t_LocationConfig_ReplyToMessageID
+	ffjtLocationConfigReplyToMessageID
 
-	ffj_t_LocationConfig_ReplyMarkup
+	ffjtLocationConfigReplyMarkup
 
-	ffj_t_LocationConfig_DisableNotification
+	ffjtLocationConfigDisableNotification
 )
 
-var ffj_key_LocationConfig_Latitude = []byte("Latitude")
+var ffjKeyLocationConfigLatitude = []byte("Latitude")
 
-var ffj_key_LocationConfig_Longitude = []byte("Longitude")
+var ffjKeyLocationConfigLongitude = []byte("Longitude")
 
-var ffj_key_LocationConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyLocationConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_LocationConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyLocationConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_LocationConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyLocationConfigDisableNotification = []byte("disable_notification")
 
-func (uj *LocationConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *LocationConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *LocationConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_LocationConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *LocationConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtLocationConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -7407,7 +7507,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_LocationConfigno_such_key
+				currentKey = ffjtLocationConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -7415,71 +7515,71 @@ mainparse:
 
 				case 'L':
 
-					if bytes.Equal(ffj_key_LocationConfig_Latitude, kn) {
-						currentKey = ffj_t_LocationConfig_Latitude
+					if bytes.Equal(ffjKeyLocationConfigLatitude, kn) {
+						currentKey = ffjtLocationConfigLatitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_LocationConfig_Longitude, kn) {
-						currentKey = ffj_t_LocationConfig_Longitude
+					} else if bytes.Equal(ffjKeyLocationConfigLongitude, kn) {
+						currentKey = ffjtLocationConfigLongitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_LocationConfig_DisableNotification, kn) {
-						currentKey = ffj_t_LocationConfig_DisableNotification
+					if bytes.Equal(ffjKeyLocationConfigDisableNotification, kn) {
+						currentKey = ffjtLocationConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_LocationConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_LocationConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyLocationConfigReplyToMessageID, kn) {
+						currentKey = ffjtLocationConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_LocationConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_LocationConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyLocationConfigReplyMarkup, kn) {
+						currentKey = ffjtLocationConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_LocationConfig_DisableNotification, kn) {
-					currentKey = ffj_t_LocationConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyLocationConfigDisableNotification, kn) {
+					currentKey = ffjtLocationConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_LocationConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_LocationConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyLocationConfigReplyMarkup, kn) {
+					currentKey = ffjtLocationConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_LocationConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_LocationConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyLocationConfigReplyToMessageID, kn) {
+					currentKey = ffjtLocationConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_LocationConfig_Longitude, kn) {
-					currentKey = ffj_t_LocationConfig_Longitude
+				if fflib.SimpleLetterEqualFold(ffjKeyLocationConfigLongitude, kn) {
+					currentKey = ffjtLocationConfigLongitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_LocationConfig_Latitude, kn) {
-					currentKey = ffj_t_LocationConfig_Latitude
+				if fflib.SimpleLetterEqualFold(ffjKeyLocationConfigLatitude, kn) {
+					currentKey = ffjtLocationConfigLatitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_LocationConfigno_such_key
+				currentKey = ffjtLocationConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -7496,22 +7596,22 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_LocationConfig_Latitude:
+				case ffjtLocationConfigLatitude:
 					goto handle_Latitude
 
-				case ffj_t_LocationConfig_Longitude:
+				case ffjtLocationConfigLongitude:
 					goto handle_Longitude
 
-				case ffj_t_LocationConfig_ReplyToMessageID:
+				case ffjtLocationConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_LocationConfig_ReplyMarkup:
+				case ffjtLocationConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_LocationConfig_DisableNotification:
+				case ffjtLocationConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_LocationConfigno_such_key:
+				case ffjtLocationConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -7527,7 +7627,7 @@ mainparse:
 
 handle_Latitude:
 
-	/* handler: uj.Latitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Latitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -7547,7 +7647,7 @@ handle_Latitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Latitude = float64(tval)
+			j.Latitude = float64(tval)
 
 		}
 	}
@@ -7557,7 +7657,7 @@ handle_Latitude:
 
 handle_Longitude:
 
-	/* handler: uj.Longitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Longitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -7577,7 +7677,7 @@ handle_Longitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Longitude = float64(tval)
+			j.Longitude = float64(tval)
 
 		}
 	}
@@ -7587,7 +7687,7 @@ handle_Longitude:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -7607,7 +7707,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -7617,7 +7717,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -7626,7 +7726,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -7637,7 +7737,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -7653,11 +7753,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -7688,20 +7788,23 @@ done:
 	return nil
 }
 
-func (mj *MessageConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *MessageConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *MessageConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *MessageConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -7710,35 +7813,35 @@ func (mj *MessageConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Text":`)
-	fflib.WriteJsonString(buf, string(mj.Text))
+	fflib.WriteJsonString(buf, string(j.Text))
 	buf.WriteByte(',')
-	if len(mj.ParseMode) != 0 {
+	if len(j.ParseMode) != 0 {
 		buf.WriteString(`"parse_mode":`)
-		fflib.WriteJsonString(buf, string(mj.ParseMode))
+		fflib.WriteJsonString(buf, string(j.ParseMode))
 		buf.WriteByte(',')
 	}
-	if mj.DisableWebPagePreview {
+	if j.DisableWebPagePreview {
 		buf.WriteString(`"DisableWebPagePreview":true`)
 	} else {
 		buf.WriteString(`"DisableWebPagePreview":false`)
 	}
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -7751,42 +7854,44 @@ func (mj *MessageConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_MessageConfigbase = iota
-	ffj_t_MessageConfigno_such_key
+	ffjtMessageConfigbase = iota
+	ffjtMessageConfignosuchkey
 
-	ffj_t_MessageConfig_Text
+	ffjtMessageConfigText
 
-	ffj_t_MessageConfig_ParseMode
+	ffjtMessageConfigParseMode
 
-	ffj_t_MessageConfig_DisableWebPagePreview
+	ffjtMessageConfigDisableWebPagePreview
 
-	ffj_t_MessageConfig_ReplyToMessageID
+	ffjtMessageConfigReplyToMessageID
 
-	ffj_t_MessageConfig_ReplyMarkup
+	ffjtMessageConfigReplyMarkup
 
-	ffj_t_MessageConfig_DisableNotification
+	ffjtMessageConfigDisableNotification
 )
 
-var ffj_key_MessageConfig_Text = []byte("Text")
+var ffjKeyMessageConfigText = []byte("Text")
 
-var ffj_key_MessageConfig_ParseMode = []byte("parse_mode")
+var ffjKeyMessageConfigParseMode = []byte("parse_mode")
 
-var ffj_key_MessageConfig_DisableWebPagePreview = []byte("DisableWebPagePreview")
+var ffjKeyMessageConfigDisableWebPagePreview = []byte("DisableWebPagePreview")
 
-var ffj_key_MessageConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyMessageConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_MessageConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyMessageConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_MessageConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyMessageConfigDisableNotification = []byte("disable_notification")
 
-func (uj *MessageConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *MessageConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *MessageConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_MessageConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *MessageConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtMessageConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -7832,7 +7937,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_MessageConfigno_such_key
+				currentKey = ffjtMessageConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -7840,88 +7945,88 @@ mainparse:
 
 				case 'D':
 
-					if bytes.Equal(ffj_key_MessageConfig_DisableWebPagePreview, kn) {
-						currentKey = ffj_t_MessageConfig_DisableWebPagePreview
+					if bytes.Equal(ffjKeyMessageConfigDisableWebPagePreview, kn) {
+						currentKey = ffjtMessageConfigDisableWebPagePreview
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'T':
 
-					if bytes.Equal(ffj_key_MessageConfig_Text, kn) {
-						currentKey = ffj_t_MessageConfig_Text
+					if bytes.Equal(ffjKeyMessageConfigText, kn) {
+						currentKey = ffjtMessageConfigText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_MessageConfig_DisableNotification, kn) {
-						currentKey = ffj_t_MessageConfig_DisableNotification
+					if bytes.Equal(ffjKeyMessageConfigDisableNotification, kn) {
+						currentKey = ffjtMessageConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_MessageConfig_ParseMode, kn) {
-						currentKey = ffj_t_MessageConfig_ParseMode
+					if bytes.Equal(ffjKeyMessageConfigParseMode, kn) {
+						currentKey = ffjtMessageConfigParseMode
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_MessageConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_MessageConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyMessageConfigReplyToMessageID, kn) {
+						currentKey = ffjtMessageConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_MessageConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_MessageConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyMessageConfigReplyMarkup, kn) {
+						currentKey = ffjtMessageConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_MessageConfig_DisableNotification, kn) {
-					currentKey = ffj_t_MessageConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyMessageConfigDisableNotification, kn) {
+					currentKey = ffjtMessageConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_MessageConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_MessageConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyMessageConfigReplyMarkup, kn) {
+					currentKey = ffjtMessageConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_MessageConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_MessageConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyMessageConfigReplyToMessageID, kn) {
+					currentKey = ffjtMessageConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_MessageConfig_DisableWebPagePreview, kn) {
-					currentKey = ffj_t_MessageConfig_DisableWebPagePreview
+				if fflib.EqualFoldRight(ffjKeyMessageConfigDisableWebPagePreview, kn) {
+					currentKey = ffjtMessageConfigDisableWebPagePreview
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_MessageConfig_ParseMode, kn) {
-					currentKey = ffj_t_MessageConfig_ParseMode
+				if fflib.EqualFoldRight(ffjKeyMessageConfigParseMode, kn) {
+					currentKey = ffjtMessageConfigParseMode
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_MessageConfig_Text, kn) {
-					currentKey = ffj_t_MessageConfig_Text
+				if fflib.SimpleLetterEqualFold(ffjKeyMessageConfigText, kn) {
+					currentKey = ffjtMessageConfigText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_MessageConfigno_such_key
+				currentKey = ffjtMessageConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -7938,25 +8043,25 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_MessageConfig_Text:
+				case ffjtMessageConfigText:
 					goto handle_Text
 
-				case ffj_t_MessageConfig_ParseMode:
+				case ffjtMessageConfigParseMode:
 					goto handle_ParseMode
 
-				case ffj_t_MessageConfig_DisableWebPagePreview:
+				case ffjtMessageConfigDisableWebPagePreview:
 					goto handle_DisableWebPagePreview
 
-				case ffj_t_MessageConfig_ReplyToMessageID:
+				case ffjtMessageConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_MessageConfig_ReplyMarkup:
+				case ffjtMessageConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_MessageConfig_DisableNotification:
+				case ffjtMessageConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_MessageConfigno_such_key:
+				case ffjtMessageConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -7972,7 +8077,7 @@ mainparse:
 
 handle_Text:
 
-	/* handler: uj.Text type=string kind=string quoted=false*/
+	/* handler: j.Text type=string kind=string quoted=false*/
 
 	{
 
@@ -7988,7 +8093,7 @@ handle_Text:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Text = string(string(outBuf))
+			j.Text = string(string(outBuf))
 
 		}
 	}
@@ -7998,7 +8103,7 @@ handle_Text:
 
 handle_ParseMode:
 
-	/* handler: uj.ParseMode type=string kind=string quoted=false*/
+	/* handler: j.ParseMode type=string kind=string quoted=false*/
 
 	{
 
@@ -8014,7 +8119,7 @@ handle_ParseMode:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.ParseMode = string(string(outBuf))
+			j.ParseMode = string(string(outBuf))
 
 		}
 	}
@@ -8024,7 +8129,7 @@ handle_ParseMode:
 
 handle_DisableWebPagePreview:
 
-	/* handler: uj.DisableWebPagePreview type=bool kind=bool quoted=false*/
+	/* handler: j.DisableWebPagePreview type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -8040,11 +8145,11 @@ handle_DisableWebPagePreview:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableWebPagePreview = true
+				j.DisableWebPagePreview = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableWebPagePreview = false
+				j.DisableWebPagePreview = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -8059,7 +8164,7 @@ handle_DisableWebPagePreview:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -8079,7 +8184,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -8089,7 +8194,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -8098,7 +8203,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -8109,7 +8214,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -8125,11 +8230,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -8160,20 +8265,23 @@ done:
 	return nil
 }
 
-func (mj *PhotoConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *PhotoConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *PhotoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *PhotoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -8182,41 +8290,41 @@ func (mj *PhotoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Caption":`)
-	fflib.WriteJsonString(buf, string(mj.Caption))
+	fflib.WriteJsonString(buf, string(j.Caption))
 	buf.WriteString(`,"File":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.File)
+	err = buf.Encode(j.File)
 	if err != nil {
 		return err
 	}
 	buf.WriteString(`,"FileID":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
-	if mj.UseExisting {
+	fflib.WriteJsonString(buf, string(j.FileID))
+	if j.UseExisting {
 		buf.WriteString(`,"UseExisting":true`)
 	} else {
 		buf.WriteString(`,"UseExisting":false`)
 	}
 	buf.WriteString(`,"MimeType":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"FileSize":`)
-	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+	fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -8229,54 +8337,56 @@ func (mj *PhotoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_PhotoConfigbase = iota
-	ffj_t_PhotoConfigno_such_key
+	ffjtPhotoConfigbase = iota
+	ffjtPhotoConfignosuchkey
 
-	ffj_t_PhotoConfig_Caption
+	ffjtPhotoConfigCaption
 
-	ffj_t_PhotoConfig_File
+	ffjtPhotoConfigFile
 
-	ffj_t_PhotoConfig_FileID
+	ffjtPhotoConfigFileID
 
-	ffj_t_PhotoConfig_UseExisting
+	ffjtPhotoConfigUseExisting
 
-	ffj_t_PhotoConfig_MimeType
+	ffjtPhotoConfigMimeType
 
-	ffj_t_PhotoConfig_FileSize
+	ffjtPhotoConfigFileSize
 
-	ffj_t_PhotoConfig_ReplyToMessageID
+	ffjtPhotoConfigReplyToMessageID
 
-	ffj_t_PhotoConfig_ReplyMarkup
+	ffjtPhotoConfigReplyMarkup
 
-	ffj_t_PhotoConfig_DisableNotification
+	ffjtPhotoConfigDisableNotification
 )
 
-var ffj_key_PhotoConfig_Caption = []byte("Caption")
+var ffjKeyPhotoConfigCaption = []byte("Caption")
 
-var ffj_key_PhotoConfig_File = []byte("File")
+var ffjKeyPhotoConfigFile = []byte("File")
 
-var ffj_key_PhotoConfig_FileID = []byte("FileID")
+var ffjKeyPhotoConfigFileID = []byte("FileID")
 
-var ffj_key_PhotoConfig_UseExisting = []byte("UseExisting")
+var ffjKeyPhotoConfigUseExisting = []byte("UseExisting")
 
-var ffj_key_PhotoConfig_MimeType = []byte("MimeType")
+var ffjKeyPhotoConfigMimeType = []byte("MimeType")
 
-var ffj_key_PhotoConfig_FileSize = []byte("FileSize")
+var ffjKeyPhotoConfigFileSize = []byte("FileSize")
 
-var ffj_key_PhotoConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyPhotoConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_PhotoConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyPhotoConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_PhotoConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyPhotoConfigDisableNotification = []byte("disable_notification")
 
-func (uj *PhotoConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *PhotoConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *PhotoConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_PhotoConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *PhotoConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtPhotoConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -8322,7 +8432,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_PhotoConfigno_such_key
+				currentKey = ffjtPhotoConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -8330,124 +8440,124 @@ mainparse:
 
 				case 'C':
 
-					if bytes.Equal(ffj_key_PhotoConfig_Caption, kn) {
-						currentKey = ffj_t_PhotoConfig_Caption
+					if bytes.Equal(ffjKeyPhotoConfigCaption, kn) {
+						currentKey = ffjtPhotoConfigCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_PhotoConfig_File, kn) {
-						currentKey = ffj_t_PhotoConfig_File
+					if bytes.Equal(ffjKeyPhotoConfigFile, kn) {
+						currentKey = ffjtPhotoConfigFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_PhotoConfig_FileID, kn) {
-						currentKey = ffj_t_PhotoConfig_FileID
+					} else if bytes.Equal(ffjKeyPhotoConfigFileID, kn) {
+						currentKey = ffjtPhotoConfigFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_PhotoConfig_FileSize, kn) {
-						currentKey = ffj_t_PhotoConfig_FileSize
+					} else if bytes.Equal(ffjKeyPhotoConfigFileSize, kn) {
+						currentKey = ffjtPhotoConfigFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'M':
 
-					if bytes.Equal(ffj_key_PhotoConfig_MimeType, kn) {
-						currentKey = ffj_t_PhotoConfig_MimeType
+					if bytes.Equal(ffjKeyPhotoConfigMimeType, kn) {
+						currentKey = ffjtPhotoConfigMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_PhotoConfig_UseExisting, kn) {
-						currentKey = ffj_t_PhotoConfig_UseExisting
+					if bytes.Equal(ffjKeyPhotoConfigUseExisting, kn) {
+						currentKey = ffjtPhotoConfigUseExisting
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_PhotoConfig_DisableNotification, kn) {
-						currentKey = ffj_t_PhotoConfig_DisableNotification
+					if bytes.Equal(ffjKeyPhotoConfigDisableNotification, kn) {
+						currentKey = ffjtPhotoConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_PhotoConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_PhotoConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyPhotoConfigReplyToMessageID, kn) {
+						currentKey = ffjtPhotoConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_PhotoConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_PhotoConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyPhotoConfigReplyMarkup, kn) {
+						currentKey = ffjtPhotoConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_PhotoConfig_DisableNotification, kn) {
-					currentKey = ffj_t_PhotoConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyPhotoConfigDisableNotification, kn) {
+					currentKey = ffjtPhotoConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_PhotoConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_PhotoConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyPhotoConfigReplyMarkup, kn) {
+					currentKey = ffjtPhotoConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_PhotoConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_PhotoConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyPhotoConfigReplyToMessageID, kn) {
+					currentKey = ffjtPhotoConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_PhotoConfig_FileSize, kn) {
-					currentKey = ffj_t_PhotoConfig_FileSize
+				if fflib.EqualFoldRight(ffjKeyPhotoConfigFileSize, kn) {
+					currentKey = ffjtPhotoConfigFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_PhotoConfig_MimeType, kn) {
-					currentKey = ffj_t_PhotoConfig_MimeType
+				if fflib.SimpleLetterEqualFold(ffjKeyPhotoConfigMimeType, kn) {
+					currentKey = ffjtPhotoConfigMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_PhotoConfig_UseExisting, kn) {
-					currentKey = ffj_t_PhotoConfig_UseExisting
+				if fflib.EqualFoldRight(ffjKeyPhotoConfigUseExisting, kn) {
+					currentKey = ffjtPhotoConfigUseExisting
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_PhotoConfig_FileID, kn) {
-					currentKey = ffj_t_PhotoConfig_FileID
+				if fflib.SimpleLetterEqualFold(ffjKeyPhotoConfigFileID, kn) {
+					currentKey = ffjtPhotoConfigFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_PhotoConfig_File, kn) {
-					currentKey = ffj_t_PhotoConfig_File
+				if fflib.SimpleLetterEqualFold(ffjKeyPhotoConfigFile, kn) {
+					currentKey = ffjtPhotoConfigFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_PhotoConfig_Caption, kn) {
-					currentKey = ffj_t_PhotoConfig_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyPhotoConfigCaption, kn) {
+					currentKey = ffjtPhotoConfigCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_PhotoConfigno_such_key
+				currentKey = ffjtPhotoConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -8464,34 +8574,34 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_PhotoConfig_Caption:
+				case ffjtPhotoConfigCaption:
 					goto handle_Caption
 
-				case ffj_t_PhotoConfig_File:
+				case ffjtPhotoConfigFile:
 					goto handle_File
 
-				case ffj_t_PhotoConfig_FileID:
+				case ffjtPhotoConfigFileID:
 					goto handle_FileID
 
-				case ffj_t_PhotoConfig_UseExisting:
+				case ffjtPhotoConfigUseExisting:
 					goto handle_UseExisting
 
-				case ffj_t_PhotoConfig_MimeType:
+				case ffjtPhotoConfigMimeType:
 					goto handle_MimeType
 
-				case ffj_t_PhotoConfig_FileSize:
+				case ffjtPhotoConfigFileSize:
 					goto handle_FileSize
 
-				case ffj_t_PhotoConfig_ReplyToMessageID:
+				case ffjtPhotoConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_PhotoConfig_ReplyMarkup:
+				case ffjtPhotoConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_PhotoConfig_DisableNotification:
+				case ffjtPhotoConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_PhotoConfigno_such_key:
+				case ffjtPhotoConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -8507,7 +8617,7 @@ mainparse:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -8523,7 +8633,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -8533,7 +8643,7 @@ handle_Caption:
 
 handle_File:
 
-	/* handler: uj.File type=interface {} kind=interface quoted=false*/
+	/* handler: j.File type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -8542,7 +8652,7 @@ handle_File:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.File)
+		err = json.Unmarshal(tbuf, &j.File)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -8553,7 +8663,7 @@ handle_File:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -8569,7 +8679,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -8579,7 +8689,7 @@ handle_FileID:
 
 handle_UseExisting:
 
-	/* handler: uj.UseExisting type=bool kind=bool quoted=false*/
+	/* handler: j.UseExisting type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -8595,11 +8705,11 @@ handle_UseExisting:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = true
+				j.UseExisting = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = false
+				j.UseExisting = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -8614,7 +8724,7 @@ handle_UseExisting:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -8630,7 +8740,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -8640,7 +8750,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -8660,7 +8770,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -8670,7 +8780,7 @@ handle_FileSize:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -8690,7 +8800,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -8700,7 +8810,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -8709,7 +8819,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -8720,7 +8830,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -8736,11 +8846,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -8771,20 +8881,23 @@ done:
 	return nil
 }
 
-func (mj *StickerConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *StickerConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *StickerConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *StickerConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -8794,38 +8907,38 @@ func (mj *StickerConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = err
 	buf.WriteString(`{ "File":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.File)
+	err = buf.Encode(j.File)
 	if err != nil {
 		return err
 	}
 	buf.WriteString(`,"FileID":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
-	if mj.UseExisting {
+	fflib.WriteJsonString(buf, string(j.FileID))
+	if j.UseExisting {
 		buf.WriteString(`,"UseExisting":true`)
 	} else {
 		buf.WriteString(`,"UseExisting":false`)
 	}
 	buf.WriteString(`,"MimeType":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"FileSize":`)
-	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+	fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -8838,50 +8951,52 @@ func (mj *StickerConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_StickerConfigbase = iota
-	ffj_t_StickerConfigno_such_key
+	ffjtStickerConfigbase = iota
+	ffjtStickerConfignosuchkey
 
-	ffj_t_StickerConfig_File
+	ffjtStickerConfigFile
 
-	ffj_t_StickerConfig_FileID
+	ffjtStickerConfigFileID
 
-	ffj_t_StickerConfig_UseExisting
+	ffjtStickerConfigUseExisting
 
-	ffj_t_StickerConfig_MimeType
+	ffjtStickerConfigMimeType
 
-	ffj_t_StickerConfig_FileSize
+	ffjtStickerConfigFileSize
 
-	ffj_t_StickerConfig_ReplyToMessageID
+	ffjtStickerConfigReplyToMessageID
 
-	ffj_t_StickerConfig_ReplyMarkup
+	ffjtStickerConfigReplyMarkup
 
-	ffj_t_StickerConfig_DisableNotification
+	ffjtStickerConfigDisableNotification
 )
 
-var ffj_key_StickerConfig_File = []byte("File")
+var ffjKeyStickerConfigFile = []byte("File")
 
-var ffj_key_StickerConfig_FileID = []byte("FileID")
+var ffjKeyStickerConfigFileID = []byte("FileID")
 
-var ffj_key_StickerConfig_UseExisting = []byte("UseExisting")
+var ffjKeyStickerConfigUseExisting = []byte("UseExisting")
 
-var ffj_key_StickerConfig_MimeType = []byte("MimeType")
+var ffjKeyStickerConfigMimeType = []byte("MimeType")
 
-var ffj_key_StickerConfig_FileSize = []byte("FileSize")
+var ffjKeyStickerConfigFileSize = []byte("FileSize")
 
-var ffj_key_StickerConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyStickerConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_StickerConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyStickerConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_StickerConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyStickerConfigDisableNotification = []byte("disable_notification")
 
-func (uj *StickerConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *StickerConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *StickerConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_StickerConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *StickerConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtStickerConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -8927,7 +9042,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_StickerConfigno_such_key
+				currentKey = ffjtStickerConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -8935,110 +9050,110 @@ mainparse:
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_StickerConfig_File, kn) {
-						currentKey = ffj_t_StickerConfig_File
+					if bytes.Equal(ffjKeyStickerConfigFile, kn) {
+						currentKey = ffjtStickerConfigFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_StickerConfig_FileID, kn) {
-						currentKey = ffj_t_StickerConfig_FileID
+					} else if bytes.Equal(ffjKeyStickerConfigFileID, kn) {
+						currentKey = ffjtStickerConfigFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_StickerConfig_FileSize, kn) {
-						currentKey = ffj_t_StickerConfig_FileSize
+					} else if bytes.Equal(ffjKeyStickerConfigFileSize, kn) {
+						currentKey = ffjtStickerConfigFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'M':
 
-					if bytes.Equal(ffj_key_StickerConfig_MimeType, kn) {
-						currentKey = ffj_t_StickerConfig_MimeType
+					if bytes.Equal(ffjKeyStickerConfigMimeType, kn) {
+						currentKey = ffjtStickerConfigMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_StickerConfig_UseExisting, kn) {
-						currentKey = ffj_t_StickerConfig_UseExisting
+					if bytes.Equal(ffjKeyStickerConfigUseExisting, kn) {
+						currentKey = ffjtStickerConfigUseExisting
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_StickerConfig_DisableNotification, kn) {
-						currentKey = ffj_t_StickerConfig_DisableNotification
+					if bytes.Equal(ffjKeyStickerConfigDisableNotification, kn) {
+						currentKey = ffjtStickerConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_StickerConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_StickerConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyStickerConfigReplyToMessageID, kn) {
+						currentKey = ffjtStickerConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_StickerConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_StickerConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyStickerConfigReplyMarkup, kn) {
+						currentKey = ffjtStickerConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_StickerConfig_DisableNotification, kn) {
-					currentKey = ffj_t_StickerConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyStickerConfigDisableNotification, kn) {
+					currentKey = ffjtStickerConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_StickerConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_StickerConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyStickerConfigReplyMarkup, kn) {
+					currentKey = ffjtStickerConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_StickerConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_StickerConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyStickerConfigReplyToMessageID, kn) {
+					currentKey = ffjtStickerConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_StickerConfig_FileSize, kn) {
-					currentKey = ffj_t_StickerConfig_FileSize
+				if fflib.EqualFoldRight(ffjKeyStickerConfigFileSize, kn) {
+					currentKey = ffjtStickerConfigFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_StickerConfig_MimeType, kn) {
-					currentKey = ffj_t_StickerConfig_MimeType
+				if fflib.SimpleLetterEqualFold(ffjKeyStickerConfigMimeType, kn) {
+					currentKey = ffjtStickerConfigMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_StickerConfig_UseExisting, kn) {
-					currentKey = ffj_t_StickerConfig_UseExisting
+				if fflib.EqualFoldRight(ffjKeyStickerConfigUseExisting, kn) {
+					currentKey = ffjtStickerConfigUseExisting
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_StickerConfig_FileID, kn) {
-					currentKey = ffj_t_StickerConfig_FileID
+				if fflib.SimpleLetterEqualFold(ffjKeyStickerConfigFileID, kn) {
+					currentKey = ffjtStickerConfigFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_StickerConfig_File, kn) {
-					currentKey = ffj_t_StickerConfig_File
+				if fflib.SimpleLetterEqualFold(ffjKeyStickerConfigFile, kn) {
+					currentKey = ffjtStickerConfigFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_StickerConfigno_such_key
+				currentKey = ffjtStickerConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -9055,31 +9170,31 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_StickerConfig_File:
+				case ffjtStickerConfigFile:
 					goto handle_File
 
-				case ffj_t_StickerConfig_FileID:
+				case ffjtStickerConfigFileID:
 					goto handle_FileID
 
-				case ffj_t_StickerConfig_UseExisting:
+				case ffjtStickerConfigUseExisting:
 					goto handle_UseExisting
 
-				case ffj_t_StickerConfig_MimeType:
+				case ffjtStickerConfigMimeType:
 					goto handle_MimeType
 
-				case ffj_t_StickerConfig_FileSize:
+				case ffjtStickerConfigFileSize:
 					goto handle_FileSize
 
-				case ffj_t_StickerConfig_ReplyToMessageID:
+				case ffjtStickerConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_StickerConfig_ReplyMarkup:
+				case ffjtStickerConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_StickerConfig_DisableNotification:
+				case ffjtStickerConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_StickerConfigno_such_key:
+				case ffjtStickerConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -9095,7 +9210,7 @@ mainparse:
 
 handle_File:
 
-	/* handler: uj.File type=interface {} kind=interface quoted=false*/
+	/* handler: j.File type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -9104,7 +9219,7 @@ handle_File:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.File)
+		err = json.Unmarshal(tbuf, &j.File)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -9115,7 +9230,7 @@ handle_File:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -9131,7 +9246,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -9141,7 +9256,7 @@ handle_FileID:
 
 handle_UseExisting:
 
-	/* handler: uj.UseExisting type=bool kind=bool quoted=false*/
+	/* handler: j.UseExisting type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -9157,11 +9272,11 @@ handle_UseExisting:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = true
+				j.UseExisting = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = false
+				j.UseExisting = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -9176,7 +9291,7 @@ handle_UseExisting:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -9192,7 +9307,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -9202,7 +9317,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9222,7 +9337,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -9232,7 +9347,7 @@ handle_FileSize:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9252,7 +9367,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -9262,7 +9377,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -9271,7 +9386,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -9282,7 +9397,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -9298,11 +9413,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -9333,20 +9448,23 @@ done:
 	return nil
 }
 
-func (mj *UpdateConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *UpdateConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *UpdateConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *UpdateConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -9355,40 +9473,42 @@ func (mj *UpdateConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{"Offset":`)
-	fflib.FormatBits2(buf, uint64(mj.Offset), 10, mj.Offset < 0)
+	fflib.FormatBits2(buf, uint64(j.Offset), 10, j.Offset < 0)
 	buf.WriteString(`,"Limit":`)
-	fflib.FormatBits2(buf, uint64(mj.Limit), 10, mj.Limit < 0)
+	fflib.FormatBits2(buf, uint64(j.Limit), 10, j.Limit < 0)
 	buf.WriteString(`,"Timeout":`)
-	fflib.FormatBits2(buf, uint64(mj.Timeout), 10, mj.Timeout < 0)
+	fflib.FormatBits2(buf, uint64(j.Timeout), 10, j.Timeout < 0)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_UpdateConfigbase = iota
-	ffj_t_UpdateConfigno_such_key
+	ffjtUpdateConfigbase = iota
+	ffjtUpdateConfignosuchkey
 
-	ffj_t_UpdateConfig_Offset
+	ffjtUpdateConfigOffset
 
-	ffj_t_UpdateConfig_Limit
+	ffjtUpdateConfigLimit
 
-	ffj_t_UpdateConfig_Timeout
+	ffjtUpdateConfigTimeout
 )
 
-var ffj_key_UpdateConfig_Offset = []byte("Offset")
+var ffjKeyUpdateConfigOffset = []byte("Offset")
 
-var ffj_key_UpdateConfig_Limit = []byte("Limit")
+var ffjKeyUpdateConfigLimit = []byte("Limit")
 
-var ffj_key_UpdateConfig_Timeout = []byte("Timeout")
+var ffjKeyUpdateConfigTimeout = []byte("Timeout")
 
-func (uj *UpdateConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *UpdateConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *UpdateConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_UpdateConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *UpdateConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtUpdateConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -9434,7 +9554,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_UpdateConfigno_such_key
+				currentKey = ffjtUpdateConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -9442,49 +9562,49 @@ mainparse:
 
 				case 'L':
 
-					if bytes.Equal(ffj_key_UpdateConfig_Limit, kn) {
-						currentKey = ffj_t_UpdateConfig_Limit
+					if bytes.Equal(ffjKeyUpdateConfigLimit, kn) {
+						currentKey = ffjtUpdateConfigLimit
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'O':
 
-					if bytes.Equal(ffj_key_UpdateConfig_Offset, kn) {
-						currentKey = ffj_t_UpdateConfig_Offset
+					if bytes.Equal(ffjKeyUpdateConfigOffset, kn) {
+						currentKey = ffjtUpdateConfigOffset
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'T':
 
-					if bytes.Equal(ffj_key_UpdateConfig_Timeout, kn) {
-						currentKey = ffj_t_UpdateConfig_Timeout
+					if bytes.Equal(ffjKeyUpdateConfigTimeout, kn) {
+						currentKey = ffjtUpdateConfigTimeout
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_UpdateConfig_Timeout, kn) {
-					currentKey = ffj_t_UpdateConfig_Timeout
+				if fflib.SimpleLetterEqualFold(ffjKeyUpdateConfigTimeout, kn) {
+					currentKey = ffjtUpdateConfigTimeout
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_UpdateConfig_Limit, kn) {
-					currentKey = ffj_t_UpdateConfig_Limit
+				if fflib.SimpleLetterEqualFold(ffjKeyUpdateConfigLimit, kn) {
+					currentKey = ffjtUpdateConfigLimit
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_UpdateConfig_Offset, kn) {
-					currentKey = ffj_t_UpdateConfig_Offset
+				if fflib.EqualFoldRight(ffjKeyUpdateConfigOffset, kn) {
+					currentKey = ffjtUpdateConfigOffset
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_UpdateConfigno_such_key
+				currentKey = ffjtUpdateConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -9501,16 +9621,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_UpdateConfig_Offset:
+				case ffjtUpdateConfigOffset:
 					goto handle_Offset
 
-				case ffj_t_UpdateConfig_Limit:
+				case ffjtUpdateConfigLimit:
 					goto handle_Limit
 
-				case ffj_t_UpdateConfig_Timeout:
+				case ffjtUpdateConfigTimeout:
 					goto handle_Timeout
 
-				case ffj_t_UpdateConfigno_such_key:
+				case ffjtUpdateConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -9526,7 +9646,7 @@ mainparse:
 
 handle_Offset:
 
-	/* handler: uj.Offset type=int kind=int quoted=false*/
+	/* handler: j.Offset type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9546,7 +9666,7 @@ handle_Offset:
 				return fs.WrapErr(err)
 			}
 
-			uj.Offset = int(tval)
+			j.Offset = int(tval)
 
 		}
 	}
@@ -9556,7 +9676,7 @@ handle_Offset:
 
 handle_Limit:
 
-	/* handler: uj.Limit type=int kind=int quoted=false*/
+	/* handler: j.Limit type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9576,7 +9696,7 @@ handle_Limit:
 				return fs.WrapErr(err)
 			}
 
-			uj.Limit = int(tval)
+			j.Limit = int(tval)
 
 		}
 	}
@@ -9586,7 +9706,7 @@ handle_Limit:
 
 handle_Timeout:
 
-	/* handler: uj.Timeout type=int kind=int quoted=false*/
+	/* handler: j.Timeout type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9606,7 +9726,7 @@ handle_Timeout:
 				return fs.WrapErr(err)
 			}
 
-			uj.Timeout = int(tval)
+			j.Timeout = int(tval)
 
 		}
 	}
@@ -9632,20 +9752,23 @@ done:
 	return nil
 }
 
-func (mj *UserProfilePhotosConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *UserProfilePhotosConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *UserProfilePhotosConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *UserProfilePhotosConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -9654,40 +9777,42 @@ func (mj *UserProfilePhotosConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) erro
 	_ = obj
 	_ = err
 	buf.WriteString(`{"UserID":`)
-	fflib.FormatBits2(buf, uint64(mj.UserID), 10, mj.UserID < 0)
+	fflib.FormatBits2(buf, uint64(j.UserID), 10, j.UserID < 0)
 	buf.WriteString(`,"Offset":`)
-	fflib.FormatBits2(buf, uint64(mj.Offset), 10, mj.Offset < 0)
+	fflib.FormatBits2(buf, uint64(j.Offset), 10, j.Offset < 0)
 	buf.WriteString(`,"Limit":`)
-	fflib.FormatBits2(buf, uint64(mj.Limit), 10, mj.Limit < 0)
+	fflib.FormatBits2(buf, uint64(j.Limit), 10, j.Limit < 0)
 	buf.WriteByte('}')
 	return nil
 }
 
 const (
-	ffj_t_UserProfilePhotosConfigbase = iota
-	ffj_t_UserProfilePhotosConfigno_such_key
+	ffjtUserProfilePhotosConfigbase = iota
+	ffjtUserProfilePhotosConfignosuchkey
 
-	ffj_t_UserProfilePhotosConfig_UserID
+	ffjtUserProfilePhotosConfigUserID
 
-	ffj_t_UserProfilePhotosConfig_Offset
+	ffjtUserProfilePhotosConfigOffset
 
-	ffj_t_UserProfilePhotosConfig_Limit
+	ffjtUserProfilePhotosConfigLimit
 )
 
-var ffj_key_UserProfilePhotosConfig_UserID = []byte("UserID")
+var ffjKeyUserProfilePhotosConfigUserID = []byte("UserID")
 
-var ffj_key_UserProfilePhotosConfig_Offset = []byte("Offset")
+var ffjKeyUserProfilePhotosConfigOffset = []byte("Offset")
 
-var ffj_key_UserProfilePhotosConfig_Limit = []byte("Limit")
+var ffjKeyUserProfilePhotosConfigLimit = []byte("Limit")
 
-func (uj *UserProfilePhotosConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *UserProfilePhotosConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *UserProfilePhotosConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_UserProfilePhotosConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *UserProfilePhotosConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtUserProfilePhotosConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -9733,7 +9858,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_UserProfilePhotosConfigno_such_key
+				currentKey = ffjtUserProfilePhotosConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -9741,49 +9866,49 @@ mainparse:
 
 				case 'L':
 
-					if bytes.Equal(ffj_key_UserProfilePhotosConfig_Limit, kn) {
-						currentKey = ffj_t_UserProfilePhotosConfig_Limit
+					if bytes.Equal(ffjKeyUserProfilePhotosConfigLimit, kn) {
+						currentKey = ffjtUserProfilePhotosConfigLimit
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'O':
 
-					if bytes.Equal(ffj_key_UserProfilePhotosConfig_Offset, kn) {
-						currentKey = ffj_t_UserProfilePhotosConfig_Offset
+					if bytes.Equal(ffjKeyUserProfilePhotosConfigOffset, kn) {
+						currentKey = ffjtUserProfilePhotosConfigOffset
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_UserProfilePhotosConfig_UserID, kn) {
-						currentKey = ffj_t_UserProfilePhotosConfig_UserID
+					if bytes.Equal(ffjKeyUserProfilePhotosConfigUserID, kn) {
+						currentKey = ffjtUserProfilePhotosConfigUserID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_UserProfilePhotosConfig_Limit, kn) {
-					currentKey = ffj_t_UserProfilePhotosConfig_Limit
+				if fflib.SimpleLetterEqualFold(ffjKeyUserProfilePhotosConfigLimit, kn) {
+					currentKey = ffjtUserProfilePhotosConfigLimit
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_UserProfilePhotosConfig_Offset, kn) {
-					currentKey = ffj_t_UserProfilePhotosConfig_Offset
+				if fflib.EqualFoldRight(ffjKeyUserProfilePhotosConfigOffset, kn) {
+					currentKey = ffjtUserProfilePhotosConfigOffset
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_UserProfilePhotosConfig_UserID, kn) {
-					currentKey = ffj_t_UserProfilePhotosConfig_UserID
+				if fflib.EqualFoldRight(ffjKeyUserProfilePhotosConfigUserID, kn) {
+					currentKey = ffjtUserProfilePhotosConfigUserID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_UserProfilePhotosConfigno_such_key
+				currentKey = ffjtUserProfilePhotosConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -9800,16 +9925,16 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_UserProfilePhotosConfig_UserID:
+				case ffjtUserProfilePhotosConfigUserID:
 					goto handle_UserID
 
-				case ffj_t_UserProfilePhotosConfig_Offset:
+				case ffjtUserProfilePhotosConfigOffset:
 					goto handle_Offset
 
-				case ffj_t_UserProfilePhotosConfig_Limit:
+				case ffjtUserProfilePhotosConfigLimit:
 					goto handle_Limit
 
-				case ffj_t_UserProfilePhotosConfigno_such_key:
+				case ffjtUserProfilePhotosConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -9825,7 +9950,7 @@ mainparse:
 
 handle_UserID:
 
-	/* handler: uj.UserID type=int kind=int quoted=false*/
+	/* handler: j.UserID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9845,7 +9970,7 @@ handle_UserID:
 				return fs.WrapErr(err)
 			}
 
-			uj.UserID = int(tval)
+			j.UserID = int(tval)
 
 		}
 	}
@@ -9855,7 +9980,7 @@ handle_UserID:
 
 handle_Offset:
 
-	/* handler: uj.Offset type=int kind=int quoted=false*/
+	/* handler: j.Offset type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9875,7 +10000,7 @@ handle_Offset:
 				return fs.WrapErr(err)
 			}
 
-			uj.Offset = int(tval)
+			j.Offset = int(tval)
 
 		}
 	}
@@ -9885,7 +10010,7 @@ handle_Offset:
 
 handle_Limit:
 
-	/* handler: uj.Limit type=int kind=int quoted=false*/
+	/* handler: j.Limit type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -9905,7 +10030,7 @@ handle_Limit:
 				return fs.WrapErr(err)
 			}
 
-			uj.Limit = int(tval)
+			j.Limit = int(tval)
 
 		}
 	}
@@ -9931,20 +10056,23 @@ done:
 	return nil
 }
 
-func (mj *VenueConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *VenueConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *VenueConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *VenueConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -9953,32 +10081,32 @@ func (mj *VenueConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Latitude":`)
-	fflib.AppendFloat(buf, float64(mj.Latitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Latitude), 'g', -1, 64)
 	buf.WriteString(`,"Longitude":`)
-	fflib.AppendFloat(buf, float64(mj.Longitude), 'g', -1, 64)
+	fflib.AppendFloat(buf, float64(j.Longitude), 'g', -1, 64)
 	buf.WriteString(`,"Title":`)
-	fflib.WriteJsonString(buf, string(mj.Title))
+	fflib.WriteJsonString(buf, string(j.Title))
 	buf.WriteString(`,"Address":`)
-	fflib.WriteJsonString(buf, string(mj.Address))
+	fflib.WriteJsonString(buf, string(j.Address))
 	buf.WriteString(`,"FoursquareID":`)
-	fflib.WriteJsonString(buf, string(mj.FoursquareID))
+	fflib.WriteJsonString(buf, string(j.FoursquareID))
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -9991,50 +10119,52 @@ func (mj *VenueConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_VenueConfigbase = iota
-	ffj_t_VenueConfigno_such_key
+	ffjtVenueConfigbase = iota
+	ffjtVenueConfignosuchkey
 
-	ffj_t_VenueConfig_Latitude
+	ffjtVenueConfigLatitude
 
-	ffj_t_VenueConfig_Longitude
+	ffjtVenueConfigLongitude
 
-	ffj_t_VenueConfig_Title
+	ffjtVenueConfigTitle
 
-	ffj_t_VenueConfig_Address
+	ffjtVenueConfigAddress
 
-	ffj_t_VenueConfig_FoursquareID
+	ffjtVenueConfigFoursquareID
 
-	ffj_t_VenueConfig_ReplyToMessageID
+	ffjtVenueConfigReplyToMessageID
 
-	ffj_t_VenueConfig_ReplyMarkup
+	ffjtVenueConfigReplyMarkup
 
-	ffj_t_VenueConfig_DisableNotification
+	ffjtVenueConfigDisableNotification
 )
 
-var ffj_key_VenueConfig_Latitude = []byte("Latitude")
+var ffjKeyVenueConfigLatitude = []byte("Latitude")
 
-var ffj_key_VenueConfig_Longitude = []byte("Longitude")
+var ffjKeyVenueConfigLongitude = []byte("Longitude")
 
-var ffj_key_VenueConfig_Title = []byte("Title")
+var ffjKeyVenueConfigTitle = []byte("Title")
 
-var ffj_key_VenueConfig_Address = []byte("Address")
+var ffjKeyVenueConfigAddress = []byte("Address")
 
-var ffj_key_VenueConfig_FoursquareID = []byte("FoursquareID")
+var ffjKeyVenueConfigFoursquareID = []byte("FoursquareID")
 
-var ffj_key_VenueConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyVenueConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_VenueConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyVenueConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_VenueConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyVenueConfigDisableNotification = []byte("disable_notification")
 
-func (uj *VenueConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *VenueConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *VenueConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_VenueConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *VenueConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtVenueConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -10080,7 +10210,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_VenueConfigno_such_key
+				currentKey = ffjtVenueConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -10088,113 +10218,113 @@ mainparse:
 
 				case 'A':
 
-					if bytes.Equal(ffj_key_VenueConfig_Address, kn) {
-						currentKey = ffj_t_VenueConfig_Address
+					if bytes.Equal(ffjKeyVenueConfigAddress, kn) {
+						currentKey = ffjtVenueConfigAddress
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_VenueConfig_FoursquareID, kn) {
-						currentKey = ffj_t_VenueConfig_FoursquareID
+					if bytes.Equal(ffjKeyVenueConfigFoursquareID, kn) {
+						currentKey = ffjtVenueConfigFoursquareID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'L':
 
-					if bytes.Equal(ffj_key_VenueConfig_Latitude, kn) {
-						currentKey = ffj_t_VenueConfig_Latitude
+					if bytes.Equal(ffjKeyVenueConfigLatitude, kn) {
+						currentKey = ffjtVenueConfigLatitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_VenueConfig_Longitude, kn) {
-						currentKey = ffj_t_VenueConfig_Longitude
+					} else if bytes.Equal(ffjKeyVenueConfigLongitude, kn) {
+						currentKey = ffjtVenueConfigLongitude
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'T':
 
-					if bytes.Equal(ffj_key_VenueConfig_Title, kn) {
-						currentKey = ffj_t_VenueConfig_Title
+					if bytes.Equal(ffjKeyVenueConfigTitle, kn) {
+						currentKey = ffjtVenueConfigTitle
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_VenueConfig_DisableNotification, kn) {
-						currentKey = ffj_t_VenueConfig_DisableNotification
+					if bytes.Equal(ffjKeyVenueConfigDisableNotification, kn) {
+						currentKey = ffjtVenueConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_VenueConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_VenueConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyVenueConfigReplyToMessageID, kn) {
+						currentKey = ffjtVenueConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_VenueConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_VenueConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyVenueConfigReplyMarkup, kn) {
+						currentKey = ffjtVenueConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VenueConfig_DisableNotification, kn) {
-					currentKey = ffj_t_VenueConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyVenueConfigDisableNotification, kn) {
+					currentKey = ffjtVenueConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VenueConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_VenueConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyVenueConfigReplyMarkup, kn) {
+					currentKey = ffjtVenueConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VenueConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_VenueConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyVenueConfigReplyToMessageID, kn) {
+					currentKey = ffjtVenueConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VenueConfig_FoursquareID, kn) {
-					currentKey = ffj_t_VenueConfig_FoursquareID
+				if fflib.EqualFoldRight(ffjKeyVenueConfigFoursquareID, kn) {
+					currentKey = ffjtVenueConfigFoursquareID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VenueConfig_Address, kn) {
-					currentKey = ffj_t_VenueConfig_Address
+				if fflib.EqualFoldRight(ffjKeyVenueConfigAddress, kn) {
+					currentKey = ffjtVenueConfigAddress
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VenueConfig_Title, kn) {
-					currentKey = ffj_t_VenueConfig_Title
+				if fflib.SimpleLetterEqualFold(ffjKeyVenueConfigTitle, kn) {
+					currentKey = ffjtVenueConfigTitle
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VenueConfig_Longitude, kn) {
-					currentKey = ffj_t_VenueConfig_Longitude
+				if fflib.SimpleLetterEqualFold(ffjKeyVenueConfigLongitude, kn) {
+					currentKey = ffjtVenueConfigLongitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VenueConfig_Latitude, kn) {
-					currentKey = ffj_t_VenueConfig_Latitude
+				if fflib.SimpleLetterEqualFold(ffjKeyVenueConfigLatitude, kn) {
+					currentKey = ffjtVenueConfigLatitude
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_VenueConfigno_such_key
+				currentKey = ffjtVenueConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -10211,31 +10341,31 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_VenueConfig_Latitude:
+				case ffjtVenueConfigLatitude:
 					goto handle_Latitude
 
-				case ffj_t_VenueConfig_Longitude:
+				case ffjtVenueConfigLongitude:
 					goto handle_Longitude
 
-				case ffj_t_VenueConfig_Title:
+				case ffjtVenueConfigTitle:
 					goto handle_Title
 
-				case ffj_t_VenueConfig_Address:
+				case ffjtVenueConfigAddress:
 					goto handle_Address
 
-				case ffj_t_VenueConfig_FoursquareID:
+				case ffjtVenueConfigFoursquareID:
 					goto handle_FoursquareID
 
-				case ffj_t_VenueConfig_ReplyToMessageID:
+				case ffjtVenueConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_VenueConfig_ReplyMarkup:
+				case ffjtVenueConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_VenueConfig_DisableNotification:
+				case ffjtVenueConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_VenueConfigno_such_key:
+				case ffjtVenueConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -10251,7 +10381,7 @@ mainparse:
 
 handle_Latitude:
 
-	/* handler: uj.Latitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Latitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10271,7 +10401,7 @@ handle_Latitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Latitude = float64(tval)
+			j.Latitude = float64(tval)
 
 		}
 	}
@@ -10281,7 +10411,7 @@ handle_Latitude:
 
 handle_Longitude:
 
-	/* handler: uj.Longitude type=float64 kind=float64 quoted=false*/
+	/* handler: j.Longitude type=float64 kind=float64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_double && tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10301,7 +10431,7 @@ handle_Longitude:
 				return fs.WrapErr(err)
 			}
 
-			uj.Longitude = float64(tval)
+			j.Longitude = float64(tval)
 
 		}
 	}
@@ -10311,7 +10441,7 @@ handle_Longitude:
 
 handle_Title:
 
-	/* handler: uj.Title type=string kind=string quoted=false*/
+	/* handler: j.Title type=string kind=string quoted=false*/
 
 	{
 
@@ -10327,7 +10457,7 @@ handle_Title:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Title = string(string(outBuf))
+			j.Title = string(string(outBuf))
 
 		}
 	}
@@ -10337,7 +10467,7 @@ handle_Title:
 
 handle_Address:
 
-	/* handler: uj.Address type=string kind=string quoted=false*/
+	/* handler: j.Address type=string kind=string quoted=false*/
 
 	{
 
@@ -10353,7 +10483,7 @@ handle_Address:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Address = string(string(outBuf))
+			j.Address = string(string(outBuf))
 
 		}
 	}
@@ -10363,7 +10493,7 @@ handle_Address:
 
 handle_FoursquareID:
 
-	/* handler: uj.FoursquareID type=string kind=string quoted=false*/
+	/* handler: j.FoursquareID type=string kind=string quoted=false*/
 
 	{
 
@@ -10379,7 +10509,7 @@ handle_FoursquareID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FoursquareID = string(string(outBuf))
+			j.FoursquareID = string(string(outBuf))
 
 		}
 	}
@@ -10389,7 +10519,7 @@ handle_FoursquareID:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10409,7 +10539,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -10419,7 +10549,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -10428,7 +10558,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -10439,7 +10569,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -10455,11 +10585,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -10490,20 +10620,23 @@ done:
 	return nil
 }
 
-func (mj *VideoConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *VideoConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *VideoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *VideoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -10512,43 +10645,43 @@ func (mj *VideoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteString(`,"Caption":`)
-	fflib.WriteJsonString(buf, string(mj.Caption))
+	fflib.WriteJsonString(buf, string(j.Caption))
 	buf.WriteString(`,"File":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.File)
+	err = buf.Encode(j.File)
 	if err != nil {
 		return err
 	}
 	buf.WriteString(`,"FileID":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
-	if mj.UseExisting {
+	fflib.WriteJsonString(buf, string(j.FileID))
+	if j.UseExisting {
 		buf.WriteString(`,"UseExisting":true`)
 	} else {
 		buf.WriteString(`,"UseExisting":false`)
 	}
 	buf.WriteString(`,"MimeType":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"FileSize":`)
-	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+	fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -10561,58 +10694,60 @@ func (mj *VideoConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_VideoConfigbase = iota
-	ffj_t_VideoConfigno_such_key
+	ffjtVideoConfigbase = iota
+	ffjtVideoConfignosuchkey
 
-	ffj_t_VideoConfig_Duration
+	ffjtVideoConfigDuration
 
-	ffj_t_VideoConfig_Caption
+	ffjtVideoConfigCaption
 
-	ffj_t_VideoConfig_File
+	ffjtVideoConfigFile
 
-	ffj_t_VideoConfig_FileID
+	ffjtVideoConfigFileID
 
-	ffj_t_VideoConfig_UseExisting
+	ffjtVideoConfigUseExisting
 
-	ffj_t_VideoConfig_MimeType
+	ffjtVideoConfigMimeType
 
-	ffj_t_VideoConfig_FileSize
+	ffjtVideoConfigFileSize
 
-	ffj_t_VideoConfig_ReplyToMessageID
+	ffjtVideoConfigReplyToMessageID
 
-	ffj_t_VideoConfig_ReplyMarkup
+	ffjtVideoConfigReplyMarkup
 
-	ffj_t_VideoConfig_DisableNotification
+	ffjtVideoConfigDisableNotification
 )
 
-var ffj_key_VideoConfig_Duration = []byte("Duration")
+var ffjKeyVideoConfigDuration = []byte("Duration")
 
-var ffj_key_VideoConfig_Caption = []byte("Caption")
+var ffjKeyVideoConfigCaption = []byte("Caption")
 
-var ffj_key_VideoConfig_File = []byte("File")
+var ffjKeyVideoConfigFile = []byte("File")
 
-var ffj_key_VideoConfig_FileID = []byte("FileID")
+var ffjKeyVideoConfigFileID = []byte("FileID")
 
-var ffj_key_VideoConfig_UseExisting = []byte("UseExisting")
+var ffjKeyVideoConfigUseExisting = []byte("UseExisting")
 
-var ffj_key_VideoConfig_MimeType = []byte("MimeType")
+var ffjKeyVideoConfigMimeType = []byte("MimeType")
 
-var ffj_key_VideoConfig_FileSize = []byte("FileSize")
+var ffjKeyVideoConfigFileSize = []byte("FileSize")
 
-var ffj_key_VideoConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyVideoConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_VideoConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyVideoConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_VideoConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyVideoConfigDisableNotification = []byte("disable_notification")
 
-func (uj *VideoConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *VideoConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *VideoConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_VideoConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *VideoConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtVideoConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -10658,7 +10793,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_VideoConfigno_such_key
+				currentKey = ffjtVideoConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -10666,138 +10801,138 @@ mainparse:
 
 				case 'C':
 
-					if bytes.Equal(ffj_key_VideoConfig_Caption, kn) {
-						currentKey = ffj_t_VideoConfig_Caption
+					if bytes.Equal(ffjKeyVideoConfigCaption, kn) {
+						currentKey = ffjtVideoConfigCaption
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'D':
 
-					if bytes.Equal(ffj_key_VideoConfig_Duration, kn) {
-						currentKey = ffj_t_VideoConfig_Duration
+					if bytes.Equal(ffjKeyVideoConfigDuration, kn) {
+						currentKey = ffjtVideoConfigDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_VideoConfig_File, kn) {
-						currentKey = ffj_t_VideoConfig_File
+					if bytes.Equal(ffjKeyVideoConfigFile, kn) {
+						currentKey = ffjtVideoConfigFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_VideoConfig_FileID, kn) {
-						currentKey = ffj_t_VideoConfig_FileID
+					} else if bytes.Equal(ffjKeyVideoConfigFileID, kn) {
+						currentKey = ffjtVideoConfigFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_VideoConfig_FileSize, kn) {
-						currentKey = ffj_t_VideoConfig_FileSize
+					} else if bytes.Equal(ffjKeyVideoConfigFileSize, kn) {
+						currentKey = ffjtVideoConfigFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'M':
 
-					if bytes.Equal(ffj_key_VideoConfig_MimeType, kn) {
-						currentKey = ffj_t_VideoConfig_MimeType
+					if bytes.Equal(ffjKeyVideoConfigMimeType, kn) {
+						currentKey = ffjtVideoConfigMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_VideoConfig_UseExisting, kn) {
-						currentKey = ffj_t_VideoConfig_UseExisting
+					if bytes.Equal(ffjKeyVideoConfigUseExisting, kn) {
+						currentKey = ffjtVideoConfigUseExisting
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_VideoConfig_DisableNotification, kn) {
-						currentKey = ffj_t_VideoConfig_DisableNotification
+					if bytes.Equal(ffjKeyVideoConfigDisableNotification, kn) {
+						currentKey = ffjtVideoConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_VideoConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_VideoConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyVideoConfigReplyToMessageID, kn) {
+						currentKey = ffjtVideoConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_VideoConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_VideoConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyVideoConfigReplyMarkup, kn) {
+						currentKey = ffjtVideoConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VideoConfig_DisableNotification, kn) {
-					currentKey = ffj_t_VideoConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyVideoConfigDisableNotification, kn) {
+					currentKey = ffjtVideoConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VideoConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_VideoConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyVideoConfigReplyMarkup, kn) {
+					currentKey = ffjtVideoConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VideoConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_VideoConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyVideoConfigReplyToMessageID, kn) {
+					currentKey = ffjtVideoConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VideoConfig_FileSize, kn) {
-					currentKey = ffj_t_VideoConfig_FileSize
+				if fflib.EqualFoldRight(ffjKeyVideoConfigFileSize, kn) {
+					currentKey = ffjtVideoConfigFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VideoConfig_MimeType, kn) {
-					currentKey = ffj_t_VideoConfig_MimeType
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoConfigMimeType, kn) {
+					currentKey = ffjtVideoConfigMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VideoConfig_UseExisting, kn) {
-					currentKey = ffj_t_VideoConfig_UseExisting
+				if fflib.EqualFoldRight(ffjKeyVideoConfigUseExisting, kn) {
+					currentKey = ffjtVideoConfigUseExisting
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VideoConfig_FileID, kn) {
-					currentKey = ffj_t_VideoConfig_FileID
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoConfigFileID, kn) {
+					currentKey = ffjtVideoConfigFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VideoConfig_File, kn) {
-					currentKey = ffj_t_VideoConfig_File
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoConfigFile, kn) {
+					currentKey = ffjtVideoConfigFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VideoConfig_Caption, kn) {
-					currentKey = ffj_t_VideoConfig_Caption
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoConfigCaption, kn) {
+					currentKey = ffjtVideoConfigCaption
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VideoConfig_Duration, kn) {
-					currentKey = ffj_t_VideoConfig_Duration
+				if fflib.SimpleLetterEqualFold(ffjKeyVideoConfigDuration, kn) {
+					currentKey = ffjtVideoConfigDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_VideoConfigno_such_key
+				currentKey = ffjtVideoConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -10814,37 +10949,37 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_VideoConfig_Duration:
+				case ffjtVideoConfigDuration:
 					goto handle_Duration
 
-				case ffj_t_VideoConfig_Caption:
+				case ffjtVideoConfigCaption:
 					goto handle_Caption
 
-				case ffj_t_VideoConfig_File:
+				case ffjtVideoConfigFile:
 					goto handle_File
 
-				case ffj_t_VideoConfig_FileID:
+				case ffjtVideoConfigFileID:
 					goto handle_FileID
 
-				case ffj_t_VideoConfig_UseExisting:
+				case ffjtVideoConfigUseExisting:
 					goto handle_UseExisting
 
-				case ffj_t_VideoConfig_MimeType:
+				case ffjtVideoConfigMimeType:
 					goto handle_MimeType
 
-				case ffj_t_VideoConfig_FileSize:
+				case ffjtVideoConfigFileSize:
 					goto handle_FileSize
 
-				case ffj_t_VideoConfig_ReplyToMessageID:
+				case ffjtVideoConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_VideoConfig_ReplyMarkup:
+				case ffjtVideoConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_VideoConfig_DisableNotification:
+				case ffjtVideoConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_VideoConfigno_such_key:
+				case ffjtVideoConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -10860,7 +10995,7 @@ mainparse:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10880,7 +11015,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -10890,7 +11025,7 @@ handle_Duration:
 
 handle_Caption:
 
-	/* handler: uj.Caption type=string kind=string quoted=false*/
+	/* handler: j.Caption type=string kind=string quoted=false*/
 
 	{
 
@@ -10906,7 +11041,7 @@ handle_Caption:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.Caption = string(string(outBuf))
+			j.Caption = string(string(outBuf))
 
 		}
 	}
@@ -10916,7 +11051,7 @@ handle_Caption:
 
 handle_File:
 
-	/* handler: uj.File type=interface {} kind=interface quoted=false*/
+	/* handler: j.File type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -10925,7 +11060,7 @@ handle_File:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.File)
+		err = json.Unmarshal(tbuf, &j.File)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -10936,7 +11071,7 @@ handle_File:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -10952,7 +11087,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -10962,7 +11097,7 @@ handle_FileID:
 
 handle_UseExisting:
 
-	/* handler: uj.UseExisting type=bool kind=bool quoted=false*/
+	/* handler: j.UseExisting type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -10978,11 +11113,11 @@ handle_UseExisting:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = true
+				j.UseExisting = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = false
+				j.UseExisting = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -10997,7 +11132,7 @@ handle_UseExisting:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -11013,7 +11148,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -11023,7 +11158,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11043,7 +11178,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -11053,7 +11188,7 @@ handle_FileSize:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11073,7 +11208,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -11083,7 +11218,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -11092,7 +11227,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -11103,7 +11238,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -11119,11 +11254,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -11154,20 +11289,23 @@ done:
 	return nil
 }
 
-func (mj *VoiceConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *VoiceConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *VoiceConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *VoiceConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -11176,41 +11314,41 @@ func (mj *VoiceConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ "Duration":`)
-	fflib.FormatBits2(buf, uint64(mj.Duration), 10, mj.Duration < 0)
+	fflib.FormatBits2(buf, uint64(j.Duration), 10, j.Duration < 0)
 	buf.WriteString(`,"File":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.File)
+	err = buf.Encode(j.File)
 	if err != nil {
 		return err
 	}
 	buf.WriteString(`,"FileID":`)
-	fflib.WriteJsonString(buf, string(mj.FileID))
-	if mj.UseExisting {
+	fflib.WriteJsonString(buf, string(j.FileID))
+	if j.UseExisting {
 		buf.WriteString(`,"UseExisting":true`)
 	} else {
 		buf.WriteString(`,"UseExisting":false`)
 	}
 	buf.WriteString(`,"MimeType":`)
-	fflib.WriteJsonString(buf, string(mj.MimeType))
+	fflib.WriteJsonString(buf, string(j.MimeType))
 	buf.WriteString(`,"FileSize":`)
-	fflib.FormatBits2(buf, uint64(mj.FileSize), 10, mj.FileSize < 0)
+	fflib.FormatBits2(buf, uint64(j.FileSize), 10, j.FileSize < 0)
 	buf.WriteByte(',')
-	if mj.ReplyToMessageID != 0 {
+	if j.ReplyToMessageID != 0 {
 		buf.WriteString(`"reply_to_message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ReplyToMessageID), 10, mj.ReplyToMessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.ReplyToMessageID), 10, j.ReplyToMessageID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.ReplyMarkup != nil {
+	if j.ReplyMarkup != nil {
 		buf.WriteString(`"reply_markup":`)
 		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.ReplyMarkup)
+		err = buf.Encode(j.ReplyMarkup)
 		if err != nil {
 			return err
 		}
 		buf.WriteByte(',')
 	}
-	if mj.DisableNotification != false {
-		if mj.DisableNotification {
+	if j.DisableNotification != false {
+		if j.DisableNotification {
 			buf.WriteString(`"disable_notification":true`)
 		} else {
 			buf.WriteString(`"disable_notification":false`)
@@ -11223,54 +11361,56 @@ func (mj *VoiceConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_VoiceConfigbase = iota
-	ffj_t_VoiceConfigno_such_key
+	ffjtVoiceConfigbase = iota
+	ffjtVoiceConfignosuchkey
 
-	ffj_t_VoiceConfig_Duration
+	ffjtVoiceConfigDuration
 
-	ffj_t_VoiceConfig_File
+	ffjtVoiceConfigFile
 
-	ffj_t_VoiceConfig_FileID
+	ffjtVoiceConfigFileID
 
-	ffj_t_VoiceConfig_UseExisting
+	ffjtVoiceConfigUseExisting
 
-	ffj_t_VoiceConfig_MimeType
+	ffjtVoiceConfigMimeType
 
-	ffj_t_VoiceConfig_FileSize
+	ffjtVoiceConfigFileSize
 
-	ffj_t_VoiceConfig_ReplyToMessageID
+	ffjtVoiceConfigReplyToMessageID
 
-	ffj_t_VoiceConfig_ReplyMarkup
+	ffjtVoiceConfigReplyMarkup
 
-	ffj_t_VoiceConfig_DisableNotification
+	ffjtVoiceConfigDisableNotification
 )
 
-var ffj_key_VoiceConfig_Duration = []byte("Duration")
+var ffjKeyVoiceConfigDuration = []byte("Duration")
 
-var ffj_key_VoiceConfig_File = []byte("File")
+var ffjKeyVoiceConfigFile = []byte("File")
 
-var ffj_key_VoiceConfig_FileID = []byte("FileID")
+var ffjKeyVoiceConfigFileID = []byte("FileID")
 
-var ffj_key_VoiceConfig_UseExisting = []byte("UseExisting")
+var ffjKeyVoiceConfigUseExisting = []byte("UseExisting")
 
-var ffj_key_VoiceConfig_MimeType = []byte("MimeType")
+var ffjKeyVoiceConfigMimeType = []byte("MimeType")
 
-var ffj_key_VoiceConfig_FileSize = []byte("FileSize")
+var ffjKeyVoiceConfigFileSize = []byte("FileSize")
 
-var ffj_key_VoiceConfig_ReplyToMessageID = []byte("reply_to_message_id")
+var ffjKeyVoiceConfigReplyToMessageID = []byte("reply_to_message_id")
 
-var ffj_key_VoiceConfig_ReplyMarkup = []byte("reply_markup")
+var ffjKeyVoiceConfigReplyMarkup = []byte("reply_markup")
 
-var ffj_key_VoiceConfig_DisableNotification = []byte("disable_notification")
+var ffjKeyVoiceConfigDisableNotification = []byte("disable_notification")
 
-func (uj *VoiceConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *VoiceConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *VoiceConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_VoiceConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *VoiceConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtVoiceConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -11316,7 +11456,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_VoiceConfigno_such_key
+				currentKey = ffjtVoiceConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -11324,124 +11464,124 @@ mainparse:
 
 				case 'D':
 
-					if bytes.Equal(ffj_key_VoiceConfig_Duration, kn) {
-						currentKey = ffj_t_VoiceConfig_Duration
+					if bytes.Equal(ffjKeyVoiceConfigDuration, kn) {
+						currentKey = ffjtVoiceConfigDuration
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'F':
 
-					if bytes.Equal(ffj_key_VoiceConfig_File, kn) {
-						currentKey = ffj_t_VoiceConfig_File
+					if bytes.Equal(ffjKeyVoiceConfigFile, kn) {
+						currentKey = ffjtVoiceConfigFile
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_VoiceConfig_FileID, kn) {
-						currentKey = ffj_t_VoiceConfig_FileID
+					} else if bytes.Equal(ffjKeyVoiceConfigFileID, kn) {
+						currentKey = ffjtVoiceConfigFileID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_VoiceConfig_FileSize, kn) {
-						currentKey = ffj_t_VoiceConfig_FileSize
+					} else if bytes.Equal(ffjKeyVoiceConfigFileSize, kn) {
+						currentKey = ffjtVoiceConfigFileSize
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'M':
 
-					if bytes.Equal(ffj_key_VoiceConfig_MimeType, kn) {
-						currentKey = ffj_t_VoiceConfig_MimeType
+					if bytes.Equal(ffjKeyVoiceConfigMimeType, kn) {
+						currentKey = ffjtVoiceConfigMimeType
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_VoiceConfig_UseExisting, kn) {
-						currentKey = ffj_t_VoiceConfig_UseExisting
+					if bytes.Equal(ffjKeyVoiceConfigUseExisting, kn) {
+						currentKey = ffjtVoiceConfigUseExisting
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'd':
 
-					if bytes.Equal(ffj_key_VoiceConfig_DisableNotification, kn) {
-						currentKey = ffj_t_VoiceConfig_DisableNotification
+					if bytes.Equal(ffjKeyVoiceConfigDisableNotification, kn) {
+						currentKey = ffjtVoiceConfigDisableNotification
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_VoiceConfig_ReplyToMessageID, kn) {
-						currentKey = ffj_t_VoiceConfig_ReplyToMessageID
+					if bytes.Equal(ffjKeyVoiceConfigReplyToMessageID, kn) {
+						currentKey = ffjtVoiceConfigReplyToMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffj_key_VoiceConfig_ReplyMarkup, kn) {
-						currentKey = ffj_t_VoiceConfig_ReplyMarkup
+					} else if bytes.Equal(ffjKeyVoiceConfigReplyMarkup, kn) {
+						currentKey = ffjtVoiceConfigReplyMarkup
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VoiceConfig_DisableNotification, kn) {
-					currentKey = ffj_t_VoiceConfig_DisableNotification
+				if fflib.EqualFoldRight(ffjKeyVoiceConfigDisableNotification, kn) {
+					currentKey = ffjtVoiceConfigDisableNotification
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VoiceConfig_ReplyMarkup, kn) {
-					currentKey = ffj_t_VoiceConfig_ReplyMarkup
+				if fflib.EqualFoldRight(ffjKeyVoiceConfigReplyMarkup, kn) {
+					currentKey = ffjtVoiceConfigReplyMarkup
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VoiceConfig_ReplyToMessageID, kn) {
-					currentKey = ffj_t_VoiceConfig_ReplyToMessageID
+				if fflib.EqualFoldRight(ffjKeyVoiceConfigReplyToMessageID, kn) {
+					currentKey = ffjtVoiceConfigReplyToMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VoiceConfig_FileSize, kn) {
-					currentKey = ffj_t_VoiceConfig_FileSize
+				if fflib.EqualFoldRight(ffjKeyVoiceConfigFileSize, kn) {
+					currentKey = ffjtVoiceConfigFileSize
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VoiceConfig_MimeType, kn) {
-					currentKey = ffj_t_VoiceConfig_MimeType
+				if fflib.SimpleLetterEqualFold(ffjKeyVoiceConfigMimeType, kn) {
+					currentKey = ffjtVoiceConfigMimeType
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_VoiceConfig_UseExisting, kn) {
-					currentKey = ffj_t_VoiceConfig_UseExisting
+				if fflib.EqualFoldRight(ffjKeyVoiceConfigUseExisting, kn) {
+					currentKey = ffjtVoiceConfigUseExisting
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VoiceConfig_FileID, kn) {
-					currentKey = ffj_t_VoiceConfig_FileID
+				if fflib.SimpleLetterEqualFold(ffjKeyVoiceConfigFileID, kn) {
+					currentKey = ffjtVoiceConfigFileID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VoiceConfig_File, kn) {
-					currentKey = ffj_t_VoiceConfig_File
+				if fflib.SimpleLetterEqualFold(ffjKeyVoiceConfigFile, kn) {
+					currentKey = ffjtVoiceConfigFile
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_VoiceConfig_Duration, kn) {
-					currentKey = ffj_t_VoiceConfig_Duration
+				if fflib.SimpleLetterEqualFold(ffjKeyVoiceConfigDuration, kn) {
+					currentKey = ffjtVoiceConfigDuration
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_VoiceConfigno_such_key
+				currentKey = ffjtVoiceConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -11458,34 +11598,34 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_VoiceConfig_Duration:
+				case ffjtVoiceConfigDuration:
 					goto handle_Duration
 
-				case ffj_t_VoiceConfig_File:
+				case ffjtVoiceConfigFile:
 					goto handle_File
 
-				case ffj_t_VoiceConfig_FileID:
+				case ffjtVoiceConfigFileID:
 					goto handle_FileID
 
-				case ffj_t_VoiceConfig_UseExisting:
+				case ffjtVoiceConfigUseExisting:
 					goto handle_UseExisting
 
-				case ffj_t_VoiceConfig_MimeType:
+				case ffjtVoiceConfigMimeType:
 					goto handle_MimeType
 
-				case ffj_t_VoiceConfig_FileSize:
+				case ffjtVoiceConfigFileSize:
 					goto handle_FileSize
 
-				case ffj_t_VoiceConfig_ReplyToMessageID:
+				case ffjtVoiceConfigReplyToMessageID:
 					goto handle_ReplyToMessageID
 
-				case ffj_t_VoiceConfig_ReplyMarkup:
+				case ffjtVoiceConfigReplyMarkup:
 					goto handle_ReplyMarkup
 
-				case ffj_t_VoiceConfig_DisableNotification:
+				case ffjtVoiceConfigDisableNotification:
 					goto handle_DisableNotification
 
-				case ffj_t_VoiceConfigno_such_key:
+				case ffjtVoiceConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -11501,7 +11641,7 @@ mainparse:
 
 handle_Duration:
 
-	/* handler: uj.Duration type=int kind=int quoted=false*/
+	/* handler: j.Duration type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11521,7 +11661,7 @@ handle_Duration:
 				return fs.WrapErr(err)
 			}
 
-			uj.Duration = int(tval)
+			j.Duration = int(tval)
 
 		}
 	}
@@ -11531,7 +11671,7 @@ handle_Duration:
 
 handle_File:
 
-	/* handler: uj.File type=interface {} kind=interface quoted=false*/
+	/* handler: j.File type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -11540,7 +11680,7 @@ handle_File:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.File)
+		err = json.Unmarshal(tbuf, &j.File)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -11551,7 +11691,7 @@ handle_File:
 
 handle_FileID:
 
-	/* handler: uj.FileID type=string kind=string quoted=false*/
+	/* handler: j.FileID type=string kind=string quoted=false*/
 
 	{
 
@@ -11567,7 +11707,7 @@ handle_FileID:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.FileID = string(string(outBuf))
+			j.FileID = string(string(outBuf))
 
 		}
 	}
@@ -11577,7 +11717,7 @@ handle_FileID:
 
 handle_UseExisting:
 
-	/* handler: uj.UseExisting type=bool kind=bool quoted=false*/
+	/* handler: j.UseExisting type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -11593,11 +11733,11 @@ handle_UseExisting:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = true
+				j.UseExisting = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.UseExisting = false
+				j.UseExisting = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -11612,7 +11752,7 @@ handle_UseExisting:
 
 handle_MimeType:
 
-	/* handler: uj.MimeType type=string kind=string quoted=false*/
+	/* handler: j.MimeType type=string kind=string quoted=false*/
 
 	{
 
@@ -11628,7 +11768,7 @@ handle_MimeType:
 
 			outBuf := fs.Output.Bytes()
 
-			uj.MimeType = string(string(outBuf))
+			j.MimeType = string(string(outBuf))
 
 		}
 	}
@@ -11638,7 +11778,7 @@ handle_MimeType:
 
 handle_FileSize:
 
-	/* handler: uj.FileSize type=int kind=int quoted=false*/
+	/* handler: j.FileSize type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11658,7 +11798,7 @@ handle_FileSize:
 				return fs.WrapErr(err)
 			}
 
-			uj.FileSize = int(tval)
+			j.FileSize = int(tval)
 
 		}
 	}
@@ -11668,7 +11808,7 @@ handle_FileSize:
 
 handle_ReplyToMessageID:
 
-	/* handler: uj.ReplyToMessageID type=int kind=int quoted=false*/
+	/* handler: j.ReplyToMessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -11688,7 +11828,7 @@ handle_ReplyToMessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ReplyToMessageID = int(tval)
+			j.ReplyToMessageID = int(tval)
 
 		}
 	}
@@ -11698,7 +11838,7 @@ handle_ReplyToMessageID:
 
 handle_ReplyMarkup:
 
-	/* handler: uj.ReplyMarkup type=interface {} kind=interface quoted=false*/
+	/* handler: j.ReplyMarkup type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -11707,7 +11847,7 @@ handle_ReplyMarkup:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.ReplyMarkup)
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -11718,7 +11858,7 @@ handle_ReplyMarkup:
 
 handle_DisableNotification:
 
-	/* handler: uj.DisableNotification type=bool kind=bool quoted=false*/
+	/* handler: j.DisableNotification type=bool kind=bool quoted=false*/
 
 	{
 		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
@@ -11734,11 +11874,11 @@ handle_DisableNotification:
 
 			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = true
+				j.DisableNotification = true
 
 			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
 
-				uj.DisableNotification = false
+				j.DisableNotification = false
 
 			} else {
 				err = errors.New("unexpected bytes for true/false value")
@@ -11769,20 +11909,23 @@ done:
 	return nil
 }
 
-func (mj *WebhookConfig) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *WebhookConfig) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *WebhookConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *WebhookConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -11790,10 +11933,10 @@ func (mj *WebhookConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	if mj.URL != nil {
+	if j.URL != nil {
 		/* Struct fall back. type=url.URL kind=struct */
 		buf.WriteString(`{"URL":`)
-		err = buf.Encode(mj.URL)
+		err = buf.Encode(j.URL)
 		if err != nil {
 			return err
 		}
@@ -11802,7 +11945,7 @@ func (mj *WebhookConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	buf.WriteString(`,"Certificate":`)
 	/* Interface types must use runtime reflection. type=interface {} kind=interface */
-	err = buf.Encode(mj.Certificate)
+	err = buf.Encode(j.Certificate)
 	if err != nil {
 		return err
 	}
@@ -11811,26 +11954,28 @@ func (mj *WebhookConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_WebhookConfigbase = iota
-	ffj_t_WebhookConfigno_such_key
+	ffjtWebhookConfigbase = iota
+	ffjtWebhookConfignosuchkey
 
-	ffj_t_WebhookConfig_URL
+	ffjtWebhookConfigURL
 
-	ffj_t_WebhookConfig_Certificate
+	ffjtWebhookConfigCertificate
 )
 
-var ffj_key_WebhookConfig_URL = []byte("URL")
+var ffjKeyWebhookConfigURL = []byte("URL")
 
-var ffj_key_WebhookConfig_Certificate = []byte("Certificate")
+var ffjKeyWebhookConfigCertificate = []byte("Certificate")
 
-func (uj *WebhookConfig) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *WebhookConfig) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *WebhookConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_WebhookConfigbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *WebhookConfig) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtWebhookConfigbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -11876,7 +12021,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_WebhookConfigno_such_key
+				currentKey = ffjtWebhookConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -11884,35 +12029,35 @@ mainparse:
 
 				case 'C':
 
-					if bytes.Equal(ffj_key_WebhookConfig_Certificate, kn) {
-						currentKey = ffj_t_WebhookConfig_Certificate
+					if bytes.Equal(ffjKeyWebhookConfigCertificate, kn) {
+						currentKey = ffjtWebhookConfigCertificate
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'U':
 
-					if bytes.Equal(ffj_key_WebhookConfig_URL, kn) {
-						currentKey = ffj_t_WebhookConfig_URL
+					if bytes.Equal(ffjKeyWebhookConfigURL, kn) {
+						currentKey = ffjtWebhookConfigURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_WebhookConfig_Certificate, kn) {
-					currentKey = ffj_t_WebhookConfig_Certificate
+				if fflib.SimpleLetterEqualFold(ffjKeyWebhookConfigCertificate, kn) {
+					currentKey = ffjtWebhookConfigCertificate
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_WebhookConfig_URL, kn) {
-					currentKey = ffj_t_WebhookConfig_URL
+				if fflib.SimpleLetterEqualFold(ffjKeyWebhookConfigURL, kn) {
+					currentKey = ffjtWebhookConfigURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_WebhookConfigno_such_key
+				currentKey = ffjtWebhookConfignosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -11929,13 +12074,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_WebhookConfig_URL:
+				case ffjtWebhookConfigURL:
 					goto handle_URL
 
-				case ffj_t_WebhookConfig_Certificate:
+				case ffjtWebhookConfigCertificate:
 					goto handle_Certificate
 
-				case ffj_t_WebhookConfigno_such_key:
+				case ffjtWebhookConfignosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -11951,7 +12096,7 @@ mainparse:
 
 handle_URL:
 
-	/* handler: uj.URL type=url.URL kind=struct quoted=false*/
+	/* handler: j.URL type=url.URL kind=struct quoted=false*/
 
 	{
 		/* Falling back. type=url.URL kind=struct */
@@ -11960,7 +12105,7 @@ handle_URL:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.URL)
+		err = json.Unmarshal(tbuf, &j.URL)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -11971,7 +12116,7 @@ handle_URL:
 
 handle_Certificate:
 
-	/* handler: uj.Certificate type=interface {} kind=interface quoted=false*/
+	/* handler: j.Certificate type=interface {} kind=interface quoted=false*/
 
 	{
 		/* Falling back. type=interface {} kind=interface */
@@ -11980,7 +12125,7 @@ handle_Certificate:
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Certificate)
+		err = json.Unmarshal(tbuf, &j.Certificate)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
@@ -12007,20 +12152,23 @@ done:
 	return nil
 }
 
-func (mj *chatEdit) MarshalJSON() ([]byte, error) {
+// MarshalJSON marshal bytes to json - template
+func (j *chatEdit) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
-	if mj == nil {
+	if j == nil {
 		buf.WriteString("null")
 		return buf.Bytes(), nil
 	}
-	err := mj.MarshalJSONBuf(&buf)
+	err := j.MarshalJSONBuf(&buf)
 	if err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
-func (mj *chatEdit) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
-	if mj == nil {
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *chatEdit) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
 		buf.WriteString("null")
 		return nil
 	}
@@ -12029,14 +12177,14 @@ func (mj *chatEdit) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if mj.ChatID != 0 {
+	if j.ChatID != 0 {
 		buf.WriteString(`"chat_id":`)
-		fflib.FormatBits2(buf, uint64(mj.ChatID), 10, mj.ChatID < 0)
+		fflib.FormatBits2(buf, uint64(j.ChatID), 10, j.ChatID < 0)
 		buf.WriteByte(',')
 	}
-	if mj.MessageID != 0 {
+	if j.MessageID != 0 {
 		buf.WriteString(`"message_id":`)
-		fflib.FormatBits2(buf, uint64(mj.MessageID), 10, mj.MessageID < 0)
+		fflib.FormatBits2(buf, uint64(j.MessageID), 10, j.MessageID < 0)
 		buf.WriteByte(',')
 	}
 	buf.Rewind(1)
@@ -12045,26 +12193,28 @@ func (mj *chatEdit) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_chatEditbase = iota
-	ffj_t_chatEditno_such_key
+	ffjtchatEditbase = iota
+	ffjtchatEditnosuchkey
 
-	ffj_t_chatEdit_ChatID
+	ffjtchatEditChatID
 
-	ffj_t_chatEdit_MessageID
+	ffjtchatEditMessageID
 )
 
-var ffj_key_chatEdit_ChatID = []byte("chat_id")
+var ffjKeychatEditChatID = []byte("chat_id")
 
-var ffj_key_chatEdit_MessageID = []byte("message_id")
+var ffjKeychatEditMessageID = []byte("message_id")
 
-func (uj *chatEdit) UnmarshalJSON(input []byte) error {
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *chatEdit) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
-	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *chatEdit) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
-	var err error = nil
-	currentKey := ffj_t_chatEditbase
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *chatEdit) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtchatEditbase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -12110,7 +12260,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_chatEditno_such_key
+				currentKey = ffjtchatEditnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -12118,35 +12268,35 @@ mainparse:
 
 				case 'c':
 
-					if bytes.Equal(ffj_key_chatEdit_ChatID, kn) {
-						currentKey = ffj_t_chatEdit_ChatID
+					if bytes.Equal(ffjKeychatEditChatID, kn) {
+						currentKey = ffjtchatEditChatID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'm':
 
-					if bytes.Equal(ffj_key_chatEdit_MessageID, kn) {
-						currentKey = ffj_t_chatEdit_MessageID
+					if bytes.Equal(ffjKeychatEditMessageID, kn) {
+						currentKey = ffjtchatEditMessageID
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.EqualFoldRight(ffj_key_chatEdit_MessageID, kn) {
-					currentKey = ffj_t_chatEdit_MessageID
+				if fflib.EqualFoldRight(ffjKeychatEditMessageID, kn) {
+					currentKey = ffjtchatEditMessageID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.AsciiEqualFold(ffj_key_chatEdit_ChatID, kn) {
-					currentKey = ffj_t_chatEdit_ChatID
+				if fflib.AsciiEqualFold(ffjKeychatEditChatID, kn) {
+					currentKey = ffjtchatEditChatID
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_chatEditno_such_key
+				currentKey = ffjtchatEditnosuchkey
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -12163,13 +12313,13 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_chatEdit_ChatID:
+				case ffjtchatEditChatID:
 					goto handle_ChatID
 
-				case ffj_t_chatEdit_MessageID:
+				case ffjtchatEditMessageID:
 					goto handle_MessageID
 
-				case ffj_t_chatEditno_such_key:
+				case ffjtchatEditnosuchkey:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)
@@ -12185,7 +12335,7 @@ mainparse:
 
 handle_ChatID:
 
-	/* handler: uj.ChatID type=int64 kind=int64 quoted=false*/
+	/* handler: j.ChatID type=int64 kind=int64 quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -12205,7 +12355,7 @@ handle_ChatID:
 				return fs.WrapErr(err)
 			}
 
-			uj.ChatID = int64(tval)
+			j.ChatID = int64(tval)
 
 		}
 	}
@@ -12215,7 +12365,7 @@ handle_ChatID:
 
 handle_MessageID:
 
-	/* handler: uj.MessageID type=int kind=int quoted=false*/
+	/* handler: j.MessageID type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -12235,7 +12385,7 @@ handle_MessageID:
 				return fs.WrapErr(err)
 			}
 
-			uj.MessageID = int(tval)
+			j.MessageID = int(tval)
 
 		}
 	}
