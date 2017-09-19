@@ -32,6 +32,24 @@ type Update struct {
 	CallbackQuery      *CallbackQuery      `json:"callback_query"`
 }
 
+func (update Update) Chat() *Chat {
+	switch {
+	case update.Message != nil:
+		return update.Message.Chat
+	case update.EditedMessage != nil:
+		return update.EditedMessage.Chat
+	case update.ChannelPost != nil:
+		return update.ChannelPost.Chat
+	case update.EditedChannelPost != nil:
+		return update.EditedChannelPost.Chat
+	case update.CallbackQuery != nil:
+		if update.CallbackQuery.Message != nil {
+			return update.CallbackQuery.Message.Chat
+		}
+	}
+	return nil
+}
+
 // User is a user on Telegram.
 type User struct {
 	ID           int    `json:"id"`
@@ -121,9 +139,9 @@ func (c *Chat) IsChannel() bool {
 // Message is returned by almost every request, and contains data about almost anything.
 type Message struct {
 	MessageID             int              `json:"message_id"`
-	From                  *User            `json:"from"` // optional
+	From                  *User            `json:"from,omitempty"` // optional
 	Date                  int              `json:"date"`
-	Chat                  *Chat            `json:"chat"`
+	Chat                  *Chat            `json:"chat,omitempty"`
 	ForwardFrom           *User            `json:"forward_from,omitempty"`            // optional
 	ForwardDate           int              `json:"forward_date,omitempty"`            // optional
 	ReplyToMessage        *Message         `json:"reply_to_message,omitempty"`        // optional
@@ -344,12 +362,12 @@ type InlineKeyboardMarkup struct {
 //
 // Note that some values are references as even an empty string will change behavior.
 type InlineKeyboardButton struct {
-	Text                         string `json:"text"`
-	URL                          string `json:"url,omitempty"`                     // optional
-	CallbackData                 string `json:"callback_data,omitempty"`           // optional
-	SwitchInlineQuery            string `json:"switch_inline_query,omitempty"`              // optional
-	SwitchInlineQueryCurrentChat string `json:"switch_inline_query_current_chat,omitempty"` // optional
-	Pay                          bool `json:"pay,omitempty"` // optional
+	Text                         string  `json:"text"`
+	URL                          string  `json:"url,omitempty"`                              // optional
+	CallbackData                 string  `json:"callback_data,omitempty"`                    // optional
+	SwitchInlineQuery            *string `json:"switch_inline_query,omitempty"`              // optional
+	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // optional
+	Pay                          bool    `json:"pay,omitempty"`                              // optional
 }
 
 // CallbackQuery is data sent when a keyboard button with callback data

@@ -518,12 +518,19 @@ func NewInlineKeyboardButtonURL(text, url string) InlineKeyboardButton {
 	}
 }
 
-// NewInlineKeyboardButtonSwitch creates an inline keyboard button with
+// NewInlineKeyboardButtonSwitchInlineQuery creates an inline keyboard button with
 // text which allows the user to switch to a chat or return to a chat.
-func NewInlineKeyboardButtonSwitch(text, switchInlineQuery string) InlineKeyboardButton {
+func NewInlineKeyboardButtonSwitchInlineQuery(text, query string) InlineKeyboardButton {
 	return InlineKeyboardButton{
 		Text:              text,
-		SwitchInlineQuery: switchInlineQuery,
+		SwitchInlineQuery: &query,
+	}
+}
+
+func NewInlineKeyboardButtonSwitchInlineQueryCurrentChat(text, query string) InlineKeyboardButton {
+	return InlineKeyboardButton{
+		Text:              text,
+		SwitchInlineQueryCurrentChat: &query,
 	}
 }
 

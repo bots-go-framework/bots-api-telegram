@@ -3773,15 +3773,19 @@ func (j *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(j.CallbackData))
 		buf.WriteByte(',')
 	}
-	if len(j.SwitchInlineQuery) != 0 {
-		buf.WriteString(`"switch_inline_query":`)
-		fflib.WriteJsonString(buf, string(j.SwitchInlineQuery))
-		buf.WriteByte(',')
+	if j.SwitchInlineQuery != nil {
+		if true {
+			buf.WriteString(`"switch_inline_query":`)
+			fflib.WriteJsonString(buf, string(*j.SwitchInlineQuery))
+			buf.WriteByte(',')
+		}
 	}
-	if len(j.SwitchInlineQueryCurrentChat) != 0 {
-		buf.WriteString(`"switch_inline_query_current_chat":`)
-		fflib.WriteJsonString(buf, string(j.SwitchInlineQueryCurrentChat))
-		buf.WriteByte(',')
+	if j.SwitchInlineQueryCurrentChat != nil {
+		if true {
+			buf.WriteString(`"switch_inline_query_current_chat":`)
+			fflib.WriteJsonString(buf, string(*j.SwitchInlineQueryCurrentChat))
+			buf.WriteByte(',')
+		}
 	}
 	if j.Pay != false {
 		if j.Pay {
@@ -4110,11 +4114,15 @@ handle_SwitchInlineQuery:
 
 		if tok == fflib.FFTok_null {
 
+			j.SwitchInlineQuery = nil
+
 		} else {
 
+			var tval string
 			outBuf := fs.Output.Bytes()
 
-			j.SwitchInlineQuery = string(string(outBuf))
+			tval = string(string(outBuf))
+			j.SwitchInlineQuery = &tval
 
 		}
 	}
@@ -4136,11 +4144,15 @@ handle_SwitchInlineQueryCurrentChat:
 
 		if tok == fflib.FFTok_null {
 
+			j.SwitchInlineQueryCurrentChat = nil
+
 		} else {
 
+			var tval string
 			outBuf := fs.Output.Bytes()
 
-			j.SwitchInlineQueryCurrentChat = string(string(outBuf))
+			tval = string(string(outBuf))
+			j.SwitchInlineQueryCurrentChat = &tval
 
 		}
 	}
@@ -12683,37 +12695,40 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = err
 	buf.WriteString(`{ "message_id":`)
 	fflib.FormatBits2(buf, uint64(j.MessageID), 10, j.MessageID < 0)
-	if j.From != nil {
-		buf.WriteString(`,"from":`)
-
-		{
-
-			err = j.From.MarshalJSONBuf(buf)
-			if err != nil {
-				return err
-			}
-
-		}
-	} else {
-		buf.WriteString(`,"from":null`)
-	}
-	buf.WriteString(`,"date":`)
-	fflib.FormatBits2(buf, uint64(j.Date), 10, j.Date < 0)
-	if j.Chat != nil {
-		buf.WriteString(`,"chat":`)
-
-		{
-
-			err = j.Chat.MarshalJSONBuf(buf)
-			if err != nil {
-				return err
-			}
-
-		}
-	} else {
-		buf.WriteString(`,"chat":null`)
-	}
 	buf.WriteByte(',')
+	if j.From != nil {
+		if true {
+			buf.WriteString(`"from":`)
+
+			{
+
+				err = j.From.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
+			}
+			buf.WriteByte(',')
+		}
+	}
+	buf.WriteString(`"date":`)
+	fflib.FormatBits2(buf, uint64(j.Date), 10, j.Date < 0)
+	buf.WriteByte(',')
+	if j.Chat != nil {
+		if true {
+			buf.WriteString(`"chat":`)
+
+			{
+
+				err = j.Chat.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
+			}
+			buf.WriteByte(',')
+		}
+	}
 	if j.ForwardFrom != nil {
 		if true {
 			buf.WriteString(`"forward_from":`)

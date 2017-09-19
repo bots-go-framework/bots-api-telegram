@@ -3,12 +3,12 @@ package tgbotapi
 //go:generate ffjson $GOFILE
 
 import (
-	"encoding/json"
 	"io"
 	"net/url"
 	"strconv"
 	"github.com/pkg/errors"
 	"fmt"
+	"github.com/pquerna/ffjson/ffjson"
 )
 
 // Telegram constants
@@ -100,8 +100,9 @@ func (chat *BaseChat) Values() (url.Values, error) {
 	}
 
 	if chat.ReplyMarkup != nil {
-		data, err := json.Marshal(chat.ReplyMarkup)
+		data, err := ffjson.Marshal(chat.ReplyMarkup)
 		if err != nil {
+			ffjson.Pool(data)
 			return v, err
 		}
 		if string(data) == "null" {
@@ -109,6 +110,7 @@ func (chat *BaseChat) Values() (url.Values, error) {
 		}
 
 		v.Add("reply_markup", string(data))
+		ffjson.Pool(data)
 	}
 
 	v.Add("disable_notification", strconv.FormatBool(chat.DisableNotification))
@@ -141,12 +143,14 @@ func (file BaseFile) params() (map[string]string, error) {
 	}
 
 	if file.ReplyMarkup != nil {
-		data, err := json.Marshal(file.ReplyMarkup)
+		data, err := ffjson.Marshal(file.ReplyMarkup)
 		if err != nil {
+			ffjson.Pool(data)
 			return params, err
 		}
 
 		params["reply_markup"] = string(data)
+		ffjson.Pool(data)
 	}
 
 	if file.MimeType != "" {
@@ -206,11 +210,13 @@ func (edit BaseEdit) Values() (url.Values, error) {
 	}
 
 	if edit.ReplyMarkup != nil {
-		data, err := json.Marshal(edit.ReplyMarkup)
+		data, err := ffjson.Marshal(edit.ReplyMarkup)
 		if err != nil {
+			ffjson.Pool(data)
 			return v, err
 		}
 		v.Add("reply_markup", string(data))
+		ffjson.Pool(data)
 	}
 
 	return v, nil
@@ -682,6 +688,8 @@ type UpdateConfig struct {
 type WebhookConfig struct {
 	URL         *url.URL
 	Certificate interface{}
+	MaxConnections int
+	AllowedUpdates []string
 }
 
 // FileBytes contains information about a set of bytes to upload
@@ -735,11 +743,13 @@ func (config InlineConfig) Values() (url.Values, error) {
 		v.Add("switch_pm_parameter", config.SwitchPMParameter)
 	}
 
-	data, err := json.Marshal(config.Results)
+	data, err := ffjson.Marshal(config.Results)
 	if err != nil {
+		ffjson.Pool(data)
 		return v, err
 	}
 	v.Add("results", string(data))
+	ffjson.Pool(data)
 
 	return v, nil
 }

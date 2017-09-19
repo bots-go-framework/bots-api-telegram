@@ -11949,6 +11949,21 @@ func (j *WebhookConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if err != nil {
 		return err
 	}
+	buf.WriteString(`,"MaxConnections":`)
+	fflib.FormatBits2(buf, uint64(j.MaxConnections), 10, j.MaxConnections < 0)
+	buf.WriteString(`,"AllowedUpdates":`)
+	if j.AllowedUpdates != nil {
+		buf.WriteString(`[`)
+		for i, v := range j.AllowedUpdates {
+			if i != 0 {
+				buf.WriteString(`,`)
+			}
+			fflib.WriteJsonString(buf, string(v))
+		}
+		buf.WriteString(`]`)
+	} else {
+		buf.WriteString(`null`)
+	}
 	buf.WriteByte('}')
 	return nil
 }
@@ -11960,11 +11975,19 @@ const (
 	ffjtWebhookConfigURL
 
 	ffjtWebhookConfigCertificate
+
+	ffjtWebhookConfigMaxConnections
+
+	ffjtWebhookConfigAllowedUpdates
 )
 
 var ffjKeyWebhookConfigURL = []byte("URL")
 
 var ffjKeyWebhookConfigCertificate = []byte("Certificate")
+
+var ffjKeyWebhookConfigMaxConnections = []byte("MaxConnections")
+
+var ffjKeyWebhookConfigAllowedUpdates = []byte("AllowedUpdates")
 
 // UnmarshalJSON umarshall json - template of ffjson
 func (j *WebhookConfig) UnmarshalJSON(input []byte) error {
@@ -12027,10 +12050,26 @@ mainparse:
 			} else {
 				switch kn[0] {
 
+				case 'A':
+
+					if bytes.Equal(ffjKeyWebhookConfigAllowedUpdates, kn) {
+						currentKey = ffjtWebhookConfigAllowedUpdates
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'C':
 
 					if bytes.Equal(ffjKeyWebhookConfigCertificate, kn) {
 						currentKey = ffjtWebhookConfigCertificate
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'M':
+
+					if bytes.Equal(ffjKeyWebhookConfigMaxConnections, kn) {
+						currentKey = ffjtWebhookConfigMaxConnections
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -12043,6 +12082,18 @@ mainparse:
 						goto mainparse
 					}
 
+				}
+
+				if fflib.EqualFoldRight(ffjKeyWebhookConfigAllowedUpdates, kn) {
+					currentKey = ffjtWebhookConfigAllowedUpdates
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyWebhookConfigMaxConnections, kn) {
+					currentKey = ffjtWebhookConfigMaxConnections
+					state = fflib.FFParse_want_colon
+					goto mainparse
 				}
 
 				if fflib.SimpleLetterEqualFold(ffjKeyWebhookConfigCertificate, kn) {
@@ -12079,6 +12130,12 @@ mainparse:
 
 				case ffjtWebhookConfigCertificate:
 					goto handle_Certificate
+
+				case ffjtWebhookConfigMaxConnections:
+					goto handle_MaxConnections
+
+				case ffjtWebhookConfigAllowedUpdates:
+					goto handle_AllowedUpdates
 
 				case ffjtWebhookConfignosuchkey:
 					err = fs.SkipField(tok)
@@ -12128,6 +12185,110 @@ handle_Certificate:
 		err = json.Unmarshal(tbuf, &j.Certificate)
 		if err != nil {
 			return fs.WrapErr(err)
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_MaxConnections:
+
+	/* handler: j.MaxConnections type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			j.MaxConnections = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_AllowedUpdates:
+
+	/* handler: j.AllowedUpdates type=[]string kind=slice quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_left_brace && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for ", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+			j.AllowedUpdates = nil
+		} else {
+
+			j.AllowedUpdates = []string{}
+
+			wantVal := true
+
+			for {
+
+				var tmpJAllowedUpdates string
+
+				tok = fs.Scan()
+				if tok == fflib.FFTok_error {
+					goto tokerror
+				}
+				if tok == fflib.FFTok_right_brace {
+					break
+				}
+
+				if tok == fflib.FFTok_comma {
+					if wantVal == true {
+						// TODO(pquerna): this isn't an ideal error message, this handles
+						// things like [,,,] as an array value.
+						return fs.WrapErr(fmt.Errorf("wanted value token, but got token: %v", tok))
+					}
+					continue
+				} else {
+					wantVal = true
+				}
+
+				/* handler: tmpJAllowedUpdates type=string kind=string quoted=false*/
+
+				{
+
+					{
+						if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+							return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+						}
+					}
+
+					if tok == fflib.FFTok_null {
+
+					} else {
+
+						outBuf := fs.Output.Bytes()
+
+						tmpJAllowedUpdates = string(string(outBuf))
+
+					}
+				}
+
+				j.AllowedUpdates = append(j.AllowedUpdates, tmpJAllowedUpdates)
+
+				wantVal = false
+			}
 		}
 	}
 

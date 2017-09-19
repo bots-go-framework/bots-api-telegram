@@ -17,6 +17,7 @@ import (
 	"golang.org/x/net/context"
 	"github.com/pkg/errors"
 	"github.com/strongo/app/log"
+	"github.com/pquerna/ffjson/ffjson"
 )
 
 // BotAPI allows you to interact with the Telegram Bot API.
@@ -64,7 +65,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 	resp, err := bot.Client.PostForm(method, params)
 	if err != nil {
 		log.Errorf(bot.c, "Failed to send POST %v", method)
-		return APIResponse{}, err
+		return APIResponse{Ok: false}, err
 	}
 	defer resp.Body.Close()
 
@@ -86,16 +87,21 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 		return APIResponse{}, err
 	}
 
-	if bot.c != nil {
-		log.Debugf(bot.c, "Request to Telegram API %v: %v", endpoint, params)
-		log.Debugf(bot.c,"Telegram API response: %v", string(body))
+	var apiResp APIResponse
+
+	logRequestAndResponse := func() {
+		if bot.c != nil {
+			log.Debugf(bot.c, "Request to Telegram API %v: %v", endpoint, params)
+			log.Debugf(bot.c,"Telegram API response: %v", string(body))
+		}
 	}
 
-	var apiResp APIResponse
-	json.Unmarshal(body, &apiResp)
-
-	if !apiResp.Ok {
-		return APIResponse{}, errors.New(apiResp.Description)
+	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
+		logRequestAndResponse()
+		return apiResp, errors.WithMessage(err, fmt.Sprintf("Telegram API returned non JSON response"))
+	} else if !apiResp.Ok {
+		logRequestAndResponse()
+		return apiResp, errors.New(fmt.Sprintf("ErrorCode: %d, Description: %v", apiResp.ErrorCode, apiResp.Description))
 	}
 
 	return apiResp, nil
@@ -115,7 +121,7 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 	}
 
 	if string(resp.Result) != "true" { // TODO: This is a workaround for "answerCallbackQuery" that returns just "true".
-		if err = json.Unmarshal(resp.Result, &message); err != nil {
+		if err = ffjson.Unmarshal(resp.Result, &message); err != nil {
 			return message, errors.Wrapf(err, "Failed to call json.Unmarshal(%v)", string(resp.Result))
 		}
 		bot.debugLog(endpoint, params, message)
@@ -196,7 +202,9 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 	}
 
 	var apiResp APIResponse
-	json.Unmarshal(bytes, &apiResp)
+	if err = ffjson.Unmarshal(bytes, &apiResp); err != nil {
+		return apiResp, nil
+	}
 
 	if !apiResp.Ok {
 		return APIResponse{}, errors.New(apiResp.Description)
@@ -224,13 +232,16 @@ func (bot *BotAPI) GetFileDirectURL(fileID string) (string, error) {
 // and so you may get this data from BotAPI.Self without the need for
 // another request.
 func (bot *BotAPI) GetMe() (User, error) {
+	var user User
+
 	resp, err := bot.MakeRequest("getMe", nil)
 	if err != nil {
-		return User{}, err
+		return user, err
 	}
 
-	var user User
-	json.Unmarshal(resp.Result, &user)
+	if err = ffjson.Unmarshal(resp.Result, &user); err != nil {
+		return user, err
+	}
 
 	bot.debugLog("getMe", nil, user)
 
@@ -287,20 +298,23 @@ func (bot *BotAPI) sendExisting(method string, config Fileable) (Message, error)
 
 // uploadAndSend will send a Message with a new file to Telegram.
 func (bot *BotAPI) uploadAndSend(method string, config Fileable) (Message, error) {
+	var message Message
+
 	params, err := config.params()
 	if err != nil {
-		return Message{}, err
+		return message, err
 	}
 
 	file := config.getFile()
 
 	resp, err := bot.UploadFile(method, params, config.name(), file)
 	if err != nil {
-		return Message{}, err
+		return message, err
 	}
 
-	var message Message
-	json.Unmarshal(resp.Result, &message)
+	if err = ffjson.Unmarshal(resp.Result, &message); err != nil {
+		return message, err
+	}
 
 	bot.debugLog(method, nil, message)
 
@@ -332,6 +346,8 @@ func (bot *BotAPI) sendChattable(config Chattable) (Message, error) {
 // It requires UserID.
 // Offset and Limit are optional.
 func (bot *BotAPI) GetUserProfilePhotos(config UserProfilePhotosConfig) (UserProfilePhotos, error) {
+	var profilePhotos UserProfilePhotos
+
 	v := url.Values{}
 	v.Add("user_id", strconv.Itoa(config.UserID))
 	if config.Offset != 0 {
@@ -343,11 +359,12 @@ func (bot *BotAPI) GetUserProfilePhotos(config UserProfilePhotosConfig) (UserPro
 
 	resp, err := bot.MakeRequest("getUserProfilePhotos", v)
 	if err != nil {
-		return UserProfilePhotos{}, err
+		return profilePhotos, err
 	}
 
-	var profilePhotos UserProfilePhotos
-	json.Unmarshal(resp.Result, &profilePhotos)
+	if err = ffjson.Unmarshal(resp.Result, &profilePhotos); err != nil {
+		return profilePhotos, err
+	}
 
 	bot.debugLog("GetUserProfilePhoto", v, profilePhotos)
 
@@ -358,16 +375,19 @@ func (bot *BotAPI) GetUserProfilePhotos(config UserProfilePhotosConfig) (UserPro
 //
 // Requires FileID.
 func (bot *BotAPI) GetFile(config FileConfig) (File, error) {
+	var file File
+
 	v := url.Values{}
 	v.Add("file_id", config.FileID)
 
 	resp, err := bot.MakeRequest("getFile", v)
 	if err != nil {
-		return File{}, err
+		return file, err
 	}
 
-	var file File
-	json.Unmarshal(resp.Result, &file)
+	if err = ffjson.Unmarshal(resp.Result, &file); err != nil {
+		return file, err
+	}
 
 	bot.debugLog("GetFile", v, file)
 
@@ -382,6 +402,8 @@ func (bot *BotAPI) GetFile(config FileConfig) (File, error) {
 // Set Timeout to a large number to reduce requests so you can get updates
 // instantly instead of having to wait between requests.
 func (bot *BotAPI) GetUpdates(config UpdateConfig) ([]Update, error) {
+	var updates []Update
+
 	v := url.Values{}
 	if config.Offset > 0 {
 		v.Add("offset", strconv.Itoa(config.Offset))
@@ -395,11 +417,12 @@ func (bot *BotAPI) GetUpdates(config UpdateConfig) ([]Update, error) {
 
 	resp, err := bot.MakeRequest("getUpdates", v)
 	if err != nil {
-		return []Update{}, err
+		return updates, err
 	}
 
-	var updates []Update
-	json.Unmarshal(resp.Result, &updates)
+	if err = ffjson.Unmarshal(resp.Result, &updates); err != nil {
+		return updates, err
+	}
 
 	bot.debugLog("getUpdates", v, updates)
 
@@ -421,20 +444,28 @@ func (bot *BotAPI) SetWebhook(config WebhookConfig) (APIResponse, error) {
 	if config.Certificate == nil {
 		v := url.Values{}
 		v.Add("url", config.URL.String())
-
+		if len(config.AllowedUpdates) > 0 {
+			v.Add("allowed_updates", `["` + strings.Join(config.AllowedUpdates, `","`) + `"]`)
+		}
+		if config.MaxConnections > 0 {
+			v.Add("max_connections", strconv.Itoa(config.MaxConnections))
+		}
 		return bot.MakeRequest("setWebhook", v)
 	}
 
 	params := make(map[string]string)
 	params["url"] = config.URL.String()
 
+	var apiResp APIResponse
+
 	resp, err := bot.UploadFile("setWebhook", params, "certificate", config.Certificate)
 	if err != nil {
-		return APIResponse{}, err
+		return apiResp, err
 	}
 
-	var apiResp APIResponse
-	json.Unmarshal(resp.Result, &apiResp)
+	if err = ffjson.Unmarshal(resp.Result, &apiResp); err != nil {
+		return apiResp, err
+	}
 
 	if bot.c != nil {
 		log.Debugf(bot.c, "setWebhook resp: %+v\n", apiResp)
@@ -478,7 +509,10 @@ func (bot *BotAPI) ListenForWebhook(pattern string) <-chan Update {
 		bytes, _ := ioutil.ReadAll(r.Body)
 
 		var update Update
-		json.Unmarshal(bytes, &update)
+		if err := ffjson.Unmarshal(bytes, &update); err != nil {
+			log.Errorf(context.Background(), errors.WithMessage(err, "Failed to unmarshal update JSON").Error())
+			return
+		}
 
 		updatesChan <- update
 	})
@@ -496,11 +530,13 @@ func (bot *BotAPI) AnswerInlineQuery(config InlineConfig) (APIResponse, error) {
 	v.Add("cache_time", strconv.Itoa(config.CacheTime))
 	v.Add("is_personal", strconv.FormatBool(config.IsPersonal))
 	v.Add("next_offset", config.NextOffset)
-	data, err := json.Marshal(config.Results)
+	data, err := ffjson.Marshal(config.Results)
 	if err != nil {
+		ffjson.Pool(data)
 		return APIResponse{}, err
 	}
 	v.Add("results", string(data))
+	ffjson.Pool(data)
 	v.Add("switch_pm_text", config.SwitchPMText)
 	v.Add("switch_pm_parameter", config.SwitchPMParameter)
 
