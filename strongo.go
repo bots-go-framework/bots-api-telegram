@@ -21,7 +21,7 @@ func ReplyToResponse(chattable Chattable, w http.ResponseWriter) (string, error)
 	return s, err
 }
 
-func NewReplyKeyboardUsingStrings(buttons [][]string) ReplyKeyboardMarkup {
+func NewReplyKeyboardUsingStrings(buttons [][]string) *ReplyKeyboardMarkup {
 	kb := make([][]KeyboardButton, len(buttons))
 
 	for i, row := range buttons {
@@ -32,5 +32,5 @@ func NewReplyKeyboardUsingStrings(buttons [][]string) ReplyKeyboardMarkup {
 		kb[i] = kbRow
 	}
 
-	return ReplyKeyboardMarkup{Keyboard: kb, ResizeKeyboard: true}
+	return &ReplyKeyboardMarkup{Keyboard: kb, ResizeKeyboard: true}
 }

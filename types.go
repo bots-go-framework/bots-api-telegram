@@ -331,6 +331,12 @@ func (f *File) Link(token string) string {
 	return fmt.Sprintf(FileEndpoint, token, f.FilePath)
 }
 
+type isKeyboardMarkup int
+
+type KeyboardMarkup interface {
+	isKeyboardMarkup() isKeyboardMarkup
+}
+
 // ReplyKeyboardMarkup allows the Bot to set a custom keyboard.
 type ReplyKeyboardMarkup struct {
 	Keyboard        [][]KeyboardButton `json:"keyboard"`
@@ -338,6 +344,10 @@ type ReplyKeyboardMarkup struct {
 	OneTimeKeyboard bool               `json:"one_time_keyboard,omitempty"` // optional
 	Selective       bool               `json:"selective,omitempty"`         // optional
 }
+func (*ReplyKeyboardMarkup) isKeyboardMarkup() isKeyboardMarkup {
+	return 0
+}
+var _ KeyboardMarkup = (*ReplyKeyboardMarkup)(nil)
 
 // KeyboardButton is a button within a custom keyboard.
 type KeyboardButton struct {
@@ -351,11 +361,19 @@ type ReplyKeyboardHide struct {
 	HideKeyboard bool `json:"hide_keyboard"`
 	Selective    bool `json:"selective,omitempty"` // optional
 }
+func (*ReplyKeyboardHide) isKeyboardMarkup() isKeyboardMarkup {
+	return 0
+}
+var _ KeyboardMarkup = (*ReplyKeyboardHide)(nil)
 
 // InlineKeyboardMarkup is a custom keyboard presented for an inline bot.
 type InlineKeyboardMarkup struct {
 	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
 }
+func (*InlineKeyboardMarkup) isKeyboardMarkup() isKeyboardMarkup {
+	return 0
+}
+var _ KeyboardMarkup = (*InlineKeyboardMarkup)(nil)
 
 // InlineKeyboardButton is a button within a custom keyboard for
 // inline query responses.
@@ -387,6 +405,10 @@ type ForceReply struct {
 	ForceReply bool `json:"force_reply"`
 	Selective  bool `json:"selective,omitempty"` // optional
 }
+func (*ForceReply) isKeyboardMarkup() isKeyboardMarkup {
+	return 0
+}
+var _ KeyboardMarkup = (*ForceReply)(nil)
 
 // InlineQuery is a Query from Telegram for an inline request.
 type InlineQuery struct {

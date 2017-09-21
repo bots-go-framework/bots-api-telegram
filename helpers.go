@@ -432,7 +432,7 @@ func NewEditMessageCaption(chatID int64, messageID int, caption string) EditMess
 
 // NewEditMessageReplyMarkup allows you to edit the inline
 // keyboard markup.
-func NewEditMessageReplyMarkup(chatID int64, messageID int, inlineMessageID string, replyMarkup InlineKeyboardMarkup) EditMessageReplyMarkupConfig {
+func NewEditMessageReplyMarkup(chatID int64, messageID int, inlineMessageID string, replyMarkup *InlineKeyboardMarkup) EditMessageReplyMarkupConfig {
 	if inlineMessageID == "" && chatID == 0 && messageID == 0 {
 		panic("inlineMessageID is empty string && chatID == 0 && messageID == 0")
 	}
@@ -440,15 +440,15 @@ func NewEditMessageReplyMarkup(chatID int64, messageID int, inlineMessageID stri
 		BaseEdit: BaseEdit{
 			chatEdit: chatEdit{ChatID: chatID, MessageID: messageID},
 			InlineMessageID: inlineMessageID,
-			ReplyMarkup: &replyMarkup,
+			ReplyMarkup: replyMarkup,
 		},
 	}
 }
 
 // NewHideKeyboard hides the keyboard, with the option for being selective
 // or hiding for everyone.
-func NewHideKeyboard(selective bool) ReplyKeyboardHide {
-	return ReplyKeyboardHide{
+func NewHideKeyboard(selective bool) *ReplyKeyboardHide {
+	return &ReplyKeyboardHide{
 		HideKeyboard: true,
 		Selective:    selective,
 	}
@@ -489,12 +489,12 @@ func NewKeyboardButtonRow(buttons ...KeyboardButton) []KeyboardButton {
 }
 
 // NewReplyKeyboard creates a new regular keyboard with sane defaults.
-func NewReplyKeyboard(rows ...[]KeyboardButton) ReplyKeyboardMarkup {
+func NewReplyKeyboard(rows ...[]KeyboardButton) *ReplyKeyboardMarkup {
 	var keyboard [][]KeyboardButton
 
 	keyboard = append(keyboard, rows...)
 
-	return ReplyKeyboardMarkup{
+	return &ReplyKeyboardMarkup{
 		ResizeKeyboard: true,
 		Keyboard:       keyboard,
 	}
@@ -544,12 +544,12 @@ func NewInlineKeyboardRow(buttons ...InlineKeyboardButton) []InlineKeyboardButto
 }
 
 // NewInlineKeyboardMarkup creates a new inline keyboard.
-func NewInlineKeyboardMarkup(rows ...[]InlineKeyboardButton) InlineKeyboardMarkup { // TODO: Return pointer?
+func NewInlineKeyboardMarkup(rows ...[]InlineKeyboardButton) *InlineKeyboardMarkup {
 	var keyboard [][]InlineKeyboardButton
 
 	keyboard = append(keyboard, rows...)
 
-	return InlineKeyboardMarkup{
+	return &InlineKeyboardMarkup{
 		InlineKeyboard: keyboard,
 	}
 }
