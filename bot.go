@@ -96,11 +96,13 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 		}
 	}
 
+	logRequestAndResponse()
+
 	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
-		logRequestAndResponse()
+		//logRequestAndResponse()
 		return apiResp, errors.WithMessage(err, fmt.Sprintf("Telegram API returned non JSON response"))
 	} else if !apiResp.Ok {
-		logRequestAndResponse()
+		//logRequestAndResponse()
 		return apiResp, errors.New(fmt.Sprintf("ErrorCode: %d, Description: %v", apiResp.ErrorCode, apiResp.Description))
 	}
 

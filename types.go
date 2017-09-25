@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"github.com/strongo/bots-framework/core"
 )
 
 // APIResponse is a response from the Telegram API with the result
@@ -331,11 +332,6 @@ func (f *File) Link(token string) string {
 	return fmt.Sprintf(FileEndpoint, token, f.FilePath)
 }
 
-type isKeyboardMarkup int
-
-type KeyboardMarkup interface {
-	isKeyboardMarkup() isKeyboardMarkup
-}
 
 // ReplyKeyboardMarkup allows the Bot to set a custom keyboard.
 type ReplyKeyboardMarkup struct {
@@ -344,10 +340,12 @@ type ReplyKeyboardMarkup struct {
 	OneTimeKeyboard bool               `json:"one_time_keyboard,omitempty"` // optional
 	Selective       bool               `json:"selective,omitempty"`         // optional
 }
-func (*ReplyKeyboardMarkup) isKeyboardMarkup() isKeyboardMarkup {
-	return 0
+
+func (*ReplyKeyboardMarkup) KeyboardType() bots.KeyboardType {
+	return bots.KeyboardTypeBottom
 }
-var _ KeyboardMarkup = (*ReplyKeyboardMarkup)(nil)
+
+var _ bots.Keyboard = (*ReplyKeyboardMarkup)(nil)
 
 // KeyboardButton is a button within a custom keyboard.
 type KeyboardButton struct {
@@ -361,19 +359,19 @@ type ReplyKeyboardHide struct {
 	HideKeyboard bool `json:"hide_keyboard"`
 	Selective    bool `json:"selective,omitempty"` // optional
 }
-func (*ReplyKeyboardHide) isKeyboardMarkup() isKeyboardMarkup {
-	return 0
+func (*ReplyKeyboardHide) KeyboardType() bots.KeyboardType {
+	return bots.KeyboardTypeHide
 }
-var _ KeyboardMarkup = (*ReplyKeyboardHide)(nil)
+var _ bots.Keyboard = (*ReplyKeyboardHide)(nil)
 
 // InlineKeyboardMarkup is a custom keyboard presented for an inline bot.
 type InlineKeyboardMarkup struct {
 	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
 }
-func (*InlineKeyboardMarkup) isKeyboardMarkup() isKeyboardMarkup {
-	return 0
+func (*InlineKeyboardMarkup) KeyboardType() bots.KeyboardType {
+	return bots.KeyboardTypeInline
 }
-var _ KeyboardMarkup = (*InlineKeyboardMarkup)(nil)
+var _ bots.Keyboard = (*InlineKeyboardMarkup)(nil)
 
 // InlineKeyboardButton is a button within a custom keyboard for
 // inline query responses.
@@ -405,10 +403,10 @@ type ForceReply struct {
 	ForceReply bool `json:"force_reply"`
 	Selective  bool `json:"selective,omitempty"` // optional
 }
-func (*ForceReply) isKeyboardMarkup() isKeyboardMarkup {
-	return 0
+func (*ForceReply) KeyboardType() bots.KeyboardType {
+	return bots.KeyboardTypeForceReply
 }
-var _ KeyboardMarkup = (*ForceReply)(nil)
+var _ bots.Keyboard = (*ForceReply)(nil)
 
 // InlineQuery is a Query from Telegram for an inline request.
 type InlineQuery struct {
