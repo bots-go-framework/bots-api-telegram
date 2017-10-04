@@ -100,10 +100,10 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 
 	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
 		//logRequestAndResponse()
-		return apiResp, errors.WithMessage(err, fmt.Sprintf("Telegram API returned non JSON response"))
+		return apiResp, errors.WithMessage(err, "Telegram API returned non JSON response or unknown JSON:\n" + string(body))
 	} else if !apiResp.Ok {
 		//logRequestAndResponse()
-		return apiResp, errors.New(fmt.Sprintf("ErrorCode: %d, Description: %v", apiResp.ErrorCode, apiResp.Description))
+		return apiResp, apiResp
 	}
 
 	return apiResp, nil
@@ -119,7 +119,7 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 	}
 
 	if !resp.Ok || resp.ErrorCode != 0 {
-		return message, errors.New(fmt.Sprintf("Telegram returned Ok=%v, ErrorCode=%v, Description: %v; Result: %v", resp.Ok, resp.ErrorCode, resp.Description, string(resp.Result)))
+		return message, resp
 	}
 
 	if string(resp.Result) != "true" { // TODO: This is a workaround for "answerCallbackQuery" that returns just "true".

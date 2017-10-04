@@ -1738,6 +1738,473 @@ done:
 }
 
 // MarshalJSON marshal bytes to json - template
+func (j *ChatMember) MarshalJSON() ([]byte, error) {
+	var buf fflib.Buffer
+	if j == nil {
+		buf.WriteString("null")
+		return buf.Bytes(), nil
+	}
+	err := j.MarshalJSONBuf(&buf)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *ChatMember) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
+		buf.WriteString("null")
+		return nil
+	}
+	var err error
+	var obj []byte
+	_ = obj
+	_ = err
+	buf.WriteString(`{ `)
+	if j.IsBot != false {
+		if j.IsBot {
+			buf.WriteString(`"is_bot":true`)
+		} else {
+			buf.WriteString(`"is_bot":false`)
+		}
+		buf.WriteByte(',')
+	}
+	buf.WriteString(`"id":`)
+	fflib.FormatBits2(buf, uint64(j.ID), 10, j.ID < 0)
+	buf.WriteByte(',')
+	if len(j.FirstName) != 0 {
+		buf.WriteString(`"first_name":`)
+		fflib.WriteJsonString(buf, string(j.FirstName))
+		buf.WriteByte(',')
+	}
+	if len(j.LastName) != 0 {
+		buf.WriteString(`"last_name":`)
+		fflib.WriteJsonString(buf, string(j.LastName))
+		buf.WriteByte(',')
+	}
+	if len(j.UserName) != 0 {
+		buf.WriteString(`"username":`)
+		fflib.WriteJsonString(buf, string(j.UserName))
+		buf.WriteByte(',')
+	}
+	if len(j.LanguageCode) != 0 {
+		buf.WriteString(`"language_code":`)
+		fflib.WriteJsonString(buf, string(j.LanguageCode))
+		buf.WriteByte(',')
+	}
+	buf.Rewind(1)
+	buf.WriteByte('}')
+	return nil
+}
+
+const (
+	ffjtChatMemberbase = iota
+	ffjtChatMembernosuchkey
+
+	ffjtChatMemberIsBot
+
+	ffjtChatMemberID
+
+	ffjtChatMemberFirstName
+
+	ffjtChatMemberLastName
+
+	ffjtChatMemberUserName
+
+	ffjtChatMemberLanguageCode
+)
+
+var ffjKeyChatMemberIsBot = []byte("is_bot")
+
+var ffjKeyChatMemberID = []byte("id")
+
+var ffjKeyChatMemberFirstName = []byte("first_name")
+
+var ffjKeyChatMemberLastName = []byte("last_name")
+
+var ffjKeyChatMemberUserName = []byte("username")
+
+var ffjKeyChatMemberLanguageCode = []byte("language_code")
+
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *ChatMember) UnmarshalJSON(input []byte) error {
+	fs := fflib.NewFFLexer(input)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+}
+
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *ChatMember) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtChatMemberbase
+	_ = currentKey
+	tok := fflib.FFTok_init
+	wantedTok := fflib.FFTok_init
+
+mainparse:
+	for {
+		tok = fs.Scan()
+		//	println(fmt.Sprintf("debug: tok: %v  state: %v", tok, state))
+		if tok == fflib.FFTok_error {
+			goto tokerror
+		}
+
+		switch state {
+
+		case fflib.FFParse_map_start:
+			if tok != fflib.FFTok_left_bracket {
+				wantedTok = fflib.FFTok_left_bracket
+				goto wrongtokenerror
+			}
+			state = fflib.FFParse_want_key
+			continue
+
+		case fflib.FFParse_after_value:
+			if tok == fflib.FFTok_comma {
+				state = fflib.FFParse_want_key
+			} else if tok == fflib.FFTok_right_bracket {
+				goto done
+			} else {
+				wantedTok = fflib.FFTok_comma
+				goto wrongtokenerror
+			}
+
+		case fflib.FFParse_want_key:
+			// json {} ended. goto exit. woo.
+			if tok == fflib.FFTok_right_bracket {
+				goto done
+			}
+			if tok != fflib.FFTok_string {
+				wantedTok = fflib.FFTok_string
+				goto wrongtokenerror
+			}
+
+			kn := fs.Output.Bytes()
+			if len(kn) <= 0 {
+				// "" case. hrm.
+				currentKey = ffjtChatMembernosuchkey
+				state = fflib.FFParse_want_colon
+				goto mainparse
+			} else {
+				switch kn[0] {
+
+				case 'f':
+
+					if bytes.Equal(ffjKeyChatMemberFirstName, kn) {
+						currentKey = ffjtChatMemberFirstName
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'i':
+
+					if bytes.Equal(ffjKeyChatMemberIsBot, kn) {
+						currentKey = ffjtChatMemberIsBot
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffjKeyChatMemberID, kn) {
+						currentKey = ffjtChatMemberID
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'l':
+
+					if bytes.Equal(ffjKeyChatMemberLastName, kn) {
+						currentKey = ffjtChatMemberLastName
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffjKeyChatMemberLanguageCode, kn) {
+						currentKey = ffjtChatMemberLanguageCode
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'u':
+
+					if bytes.Equal(ffjKeyChatMemberUserName, kn) {
+						currentKey = ffjtChatMemberUserName
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				}
+
+				if fflib.AsciiEqualFold(ffjKeyChatMemberLanguageCode, kn) {
+					currentKey = ffjtChatMemberLanguageCode
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyChatMemberUserName, kn) {
+					currentKey = ffjtChatMemberUserName
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyChatMemberLastName, kn) {
+					currentKey = ffjtChatMemberLastName
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyChatMemberFirstName, kn) {
+					currentKey = ffjtChatMemberFirstName
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffjKeyChatMemberID, kn) {
+					currentKey = ffjtChatMemberID
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyChatMemberIsBot, kn) {
+					currentKey = ffjtChatMemberIsBot
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				currentKey = ffjtChatMembernosuchkey
+				state = fflib.FFParse_want_colon
+				goto mainparse
+			}
+
+		case fflib.FFParse_want_colon:
+			if tok != fflib.FFTok_colon {
+				wantedTok = fflib.FFTok_colon
+				goto wrongtokenerror
+			}
+			state = fflib.FFParse_want_value
+			continue
+		case fflib.FFParse_want_value:
+
+			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
+				switch currentKey {
+
+				case ffjtChatMemberIsBot:
+					goto handle_IsBot
+
+				case ffjtChatMemberID:
+					goto handle_ID
+
+				case ffjtChatMemberFirstName:
+					goto handle_FirstName
+
+				case ffjtChatMemberLastName:
+					goto handle_LastName
+
+				case ffjtChatMemberUserName:
+					goto handle_UserName
+
+				case ffjtChatMemberLanguageCode:
+					goto handle_LanguageCode
+
+				case ffjtChatMembernosuchkey:
+					err = fs.SkipField(tok)
+					if err != nil {
+						return fs.WrapErr(err)
+					}
+					state = fflib.FFParse_after_value
+					goto mainparse
+				}
+			} else {
+				goto wantedvalue
+			}
+		}
+	}
+
+handle_IsBot:
+
+	/* handler: j.IsBot type=bool kind=bool quoted=false*/
+
+	{
+		if tok != fflib.FFTok_bool && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for bool", tok))
+		}
+	}
+
+	{
+		if tok == fflib.FFTok_null {
+
+		} else {
+			tmpb := fs.Output.Bytes()
+
+			if bytes.Compare([]byte{'t', 'r', 'u', 'e'}, tmpb) == 0 {
+
+				j.IsBot = true
+
+			} else if bytes.Compare([]byte{'f', 'a', 'l', 's', 'e'}, tmpb) == 0 {
+
+				j.IsBot = false
+
+			} else {
+				err = errors.New("unexpected bytes for true/false value")
+				return fs.WrapErr(err)
+			}
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_ID:
+
+	/* handler: j.ID type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			j.ID = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_FirstName:
+
+	/* handler: j.FirstName type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.FirstName = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_LastName:
+
+	/* handler: j.LastName type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.LastName = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_UserName:
+
+	/* handler: j.UserName type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.UserName = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_LanguageCode:
+
+	/* handler: j.LanguageCode type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.LanguageCode = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+wantedvalue:
+	return fs.WrapErr(fmt.Errorf("wanted value token, but got token: %v", tok))
+wrongtokenerror:
+	return fs.WrapErr(fmt.Errorf("ffjson: wanted token: %v, but got token: %v output=%s", wantedTok, tok, fs.Output.String()))
+tokerror:
+	if fs.BigError != nil {
+		return fs.WrapErr(fs.BigError)
+	}
+	err = fs.Error.ToError()
+	if err != nil {
+		return fs.WrapErr(err)
+	}
+	panic("ffjson-generated: unreachable, please report bug.")
+done:
+
+	return nil
+}
+
+// MarshalJSON marshal bytes to json - template
 func (j *ChosenInlineResult) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if j == nil {
@@ -12946,6 +13413,21 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
+	if j.NewChatParticipant != nil {
+		if true {
+			buf.WriteString(`"new_chat_participant":`)
+
+			{
+
+				err = j.NewChatParticipant.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
+			}
+			buf.WriteByte(',')
+		}
+	}
 	if j.NewChatMember != nil {
 		if true {
 			buf.WriteString(`"new_chat_member":`)
@@ -12971,11 +13453,6 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 				}
 
 				{
-
-					if v == nil {
-						buf.WriteString("null")
-						return nil
-					}
 
 					err = v.MarshalJSONBuf(buf)
 					if err != nil {
@@ -13140,6 +13617,8 @@ const (
 
 	ffjtMessageVenue
 
+	ffjtMessageNewChatParticipant
+
 	ffjtMessageNewChatMember
 
 	ffjtMessageNewChatMembers
@@ -13202,6 +13681,8 @@ var ffjKeyMessageContact = []byte("contact")
 var ffjKeyMessageLocation = []byte("location")
 
 var ffjKeyMessageVenue = []byte("venue")
+
+var ffjKeyMessageNewChatParticipant = []byte("new_chat_participant")
 
 var ffjKeyMessageNewChatMember = []byte("new_chat_member")
 
@@ -13404,7 +13885,12 @@ mainparse:
 
 				case 'n':
 
-					if bytes.Equal(ffjKeyMessageNewChatMember, kn) {
+					if bytes.Equal(ffjKeyMessageNewChatParticipant, kn) {
+						currentKey = ffjtMessageNewChatParticipant
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffjKeyMessageNewChatMember, kn) {
 						currentKey = ffjtMessageNewChatMember
 						state = fflib.FFParse_want_colon
 						goto mainparse
@@ -13555,6 +14041,12 @@ mainparse:
 
 				if fflib.AsciiEqualFold(ffjKeyMessageNewChatMember, kn) {
 					currentKey = ffjtMessageNewChatMember
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.AsciiEqualFold(ffjKeyMessageNewChatParticipant, kn) {
+					currentKey = ffjtMessageNewChatParticipant
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -13746,6 +14238,9 @@ mainparse:
 
 				case ffjtMessageVenue:
 					goto handle_Venue
+
+				case ffjtMessageNewChatParticipant:
+					goto handle_NewChatParticipant
 
 				case ffjtMessageNewChatMember:
 					goto handle_NewChatMember
@@ -14401,9 +14896,36 @@ handle_Venue:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
+handle_NewChatParticipant:
+
+	/* handler: j.NewChatParticipant type=tgbotapi.ChatMember kind=struct quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			j.NewChatParticipant = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
+		if j.NewChatParticipant == nil {
+			j.NewChatParticipant = new(ChatMember)
+		}
+
+		err = j.NewChatParticipant.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
 handle_NewChatMember:
 
-	/* handler: j.NewChatMember type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.NewChatMember type=tgbotapi.ChatMember kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14415,7 +14937,7 @@ handle_NewChatMember:
 		}
 
 		if j.NewChatMember == nil {
-			j.NewChatMember = new(User)
+			j.NewChatMember = new(ChatMember)
 		}
 
 		err = j.NewChatMember.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
@@ -14430,7 +14952,7 @@ handle_NewChatMember:
 
 handle_NewChatMembers:
 
-	/* handler: j.NewChatMembers type=[]*tgbotapi.User kind=slice quoted=false*/
+	/* handler: j.NewChatMembers type=[]tgbotapi.ChatMember kind=slice quoted=false*/
 
 	{
 
@@ -14444,13 +14966,13 @@ handle_NewChatMembers:
 			j.NewChatMembers = nil
 		} else {
 
-			j.NewChatMembers = []*User{}
+			j.NewChatMembers = []ChatMember{}
 
 			wantVal := true
 
 			for {
 
-				var tmpJNewChatMembers *User
+				var tmpJNewChatMembers ChatMember
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -14471,19 +14993,13 @@ handle_NewChatMembers:
 					wantVal = true
 				}
 
-				/* handler: tmpJNewChatMembers type=*tgbotapi.User kind=ptr quoted=false*/
+				/* handler: tmpJNewChatMembers type=tgbotapi.ChatMember kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
 
-						tmpJNewChatMembers = nil
-
 						state = fflib.FFParse_after_value
 						goto mainparse
-					}
-
-					if tmpJNewChatMembers == nil {
-						tmpJNewChatMembers = new(User)
 					}
 
 					err = tmpJNewChatMembers.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
@@ -14505,7 +15021,7 @@ handle_NewChatMembers:
 
 handle_LeftChatMember:
 
-	/* handler: j.LeftChatMember type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.LeftChatMember type=tgbotapi.ChatMember kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14517,7 +15033,7 @@ handle_LeftChatMember:
 		}
 
 		if j.LeftChatMember == nil {
-			j.LeftChatMember = new(User)
+			j.LeftChatMember = new(ChatMember)
 		}
 
 		err = j.LeftChatMember.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)

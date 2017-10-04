@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 	"github.com/strongo/bots-framework/core"
+	"bytes"
+	"strconv"
 )
 
 // APIResponse is a response from the Telegram API with the result
@@ -19,6 +21,10 @@ type APIResponse struct {
 	Result      json.RawMessage `json:"result"`
 	ErrorCode   int             `json:"error_code"`
 	Description string          `json:"description"`
+}
+
+func (r APIResponse) Error() string {
+	return fmt.Sprintf("Telegram returned Ok=%v, ErrorCode=%v, Description: %v; Result: %v", r.Ok, r.ErrorCode, r.Description, string(r.Result))
 }
 
 // Update is an update response, from GetUpdates.
@@ -60,27 +66,67 @@ type User struct {
 	LanguageCode string `json:"language_code,omitempty"` // optional
 }
 
-func (u *User) Platform() string {
+type ChatMember struct {
+	User
+	IsBot bool `json:"is_bot,omitempty"`
+}
+
+func (chatMember ChatMember) IsBotUser() bool {
+	return chatMember.IsBot
+}
+
+func (u User) Platform() string {
 	return "Telegram"
 }
 
-func (u *User) GetID() interface{} {
+func (u User) GetID() interface{} {
 	return u.ID
 }
 
-func (u *User) GetFirstName() string {
+func (u User) GetFirstName() string {
 	return u.FirstName
 }
 
-func (u *User) GetLastName() string {
+func (u User) GetLastName() string {
 	return u.LastName
 }
 
-func (u *User) GetUserName() string {
+func (u User) GetUserName() string {
 	return u.UserName
 }
 
-func (u *User) GetLanguage() string {
+func (u User) GetFullName() string {
+	var buffer bytes.Buffer
+	if u.FirstName != "" {
+		buffer.WriteString(u.FirstName)
+		if u.LastName != "" {
+			buffer.WriteString(" ")
+			buffer.WriteString(u.LastName)
+			return buffer.String()
+		}
+		if u.UserName != "" {
+			fmt.Fprintf(&buffer, " (@%v)", u.UserName)
+		}
+		return buffer.String()
+	}
+	if u.LastName != "" {
+		buffer.WriteString(u.LastName)
+		if u.UserName != "" {
+			fmt.Fprintf(&buffer, " (@%v)", u.UserName)
+		}
+		return buffer.String()
+	}
+
+	if u.UserName != "" {
+		return "@" + u.UserName
+	}
+
+	return "#" + strconv.Itoa(u.ID)
+}
+
+
+
+func (u User) GetLanguage() string {
 	return u.LanguageCode
 }
 
@@ -158,9 +204,10 @@ type Message struct {
 	Contact               *Contact         `json:"contact,omitempty"`                 // optional
 	Location              *Location        `json:"location,omitempty"`                // optional
 	Venue                 *Venue           `json:"venue,omitempty"`                   // optional
-	NewChatMember         *User            `json:"new_chat_member,omitempty"`         // Obsolete
-	NewChatMembers        []*User          `json:"new_chat_members,omitempty"`        // optional
-	LeftChatMember        *User            `json:"left_chat_member,omitempty"`        // optional
+	NewChatParticipant    *ChatMember      `json:"new_chat_participant,omitempty"`    // Obsolete
+	NewChatMember         *ChatMember      `json:"new_chat_member,omitempty"`         // Obsolete
+	NewChatMembers        []ChatMember    `json:"new_chat_members,omitempty"`        // optional
+	LeftChatMember        *ChatMember      `json:"left_chat_member,omitempty"`        // optional
 	NewChatTitle          string           `json:"new_chat_title,omitempty"`          // optional
 	NewChatPhoto          *[]PhotoSize     `json:"new_chat_photo,omitempty"`          // optional
 	DeleteChatPhoto       bool             `json:"delete_chat_photo,omitempty"`       // optional
@@ -332,7 +379,6 @@ func (f *File) Link(token string) string {
 	return fmt.Sprintf(FileEndpoint, token, f.FilePath)
 }
 
-
 // ReplyKeyboardMarkup allows the Bot to set a custom keyboard.
 type ReplyKeyboardMarkup struct {
 	Keyboard        [][]KeyboardButton `json:"keyboard"`
@@ -359,18 +405,22 @@ type ReplyKeyboardHide struct {
 	HideKeyboard bool `json:"hide_keyboard"`
 	Selective    bool `json:"selective,omitempty"` // optional
 }
+
 func (*ReplyKeyboardHide) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeHide
 }
+
 var _ bots.Keyboard = (*ReplyKeyboardHide)(nil)
 
 // InlineKeyboardMarkup is a custom keyboard presented for an inline bot.
 type InlineKeyboardMarkup struct {
 	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
 }
+
 func (*InlineKeyboardMarkup) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeInline
 }
+
 var _ bots.Keyboard = (*InlineKeyboardMarkup)(nil)
 
 // InlineKeyboardButton is a button within a custom keyboard for
@@ -403,9 +453,11 @@ type ForceReply struct {
 	ForceReply bool `json:"force_reply"`
 	Selective  bool `json:"selective,omitempty"` // optional
 }
+
 func (*ForceReply) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeForceReply
 }
+
 var _ bots.Keyboard = (*ForceReply)(nil)
 
 // InlineQuery is a Query from Telegram for an inline request.
