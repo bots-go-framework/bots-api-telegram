@@ -24,7 +24,10 @@ type APIResponse struct {
 }
 
 func (r APIResponse) Error() string {
-	return fmt.Sprintf("Telegram returned Ok=%v, ErrorCode=%v, Description: %v; Result: %v", r.Ok, r.ErrorCode, r.Description, string(r.Result))
+	if r.Ok || r.ErrorCode != 0 {
+		return fmt.Sprintf("tgbotapi.APIResponse{Ok: %v, ErrorCode: %d, Description: %v}", r.Ok, r.ErrorCode, r.Description)
+	}
+	return ""
 }
 
 // Update is an update response, from GetUpdates.
