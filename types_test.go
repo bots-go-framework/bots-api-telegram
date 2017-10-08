@@ -1,13 +1,12 @@
-package tgbotapi_test
+package tgbotapi
 
 import (
-	"github.com/strongo/bots-api-telegram"
 	"testing"
 	"time"
 )
 
 func TestUserStringWith(t *testing.T) {
-	user := tgbotapi.User{0, "Test", "Test", ""}
+	user := User{0, "Test", "Test", "", ""}
 
 	if user.String() != "Test Test" {
 		t.Fail()
@@ -15,7 +14,7 @@ func TestUserStringWith(t *testing.T) {
 }
 
 func TestUserStringWithUserName(t *testing.T) {
-	user := tgbotapi.User{0, "Test", "Test", "@test"}
+	user := User{0, "Test", "Test", "@test", ""}
 
 	if user.String() != "@test" {
 		t.Fail()
@@ -23,7 +22,7 @@ func TestUserStringWithUserName(t *testing.T) {
 }
 
 func TestMessageTime(t *testing.T) {
-	message := tgbotapi.Message{Date: 0}
+	message := Message{Date: 0}
 
 	date := time.Unix(0, 0)
 	if message.Time() != date {
@@ -32,7 +31,7 @@ func TestMessageTime(t *testing.T) {
 }
 
 func TestMessageIsCommandWithCommand(t *testing.T) {
-	message := tgbotapi.Message{Text: "/command"}
+	message := Message{Text: "/command"}
 
 	if message.IsCommand() != true {
 		t.Fail()
@@ -40,7 +39,7 @@ func TestMessageIsCommandWithCommand(t *testing.T) {
 }
 
 func TestIsCommandWithText(t *testing.T) {
-	message := tgbotapi.Message{Text: "some text"}
+	message := Message{Text: "some text"}
 
 	if message.IsCommand() != false {
 		t.Fail()
@@ -48,7 +47,7 @@ func TestIsCommandWithText(t *testing.T) {
 }
 
 func TestIsCommandWithEmptyText(t *testing.T) {
-	message := tgbotapi.Message{Text: ""}
+	message := Message{Text: ""}
 
 	if message.IsCommand() != false {
 		t.Fail()
@@ -56,15 +55,15 @@ func TestIsCommandWithEmptyText(t *testing.T) {
 }
 
 func TestCommandWithCommand(t *testing.T) {
-	message := tgbotapi.Message{Text: "/command"}
+	message := Message{Text: "/testcommand"}
 
-	if message.Command() != "/command" {
-		t.Fail()
+	if message.Command() != "testcommand" {
+		t.Fatalf("Expected `/testcommand`, got: " + message.Command())
 	}
 }
 
 func TestCommandWithEmptyText(t *testing.T) {
-	message := tgbotapi.Message{Text: ""}
+	message := Message{Text: ""}
 
 	if message.Command() != "" {
 		t.Fail()
@@ -72,7 +71,7 @@ func TestCommandWithEmptyText(t *testing.T) {
 }
 
 func TestCommandWithNonCommand(t *testing.T) {
-	message := tgbotapi.Message{Text: "test text"}
+	message := Message{Text: "test text"}
 
 	if message.Command() != "" {
 		t.Fail()
@@ -80,28 +79,28 @@ func TestCommandWithNonCommand(t *testing.T) {
 }
 
 func TestMessageCommandArgumentsWithArguments(t *testing.T) {
-	message := tgbotapi.Message{Text: "/command with arguments"}
+	message := Message{Text: "/command with arguments"}
 	if message.CommandArguments() != "with arguments" {
 		t.Fail()
 	}
 }
 
 func TestMessageCommandArgumentsWithoutArguments(t *testing.T) {
-	message := tgbotapi.Message{Text: "/command"}
+	message := Message{Text: "/command"}
 	if message.CommandArguments() != "" {
 		t.Fail()
 	}
 }
 
 func TestMessageCommandArgumentsForNonCommand(t *testing.T) {
-	message := tgbotapi.Message{Text: "test text"}
+	message := Message{Text: "test text"}
 	if message.CommandArguments() != "" {
 		t.Fail()
 	}
 }
 
 func TestChatIsPrivate(t *testing.T) {
-	chat := tgbotapi.Chat{ID: 10, Type: "private"}
+	chat := Chat{ID: 10, Type: "private"}
 
 	if chat.IsPrivate() != true {
 		t.Fail()
@@ -109,7 +108,7 @@ func TestChatIsPrivate(t *testing.T) {
 }
 
 func TestChatIsGroup(t *testing.T) {
-	chat := tgbotapi.Chat{ID: 10, Type: "group"}
+	chat := Chat{ID: 10, Type: "group"}
 
 	if chat.IsGroup() != true {
 		t.Fail()
@@ -117,7 +116,7 @@ func TestChatIsGroup(t *testing.T) {
 }
 
 func TestChatIsChannel(t *testing.T) {
-	chat := tgbotapi.Chat{ID: 10, Type: "channel"}
+	chat := Chat{ID: 10, Type: "channel"}
 
 	if chat.IsChannel() != true {
 		t.Fail()
@@ -125,7 +124,7 @@ func TestChatIsChannel(t *testing.T) {
 }
 
 func TestChatIsSuperGroup(t *testing.T) {
-	chat := tgbotapi.Chat{ID: 10, Type: "supergroup"}
+	chat := Chat{ID: 10, Type: "supergroup"}
 
 	if !chat.IsSuperGroup() {
 		t.Fail()
@@ -133,7 +132,7 @@ func TestChatIsSuperGroup(t *testing.T) {
 }
 
 func TestFileLink(t *testing.T) {
-	file := tgbotapi.File{FilePath: "test/test.txt"}
+	file := File{FilePath: "test/test.txt"}
 
 	if file.Link("token") != "https://api.telegram.org/file/bottoken/test/test.txt" {
 		t.Fail()

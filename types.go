@@ -25,7 +25,7 @@ type APIResponse struct {
 
 func (r APIResponse) Error() string {
 	if r.Ok || r.ErrorCode != 0 {
-		return fmt.Sprintf("tgbotapi.APIResponse{Ok: %v, ErrorCode: %d, Description: %v}", r.Ok, r.ErrorCode, r.Description)
+		return fmt.Sprintf("APIResponse{Ok: %v, ErrorCode: %d, Description: %v}", r.Ok, r.ErrorCode, r.Description)
 	}
 	return ""
 }

@@ -1149,7 +1149,7 @@ handle_ID:
 
 handle_From:
 
-	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.From type=User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -1176,7 +1176,7 @@ handle_From:
 
 handle_Message:
 
-	/* handler: j.Message type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.Message type=Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -2498,7 +2498,7 @@ handle_ResultID:
 
 handle_From:
 
-	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.From type=User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -2525,7 +2525,7 @@ handle_From:
 
 handle_Location:
 
-	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
+	/* handler: j.Location type=Location kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -3261,7 +3261,7 @@ handle_FileID:
 
 handle_Thumbnail:
 
-	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
+	/* handler: j.Thumbnail type=PhotoSize kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -4862,10 +4862,10 @@ mainparse:
 
 handle_InlineKeyboard:
 
-	/* handler: j.InlineKeyboard type=[][]tgbotapi.InlineKeyboardButton kind=slice quoted=false*/
+	/* handler: j.InlineKeyboard type=[][]InlineKeyboardButton kind=slice quoted=false*/
 
 	{
-		/* Falling back. type=[][]tgbotapi.InlineKeyboardButton kind=slice */
+		/* Falling back. type=[][]InlineKeyboardButton kind=slice */
 		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
 			return fs.WrapErr(err)
@@ -5194,7 +5194,7 @@ handle_ID:
 
 handle_From:
 
-	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.From type=User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -5221,7 +5221,7 @@ handle_From:
 
 handle_Location:
 
-	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
+	/* handler: j.Location type=Location kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -5821,7 +5821,7 @@ handle_InputMessageContent:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -6523,7 +6523,7 @@ handle_Duration:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -7176,7 +7176,7 @@ handle_Description:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -7922,7 +7922,7 @@ handle_Caption:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -8485,7 +8485,7 @@ handle_Title:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -9216,7 +9216,7 @@ handle_Caption:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -9980,7 +9980,7 @@ handle_Caption:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -10773,7 +10773,7 @@ handle_Description:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -11273,7 +11273,7 @@ handle_Duration:
 
 handle_ReplyMarkup:
 
-	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
+	/* handler: j.ReplyMarkup type=InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14324,7 +14324,7 @@ handle_MessageID:
 
 handle_From:
 
-	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.From type=User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14381,7 +14381,7 @@ handle_Date:
 
 handle_Chat:
 
-	/* handler: j.Chat type=tgbotapi.Chat kind=struct quoted=false*/
+	/* handler: j.Chat type=Chat kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14408,7 +14408,7 @@ handle_Chat:
 
 handle_ForwardFrom:
 
-	/* handler: j.ForwardFrom type=tgbotapi.User kind=struct quoted=false*/
+	/* handler: j.ForwardFrom type=User kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14465,7 +14465,7 @@ handle_ForwardDate:
 
 handle_ReplyToMessage:
 
-	/* handler: j.ReplyToMessage type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.ReplyToMessage type=Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14518,7 +14518,7 @@ handle_Text:
 
 handle_Entities:
 
-	/* handler: j.Entities type=[]tgbotapi.MessageEntity kind=slice quoted=false*/
+	/* handler: j.Entities type=[]MessageEntity kind=slice quoted=false*/
 
 	{
 
@@ -14559,7 +14559,7 @@ handle_Entities:
 					wantVal = true
 				}
 
-				/* handler: tmpJEntities type=tgbotapi.MessageEntity kind=struct quoted=false*/
+				/* handler: tmpJEntities type=MessageEntity kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -14587,7 +14587,7 @@ handle_Entities:
 
 handle_Audio:
 
-	/* handler: j.Audio type=tgbotapi.Audio kind=struct quoted=false*/
+	/* handler: j.Audio type=Audio kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14614,7 +14614,7 @@ handle_Audio:
 
 handle_Document:
 
-	/* handler: j.Document type=tgbotapi.Document kind=struct quoted=false*/
+	/* handler: j.Document type=Document kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14641,7 +14641,7 @@ handle_Document:
 
 handle_Photo:
 
-	/* handler: j.Photo type=[]tgbotapi.PhotoSize kind=slice quoted=false*/
+	/* handler: j.Photo type=[]PhotoSize kind=slice quoted=false*/
 
 	{
 
@@ -14682,7 +14682,7 @@ handle_Photo:
 					wantVal = true
 				}
 
-				/* handler: tmpJPhoto type=tgbotapi.PhotoSize kind=struct quoted=false*/
+				/* handler: tmpJPhoto type=PhotoSize kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -14710,7 +14710,7 @@ handle_Photo:
 
 handle_Sticker:
 
-	/* handler: j.Sticker type=tgbotapi.Sticker kind=struct quoted=false*/
+	/* handler: j.Sticker type=Sticker kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14737,7 +14737,7 @@ handle_Sticker:
 
 handle_Video:
 
-	/* handler: j.Video type=tgbotapi.Video kind=struct quoted=false*/
+	/* handler: j.Video type=Video kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14764,7 +14764,7 @@ handle_Video:
 
 handle_Voice:
 
-	/* handler: j.Voice type=tgbotapi.Voice kind=struct quoted=false*/
+	/* handler: j.Voice type=Voice kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14817,7 +14817,7 @@ handle_Caption:
 
 handle_Contact:
 
-	/* handler: j.Contact type=tgbotapi.Contact kind=struct quoted=false*/
+	/* handler: j.Contact type=Contact kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14844,7 +14844,7 @@ handle_Contact:
 
 handle_Location:
 
-	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
+	/* handler: j.Location type=Location kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14871,7 +14871,7 @@ handle_Location:
 
 handle_Venue:
 
-	/* handler: j.Venue type=tgbotapi.Venue kind=struct quoted=false*/
+	/* handler: j.Venue type=Venue kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14898,7 +14898,7 @@ handle_Venue:
 
 handle_NewChatParticipant:
 
-	/* handler: j.NewChatParticipant type=tgbotapi.ChatMember kind=struct quoted=false*/
+	/* handler: j.NewChatParticipant type=ChatMember kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14925,7 +14925,7 @@ handle_NewChatParticipant:
 
 handle_NewChatMember:
 
-	/* handler: j.NewChatMember type=tgbotapi.ChatMember kind=struct quoted=false*/
+	/* handler: j.NewChatMember type=ChatMember kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -14952,7 +14952,7 @@ handle_NewChatMember:
 
 handle_NewChatMembers:
 
-	/* handler: j.NewChatMembers type=[]tgbotapi.ChatMember kind=slice quoted=false*/
+	/* handler: j.NewChatMembers type=[]ChatMember kind=slice quoted=false*/
 
 	{
 
@@ -14993,7 +14993,7 @@ handle_NewChatMembers:
 					wantVal = true
 				}
 
-				/* handler: tmpJNewChatMembers type=tgbotapi.ChatMember kind=struct quoted=false*/
+				/* handler: tmpJNewChatMembers type=ChatMember kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -15021,7 +15021,7 @@ handle_NewChatMembers:
 
 handle_LeftChatMember:
 
-	/* handler: j.LeftChatMember type=tgbotapi.ChatMember kind=struct quoted=false*/
+	/* handler: j.LeftChatMember type=ChatMember kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -15074,7 +15074,7 @@ handle_NewChatTitle:
 
 handle_NewChatPhoto:
 
-	/* handler: j.NewChatPhoto type=[]tgbotapi.PhotoSize kind=slice quoted=false*/
+	/* handler: j.NewChatPhoto type=[]PhotoSize kind=slice quoted=false*/
 
 	{
 
@@ -15115,7 +15115,7 @@ handle_NewChatPhoto:
 					wantVal = true
 				}
 
-				/* handler: tmpJNewChatPhoto type=tgbotapi.PhotoSize kind=struct quoted=false*/
+				/* handler: tmpJNewChatPhoto type=PhotoSize kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -15343,7 +15343,7 @@ handle_MigrateFromChatID:
 
 handle_PinnedMessage:
 
-	/* handler: j.PinnedMessage type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.PinnedMessage type=Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -16638,10 +16638,10 @@ mainparse:
 
 handle_Keyboard:
 
-	/* handler: j.Keyboard type=[][]tgbotapi.KeyboardButton kind=slice quoted=false*/
+	/* handler: j.Keyboard type=[][]KeyboardButton kind=slice quoted=false*/
 
 	{
-		/* Falling back. type=[][]tgbotapi.KeyboardButton kind=slice */
+		/* Falling back. type=[][]KeyboardButton kind=slice */
 		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
 			return fs.WrapErr(err)
@@ -17124,7 +17124,7 @@ handle_Height:
 
 handle_Thumbnail:
 
-	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
+	/* handler: j.Thumbnail type=PhotoSize kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -17615,7 +17615,7 @@ handle_UpdateID:
 
 handle_Message:
 
-	/* handler: j.Message type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.Message type=Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -17642,7 +17642,7 @@ handle_Message:
 
 handle_EditedMessage:
 
-	/* handler: j.EditedMessage type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.EditedMessage type=Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -17669,7 +17669,7 @@ handle_EditedMessage:
 
 handle_ChannelPost:
 
-	/* handler: j.ChannelPost type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.ChannelPost type=Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -17696,7 +17696,7 @@ handle_ChannelPost:
 
 handle_EditedChannelPost:
 
-	/* handler: j.EditedChannelPost type=tgbotapi.Message kind=struct quoted=false*/
+	/* handler: j.EditedChannelPost type=Message kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -17723,7 +17723,7 @@ handle_EditedChannelPost:
 
 handle_InlineQuery:
 
-	/* handler: j.InlineQuery type=tgbotapi.InlineQuery kind=struct quoted=false*/
+	/* handler: j.InlineQuery type=InlineQuery kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -17750,7 +17750,7 @@ handle_InlineQuery:
 
 handle_ChosenInlineResult:
 
-	/* handler: j.ChosenInlineResult type=tgbotapi.ChosenInlineResult kind=struct quoted=false*/
+	/* handler: j.ChosenInlineResult type=ChosenInlineResult kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -17777,7 +17777,7 @@ handle_ChosenInlineResult:
 
 handle_CallbackQuery:
 
-	/* handler: j.CallbackQuery type=tgbotapi.CallbackQuery kind=struct quoted=false*/
+	/* handler: j.CallbackQuery type=CallbackQuery kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -18460,10 +18460,10 @@ handle_TotalCount:
 
 handle_Photos:
 
-	/* handler: j.Photos type=[][]tgbotapi.PhotoSize kind=slice quoted=false*/
+	/* handler: j.Photos type=[][]PhotoSize kind=slice quoted=false*/
 
 	{
-		/* Falling back. type=[][]tgbotapi.PhotoSize kind=slice */
+		/* Falling back. type=[][]PhotoSize kind=slice */
 		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
 			return fs.WrapErr(err)
@@ -18730,7 +18730,7 @@ mainparse:
 
 handle_Location:
 
-	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
+	/* handler: j.Location type=Location kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {
@@ -19269,7 +19269,7 @@ handle_Duration:
 
 handle_Thumbnail:
 
-	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
+	/* handler: j.Thumbnail type=PhotoSize kind=struct quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {

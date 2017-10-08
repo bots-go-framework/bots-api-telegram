@@ -268,22 +268,37 @@ func (config ForwardConfig) method() string {
 	return "forwardMessage"
 }
 
-type LeaveChatConfig struct {
+type chatMethod struct {
 	ChatID string `json:"chat_id"`
+}
+
+func (config chatMethod) Values() (url.Values, error) {
+	if config.ChatID == "" {
+		return nil, ErrNoChatID
+	}
+	return url.Values{"chat_id": []string{config.ChatID}}, nil
+}
+
+
+type LeaveChatConfig struct {
+	chatMethod
 }
 
 func (LeaveChatConfig) method() string {
 	return "leaveChat"
 }
 
-var ErrNoChatID = errors.New("missing chat_id")
 
-func (config LeaveChatConfig) Values() (url.Values, error) {
-	if config.ChatID == "" {
-		return nil, ErrNoChatID
-	}
-	return url.Values{"chat_id": []string{config.ChatID}}, nil
+type ExportChatInviteLink struct {
+	chatMethod
 }
+
+func (ExportChatInviteLink) method() string {
+	return "exportChatInviteLink"
+}
+
+
+var ErrNoChatID = errors.New("missing chat_id")
 
 
 // PhotoConfig contains information about a SendPhoto request.
