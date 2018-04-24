@@ -6,7 +6,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
+	"github.com/pquerna/ffjson/ffjson"
+	"github.com/strongo/log"
 	"github.com/technoweenie/multipartstreamer"
+	"context"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -14,18 +18,14 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"golang.org/x/net/context"
-	"github.com/pkg/errors"
-	"github.com/strongo/app/log"
-	"github.com/pquerna/ffjson/ffjson"
 )
 
 // BotAPI allows you to interact with the Telegram Bot API.
 type BotAPI struct {
-	Token  string         `json:"token"`
-	Self   User           `json:"-"`
-	Client *http.Client   `json:"-"`
-	c context.Context // TODO: Wrong? read docs on Context class
+	Token  string          `json:"token"`
+	Self   User            `json:"-"`
+	Client *http.Client    `json:"-"`
+	c      context.Context // TODO: Wrong? read docs on Context class
 }
 
 func (bot *BotAPI) EnableDebug(c context.Context) {
@@ -59,27 +59,44 @@ func (bot *BotAPI) MakeRequestFromChattable(m Chattable) (resp APIResponse, err 
 }
 
 // MakeRequest makes a request to a specific endpoint with our token.
-func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse, error) {
+func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIResponse, err error) {
 	method := fmt.Sprintf(APIEndpoint, bot.Token, endpoint)
 
-	resp, err := bot.Client.PostForm(method, params)
+	var resp *http.Response
+
+	for i := 1; i <= 2; i++ { // TODO: Should this be in bots framework?
+		if resp, err = bot.Client.PostForm(method, params); err != nil {
+			if strings.Contains(err.Error(), "DEADLINE_EXCEEDED") {
+				log.Warningf(bot.c, "#%v fail to send POST to %v, will retry: %v", i, method, err)
+				continue
+			}
+		}
+		break
+	}
+	if resp != nil && resp.Body != nil {
+		defer func() {
+			if err := resp.Body.Close(); err != nil {
+				log.Warningf(bot.c, "failed to close response body: %v", err)
+			}
+		}()
+	}
+
 	if err != nil {
-		log.Errorf(bot.c, "Failed to send POST %v", method)
+		log.Errorf(bot.c, "Failed to send POST to %v: %v", method, err.Error())
 		return APIResponse{Ok: false}, err
 	}
-	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusForbidden {
-		apiResponse := APIResponse{}
+		apiResp = APIResponse{}
 		if resp.ContentLength > 0 {
 			if body, err := ioutil.ReadAll(resp.Body); err == nil {
-				apiResponse.Result = json.RawMessage(body)
+				apiResp.Result = json.RawMessage(body)
 				if bot.c != nil {
-					log.Debugf(bot.c, "Response.body: %v", string(apiResponse.Result))
+					log.Debugf(bot.c, "Response.body: %v", string(apiResp.Result))
 				}
 			}
 		}
-		return apiResponse, ErrAPIForbidden{}
+		return apiResp, ErrAPIForbidden{}
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -87,22 +104,20 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (APIResponse,
 		return APIResponse{}, err
 	}
 
-	var apiResp APIResponse
-
 	logRequestAndResponse := func() {
 		if bot.c != nil {
-			log.Debugf(bot.c, "Request to Telegram API %v: %v", endpoint, params)
-			log.Debugf(bot.c,"Telegram API response: %v", string(body))
+			log.Debugf(bot.c, "Request to Telegram API: %v => %v", endpoint, params)
+			log.Debugf(bot.c, "Telegram API response: %v", string(body))
 		}
 	}
 
-	logRequestAndResponse()
+	//logRequestAndResponse()
 
 	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
-		//logRequestAndResponse()
-		return apiResp, errors.WithMessage(err, "Telegram API returned non JSON response or unknown JSON:\n" + string(body))
+		logRequestAndResponse()
+		return apiResp, errors.WithMessage(err, "Telegram API returned non JSON response or unknown JSON:\n"+string(body))
 	} else if !apiResp.Ok {
-		//logRequestAndResponse()
+		logRequestAndResponse()
 		return apiResp, apiResp
 	}
 
@@ -126,7 +141,6 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 		if err = ffjson.Unmarshal(resp.Result, &message); err != nil {
 			return message, errors.Wrapf(err, "Failed to call json.Unmarshal(%v)", string(resp.Result))
 		}
-		bot.debugLog(endpoint, params, message)
 	}
 	return message, err
 }
@@ -276,9 +290,6 @@ func (bot *BotAPI) debugLog(context string, v url.Values, message interface{}) {
 	if bot.c != nil {
 		log.Debugf(bot.c, "%s req : %+v\n", context, v)
 		log.Debugf(bot.c, "%s resp: %+v\n", context, message)
-		//} else {
-		//	log.Printf("%s req : %+v\n", context, v)
-		//	log.Printf("%s resp: %+v\n", context, message)
 	}
 }
 
@@ -447,7 +458,7 @@ func (bot *BotAPI) SetWebhook(config WebhookConfig) (APIResponse, error) {
 		v := url.Values{}
 		v.Add("url", config.URL.String())
 		if len(config.AllowedUpdates) > 0 {
-			v.Add("allowed_updates", `["` + strings.Join(config.AllowedUpdates, `","`) + `"]`)
+			v.Add("allowed_updates", `["`+strings.Join(config.AllowedUpdates, `","`)+`"]`)
 		}
 		if config.MaxConnections > 0 {
 			v.Add("max_connections", strconv.Itoa(config.MaxConnections))

@@ -3,12 +3,12 @@ package tgbotapi
 //go:generate ffjson $GOFILE
 
 import (
+	"fmt"
+	"github.com/pkg/errors"
+	"github.com/pquerna/ffjson/ffjson"
 	"io"
 	"net/url"
 	"strconv"
-	"github.com/pkg/errors"
-	"fmt"
-	"github.com/pquerna/ffjson/ffjson"
 )
 
 // Telegram constants
@@ -79,11 +79,11 @@ type Fileable interface {
 
 // BaseChat is base type for all chat config types.
 type BaseChat struct {
-	ChatID              int64 `json:"chat_id,omitempty"`
-	ChannelUsername     string `json:"chat_id,omitempty"`
-	ReplyToMessageID    int `json:"reply_to_message_id,omitempty"`
+	ChatID              int64       `json:"chat_id,omitempty"`
+	ChannelUsername     string      `json:"chat_id,omitempty"`
+	ReplyToMessageID    int         `json:"reply_to_message_id,omitempty"`
 	ReplyMarkup         interface{} `json:"reply_markup,omitempty"`
-	DisableNotification bool `json:"disable_notification,omitempty"`
+	DisableNotification bool        `json:"disable_notification,omitempty"`
 }
 
 // values returns url.Values representation of BaseChat
@@ -177,8 +177,8 @@ func (file BaseFile) useExistingFile() bool {
 }
 
 type chatEdit struct {
-	ChatID          int64  `json:"chat_id,omitempty"`
-	MessageID       int    `json:"message_id,omitempty"`
+	ChatID    int64 `json:"chat_id,omitempty"`
+	MessageID int   `json:"message_id,omitempty"`
 }
 
 func NewChatMessageEdit(chatID int64, messageID int) BaseEdit {
@@ -188,8 +188,8 @@ func NewChatMessageEdit(chatID int64, messageID int) BaseEdit {
 // BaseEdit is base type of all chat edits.
 type BaseEdit struct {
 	chatEdit
-	ChannelUsername string `json:",omitempty"`
-	InlineMessageID string `json:"inline_message_id,omitempty"`
+	ChannelUsername string                `json:",omitempty"`
+	InlineMessageID string                `json:"inline_message_id,omitempty"`
 	ReplyMarkup     *InlineKeyboardMarkup `json:",omitempty"`
 }
 
@@ -279,7 +279,6 @@ func (config chatMethod) Values() (url.Values, error) {
 	return url.Values{"chat_id": []string{config.ChatID}}, nil
 }
 
-
 type LeaveChatConfig struct {
 	chatMethod
 }
@@ -287,7 +286,6 @@ type LeaveChatConfig struct {
 func (LeaveChatConfig) method() string {
 	return "leaveChat"
 }
-
 
 type ExportChatInviteLink struct {
 	chatMethod
@@ -297,9 +295,7 @@ func (ExportChatInviteLink) method() string {
 	return "exportChatInviteLink"
 }
 
-
 var ErrNoChatID = errors.New("missing chat_id")
-
 
 // PhotoConfig contains information about a SendPhoto request.
 type PhotoConfig struct {
@@ -632,7 +628,7 @@ func (_ DeleteMessage) method() string {
 
 func (m DeleteMessage) Values() (url.Values, error) {
 	return url.Values{
-		"chat_id": []string{strconv.FormatInt(m.ChatID, 10)},
+		"chat_id":    []string{strconv.FormatInt(m.ChatID, 10)},
 		"message_id": []string{strconv.Itoa(m.MessageID)},
 	}, nil
 }
@@ -719,8 +715,8 @@ type UpdateConfig struct {
 
 // WebhookConfig contains information about a SetWebhook request.
 type WebhookConfig struct {
-	URL         *url.URL
-	Certificate interface{}
+	URL            *url.URL
+	Certificate    interface{}
 	MaxConnections int
 	AllowedUpdates []string
 }

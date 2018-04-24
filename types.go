@@ -3,15 +3,15 @@ package tgbotapi
 //go:generate ffjson $GOFILE
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/strongo/bots-framework/core"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
-	"github.com/strongo/bots-framework/core"
-	"bytes"
-	"strconv"
 )
 
 // APIResponse is a response from the Telegram API with the result
@@ -127,8 +127,6 @@ func (u User) GetFullName() string {
 	return "#" + strconv.Itoa(u.ID)
 }
 
-
-
 func (u User) GetLanguage() string {
 	return u.LanguageCode
 }
@@ -209,7 +207,7 @@ type Message struct {
 	Venue                 *Venue           `json:"venue,omitempty"`                   // optional
 	NewChatParticipant    *ChatMember      `json:"new_chat_participant,omitempty"`    // Obsolete
 	NewChatMember         *ChatMember      `json:"new_chat_member,omitempty"`         // Obsolete
-	NewChatMembers        []ChatMember    `json:"new_chat_members,omitempty"`        // optional
+	NewChatMembers        []ChatMember     `json:"new_chat_members,omitempty"`        // optional
 	LeftChatMember        *ChatMember      `json:"left_chat_member,omitempty"`        // optional
 	NewChatTitle          string           `json:"new_chat_title,omitempty"`          // optional
 	NewChatPhoto          *[]PhotoSize     `json:"new_chat_photo,omitempty"`          // optional
@@ -432,11 +430,11 @@ var _ bots.Keyboard = (*InlineKeyboardMarkup)(nil)
 // Note that some values are references as even an empty string will change behavior.
 type InlineKeyboardButton struct {
 	Text                         string  `json:"text"`
-	URL                          string  `json:"url,omitempty"`                              // optional
-	CallbackData                 string  `json:"callback_data,omitempty"`                    // optional
-	SwitchInlineQuery            *string `json:"switch_inline_query,omitempty"`              // optional
-	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // optional
-	Pay                          bool    `json:"pay,omitempty"`                              // optional
+	URL                          string  `json:"url,omitempty"`
+	CallbackData                 string  `json:"callback_data,omitempty"`
+	SwitchInlineQuery            *string `json:"switch_inline_query,omitempty"`              // we use pointer as empty string is non zero value in this case
+	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // we use pointer as empty string is non zero value in this case
+	Pay                          bool    `json:"pay,omitempty"`
 }
 
 // CallbackQuery is data sent when a keyboard button with callback data
@@ -457,7 +455,7 @@ type ForceReply struct {
 	Selective  bool `json:"selective,omitempty"` // optional
 }
 
-func (*ForceReply) KeyboardType() bots.KeyboardType {
+func (ForceReply) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeForceReply
 }
 

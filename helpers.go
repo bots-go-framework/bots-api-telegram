@@ -413,7 +413,7 @@ func NewEditMessageText(chatID int64, messageID int, inlineMessageID, text strin
 	}
 	return &EditMessageTextConfig{
 		BaseEdit: BaseEdit{
-			chatEdit: chatEdit{ChatID: chatID, MessageID: messageID},
+			chatEdit:        chatEdit{ChatID: chatID, MessageID: messageID},
 			InlineMessageID: inlineMessageID,
 		},
 		Text:                  text,
@@ -426,7 +426,7 @@ func NewEditMessageText(chatID int64, messageID int, inlineMessageID, text strin
 func NewEditMessageCaption(chatID int64, messageID int, caption string) EditMessageCaptionConfig {
 	return EditMessageCaptionConfig{
 		BaseEdit: NewChatMessageEdit(chatID, messageID),
-		Caption: caption,
+		Caption:  caption,
 	}
 }
 
@@ -438,9 +438,9 @@ func NewEditMessageReplyMarkup(chatID int64, messageID int, inlineMessageID stri
 	}
 	return EditMessageReplyMarkupConfig{
 		BaseEdit: BaseEdit{
-			chatEdit: chatEdit{ChatID: chatID, MessageID: messageID},
+			chatEdit:        chatEdit{ChatID: chatID, MessageID: messageID},
 			InlineMessageID: inlineMessageID,
-			ReplyMarkup: replyMarkup,
+			ReplyMarkup:     replyMarkup,
 		},
 	}
 }
@@ -529,7 +529,7 @@ func NewInlineKeyboardButtonSwitchInlineQuery(text, query string) InlineKeyboard
 
 func NewInlineKeyboardButtonSwitchInlineQueryCurrentChat(text, query string) InlineKeyboardButton {
 	return InlineKeyboardButton{
-		Text:              text,
+		Text: text,
 		SwitchInlineQueryCurrentChat: &query,
 	}
 }
@@ -575,7 +575,7 @@ func NewCallbackWithAlert(id, text string) AnswerCallbackQueryConfig {
 
 func NewCallbackWithUrl(url string) AnswerCallbackQueryConfig {
 	return AnswerCallbackQueryConfig{
-		Url: 				  url,
+		Url: url,
 		//ShowAlert:       showAlert,
 	}
 }

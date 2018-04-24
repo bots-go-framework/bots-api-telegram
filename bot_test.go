@@ -20,7 +20,7 @@ const (
 	ExistingStickerFileID  = "BQADAgADcwADjMcoCbdl-6eB--YPAg"
 )
 
-func getBot(t *testing.T) (*BotAPI) {
+func getBot(t *testing.T) *BotAPI {
 	bot := NewBotAPI(TestToken)
 
 	if bot == nil {
