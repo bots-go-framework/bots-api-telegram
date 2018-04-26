@@ -622,7 +622,7 @@ func (config ChatActionConfig) method() string {
 
 type DeleteMessage chatEdit
 
-func (_ DeleteMessage) method() string {
+func (DeleteMessage) method() string {
 	return "deleteMessage"
 }
 
