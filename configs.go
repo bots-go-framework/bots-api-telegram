@@ -23,28 +23,28 @@ const (
 // Constant values for ChatActions
 const (
 	// ChatTyping is chat action
-	ChatTyping         = "typing"
+	ChatTyping = "typing"
 
 	// ChatUploadPhoto is chat action
-	ChatUploadPhoto    = "upload_photo"
+	ChatUploadPhoto = "upload_photo"
 
 	// ChatRecordVideo is chat action
-	ChatRecordVideo    = "record_video"
+	ChatRecordVideo = "record_video"
 
 	// ChatUploadVideo is chat action
-	ChatUploadVideo    = "upload_video"
+	ChatUploadVideo = "upload_video"
 
 	// ChatRecordAudio is chat action
-	ChatRecordAudio    = "record_audio"
+	ChatRecordAudio = "record_audio"
 
 	// ChatUploadAudio is chat action
-	ChatUploadAudio    = "upload_audio"
+	ChatUploadAudio = "upload_audio"
 
 	// ChatUploadDocument is chat action
 	ChatUploadDocument = "upload_document"
 
 	// ChatFindLocation is chat action
-	ChatFindLocation   = "find_location"
+	ChatFindLocation = "find_location"
 )
 
 // API errors
