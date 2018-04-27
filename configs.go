@@ -22,13 +22,28 @@ const (
 
 // Constant values for ChatActions
 const (
+	// ChatTyping is chat action
 	ChatTyping         = "typing"
+
+	// ChatUploadPhoto is chat action
 	ChatUploadPhoto    = "upload_photo"
+
+	// ChatRecordVideo is chat action
 	ChatRecordVideo    = "record_video"
+
+	// ChatUploadVideo is chat action
 	ChatUploadVideo    = "upload_video"
+
+	// ChatRecordAudio is chat action
 	ChatRecordAudio    = "record_audio"
+
+	// ChatUploadAudio is chat action
 	ChatUploadAudio    = "upload_audio"
+
+	// ChatUploadDocument is chat action
 	ChatUploadDocument = "upload_document"
+
+	// ChatFindLocation is chat action
 	ChatFindLocation   = "find_location"
 )
 
@@ -88,7 +103,7 @@ type Fileable interface {
 // BaseChat is base type for all chat config types.
 type BaseChat struct {
 	ChatID              int64       `json:"chat_id,omitempty"`
-	ChannelUsername     string      `json:"chat_id,omitempty"`
+	ChannelUsername     string      `json:"channel_username,omitempty"`
 	ReplyToMessageID    int         `json:"reply_to_message_id,omitempty"`
 	ReplyMarkup         interface{} `json:"reply_markup,omitempty"`
 	DisableNotification bool        `json:"disable_notification,omitempty"`
@@ -237,7 +252,7 @@ type MessageConfig struct {
 	BaseChat
 	Text                  string
 	ParseMode             string `json:"parse_mode,omitempty"`
-	DisableWebPagePreview bool   `json:disable_web_page_preview,omitempty`
+	DisableWebPagePreview bool   `json:"disable_web_page_preview,omitempty"`
 }
 
 // Values returns a url.Values representation of MessageConfig.
