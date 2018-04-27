@@ -527,6 +527,7 @@ func NewInlineKeyboardButtonSwitchInlineQuery(text, query string) InlineKeyboard
 	}
 }
 
+// NewInlineKeyboardButtonSwitchInlineQueryCurrentChat create new command
 func NewInlineKeyboardButtonSwitchInlineQueryCurrentChat(text, query string) InlineKeyboardButton {
 	return InlineKeyboardButton{
 		Text: text,
@@ -573,9 +574,10 @@ func NewCallbackWithAlert(id, text string) AnswerCallbackQueryConfig {
 	}
 }
 
-func NewCallbackWithUrl(url string) AnswerCallbackQueryConfig {
+// NewCallbackWithURL creates new callback command with URL
+func NewCallbackWithURL(url string) AnswerCallbackQueryConfig {
 	return AnswerCallbackQueryConfig{
-		Url: url,
+		URL: url,
 		//ShowAlert:       showAlert,
 	}
 }

@@ -124,8 +124,8 @@ func TestNewEditMessageCaption(t *testing.T) {
 func TestNewEditMessageReplyMarkup(t *testing.T) {
 	markup := InlineKeyboardMarkup{
 		InlineKeyboard: [][]InlineKeyboardButton{
-			[]InlineKeyboardButton{
-				InlineKeyboardButton{Text: "test"},
+			{
+				{Text: "test"},
 			},
 		},
 	}

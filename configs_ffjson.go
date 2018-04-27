@@ -55,9 +55,9 @@ func (j *AnswerCallbackQueryConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 		}
 		buf.WriteByte(',')
 	}
-	if len(j.Url) != 0 {
+	if len(j.URL) != 0 {
 		buf.WriteString(`"url":`)
-		fflib.WriteJsonString(buf, string(j.Url))
+		fflib.WriteJsonString(buf, string(j.URL))
 		buf.WriteByte(',')
 	}
 	if j.CacheTime != 0 {
@@ -80,7 +80,7 @@ const (
 
 	ffjtAnswerCallbackQueryConfigShowAlert
 
-	ffjtAnswerCallbackQueryConfigUrl
+	ffjtAnswerCallbackQueryConfigURL
 
 	ffjtAnswerCallbackQueryConfigCacheTime
 )
@@ -91,7 +91,7 @@ var ffjKeyAnswerCallbackQueryConfigText = []byte("text")
 
 var ffjKeyAnswerCallbackQueryConfigShowAlert = []byte("show_alert")
 
-var ffjKeyAnswerCallbackQueryConfigUrl = []byte("url")
+var ffjKeyAnswerCallbackQueryConfigURL = []byte("url")
 
 var ffjKeyAnswerCallbackQueryConfigCacheTime = []byte("cache_time")
 
@@ -187,8 +187,8 @@ mainparse:
 
 				case 'u':
 
-					if bytes.Equal(ffjKeyAnswerCallbackQueryConfigUrl, kn) {
-						currentKey = ffjtAnswerCallbackQueryConfigUrl
+					if bytes.Equal(ffjKeyAnswerCallbackQueryConfigURL, kn) {
+						currentKey = ffjtAnswerCallbackQueryConfigURL
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -201,8 +201,8 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffjKeyAnswerCallbackQueryConfigUrl, kn) {
-					currentKey = ffjtAnswerCallbackQueryConfigUrl
+				if fflib.SimpleLetterEqualFold(ffjKeyAnswerCallbackQueryConfigURL, kn) {
+					currentKey = ffjtAnswerCallbackQueryConfigURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -251,7 +251,7 @@ mainparse:
 				case ffjtAnswerCallbackQueryConfigShowAlert:
 					goto handle_ShowAlert
 
-				case ffjtAnswerCallbackQueryConfigUrl:
+				case ffjtAnswerCallbackQueryConfigURL:
 					goto handle_Url
 
 				case ffjtAnswerCallbackQueryConfigCacheTime:
@@ -360,7 +360,7 @@ handle_ShowAlert:
 
 handle_Url:
 
-	/* handler: j.Url type=string kind=string quoted=false*/
+	/* handler: j.URL type=string kind=string quoted=false*/
 
 	{
 
@@ -376,7 +376,7 @@ handle_Url:
 
 			outBuf := fs.Output.Bytes()
 
-			j.Url = string(string(outBuf))
+			j.URL = string(string(outBuf))
 
 		}
 	}

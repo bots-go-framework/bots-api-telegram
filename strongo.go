@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// ReplyToResponse replies to response
 func ReplyToResponse(chattable Chattable, w http.ResponseWriter) (string, error) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 
@@ -21,6 +22,7 @@ func ReplyToResponse(chattable Chattable, w http.ResponseWriter) (string, error)
 	return s, err
 }
 
+// NewReplyKeyboardUsingStrings creates reply keyboard from strings arrays
 func NewReplyKeyboardUsingStrings(buttons [][]string) *ReplyKeyboardMarkup {
 	kb := make([][]KeyboardButton, len(buttons))
 

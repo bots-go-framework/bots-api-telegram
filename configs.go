@@ -39,27 +39,35 @@ const (
 //)
 //var ErrAPIForbidden = errors.New("forbidden")  // happens when a token is bad or user deleted chat
 
+// ErrAPIForbidden is for 'forbidden' API response
 type ErrAPIForbidden struct {
 }
 
+// Error implements error interface
 func (err ErrAPIForbidden) Error() string {
 	return "forbidden"
 }
 
+// IsForbidden indicates is forbidden
 func (err ErrAPIForbidden) IsForbidden() {
 }
 
 // Constant values for ParseMode in MessageConfig
 const (
+	// ModeMarkdown indicates markdown mode
 	ModeMarkdown = "Markdown"
-	ModeHTML     = "HTML"
+
+	// ModeMarkdown indicates HTML mode
+	ModeHTML = "HTML"
 )
 
 // Library errors
 const (
 	// ErrBadFileType happens when you pass an unknown type
 	ErrBadFileType = "bad file type"
-	ErrBadURL      = "bad or empty url"
+
+	// ErrBadURL indicates bad or enpty URL
+	ErrBadURL = "bad or empty URL"
 )
 
 // Chattable is any config type that can be sent.
@@ -86,7 +94,7 @@ type BaseChat struct {
 	DisableNotification bool        `json:"disable_notification,omitempty"`
 }
 
-// values returns url.Values representation of BaseChat
+// Values returns url.Values representation of BaseChat
 func (chat *BaseChat) Values() (url.Values, error) {
 	v := url.Values{}
 	if chat.ChannelUsername != "" {
@@ -181,6 +189,7 @@ type chatEdit struct {
 	MessageID int   `json:"message_id,omitempty"`
 }
 
+// NewChatMessageEdit returns BaseEdit
 func NewChatMessageEdit(chatID int64, messageID int) BaseEdit {
 	return BaseEdit{chatEdit: chatEdit{ChatID: chatID, MessageID: messageID}}
 }
@@ -193,6 +202,7 @@ type BaseEdit struct {
 	ReplyMarkup     *InlineKeyboardMarkup `json:",omitempty"`
 }
 
+// Values returns URL values
 func (edit BaseEdit) Values() (url.Values, error) {
 	v := url.Values{}
 
@@ -230,7 +240,7 @@ type MessageConfig struct {
 	DisableWebPagePreview bool   `json:disable_web_page_preview,omitempty`
 }
 
-// values returns a url.Values representation of MessageConfig.
+// Values returns a url.Values representation of MessageConfig.
 func (config MessageConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 	v.Add("text", config.Text)
@@ -255,7 +265,7 @@ type ForwardConfig struct {
 	MessageID           int // required
 }
 
-// values returns a url.Values representation of ForwardConfig.
+// Values returns a url.Values representation of ForwardConfig.
 func (config ForwardConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 	v.Add("from_chat_id", strconv.FormatInt(config.FromChatID, 10))
@@ -279,6 +289,7 @@ func (config chatMethod) Values() (url.Values, error) {
 	return url.Values{"chat_id": []string{config.ChatID}}, nil
 }
 
+// LeaveChatConfig is message command for leaving chat
 type LeaveChatConfig struct {
 	chatMethod
 }
@@ -287,6 +298,7 @@ func (LeaveChatConfig) method() string {
 	return "leaveChat"
 }
 
+// ExportChatInviteLink is message command for exporting chat link
 type ExportChatInviteLink struct {
 	chatMethod
 }
@@ -295,6 +307,7 @@ func (ExportChatInviteLink) method() string {
 	return "exportChatInviteLink"
 }
 
+// ErrNoChatID is error when chat_id is missing
 var ErrNoChatID = errors.New("missing chat_id")
 
 // PhotoConfig contains information about a SendPhoto request.
@@ -343,7 +356,7 @@ type AudioConfig struct {
 	Title     string
 }
 
-// values returns a url.Values representation of AudioConfig.
+// Values returns a url.Values representation of AudioConfig.
 func (config AudioConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 
@@ -395,7 +408,7 @@ type DocumentConfig struct {
 	BaseFile
 }
 
-// values returns a url.Values representation of DocumentConfig.
+// Values returns a url.Values representation of DocumentConfig.
 func (config DocumentConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 
@@ -426,7 +439,7 @@ type StickerConfig struct {
 	BaseFile
 }
 
-// values returns a url.Values representation of StickerConfig.
+// Values returns a url.Values representation of StickerConfig.
 func (config StickerConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 
@@ -459,7 +472,7 @@ type VideoConfig struct {
 	Caption  string
 }
 
-// values returns a url.Values representation of VideoConfig.
+// Values returns a url.Values representation of VideoConfig.
 func (config VideoConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 
@@ -497,7 +510,7 @@ type VoiceConfig struct {
 	Duration int
 }
 
-// values returns a url.Values representation of VoiceConfig.
+// Values returns a url.Values representation of VoiceConfig.
 func (config VoiceConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 
@@ -537,7 +550,7 @@ type LocationConfig struct {
 	Longitude float64 // required
 }
 
-// values returns a url.Values representation of LocationConfig.
+// Values returns a url.Values representation of LocationConfig.
 func (config LocationConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 
@@ -562,6 +575,7 @@ type VenueConfig struct {
 	FoursquareID string
 }
 
+// Values returns URL values representation of VenueConfig
 func (config VenueConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 
@@ -588,6 +602,7 @@ type ContactConfig struct {
 	LastName    string
 }
 
+// Values returns URL values representation of ContactConfig
 func (config ContactConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 
@@ -608,7 +623,7 @@ type ChatActionConfig struct {
 	Action string // required
 }
 
-// values returns a url.Values representation of ChatActionConfig.
+// Values returns a url.Values representation of ChatActionConfig.
 func (config ChatActionConfig) Values() (url.Values, error) {
 	v, _ := config.BaseChat.Values()
 	v.Add("action", config.Action)
@@ -620,12 +635,14 @@ func (config ChatActionConfig) method() string {
 	return "sendChatAction"
 }
 
+// DeleteMessage is a command to delete a message
 type DeleteMessage chatEdit
 
 func (DeleteMessage) method() string {
 	return "deleteMessage"
 }
 
+// Values returns URL values representation of DeleteMessage
 func (m DeleteMessage) Values() (url.Values, error) {
 	return url.Values{
 		"chat_id":    []string{strconv.FormatInt(m.ChatID, 10)},
@@ -643,6 +660,7 @@ type EditMessageTextConfig struct {
 	DisableWebPagePreview bool
 }
 
+// Values returns URL values representation of EditMessageTextConfig
 func (config EditMessageTextConfig) Values() (url.Values, error) {
 	v, _ := config.BaseEdit.Values()
 
@@ -667,6 +685,7 @@ type EditMessageCaptionConfig struct {
 	Caption string
 }
 
+// Values returns URL values representation of EditMessageCaptionConfig
 func (config EditMessageCaptionConfig) Values() (url.Values, error) {
 	v, _ := config.BaseEdit.Values()
 
@@ -685,6 +704,7 @@ type EditMessageReplyMarkupConfig struct {
 	BaseEdit
 }
 
+// Values returns URL values representation of EditMessageReplyMarkupConfig
 func (config EditMessageReplyMarkupConfig) Values() (url.Values, error) {
 	return config.BaseEdit.Values()
 }
@@ -752,6 +772,7 @@ func (config InlineConfig) method() string {
 	return "answerInlineQuery"
 }
 
+// Values returns URL values representation of InlineConfig
 func (config InlineConfig) Values() (url.Values, error) {
 	v := url.Values{}
 
@@ -788,7 +809,7 @@ type AnswerCallbackQueryConfig struct {
 	CallbackQueryID string `json:"callback_query_id,"`
 	Text            string `json:"text,omitempty"`
 	ShowAlert       bool   `json:"show_alert,omitempty"`
-	Url             string `json:"url,omitempty"`
+	URL             string `json:"url,omitempty"`
 	CacheTime       int    `json:"cache_time,omitempty"`
 }
 
@@ -797,11 +818,13 @@ var _ Chattable = (*AnswerCallbackQueryConfig)(nil)
 func (config AnswerCallbackQueryConfig) method() string {
 	return "answerCallbackQuery"
 }
+
+// Values returns URL values representation of AnswerCallbackQueryConfig
 func (config AnswerCallbackQueryConfig) Values() (v url.Values, err error) {
 	v = url.Values{} // if removed causes nil pointer exception
 	v.Add("callback_query_id", config.CallbackQueryID)
-	if config.Text != "" && config.Url != "" {
-		err = errors.New("Both config.Text && config.Url supplied")
+	if config.Text != "" && config.URL != "" {
+		err = errors.New("Both config.Text && config.URL supplied")
 		return
 	}
 	if config.Text != "" {
@@ -809,8 +832,8 @@ func (config AnswerCallbackQueryConfig) Values() (v url.Values, err error) {
 		if config.ShowAlert {
 			v.Add("show_alert", "true")
 		}
-	} else if config.Url != "" {
-		v.Add("url", config.Url)
+	} else if config.URL != "" {
+		v.Add("url", config.URL)
 	}
 	return
 }

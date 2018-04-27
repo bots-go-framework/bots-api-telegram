@@ -4,13 +4,13 @@ package tgbotapi
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/strongo/log"
 	"github.com/technoweenie/multipartstreamer"
-	"context"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -28,6 +28,7 @@ type BotAPI struct {
 	c      context.Context // TODO: Wrong? read docs on Context class
 }
 
+// EnableDebug enables debugging
 func (bot *BotAPI) EnableDebug(c context.Context) {
 	bot.c = c
 }
@@ -50,7 +51,8 @@ func NewBotAPIWithClient(token string, client *http.Client) *BotAPI {
 	}
 }
 
-func (bot *BotAPI) MakeRequestFromChattable(m Chattable) (resp APIResponse, err error) { // TODO: Is duplicate of Send()?
+// MakeRequestFromChattable makes request from chattable TODO: Is duplicate of Send()?
+func (bot *BotAPI) MakeRequestFromChattable(m Chattable) (resp APIResponse, err error) { //
 	values, err := m.Values()
 	if err != nil {
 		return resp, err

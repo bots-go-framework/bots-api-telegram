@@ -31,9 +31,9 @@ func getBot(t *testing.T) *BotAPI {
 }
 
 func TestNewBotAPI_notoken(t *testing.T) {
-	botApi := NewBotAPI("")
+	botAPI := NewBotAPI("")
 
-	if botApi == nil {
+	if botAPI == nil {
 		t.Fail()
 	}
 }
@@ -393,7 +393,7 @@ func TestGetUserProfilePhotos(t *testing.T) {
 func TestUpdatesChan(t *testing.T) {
 	bot := getBot(t)
 
-	var ucfg UpdateConfig = NewUpdate(0)
+	ucfg := NewUpdate(0)
 	ucfg.Timeout = 60
 	_, err := bot.GetUpdatesChan(ucfg)
 

@@ -42,6 +42,7 @@ type Update struct {
 	CallbackQuery      *CallbackQuery      `json:"callback_query"`
 }
 
+// Chat provides chat struct for the update
 func (update Update) Chat() *Chat {
 	switch {
 	case update.Message != nil:
@@ -69,35 +70,43 @@ type User struct {
 	LanguageCode string `json:"language_code,omitempty"` // optional
 }
 
+// ChatMember holds information about chat member
 type ChatMember struct {
 	User
 	IsBot bool `json:"is_bot,omitempty"`
 }
 
+// IsBotUser indicates if chat member is a bot
 func (chatMember ChatMember) IsBotUser() bool {
 	return chatMember.IsBot
 }
 
+// Platform returns 'Telegram'
 func (u User) Platform() string {
-	return "Telegram"
+	return "telegram"
 }
 
+// GetID returns Telegram user ID
 func (u User) GetID() interface{} {
 	return u.ID
 }
 
+// GetFirstName returns first name of the user
 func (u User) GetFirstName() string {
 	return u.FirstName
 }
 
+// GetLastName returns last name of the user
 func (u User) GetLastName() string {
 	return u.LastName
 }
 
+// GetUserName returns user name of the user
 func (u User) GetUserName() string {
 	return u.UserName
 }
 
+// GetFullName returns full name of the user
 func (u User) GetFullName() string {
 	var buffer bytes.Buffer
 	if u.FirstName != "" {
@@ -127,6 +136,7 @@ func (u User) GetFullName() string {
 	return "#" + strconv.Itoa(u.ID)
 }
 
+// GetLanguage returns preferred language of the user
 func (u User) GetLanguage() string {
 	return u.LanguageCode
 }
@@ -388,6 +398,7 @@ type ReplyKeyboardMarkup struct {
 	Selective       bool               `json:"selective,omitempty"`         // optional
 }
 
+// KeyboardType returns KeyboardTypeBottom
 func (*ReplyKeyboardMarkup) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeBottom
 }
@@ -407,6 +418,7 @@ type ReplyKeyboardHide struct {
 	Selective    bool `json:"selective,omitempty"` // optional
 }
 
+// KeyboardType returns KeyboardTypeHide
 func (*ReplyKeyboardHide) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeHide
 }
@@ -418,6 +430,7 @@ type InlineKeyboardMarkup struct {
 	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
 }
 
+// KeyboardType returns KeyboardTypeInline
 func (*InlineKeyboardMarkup) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeInline
 }
@@ -455,6 +468,7 @@ type ForceReply struct {
 	Selective  bool `json:"selective,omitempty"` // optional
 }
 
+// KeyboardType returns KeyboardTypeForceReply
 func (ForceReply) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeForceReply
 }
