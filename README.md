@@ -104,3 +104,10 @@ properly signed.
 
 Now that [Let's Encrypt](https://letsencrypt.org) has entered public beta,
 you may wish to generate your free TLS certificate there.
+
+## Used by
+This package is used in production by:
+* https://debtstracker.io/ - an app and [Telegram bot](https://t.me/DebtsTrackerBot) to track your personal debts
+
+## Frameworks that utilise this `strongo/db` package
+* <a href="https://github.com/strongo/bots-framework">`strongo/bots-framework`</a> - framework to build chat bots in Go language.
