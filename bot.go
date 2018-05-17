@@ -66,10 +66,13 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 
 	var resp *http.Response
 
+	var hadDeadlineExceeded bool
+
 	for i := 1; i <= 2; i++ { // TODO: Should this be in bots framework?
 		if resp, err = bot.Client.PostForm(method, params); err != nil {
 			if strings.Contains(err.Error(), "DEADLINE_EXCEEDED") {
-				log.Warningf(bot.c, "#%v fail to send POST to %v, will retry: %v", i, method, err)
+				hadDeadlineExceeded = true
+				log.Warningf(bot.c, "#%v fail to send POST due to DEADLINE_EXCEEDED to %v, will retry: %v", i, method, err)
 				continue
 			}
 		}
@@ -88,7 +91,8 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 		return APIResponse{Ok: false}, err
 	}
 
-	if resp.StatusCode == http.StatusForbidden {
+	switch resp.StatusCode {
+	case http.StatusForbidden:
 		apiResp = APIResponse{}
 		if resp.ContentLength > 0 {
 			if body, err := ioutil.ReadAll(resp.Body); err == nil {
@@ -120,9 +124,11 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 		return apiResp, errors.WithMessage(err, "Telegram API returned non JSON response or unknown JSON:\n"+string(body))
 	} else if !apiResp.Ok {
 		logRequestAndResponse()
+		if hadDeadlineExceeded && apiResp.ErrorCode == 400 && strings.Contains(apiResp.Description, "message is not modified") {
+			return apiResp, nil
+		}
 		return apiResp, apiResp
 	}
-
 	return apiResp, nil
 }
 
