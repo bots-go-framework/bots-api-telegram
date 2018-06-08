@@ -419,7 +419,7 @@ type ReplyKeyboardHide struct {
 }
 
 // KeyboardType returns KeyboardTypeHide
-func (*ReplyKeyboardHide) KeyboardType() bots.KeyboardType {
+func (ReplyKeyboardHide) KeyboardType() bots.KeyboardType {
 	return bots.KeyboardTypeHide
 }
 
