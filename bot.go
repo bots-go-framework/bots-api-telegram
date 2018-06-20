@@ -272,6 +272,23 @@ func (bot *BotAPI) GetMe() (User, error) {
 	return user, nil
 }
 
+func (bot *BotAPI) GetChat(chatID string) (Chat, error) {
+	var chat Chat
+
+	resp, err := bot.MakeRequest("getChat", url.Values{"chat_id":[]string{chatID}})
+	if err != nil {
+		return chat, err
+	}
+
+	if err = ffjson.Unmarshal(resp.Result, &chat); err != nil {
+		return chat, err
+	}
+
+	bot.debugLog("getChat", nil, chat)
+
+	return chat, nil
+}
+
 // IsMessageToMe returns true if message directed to this bot.
 //
 // It requires the Message.
