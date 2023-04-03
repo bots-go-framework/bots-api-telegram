@@ -45,6 +45,9 @@ func NewBotAPI(token string) *BotAPI {
 //
 // It requires a token, provided by @BotFather on Telegram.
 func NewBotAPIWithClient(token string, client *http.Client) *BotAPI {
+	if strings.TrimSpace(token) == "" {
+		panic("token must not be empty")
+	}
 	return &BotAPI{
 		Token:  token,
 		Client: client,
@@ -163,7 +166,10 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 // the file into memory to calculate a size.
 func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldname string, file interface{}) (APIResponse, error) {
 	ms := multipartstreamer.New()
-	ms.WriteFields(params)
+	err := ms.WriteFields(params)
+	if err != nil {
+		return APIResponse{}, err
+	}
 
 	switch f := file.(type) {
 	case string:
@@ -171,21 +177,28 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 		if err != nil {
 			return APIResponse{}, err
 		}
-		defer fileHandle.Close()
+		defer func() {
+			_ = fileHandle.Close()
+		}()
 
 		fi, err := os.Stat(f)
 		if err != nil {
 			return APIResponse{}, err
 		}
 
-		ms.WriteReader(fieldname, fileHandle.Name(), fi.Size(), fileHandle)
+		if err = ms.WriteReader(fieldname, fileHandle.Name(), fi.Size(), fileHandle); err != nil {
+			return APIResponse{}, err
+		}
 	case FileBytes:
 		buf := bytes.NewBuffer(f.Bytes)
-		ms.WriteReader(fieldname, f.Name, int64(len(f.Bytes)), buf)
+		if err = ms.WriteReader(fieldname, f.Name, int64(len(f.Bytes)), buf); err != nil {
+			return APIResponse{}, err
+		}
 	case FileReader:
 		if f.Size != -1 {
-			ms.WriteReader(fieldname, f.Name, f.Size, f.Reader)
-
+			if err = ms.WriteReader(fieldname, f.Name, f.Size, f.Reader); err != nil {
+				return APIResponse{}, err
+			}
 			break
 		}
 
@@ -196,7 +209,9 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 
 		buf := bytes.NewBuffer(data)
 
-		ms.WriteReader(fieldname, f.Name, int64(len(data)), buf)
+		if err = ms.WriteReader(fieldname, f.Name, int64(len(data)), buf); err != nil {
+			return APIResponse{}, err
+		}
 	default:
 		return APIResponse{}, errors.New(ErrBadFileType)
 	}
@@ -214,19 +229,21 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 	if err != nil {
 		return APIResponse{}, err
 	}
-	defer res.Body.Close()
+	defer func() {
+		_ = res.Body.Close()
+	}()
 
-	bytes, err := io.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return APIResponse{}, err
 	}
 
 	if bot.c != nil {
-		log.Debugf(bot.c, string(bytes))
+		log.Debugf(bot.c, string(body))
 	}
 
 	var apiResp APIResponse
-	if err = ffjson.Unmarshal(bytes, &apiResp); err != nil {
+	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
 		return apiResp, nil
 	}
 
@@ -544,10 +561,10 @@ func (bot *BotAPI) ListenForWebhook(pattern string) <-chan Update {
 	updatesChan := make(chan Update, 100)
 
 	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		bytes, _ := io.ReadAll(r.Body)
+		body, _ := io.ReadAll(r.Body)
 
 		var update Update
-		if err := ffjson.Unmarshal(bytes, &update); err != nil {
+		if err := ffjson.Unmarshal(body, &update); err != nil {
 			log.Errorf(context.Background(), fmt.Errorf("failed to unmarshal update JSON: %w", err).Error())
 			return
 		}
