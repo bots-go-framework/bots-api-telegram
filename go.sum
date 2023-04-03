@@ -49,6 +49,8 @@ github.com/strongo/bots-api-fbm v0.0.0-20180428075108-f61e04d86e75 h1:Z/TbA6Dr2z
 github.com/strongo/bots-api-fbm v0.0.0-20180428075108-f61e04d86e75/go.mod h1:c2HGWoCIWq71E/l/SFi5YIC2LPm0KM3vPqR4BBuficE=
 github.com/strongo/bots-framework v0.4.1 h1:7T5K561NbbYQiDw0aLPMRnAg93xeloCS8GPHh7aE3Vo=
 github.com/strongo/bots-framework v0.4.1/go.mod h1:pCzjyYze6aS+Wm8i+LCocPV+VE4RYLL21BKsTQy6/rs=
+github.com/strongo/bots-framework v0.9.0 h1:N3A5rv1A/fRh5qRehxeplfr8URSjiRXdPYDgEyEcdE0=
+github.com/strongo/bots-framework v0.9.0/go.mod h1:B6O47BIVkZIhUpR7Z/BggqYGo3UhjWv9A3mWtEZ0At8=
 github.com/strongo/dalgo v0.0.26 h1:2/OiXLKoZnuW5zZ0YqyqhewDngskScLQZu4awEksomU=
 github.com/strongo/dalgo v0.0.26/go.mod h1:TJ+6LPbGFy8oS3yWmPvG2AMY2wNK4qYBCXf45vSVYCw=
 github.com/strongo/emoji v0.0.1 h1:0Zev257CEmTVSyMiAovjqtgP+JKclp2e1c2V/jfVqwc=

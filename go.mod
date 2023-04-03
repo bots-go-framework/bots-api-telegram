@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7
-	github.com/strongo/bots-framework v0.4.1
+	github.com/strongo/bots-framework v0.9.0
 	github.com/strongo/log v0.0.1
 	github.com/technoweenie/multipartstreamer v1.0.1
 )

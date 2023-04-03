@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/strongo/bots-framework/core"
+	"github.com/strongo/bots-framework/botsfw"
 	"net/url"
 	"strconv"
 	"strings"
@@ -399,11 +399,11 @@ type ReplyKeyboardMarkup struct {
 }
 
 // KeyboardType returns KeyboardTypeBottom
-func (*ReplyKeyboardMarkup) KeyboardType() bots.KeyboardType {
-	return bots.KeyboardTypeBottom
+func (*ReplyKeyboardMarkup) KeyboardType() botsfw.KeyboardType {
+	return botsfw.KeyboardTypeBottom
 }
 
-var _ bots.Keyboard = (*ReplyKeyboardMarkup)(nil)
+var _ botsfw.Keyboard = (*ReplyKeyboardMarkup)(nil)
 
 // KeyboardButton is a button within a custom keyboard.
 type KeyboardButton struct {
@@ -419,11 +419,11 @@ type ReplyKeyboardHide struct {
 }
 
 // KeyboardType returns KeyboardTypeHide
-func (ReplyKeyboardHide) KeyboardType() bots.KeyboardType {
-	return bots.KeyboardTypeHide
+func (ReplyKeyboardHide) KeyboardType() botsfw.KeyboardType {
+	return botsfw.KeyboardTypeHide
 }
 
-var _ bots.Keyboard = (*ReplyKeyboardHide)(nil)
+var _ botsfw.Keyboard = (*ReplyKeyboardHide)(nil)
 
 // InlineKeyboardMarkup is a custom keyboard presented for an inline bot.
 type InlineKeyboardMarkup struct {
@@ -431,11 +431,11 @@ type InlineKeyboardMarkup struct {
 }
 
 // KeyboardType returns KeyboardTypeInline
-func (*InlineKeyboardMarkup) KeyboardType() bots.KeyboardType {
-	return bots.KeyboardTypeInline
+func (*InlineKeyboardMarkup) KeyboardType() botsfw.KeyboardType {
+	return botsfw.KeyboardTypeInline
 }
 
-var _ bots.Keyboard = (*InlineKeyboardMarkup)(nil)
+var _ botsfw.Keyboard = (*InlineKeyboardMarkup)(nil)
 
 // InlineKeyboardButton is a button within a custom keyboard for
 // inline query responses.
@@ -469,11 +469,11 @@ type ForceReply struct {
 }
 
 // KeyboardType returns KeyboardTypeForceReply
-func (ForceReply) KeyboardType() bots.KeyboardType {
-	return bots.KeyboardTypeForceReply
+func (ForceReply) KeyboardType() botsfw.KeyboardType {
+	return botsfw.KeyboardTypeForceReply
 }
 
-var _ bots.Keyboard = (*ForceReply)(nil)
+var _ botsfw.Keyboard = (*ForceReply)(nil)
 
 // InlineQuery is a Query from Telegram for an inline request.
 type InlineQuery struct {
