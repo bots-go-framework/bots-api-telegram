@@ -6,12 +6,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/strongo/log"
 	"github.com/technoweenie/multipartstreamer"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -95,7 +95,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 	case http.StatusForbidden:
 		apiResp = APIResponse{}
 		if resp.ContentLength > 0 {
-			if body, err := ioutil.ReadAll(resp.Body); err == nil {
+			if body, err := io.ReadAll(resp.Body); err == nil {
 				apiResp.Result = json.RawMessage(body)
 				if bot.c != nil {
 					log.Debugf(bot.c, "Response.body: %v", string(apiResp.Result))
@@ -105,7 +105,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 		return apiResp, ErrAPIForbidden{}
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return APIResponse{}, err
 	}
@@ -121,7 +121,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 
 	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
 		logRequestAndResponse()
-		return apiResp, errors.WithMessage(err, "Telegram API returned non JSON response or unknown JSON:\n"+string(body))
+		return apiResp, fmt.Errorf("telegram API returned non JSON response or unknown JSON: %w:\n%s", err, string(body))
 	} else if !apiResp.Ok {
 		logRequestAndResponse()
 		if hadDeadlineExceeded && apiResp.ErrorCode == 400 && strings.Contains(apiResp.Description, "message is not modified") {
@@ -147,7 +147,7 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 
 	if string(resp.Result) != "true" { // TODO: This is a workaround for "answerCallbackQuery" that returns just "true".
 		if err = ffjson.Unmarshal(resp.Result, &message); err != nil {
-			return message, errors.Wrapf(err, "Failed to call json.Unmarshal(%v)", string(resp.Result))
+			return message, fmt.Errorf("failed to call json.Unmarshal(s): %w: s=%s", err, string(resp.Result))
 		}
 	}
 	return message, err
@@ -189,7 +189,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 			break
 		}
 
-		data, err := ioutil.ReadAll(f.Reader)
+		data, err := io.ReadAll(f.Reader)
 		if err != nil {
 			return APIResponse{}, err
 		}
@@ -216,7 +216,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 	}
 	defer res.Body.Close()
 
-	bytes, err := ioutil.ReadAll(res.Body)
+	bytes, err := io.ReadAll(res.Body)
 	if err != nil {
 		return APIResponse{}, err
 	}
@@ -275,7 +275,7 @@ func (bot *BotAPI) GetMe() (User, error) {
 func (bot *BotAPI) GetChat(chatID string) (Chat, error) {
 	var chat Chat
 
-	resp, err := bot.MakeRequest("getChat", url.Values{"chat_id":[]string{chatID}})
+	resp, err := bot.MakeRequest("getChat", url.Values{"chat_id": []string{chatID}})
 	if err != nil {
 		return chat, err
 	}
@@ -544,11 +544,11 @@ func (bot *BotAPI) ListenForWebhook(pattern string) <-chan Update {
 	updatesChan := make(chan Update, 100)
 
 	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		bytes, _ := ioutil.ReadAll(r.Body)
+		bytes, _ := io.ReadAll(r.Body)
 
 		var update Update
 		if err := ffjson.Unmarshal(bytes, &update); err != nil {
-			log.Errorf(context.Background(), errors.WithMessage(err, "Failed to unmarshal update JSON").Error())
+			log.Errorf(context.Background(), fmt.Errorf("failed to unmarshal update JSON: %w", err).Error())
 			return
 		}
 

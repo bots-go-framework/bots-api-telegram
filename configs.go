@@ -3,8 +3,8 @@ package tgbotapi
 //go:generate ffjson $GOFILE
 
 import (
+	"errors"
 	"fmt"
-	"github.com/pkg/errors"
 	"github.com/pquerna/ffjson/ffjson"
 	"io"
 	"net/url"
