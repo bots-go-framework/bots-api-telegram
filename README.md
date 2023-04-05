@@ -110,4 +110,4 @@ This package is used in production by:
 * https://debtstracker.io/ - an app and [Telegram bot](https://t.me/DebtsTrackerBot) to track your personal debts
 
 ## Frameworks that utilise this `strongo/db` package
-* <a href="https://github.com/strongo/bots-framework">`strongo/bots-framework`</a> - framework to build chat bots in Go language.
+* [`bots-go-framework`](https://github.com/bots-go-framework) - a framework to build chat bots in Go language.
