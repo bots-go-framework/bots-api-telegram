@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7
 	github.com/stretchr/testify v1.8.2
-	github.com/strongo/bots-framework v0.9.6
+	github.com/strongo/bots-framework v0.9.8
 	github.com/strongo/log v0.0.1
 	github.com/technoweenie/multipartstreamer v1.0.1
 )
