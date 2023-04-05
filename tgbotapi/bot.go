@@ -317,11 +317,11 @@ func (bot *BotAPI) IsMessageToMe(message Message) bool {
 //
 // It requires the Chattable to send.
 func (bot *BotAPI) Send(c Chattable) (Message, error) {
-	switch c.(type) {
+	switch t := c.(type) {
 	case Fileable:
-		return bot.sendFile(c.(Fileable))
+		return bot.sendFile(t)
 	default:
-		return bot.sendChattable(c)
+		return bot.sendChattable(t)
 	}
 }
 
