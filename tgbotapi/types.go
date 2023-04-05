@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/strongo/bots-framework/botsfw"
+	"github.com/bots-go-framework/bots-fw/botsfw"
 	"net/url"
 	"strconv"
 	"strings"
