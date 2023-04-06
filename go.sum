@@ -1,5 +1,7 @@
 github.com/bots-go-framework/bots-fw v0.9.8 h1:nk9oUkcUhIJ1hImJmI7y3sLrSXf3KZQUWlfz7Qpu3P4=
 github.com/bots-go-framework/bots-fw v0.9.8/go.mod h1:zGxvXC8UqUr/cAJnbcngaKXdgvQj+mWjbXUAJpOT9ms=
+github.com/bots-go-framework/bots-fw v0.9.10 h1:OKXf7bSc47rsa0l9Izb+qgvsajXbOmgSzoY6CyTaWIE=
+github.com/bots-go-framework/bots-fw v0.9.10/go.mod h1:2XxS/he3tJ56rSy1ckMYOKRQ7rLV0orh5CoYGTD0Rw4=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/dal-go/dalgo v0.2.3 h1:n5B7kPf6YZn0gu1SP79USFMDB0BmuxhWLgI690lO7Ks=
 github.com/dal-go/dalgo v0.2.3/go.mod h1:Fv3s/hxtByMVY7PSOi6SJ/5B981kNCuKGBa5O0xHCnM=
@@ -39,6 +41,8 @@ github.com/strongo/emoji v0.0.1 h1:0Zev257CEmTVSyMiAovjqtgP+JKclp2e1c2V/jfVqwc=
 github.com/strongo/emoji v0.0.1/go.mod h1:aawHc+8HqsTyoNQj2DknYL/jVp2WQ1GCJgPrJz6MD8w=
 github.com/strongo/gamp v0.0.0-20180514004759-fdf2ce90b6b9 h1:E3vpL4KtVBkzjBOLy8TRURt2ouZJ6gpkP6x1To9T0zw=
 github.com/strongo/gamp v0.0.0-20180514004759-fdf2ce90b6b9/go.mod h1:/GeGwR8X/3HRIa2lxBQUu74JWPogwpeBbPGJLcp/iA4=
+github.com/strongo/gamp v0.0.1 h1:b6vzHUzNvbPOhzPtIja1NqKf8GQqrJWjs2gninQPZac=
+github.com/strongo/gamp v0.0.1/go.mod h1:ZcVVIzSQFygVehdtGh6KYmcp1eOacuEKb9th81WcUOw=
 github.com/strongo/log v0.0.1 h1:fdncna1E2M0kA6cCQI6knts+GFLsf1V7gmusch2KvFc=
 github.com/strongo/log v0.0.1/go.mod h1:C0OyprbH7WjyhcZXdveDiu5n0vxB8qZ1rQXxtUqx8y4=
 github.com/strongo/random v0.0.1 h1:OZHJBb/3uEa7OX8L2Dv2pLnSeewRmXMyTACoeto6O8I=
