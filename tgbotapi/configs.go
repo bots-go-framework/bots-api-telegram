@@ -60,12 +60,16 @@ type ErrAPIForbidden struct {
 }
 
 // Error implements error interface
-func (err *ErrAPIForbidden) Error() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (err ErrAPIForbidden) Error() string {
 	return "forbidden"
 }
 
 // IsForbidden indicates is forbidden
-func (err *ErrAPIForbidden) IsForbidden() bool {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (err ErrAPIForbidden) IsForbidden() bool {
 	return true
 }
 
@@ -83,7 +87,7 @@ const (
 	// ErrBadFileType happens when you pass an unknown type
 	ErrBadFileType = "bad file type"
 
-	// ErrBadURL indicates bad or enpty URL
+	// ErrBadURL indicates bad or empty URL
 	ErrBadURL = "bad or empty URL"
 )
 
@@ -112,7 +116,9 @@ type BaseChat struct {
 }
 
 // Values returns url.Values representation of BaseChat
-func (j *BaseChat) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j BaseChat) Values() (url.Values, error) {
 	values := url.Values{}
 	if j.ChannelUsername != "" {
 		values.Add("chat_id", j.ChannelUsername)
@@ -154,7 +160,9 @@ type BaseFile struct {
 }
 
 // params returns a map[string]string representation of BaseFile.
-func (file *BaseFile) params() (map[string]string, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (file BaseFile) params() (map[string]string, error) {
 	params := make(map[string]string)
 
 	if file.ChannelUsername != "" {
@@ -192,12 +200,16 @@ func (file *BaseFile) params() (map[string]string, error) {
 }
 
 // getFile returns the file.
-func (file *BaseFile) getFile() interface{} {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (file BaseFile) getFile() interface{} {
 	return file.File
 }
 
 // useExistingFile returns if the BaseFile has already been uploaded.
-func (file *BaseFile) useExistingFile() bool {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (file BaseFile) useExistingFile() bool {
 	return file.UseExisting
 }
 
@@ -220,7 +232,9 @@ type BaseEdit struct {
 }
 
 // Values returns URL values
-func (v *BaseEdit) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v BaseEdit) Values() (url.Values, error) {
 	values := url.Values{}
 
 	if v.ChannelUsername != "" {
@@ -257,7 +271,9 @@ type MessageConfig struct {
 	DisableWebPagePreview bool   `json:"disable_web_page_preview,omitempty"`
 }
 
-// Values returns a url.Values representation of MessageConfig.
+// Values returns url.Values representation of MessageConfig.
+//
+//goland:noinspection GoMixedReceiverTypes
 func (v MessageConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 	values.Add("text", v.Text)
@@ -270,6 +286,8 @@ func (v MessageConfig) Values() (url.Values, error) {
 }
 
 // method returns Telegram API method name for sending Message.
+//
+//goland:noinspection GoMixedReceiverTypes
 func (v MessageConfig) method() string {
 	return "sendMessage"
 }
@@ -282,7 +300,9 @@ type ForwardConfig struct {
 	MessageID           int // required
 }
 
-// Values returns a url.Values representation of ForwardConfig.
+// Values returns url.Values representation of ForwardConfig.
+//
+//goland:noinspection GoMixedReceiverTypes
 func (v ForwardConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 	values.Add("from_chat_id", strconv.FormatInt(v.FromChatID, 10))
@@ -291,6 +311,8 @@ func (v ForwardConfig) Values() (url.Values, error) {
 }
 
 // method returns Telegram API method name for sending Forward.
+//
+//goland:noinspection GoMixedReceiverTypes
 func (v ForwardConfig) method() string {
 	return "forwardMessage"
 }
@@ -299,7 +321,8 @@ type chatMethod struct {
 	ChatID string `json:"chat_id"`
 }
 
-func (v *chatMethod) Values() (url.Values, error) {
+//goland:noinspection GoMixedReceiverTypes
+func (v chatMethod) Values() (url.Values, error) {
 	if v.ChatID == "" {
 		return nil, ErrNoChatID
 	}
@@ -311,7 +334,8 @@ type LeaveChatConfig struct {
 	chatMethod
 }
 
-func (*LeaveChatConfig) method() string {
+//goland:noinspection GoMixedReceiverTypes
+func (LeaveChatConfig) method() string {
 	return "leaveChat"
 }
 
@@ -320,7 +344,8 @@ type ExportChatInviteLink struct {
 	chatMethod
 }
 
-func (*ExportChatInviteLink) method() string {
+//goland:noinspection GoMixedReceiverTypes
+func (ExportChatInviteLink) method() string {
 	return "exportChatInviteLink"
 }
 
@@ -334,7 +359,9 @@ type PhotoConfig struct {
 }
 
 // Params returns a map[string]string representation of PhotoConfig.
-func (v *PhotoConfig) params() (map[string]string, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v PhotoConfig) params() (map[string]string, error) {
 	params, _ := v.BaseFile.params()
 
 	if v.Caption != "" {
@@ -344,8 +371,10 @@ func (v *PhotoConfig) params() (map[string]string, error) {
 	return params, nil
 }
 
-// Values returns a url.Values representation of PhotoConfig.
-func (v *PhotoConfig) Values() (url.Values, error) {
+// Values returns url.Values representation of PhotoConfig.
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v PhotoConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 
 	values.Add(v.name(), v.FileID)
@@ -356,12 +385,16 @@ func (v *PhotoConfig) Values() (url.Values, error) {
 }
 
 // name returns the field name for the Photo.
-func (v *PhotoConfig) name() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v PhotoConfig) name() string {
 	return "photo"
 }
 
 // method returns Telegram API method name for sending Photo.
-func (v *PhotoConfig) method() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v PhotoConfig) method() string {
 	return "sendPhoto"
 }
 
@@ -373,8 +406,10 @@ type AudioConfig struct {
 	Title     string
 }
 
-// Values returns a url.Values representation of AudioConfig.
-func (j *AudioConfig) Values() (url.Values, error) {
+// Values returns url.Values representation of AudioConfig.
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j AudioConfig) Values() (url.Values, error) {
 	values, _ := j.BaseChat.Values()
 
 	values.Add(j.name(), j.FileID)
@@ -393,7 +428,9 @@ func (j *AudioConfig) Values() (url.Values, error) {
 }
 
 // params returns a map[string]string representation of AudioConfig.
-func (j *AudioConfig) params() (map[string]string, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j AudioConfig) params() (map[string]string, error) {
 	params, _ := j.BaseFile.params()
 
 	if j.Duration != 0 {
@@ -411,12 +448,16 @@ func (j *AudioConfig) params() (map[string]string, error) {
 }
 
 // name returns the field name for the Audio.
-func (j *AudioConfig) name() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j AudioConfig) name() string {
 	return "audio"
 }
 
 // method returns Telegram API method name for sending Audio.
-func (j *AudioConfig) method() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j AudioConfig) method() string {
 	return "sendAudio"
 }
 
@@ -425,8 +466,10 @@ type DocumentConfig struct {
 	BaseFile
 }
 
-// Values returns a url.Values representation of DocumentConfig.
-func (v *DocumentConfig) Values() (url.Values, error) {
+// Values returns url.Values representation of DocumentConfig.
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v DocumentConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 
 	values.Add(v.name(), v.FileID)
@@ -435,19 +478,25 @@ func (v *DocumentConfig) Values() (url.Values, error) {
 }
 
 // params returns a map[string]string representation of DocumentConfig.
-func (v *DocumentConfig) params() (map[string]string, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v DocumentConfig) params() (map[string]string, error) {
 	params, _ := v.BaseFile.params()
 
 	return params, nil
 }
 
 // name returns the field name for the Document.
-func (v *DocumentConfig) name() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v DocumentConfig) name() string {
 	return "document"
 }
 
 // method returns Telegram API method name for sending Document.
-func (v *DocumentConfig) method() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v DocumentConfig) method() string {
 	return "sendDocument"
 }
 
@@ -457,7 +506,9 @@ type StickerConfig struct {
 }
 
 // Values returns url.Values representation of StickerConfig.
-func (v *StickerConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v StickerConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 
 	values.Add(v.name(), v.FileID)
@@ -466,19 +517,25 @@ func (v *StickerConfig) Values() (url.Values, error) {
 }
 
 // params returns a map[string]string representation of StickerConfig.
-func (v *StickerConfig) params() (map[string]string, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v StickerConfig) params() (map[string]string, error) {
 	params, _ := v.BaseFile.params()
 
 	return params, nil
 }
 
 // name returns the field name for the Sticker.
-func (v *StickerConfig) name() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v StickerConfig) name() string {
 	return "sticker"
 }
 
 // method returns Telegram API method name for sending Sticker.
-func (v *StickerConfig) method() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v StickerConfig) method() string {
 	return "sendSticker"
 }
 
@@ -490,7 +547,9 @@ type VideoConfig struct {
 }
 
 // Values returns a url.Values representation of VideoConfig.
-func (v *VideoConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VideoConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 
 	values.Add(v.name(), v.FileID)
@@ -505,19 +564,25 @@ func (v *VideoConfig) Values() (url.Values, error) {
 }
 
 // params returns a map[string]string representation of VideoConfig.
-func (v *VideoConfig) params() (map[string]string, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VideoConfig) params() (map[string]string, error) {
 	params, _ := v.BaseFile.params()
 
 	return params, nil
 }
 
 // name returns the field name for the Video.
-func (v *VideoConfig) name() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VideoConfig) name() string {
 	return "video"
 }
 
 // method returns Telegram API method name for sending Video.
-func (v *VideoConfig) method() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VideoConfig) method() string {
 	return "sendVideo"
 }
 
@@ -528,7 +593,9 @@ type VoiceConfig struct {
 }
 
 // Values returns a url.Values representation of VoiceConfig.
-func (v *VoiceConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VoiceConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 
 	values.Add(v.name(), v.FileID)
@@ -540,7 +607,9 @@ func (v *VoiceConfig) Values() (url.Values, error) {
 }
 
 // params returns a map[string]string representation of VoiceConfig.
-func (v *VoiceConfig) params() (map[string]string, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VoiceConfig) params() (map[string]string, error) {
 	params, _ := v.BaseFile.params()
 
 	if v.Duration != 0 {
@@ -551,12 +620,16 @@ func (v *VoiceConfig) params() (map[string]string, error) {
 }
 
 // name returns the field name for the Voice.
-func (v *VoiceConfig) name() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VoiceConfig) name() string {
 	return "voice"
 }
 
 // method returns Telegram API method name for sending Voice.
-func (v *VoiceConfig) method() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VoiceConfig) method() string {
 	return "sendVoice"
 }
 
@@ -567,8 +640,10 @@ type LocationConfig struct {
 	Longitude float64 // required
 }
 
-// Values returns a url.Values representation of LocationConfig.
-func (j *LocationConfig) Values() (url.Values, error) {
+// Values returns url.Values representation of LocationConfig.
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j LocationConfig) Values() (url.Values, error) {
 	values, _ := j.BaseChat.Values()
 
 	values.Add("latitude", strconv.FormatFloat(j.Latitude, 'f', 6, 64))
@@ -578,7 +653,9 @@ func (j *LocationConfig) Values() (url.Values, error) {
 }
 
 // method returns Telegram API method name for sending Location.
-func (j *LocationConfig) method() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j LocationConfig) method() string {
 	return "sendLocation"
 }
 
@@ -593,7 +670,9 @@ type VenueConfig struct {
 }
 
 // Values returns URL values representation of VenueConfig
-func (v *VenueConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (v VenueConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 
 	values.Add("latitude", strconv.FormatFloat(v.Latitude, 'f', 6, 64))
@@ -607,7 +686,8 @@ func (v *VenueConfig) Values() (url.Values, error) {
 	return values, nil
 }
 
-func (v *VenueConfig) method() string {
+//goland:noinspection GoMixedReceiverTypes
+func (v VenueConfig) method() string {
 	return "sendVenue"
 }
 
@@ -620,7 +700,9 @@ type ContactConfig struct {
 }
 
 // Values returns URL values representation of ContactConfig
-func (j *ContactConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j ContactConfig) Values() (url.Values, error) {
 	values, _ := j.BaseChat.Values()
 
 	values.Add("phone_number", j.PhoneNumber)
@@ -630,7 +712,8 @@ func (j *ContactConfig) Values() (url.Values, error) {
 	return values, nil
 }
 
-func (j *ContactConfig) method() string {
+//goland:noinspection GoMixedReceiverTypes
+func (j ContactConfig) method() string {
 	return "sendContact"
 }
 
@@ -640,27 +723,34 @@ type ChatActionConfig struct {
 	Action string // required
 }
 
-// Values returns a url.Values representation of ChatActionConfig.
-func (config *ChatActionConfig) Values() (url.Values, error) {
+// Values returns url.Values representation of ChatActionConfig.
+//
+//goland:noinspection GoMixedReceiverTypes
+func (config ChatActionConfig) Values() (url.Values, error) {
 	values, _ := config.BaseChat.Values()
 	values.Add("action", config.Action)
 	return values, nil
 }
 
 // method returns Telegram API method name for sending ChatAction.
-func (config *ChatActionConfig) method() string {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (config ChatActionConfig) method() string {
 	return "sendChatAction"
 }
 
 // DeleteMessage is a command to delete a message
 type DeleteMessage chatEdit
 
+//goland:noinspection GoMixedReceiverTypes
 func (*DeleteMessage) method() string {
 	return "deleteMessage"
 }
 
 // Values returns URL values representation of DeleteMessage
-func (m *DeleteMessage) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (m DeleteMessage) Values() (url.Values, error) {
 	return url.Values{
 		"chat_id":    []string{strconv.FormatInt(m.ChatID, 10)},
 		"message_id": []string{strconv.Itoa(m.MessageID)},
@@ -678,7 +768,9 @@ type EditMessageTextConfig struct {
 }
 
 // Values returns URL values representation of EditMessageTextConfig
-func (j *EditMessageTextConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j EditMessageTextConfig) Values() (url.Values, error) {
 	v, _ := j.BaseEdit.Values()
 
 	v.Add("text", j.Text)
@@ -692,7 +784,8 @@ func (j *EditMessageTextConfig) Values() (url.Values, error) {
 	return v, nil
 }
 
-func (j *EditMessageTextConfig) method() string {
+//goland:noinspection GoMixedReceiverTypes
+func (j EditMessageTextConfig) method() string {
 	return "editMessageText"
 }
 
@@ -703,7 +796,9 @@ type EditMessageCaptionConfig struct {
 }
 
 // Values returns URL values representation of EditMessageCaptionConfig
-func (j *EditMessageCaptionConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j EditMessageCaptionConfig) Values() (url.Values, error) {
 	v, _ := j.BaseEdit.Values()
 
 	v.Add("caption", j.Caption)
@@ -711,7 +806,8 @@ func (j *EditMessageCaptionConfig) Values() (url.Values, error) {
 	return v, nil
 }
 
-func (j *EditMessageCaptionConfig) method() string {
+//goland:noinspection GoMixedReceiverTypes
+func (j EditMessageCaptionConfig) method() string {
 	return "editMessageCaption"
 }
 
@@ -722,10 +818,13 @@ type EditMessageReplyMarkupConfig struct {
 }
 
 // Values returns URL values representation of EditMessageReplyMarkupConfig
-func (config *EditMessageReplyMarkupConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (config EditMessageReplyMarkupConfig) Values() (url.Values, error) {
 	return config.BaseEdit.Values()
 }
 
+//goland:noinspection GoMixedReceiverTypes
 func (config EditMessageReplyMarkupConfig) method() string {
 	return "editMessageReplyMarkup"
 }
@@ -784,7 +883,9 @@ type WebhookConfig struct {
 }
 
 // Values returns url.Values representation of WebhookConfig.
-func (j *WebhookConfig) Values() (values url.Values, err error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j WebhookConfig) Values() (values url.Values, err error) {
 	if j.URL == nil {
 		return nil, errors.New("URL is nil")
 	}
@@ -812,7 +913,9 @@ func (j *WebhookConfig) Values() (values url.Values, err error) {
 }
 
 // Validate returns an error if the WebhookConfig struct is invalid.
-func (j *WebhookConfig) Validate() error {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j WebhookConfig) Validate() error {
 	if j.URL == nil || j.URL.String() == "" {
 		return errors.New("URL is required")
 	}
@@ -846,12 +949,15 @@ type InlineConfig struct {
 	SwitchPMParameter string        `json:"switch_pm_parameter,omitempty"`
 }
 
-func (config *InlineConfig) method() string {
+//goland:noinspection GoMixedReceiverTypes
+func (config InlineConfig) method() string {
 	return "answerInlineQuery"
 }
 
 // Values returns URL values representation of InlineConfig
-func (config *InlineConfig) Values() (url.Values, error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (config InlineConfig) Values() (url.Values, error) {
 	v := url.Values{}
 
 	v.Add("inline_query_id", config.InlineQueryID)
@@ -893,12 +999,15 @@ type AnswerCallbackQueryConfig struct {
 
 var _ Chattable = (*AnswerCallbackQueryConfig)(nil)
 
-func (j *AnswerCallbackQueryConfig) method() string {
+//goland:noinspection GoMixedReceiverTypes
+func (j AnswerCallbackQueryConfig) method() string {
 	return "answerCallbackQuery"
 }
 
 // Values returns URL values representation of AnswerCallbackQueryConfig
-func (j *AnswerCallbackQueryConfig) Values() (v url.Values, err error) {
+//
+//goland:noinspection GoMixedReceiverTypes
+func (j AnswerCallbackQueryConfig) Values() (v url.Values, err error) {
 	v = url.Values{} // if removed causes nil pointer exception
 	v.Add("callback_query_id", j.CallbackQueryID)
 	if j.Text != "" && j.URL != "" {
