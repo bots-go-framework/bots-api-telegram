@@ -7,13 +7,13 @@ import (
 // NewMessage creates a new Message.
 //
 // chatID is where to send it, text is the message text.
-func NewMessage(chatID int64, text string) MessageConfig {
-	return MessageConfig{
+func NewMessage(chatID int64, text string) *MessageConfig {
+	return &MessageConfig{
 		BaseChat: BaseChat{
 			ChatID:           chatID,
 			ReplyToMessageID: 0,
 		},
-		Text: text,
+		Text:                  text,
 		DisableWebPagePreview: false,
 	}
 }
@@ -21,8 +21,8 @@ func NewMessage(chatID int64, text string) MessageConfig {
 // NewMessageToChannel creates a new Message that is sent to a channel
 // by username.
 // username is the username of the channel, text is the message text.
-func NewMessageToChannel(username string, text string) MessageConfig {
-	return MessageConfig{
+func NewMessageToChannel(username string, text string) *MessageConfig {
+	return &MessageConfig{
 		BaseChat: BaseChat{
 			ChannelUsername: username,
 		},
@@ -34,8 +34,8 @@ func NewMessageToChannel(username string, text string) MessageConfig {
 //
 // chatID is where to send it, fromChatID is the source chat,
 // and messageID is the ID of the original message.
-func NewForward(chatID int64, fromChatID int64, messageID int) ForwardConfig {
-	return ForwardConfig{
+func NewForward(chatID int64, fromChatID int64, messageID int) *ForwardConfig {
+	return &ForwardConfig{
 		BaseChat:   BaseChat{ChatID: chatID},
 		FromChatID: fromChatID,
 		MessageID:  messageID,
@@ -48,8 +48,8 @@ func NewForward(chatID int64, fromChatID int64, messageID int) ForwardConfig {
 // FileReader, or FileBytes.
 //
 // Note that you must send animated GIFs as a document.
-func NewPhotoUpload(chatID int64, file interface{}) PhotoConfig {
-	return PhotoConfig{
+func NewPhotoUpload(chatID int64, file interface{}) *PhotoConfig {
+	return &PhotoConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			File:        file,
@@ -63,8 +63,8 @@ func NewPhotoUpload(chatID int64, file interface{}) PhotoConfig {
 //
 // chatID is where to send it, fileID is the ID of the file
 // already uploaded.
-func NewPhotoShare(chatID int64, fileID string) PhotoConfig {
-	return PhotoConfig{
+func NewPhotoShare(chatID int64, fileID string) *PhotoConfig {
+	return &PhotoConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			FileID:      fileID,
@@ -77,8 +77,8 @@ func NewPhotoShare(chatID int64, fileID string) PhotoConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewAudioUpload(chatID int64, file interface{}) AudioConfig {
-	return AudioConfig{
+func NewAudioUpload(chatID int64, file interface{}) *AudioConfig {
+	return &AudioConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			File:        file,
@@ -93,8 +93,8 @@ func NewAudioUpload(chatID int64, file interface{}) AudioConfig {
 //
 // chatID is where to send it, fileID is the ID of the audio
 // already uploaded.
-func NewAudioShare(chatID int64, fileID string) AudioConfig {
-	return AudioConfig{
+func NewAudioShare(chatID int64, fileID string) *AudioConfig {
+	return &AudioConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			FileID:      fileID,
@@ -107,8 +107,8 @@ func NewAudioShare(chatID int64, fileID string) AudioConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewDocumentUpload(chatID int64, file interface{}) DocumentConfig {
-	return DocumentConfig{
+func NewDocumentUpload(chatID int64, file interface{}) *DocumentConfig {
+	return &DocumentConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			File:        file,
@@ -123,8 +123,8 @@ func NewDocumentUpload(chatID int64, file interface{}) DocumentConfig {
 //
 // chatID is where to send it, fileID is the ID of the document
 // already uploaded.
-func NewDocumentShare(chatID int64, fileID string) DocumentConfig {
-	return DocumentConfig{
+func NewDocumentShare(chatID int64, fileID string) *DocumentConfig {
+	return &DocumentConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			FileID:      fileID,
@@ -137,8 +137,8 @@ func NewDocumentShare(chatID int64, fileID string) DocumentConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewStickerUpload(chatID int64, file interface{}) StickerConfig {
-	return StickerConfig{
+func NewStickerUpload(chatID int64, file interface{}) *StickerConfig {
+	return &StickerConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			File:        file,
@@ -153,8 +153,8 @@ func NewStickerUpload(chatID int64, file interface{}) StickerConfig {
 //
 // chatID is where to send it, fileID is the ID of the sticker
 // already uploaded.
-func NewStickerShare(chatID int64, fileID string) StickerConfig {
-	return StickerConfig{
+func NewStickerShare(chatID int64, fileID string) *StickerConfig {
+	return &StickerConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			FileID:      fileID,
@@ -167,8 +167,8 @@ func NewStickerShare(chatID int64, fileID string) StickerConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewVideoUpload(chatID int64, file interface{}) VideoConfig {
-	return VideoConfig{
+func NewVideoUpload(chatID int64, file interface{}) *VideoConfig {
+	return &VideoConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			File:        file,
@@ -182,8 +182,8 @@ func NewVideoUpload(chatID int64, file interface{}) VideoConfig {
 //
 // chatID is where to send it, fileID is the ID of the video
 // already uploaded.
-func NewVideoShare(chatID int64, fileID string) VideoConfig {
-	return VideoConfig{
+func NewVideoShare(chatID int64, fileID string) *VideoConfig {
+	return &VideoConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			FileID:      fileID,
@@ -196,8 +196,8 @@ func NewVideoShare(chatID int64, fileID string) VideoConfig {
 //
 // chatID is where to send it, file is a string path to the file,
 // FileReader, or FileBytes.
-func NewVoiceUpload(chatID int64, file interface{}) VoiceConfig {
-	return VoiceConfig{
+func NewVoiceUpload(chatID int64, file interface{}) *VoiceConfig {
+	return &VoiceConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			File:        file,
@@ -211,8 +211,8 @@ func NewVoiceUpload(chatID int64, file interface{}) VoiceConfig {
 //
 // chatID is where to send it, fileID is the ID of the video
 // already uploaded.
-func NewVoiceShare(chatID int64, fileID string) VoiceConfig {
-	return VoiceConfig{
+func NewVoiceShare(chatID int64, fileID string) *VoiceConfig {
+	return &VoiceConfig{
 		BaseFile: BaseFile{
 			BaseChat:    BaseChat{ChatID: chatID},
 			FileID:      fileID,
@@ -222,8 +222,8 @@ func NewVoiceShare(chatID int64, fileID string) VoiceConfig {
 }
 
 // NewContact allows you to send a shared contact.
-func NewContact(chatID int64, phoneNumber, firstName string) ContactConfig {
-	return ContactConfig{
+func NewContact(chatID int64, phoneNumber, firstName string) *ContactConfig {
+	return &ContactConfig{
 		BaseChat: BaseChat{
 			ChatID: chatID,
 		},
@@ -235,8 +235,8 @@ func NewContact(chatID int64, phoneNumber, firstName string) ContactConfig {
 // NewLocation shares your location.
 //
 // chatID is where to send it, latitude and longitude are coordinates.
-func NewLocation(chatID int64, latitude float64, longitude float64) LocationConfig {
-	return LocationConfig{
+func NewLocation(chatID int64, latitude float64, longitude float64) *LocationConfig {
+	return &LocationConfig{
 		BaseChat: BaseChat{
 			ChatID: chatID,
 		},
@@ -246,8 +246,8 @@ func NewLocation(chatID int64, latitude float64, longitude float64) LocationConf
 }
 
 // NewVenue allows you to send a venue and its location.
-func NewVenue(chatID int64, title, address string, latitude, longitude float64) VenueConfig {
-	return VenueConfig{
+func NewVenue(chatID int64, title, address string, latitude, longitude float64) *VenueConfig {
+	return &VenueConfig{
 		BaseChat: BaseChat{
 			ChatID: chatID,
 		},
@@ -262,8 +262,8 @@ func NewVenue(chatID int64, title, address string, latitude, longitude float64) 
 // Actions last for 5 seconds, or until your next action.
 //
 // chatID is where to send it, action should be set via Chat constants.
-func NewChatAction(chatID int64, action string) ChatActionConfig {
-	return ChatActionConfig{
+func NewChatAction(chatID int64, action string) *ChatActionConfig {
+	return &ChatActionConfig{
 		BaseChat: BaseChat{ChatID: chatID},
 		Action:   action,
 	}
@@ -272,8 +272,8 @@ func NewChatAction(chatID int64, action string) ChatActionConfig {
 // NewUserProfilePhotos gets user profile photos.
 //
 // userID is the ID of the user you wish to get profile photos from.
-func NewUserProfilePhotos(userID int) UserProfilePhotosConfig {
-	return UserProfilePhotosConfig{
+func NewUserProfilePhotos(userID int) *UserProfilePhotosConfig {
+	return &UserProfilePhotosConfig{
 		UserID: userID,
 		Offset: 0,
 		Limit:  0,
@@ -284,8 +284,8 @@ func NewUserProfilePhotos(userID int) UserProfilePhotosConfig {
 //
 // offset is the last Update ID to include.
 // You likely want to set this to the last Update ID plus 1.
-func NewUpdate(offset int) UpdateConfig {
-	return UpdateConfig{
+func NewUpdate(offset int) *UpdateConfig {
+	return &UpdateConfig{
 		Offset:  offset,
 		Limit:   0,
 		Timeout: 0,
@@ -295,10 +295,10 @@ func NewUpdate(offset int) UpdateConfig {
 // NewWebhook creates a new webhook.
 //
 // link is the url parsable link you wish to get the updates.
-func NewWebhook(link string) WebhookConfig {
+func NewWebhook(link string) *WebhookConfig {
 	u, _ := url.Parse(link)
 
-	return WebhookConfig{
+	return &WebhookConfig{
 		URL: u,
 	}
 }
@@ -307,10 +307,10 @@ func NewWebhook(link string) WebhookConfig {
 //
 // link is the url you wish to get webhooks,
 // file contains a string to a file, FileReader, or FileBytes.
-func NewWebhookWithCert(link string, file interface{}) WebhookConfig {
+func NewWebhookWithCert(link string, file interface{}) *WebhookConfig {
 	u, _ := url.Parse(link)
 
-	return WebhookConfig{
+	return &WebhookConfig{
 		URL:         u,
 		Certificate: file,
 	}
@@ -338,8 +338,8 @@ func NewInlineQueryResultGIF(id, url string) InlineQueryResultGIF {
 }
 
 // NewInlineQueryResultMPEG4GIF creates a new inline query MPEG4 GIF.
-func NewInlineQueryResultMPEG4GIF(id, url string) InlineQueryResultMPEG4GIF {
-	return InlineQueryResultMPEG4GIF{
+func NewInlineQueryResultMPEG4GIF(id, url string) *InlineQueryResultMPEG4GIF {
+	return &InlineQueryResultMPEG4GIF{
 		Type: "mpeg4_gif",
 		ID:   id,
 		URL:  url,
@@ -347,8 +347,8 @@ func NewInlineQueryResultMPEG4GIF(id, url string) InlineQueryResultMPEG4GIF {
 }
 
 // NewInlineQueryResultPhoto creates a new inline query photo.
-func NewInlineQueryResultPhoto(id, url string) InlineQueryResultPhoto {
-	return InlineQueryResultPhoto{
+func NewInlineQueryResultPhoto(id, url string) *InlineQueryResultPhoto {
+	return &InlineQueryResultPhoto{
 		Type: "photo",
 		ID:   id,
 		URL:  url,
@@ -356,8 +356,8 @@ func NewInlineQueryResultPhoto(id, url string) InlineQueryResultPhoto {
 }
 
 // NewInlineQueryResultVideo creates a new inline query video.
-func NewInlineQueryResultVideo(id, url string) InlineQueryResultVideo {
-	return InlineQueryResultVideo{
+func NewInlineQueryResultVideo(id, url string) *InlineQueryResultVideo {
+	return &InlineQueryResultVideo{
 		Type: "video",
 		ID:   id,
 		URL:  url,
@@ -365,8 +365,8 @@ func NewInlineQueryResultVideo(id, url string) InlineQueryResultVideo {
 }
 
 // NewInlineQueryResultAudio creates a new inline query audio.
-func NewInlineQueryResultAudio(id, url, title string) InlineQueryResultAudio {
-	return InlineQueryResultAudio{
+func NewInlineQueryResultAudio(id, url, title string) *InlineQueryResultAudio {
+	return &InlineQueryResultAudio{
 		Type:  "audio",
 		ID:    id,
 		URL:   url,
@@ -375,8 +375,8 @@ func NewInlineQueryResultAudio(id, url, title string) InlineQueryResultAudio {
 }
 
 // NewInlineQueryResultVoice creates a new inline query voice.
-func NewInlineQueryResultVoice(id, url, title string) InlineQueryResultVoice {
-	return InlineQueryResultVoice{
+func NewInlineQueryResultVoice(id, url, title string) *InlineQueryResultVoice {
+	return &InlineQueryResultVoice{
 		Type:  "voice",
 		ID:    id,
 		URL:   url,
@@ -385,8 +385,8 @@ func NewInlineQueryResultVoice(id, url, title string) InlineQueryResultVoice {
 }
 
 // NewInlineQueryResultDocument creates a new inline query document.
-func NewInlineQueryResultDocument(id, url, title, mimeType string) InlineQueryResultDocument {
-	return InlineQueryResultDocument{
+func NewInlineQueryResultDocument(id, url, title, mimeType string) *InlineQueryResultDocument {
+	return &InlineQueryResultDocument{
 		Type:     "document",
 		ID:       id,
 		URL:      url,
@@ -396,8 +396,8 @@ func NewInlineQueryResultDocument(id, url, title, mimeType string) InlineQueryRe
 }
 
 // NewInlineQueryResultLocation creates a new inline query location.
-func NewInlineQueryResultLocation(id, title string, latitude, longitude float64) InlineQueryResultLocation {
-	return InlineQueryResultLocation{
+func NewInlineQueryResultLocation(id, title string, latitude, longitude float64) *InlineQueryResultLocation {
+	return &InlineQueryResultLocation{
 		Type:      "location",
 		ID:        id,
 		Title:     title,
@@ -423,8 +423,8 @@ func NewEditMessageText(chatID int64, messageID int, inlineMessageID, text strin
 }
 
 // NewEditMessageCaption allows you to edit the caption of a message.
-func NewEditMessageCaption(chatID int64, messageID int, caption string) EditMessageCaptionConfig {
-	return EditMessageCaptionConfig{
+func NewEditMessageCaption(chatID int64, messageID int, caption string) *EditMessageCaptionConfig {
+	return &EditMessageCaptionConfig{
 		BaseEdit: NewChatMessageEdit(chatID, messageID),
 		Caption:  caption,
 	}
@@ -432,11 +432,11 @@ func NewEditMessageCaption(chatID int64, messageID int, caption string) EditMess
 
 // NewEditMessageReplyMarkup allows you to edit the inline
 // keyboard markup.
-func NewEditMessageReplyMarkup(chatID int64, messageID int, inlineMessageID string, replyMarkup *InlineKeyboardMarkup) EditMessageReplyMarkupConfig {
+func NewEditMessageReplyMarkup(chatID int64, messageID int, inlineMessageID string, replyMarkup *InlineKeyboardMarkup) *EditMessageReplyMarkupConfig {
 	if inlineMessageID == "" && chatID == 0 && messageID == 0 {
 		panic("inlineMessageID is empty string && chatID == 0 && messageID == 0")
 	}
-	return EditMessageReplyMarkupConfig{
+	return &EditMessageReplyMarkupConfig{
 		BaseEdit: BaseEdit{
 			chatEdit:        chatEdit{ChatID: chatID, MessageID: messageID},
 			InlineMessageID: inlineMessageID,
@@ -530,7 +530,7 @@ func NewInlineKeyboardButtonSwitchInlineQuery(text, query string) InlineKeyboard
 // NewInlineKeyboardButtonSwitchInlineQueryCurrentChat create new command
 func NewInlineKeyboardButtonSwitchInlineQueryCurrentChat(text, query string) InlineKeyboardButton {
 	return InlineKeyboardButton{
-		Text: text,
+		Text:                         text,
 		SwitchInlineQueryCurrentChat: &query,
 	}
 }

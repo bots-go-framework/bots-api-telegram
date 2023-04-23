@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 // Telegram constants
@@ -59,12 +60,13 @@ type ErrAPIForbidden struct {
 }
 
 // Error implements error interface
-func (err ErrAPIForbidden) Error() string {
+func (err *ErrAPIForbidden) Error() string {
 	return "forbidden"
 }
 
 // IsForbidden indicates is forbidden
-func (err ErrAPIForbidden) IsForbidden() {
+func (err *ErrAPIForbidden) IsForbidden() bool {
+	return true
 }
 
 // Constant values for ParseMode in MessageConfig
@@ -72,7 +74,7 @@ const (
 	// ModeMarkdown indicates markdown mode
 	ModeMarkdown = "Markdown"
 
-	// ModeMarkdown indicates HTML mode
+	// ModeHTML indicates HTML mode
 	ModeHTML = "HTML"
 )
 
@@ -110,35 +112,35 @@ type BaseChat struct {
 }
 
 // Values returns url.Values representation of BaseChat
-func (chat *BaseChat) Values() (url.Values, error) {
-	v := url.Values{}
-	if chat.ChannelUsername != "" {
-		v.Add("chat_id", chat.ChannelUsername)
+func (j *BaseChat) Values() (url.Values, error) {
+	values := url.Values{}
+	if j.ChannelUsername != "" {
+		values.Add("chat_id", j.ChannelUsername)
 	} else {
-		v.Add("chat_id", strconv.FormatInt(chat.ChatID, 10))
+		values.Add("chat_id", strconv.FormatInt(j.ChatID, 10))
 	}
 
-	if chat.ReplyToMessageID != 0 {
-		v.Add("reply_to_message_id", strconv.Itoa(chat.ReplyToMessageID))
+	if j.ReplyToMessageID != 0 {
+		values.Add("reply_to_message_id", strconv.Itoa(j.ReplyToMessageID))
 	}
 
-	if chat.ReplyMarkup != nil {
-		data, err := ffjson.Marshal(chat.ReplyMarkup)
+	if j.ReplyMarkup != nil {
+		data, err := ffjson.Marshal(j.ReplyMarkup)
 		if err != nil {
 			ffjson.Pool(data)
-			return v, err
+			return values, err
 		}
 		if string(data) == "null" {
-			panic(fmt.Sprintf("string(data) == null, BaseChat: %v", chat))
+			panic(fmt.Sprintf("string(data) == null, BaseChat: %v", j))
 		}
 
-		v.Add("reply_markup", string(data))
+		values.Add("reply_markup", string(data))
 		ffjson.Pool(data)
 	}
 
-	v.Add("disable_notification", strconv.FormatBool(chat.DisableNotification))
+	values.Add("disable_notification", strconv.FormatBool(j.DisableNotification))
 
-	return v, nil
+	return values, nil
 }
 
 // BaseFile is a base type for all file config types.
@@ -152,7 +154,7 @@ type BaseFile struct {
 }
 
 // params returns a map[string]string representation of BaseFile.
-func (file BaseFile) params() (map[string]string, error) {
+func (file *BaseFile) params() (map[string]string, error) {
 	params := make(map[string]string)
 
 	if file.ChannelUsername != "" {
@@ -190,12 +192,12 @@ func (file BaseFile) params() (map[string]string, error) {
 }
 
 // getFile returns the file.
-func (file BaseFile) getFile() interface{} {
+func (file *BaseFile) getFile() interface{} {
 	return file.File
 }
 
 // useExistingFile returns if the BaseFile has already been uploaded.
-func (file BaseFile) useExistingFile() bool {
+func (file *BaseFile) useExistingFile() bool {
 	return file.UseExisting
 }
 
@@ -218,33 +220,33 @@ type BaseEdit struct {
 }
 
 // Values returns URL values
-func (edit BaseEdit) Values() (url.Values, error) {
-	v := url.Values{}
+func (v *BaseEdit) Values() (url.Values, error) {
+	values := url.Values{}
 
-	if edit.ChannelUsername != "" {
-		v.Add("chat_id", edit.ChannelUsername)
+	if v.ChannelUsername != "" {
+		values.Add("chat_id", v.ChannelUsername)
 	}
-	if edit.ChatID != 0 {
-		v.Add("chat_id", strconv.FormatInt(edit.ChatID, 10))
+	if v.ChatID != 0 {
+		values.Add("chat_id", strconv.FormatInt(v.ChatID, 10))
 	}
-	if edit.MessageID != 0 {
-		v.Add("message_id", strconv.Itoa(edit.MessageID))
+	if v.MessageID != 0 {
+		values.Add("message_id", strconv.Itoa(v.MessageID))
 	}
-	if edit.InlineMessageID != "" {
-		v.Add("inline_message_id", edit.InlineMessageID)
+	if v.InlineMessageID != "" {
+		values.Add("inline_message_id", v.InlineMessageID)
 	}
 
-	if edit.ReplyMarkup != nil {
-		data, err := ffjson.Marshal(edit.ReplyMarkup)
+	if v.ReplyMarkup != nil {
+		data, err := ffjson.Marshal(v.ReplyMarkup)
 		if err != nil {
 			ffjson.Pool(data)
-			return v, err
+			return values, err
 		}
-		v.Add("reply_markup", string(data))
+		values.Add("reply_markup", string(data))
 		ffjson.Pool(data)
 	}
 
-	return v, nil
+	return values, nil
 }
 
 // MessageConfig contains information about a SendMessage request.
@@ -256,19 +258,19 @@ type MessageConfig struct {
 }
 
 // Values returns a url.Values representation of MessageConfig.
-func (config MessageConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
-	v.Add("text", config.Text)
-	v.Add("disable_web_page_preview", strconv.FormatBool(config.DisableWebPagePreview))
-	if config.ParseMode != "" {
-		v.Add("parse_mode", config.ParseMode)
+func (v MessageConfig) Values() (url.Values, error) {
+	values, _ := v.BaseChat.Values()
+	values.Add("text", v.Text)
+	values.Add("disable_web_page_preview", strconv.FormatBool(v.DisableWebPagePreview))
+	if v.ParseMode != "" {
+		values.Add("parse_mode", v.ParseMode)
 	}
 
-	return v, nil
+	return values, nil
 }
 
 // method returns Telegram API method name for sending Message.
-func (config MessageConfig) method() string {
+func (v MessageConfig) method() string {
 	return "sendMessage"
 }
 
@@ -281,15 +283,15 @@ type ForwardConfig struct {
 }
 
 // Values returns a url.Values representation of ForwardConfig.
-func (config ForwardConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
-	v.Add("from_chat_id", strconv.FormatInt(config.FromChatID, 10))
-	v.Add("message_id", strconv.Itoa(config.MessageID))
-	return v, nil
+func (v ForwardConfig) Values() (url.Values, error) {
+	values, _ := v.BaseChat.Values()
+	values.Add("from_chat_id", strconv.FormatInt(v.FromChatID, 10))
+	values.Add("message_id", strconv.Itoa(v.MessageID))
+	return values, nil
 }
 
 // method returns Telegram API method name for sending Forward.
-func (config ForwardConfig) method() string {
+func (v ForwardConfig) method() string {
 	return "forwardMessage"
 }
 
@@ -297,11 +299,11 @@ type chatMethod struct {
 	ChatID string `json:"chat_id"`
 }
 
-func (config chatMethod) Values() (url.Values, error) {
-	if config.ChatID == "" {
+func (v *chatMethod) Values() (url.Values, error) {
+	if v.ChatID == "" {
 		return nil, ErrNoChatID
 	}
-	return url.Values{"chat_id": []string{config.ChatID}}, nil
+	return url.Values{"chat_id": []string{v.ChatID}}, nil
 }
 
 // LeaveChatConfig is message command for leaving chat
@@ -309,7 +311,7 @@ type LeaveChatConfig struct {
 	chatMethod
 }
 
-func (LeaveChatConfig) method() string {
+func (*LeaveChatConfig) method() string {
 	return "leaveChat"
 }
 
@@ -318,7 +320,7 @@ type ExportChatInviteLink struct {
 	chatMethod
 }
 
-func (ExportChatInviteLink) method() string {
+func (*ExportChatInviteLink) method() string {
 	return "exportChatInviteLink"
 }
 
@@ -332,34 +334,34 @@ type PhotoConfig struct {
 }
 
 // Params returns a map[string]string representation of PhotoConfig.
-func (config PhotoConfig) params() (map[string]string, error) {
-	params, _ := config.BaseFile.params()
+func (v *PhotoConfig) params() (map[string]string, error) {
+	params, _ := v.BaseFile.params()
 
-	if config.Caption != "" {
-		params["caption"] = config.Caption
+	if v.Caption != "" {
+		params["caption"] = v.Caption
 	}
 
 	return params, nil
 }
 
 // Values returns a url.Values representation of PhotoConfig.
-func (config PhotoConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+func (v *PhotoConfig) Values() (url.Values, error) {
+	values, _ := v.BaseChat.Values()
 
-	v.Add(config.name(), config.FileID)
-	if config.Caption != "" {
-		v.Add("caption", config.Caption)
+	values.Add(v.name(), v.FileID)
+	if v.Caption != "" {
+		values.Add("caption", v.Caption)
 	}
-	return v, nil
+	return values, nil
 }
 
 // name returns the field name for the Photo.
-func (config PhotoConfig) name() string {
+func (v *PhotoConfig) name() string {
 	return "photo"
 }
 
 // method returns Telegram API method name for sending Photo.
-func (config PhotoConfig) method() string {
+func (v *PhotoConfig) method() string {
 	return "sendPhoto"
 }
 
@@ -372,49 +374,49 @@ type AudioConfig struct {
 }
 
 // Values returns a url.Values representation of AudioConfig.
-func (config AudioConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+func (j *AudioConfig) Values() (url.Values, error) {
+	values, _ := j.BaseChat.Values()
 
-	v.Add(config.name(), config.FileID)
-	if config.Duration != 0 {
-		v.Add("duration", strconv.Itoa(config.Duration))
+	values.Add(j.name(), j.FileID)
+	if j.Duration != 0 {
+		values.Add("duration", strconv.Itoa(j.Duration))
 	}
 
-	if config.Performer != "" {
-		v.Add("performer", config.Performer)
+	if j.Performer != "" {
+		values.Add("performer", j.Performer)
 	}
-	if config.Title != "" {
-		v.Add("title", config.Title)
+	if j.Title != "" {
+		values.Add("title", j.Title)
 	}
 
-	return v, nil
+	return values, nil
 }
 
 // params returns a map[string]string representation of AudioConfig.
-func (config AudioConfig) params() (map[string]string, error) {
-	params, _ := config.BaseFile.params()
+func (j *AudioConfig) params() (map[string]string, error) {
+	params, _ := j.BaseFile.params()
 
-	if config.Duration != 0 {
-		params["duration"] = strconv.Itoa(config.Duration)
+	if j.Duration != 0 {
+		params["duration"] = strconv.Itoa(j.Duration)
 	}
 
-	if config.Performer != "" {
-		params["performer"] = config.Performer
+	if j.Performer != "" {
+		params["performer"] = j.Performer
 	}
-	if config.Title != "" {
-		params["title"] = config.Title
+	if j.Title != "" {
+		params["title"] = j.Title
 	}
 
 	return params, nil
 }
 
 // name returns the field name for the Audio.
-func (config AudioConfig) name() string {
+func (j *AudioConfig) name() string {
 	return "audio"
 }
 
 // method returns Telegram API method name for sending Audio.
-func (config AudioConfig) method() string {
+func (j *AudioConfig) method() string {
 	return "sendAudio"
 }
 
@@ -424,28 +426,28 @@ type DocumentConfig struct {
 }
 
 // Values returns a url.Values representation of DocumentConfig.
-func (config DocumentConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+func (v *DocumentConfig) Values() (url.Values, error) {
+	values, _ := v.BaseChat.Values()
 
-	v.Add(config.name(), config.FileID)
+	values.Add(v.name(), v.FileID)
 
-	return v, nil
+	return values, nil
 }
 
 // params returns a map[string]string representation of DocumentConfig.
-func (config DocumentConfig) params() (map[string]string, error) {
-	params, _ := config.BaseFile.params()
+func (v *DocumentConfig) params() (map[string]string, error) {
+	params, _ := v.BaseFile.params()
 
 	return params, nil
 }
 
 // name returns the field name for the Document.
-func (config DocumentConfig) name() string {
+func (v *DocumentConfig) name() string {
 	return "document"
 }
 
 // method returns Telegram API method name for sending Document.
-func (config DocumentConfig) method() string {
+func (v *DocumentConfig) method() string {
 	return "sendDocument"
 }
 
@@ -454,29 +456,29 @@ type StickerConfig struct {
 	BaseFile
 }
 
-// Values returns a url.Values representation of StickerConfig.
-func (config StickerConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+// Values returns url.Values representation of StickerConfig.
+func (v *StickerConfig) Values() (url.Values, error) {
+	values, _ := v.BaseChat.Values()
 
-	v.Add(config.name(), config.FileID)
+	values.Add(v.name(), v.FileID)
 
-	return v, nil
+	return values, nil
 }
 
 // params returns a map[string]string representation of StickerConfig.
-func (config StickerConfig) params() (map[string]string, error) {
-	params, _ := config.BaseFile.params()
+func (v *StickerConfig) params() (map[string]string, error) {
+	params, _ := v.BaseFile.params()
 
 	return params, nil
 }
 
 // name returns the field name for the Sticker.
-func (config StickerConfig) name() string {
+func (v *StickerConfig) name() string {
 	return "sticker"
 }
 
 // method returns Telegram API method name for sending Sticker.
-func (config StickerConfig) method() string {
+func (v *StickerConfig) method() string {
 	return "sendSticker"
 }
 
@@ -488,34 +490,34 @@ type VideoConfig struct {
 }
 
 // Values returns a url.Values representation of VideoConfig.
-func (config VideoConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+func (v *VideoConfig) Values() (url.Values, error) {
+	values, _ := v.BaseChat.Values()
 
-	v.Add(config.name(), config.FileID)
-	if config.Duration != 0 {
-		v.Add("duration", strconv.Itoa(config.Duration))
+	values.Add(v.name(), v.FileID)
+	if v.Duration != 0 {
+		values.Add("duration", strconv.Itoa(v.Duration))
 	}
-	if config.Caption != "" {
-		v.Add("caption", config.Caption)
+	if v.Caption != "" {
+		values.Add("caption", v.Caption)
 	}
 
-	return v, nil
+	return values, nil
 }
 
 // params returns a map[string]string representation of VideoConfig.
-func (config VideoConfig) params() (map[string]string, error) {
-	params, _ := config.BaseFile.params()
+func (v *VideoConfig) params() (map[string]string, error) {
+	params, _ := v.BaseFile.params()
 
 	return params, nil
 }
 
 // name returns the field name for the Video.
-func (config VideoConfig) name() string {
+func (v *VideoConfig) name() string {
 	return "video"
 }
 
 // method returns Telegram API method name for sending Video.
-func (config VideoConfig) method() string {
+func (v *VideoConfig) method() string {
 	return "sendVideo"
 }
 
@@ -526,35 +528,35 @@ type VoiceConfig struct {
 }
 
 // Values returns a url.Values representation of VoiceConfig.
-func (config VoiceConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+func (v *VoiceConfig) Values() (url.Values, error) {
+	values, _ := v.BaseChat.Values()
 
-	v.Add(config.name(), config.FileID)
-	if config.Duration != 0 {
-		v.Add("duration", strconv.Itoa(config.Duration))
+	values.Add(v.name(), v.FileID)
+	if v.Duration != 0 {
+		values.Add("duration", strconv.Itoa(v.Duration))
 	}
 
-	return v, nil
+	return values, nil
 }
 
 // params returns a map[string]string representation of VoiceConfig.
-func (config VoiceConfig) params() (map[string]string, error) {
-	params, _ := config.BaseFile.params()
+func (v *VoiceConfig) params() (map[string]string, error) {
+	params, _ := v.BaseFile.params()
 
-	if config.Duration != 0 {
-		params["duration"] = strconv.Itoa(config.Duration)
+	if v.Duration != 0 {
+		params["duration"] = strconv.Itoa(v.Duration)
 	}
 
 	return params, nil
 }
 
 // name returns the field name for the Voice.
-func (config VoiceConfig) name() string {
+func (v *VoiceConfig) name() string {
 	return "voice"
 }
 
 // method returns Telegram API method name for sending Voice.
-func (config VoiceConfig) method() string {
+func (v *VoiceConfig) method() string {
 	return "sendVoice"
 }
 
@@ -566,17 +568,17 @@ type LocationConfig struct {
 }
 
 // Values returns a url.Values representation of LocationConfig.
-func (config LocationConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+func (j *LocationConfig) Values() (url.Values, error) {
+	values, _ := j.BaseChat.Values()
 
-	v.Add("latitude", strconv.FormatFloat(config.Latitude, 'f', 6, 64))
-	v.Add("longitude", strconv.FormatFloat(config.Longitude, 'f', 6, 64))
+	values.Add("latitude", strconv.FormatFloat(j.Latitude, 'f', 6, 64))
+	values.Add("longitude", strconv.FormatFloat(j.Longitude, 'f', 6, 64))
 
-	return v, nil
+	return values, nil
 }
 
 // method returns Telegram API method name for sending Location.
-func (config LocationConfig) method() string {
+func (j *LocationConfig) method() string {
 	return "sendLocation"
 }
 
@@ -591,21 +593,21 @@ type VenueConfig struct {
 }
 
 // Values returns URL values representation of VenueConfig
-func (config VenueConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+func (v *VenueConfig) Values() (url.Values, error) {
+	values, _ := v.BaseChat.Values()
 
-	v.Add("latitude", strconv.FormatFloat(config.Latitude, 'f', 6, 64))
-	v.Add("longitude", strconv.FormatFloat(config.Longitude, 'f', 6, 64))
-	v.Add("title", config.Title)
-	v.Add("address", config.Address)
-	if config.FoursquareID != "" {
-		v.Add("foursquare_id", config.FoursquareID)
+	values.Add("latitude", strconv.FormatFloat(v.Latitude, 'f', 6, 64))
+	values.Add("longitude", strconv.FormatFloat(v.Longitude, 'f', 6, 64))
+	values.Add("title", v.Title)
+	values.Add("address", v.Address)
+	if v.FoursquareID != "" {
+		values.Add("foursquare_id", v.FoursquareID)
 	}
 
-	return v, nil
+	return values, nil
 }
 
-func (config VenueConfig) method() string {
+func (v *VenueConfig) method() string {
 	return "sendVenue"
 }
 
@@ -618,17 +620,17 @@ type ContactConfig struct {
 }
 
 // Values returns URL values representation of ContactConfig
-func (config ContactConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
+func (j *ContactConfig) Values() (url.Values, error) {
+	values, _ := j.BaseChat.Values()
 
-	v.Add("phone_number", config.PhoneNumber)
-	v.Add("first_name", config.FirstName)
-	v.Add("last_name", config.LastName)
+	values.Add("phone_number", j.PhoneNumber)
+	values.Add("first_name", j.FirstName)
+	values.Add("last_name", j.LastName)
 
-	return v, nil
+	return values, nil
 }
 
-func (config ContactConfig) method() string {
+func (j *ContactConfig) method() string {
 	return "sendContact"
 }
 
@@ -639,26 +641,26 @@ type ChatActionConfig struct {
 }
 
 // Values returns a url.Values representation of ChatActionConfig.
-func (config ChatActionConfig) Values() (url.Values, error) {
-	v, _ := config.BaseChat.Values()
-	v.Add("action", config.Action)
-	return v, nil
+func (config *ChatActionConfig) Values() (url.Values, error) {
+	values, _ := config.BaseChat.Values()
+	values.Add("action", config.Action)
+	return values, nil
 }
 
 // method returns Telegram API method name for sending ChatAction.
-func (config ChatActionConfig) method() string {
+func (config *ChatActionConfig) method() string {
 	return "sendChatAction"
 }
 
 // DeleteMessage is a command to delete a message
 type DeleteMessage chatEdit
 
-func (DeleteMessage) method() string {
+func (*DeleteMessage) method() string {
 	return "deleteMessage"
 }
 
 // Values returns URL values representation of DeleteMessage
-func (m DeleteMessage) Values() (url.Values, error) {
+func (m *DeleteMessage) Values() (url.Values, error) {
 	return url.Values{
 		"chat_id":    []string{strconv.FormatInt(m.ChatID, 10)},
 		"message_id": []string{strconv.Itoa(m.MessageID)},
@@ -676,21 +678,21 @@ type EditMessageTextConfig struct {
 }
 
 // Values returns URL values representation of EditMessageTextConfig
-func (config EditMessageTextConfig) Values() (url.Values, error) {
-	v, _ := config.BaseEdit.Values()
+func (j *EditMessageTextConfig) Values() (url.Values, error) {
+	v, _ := j.BaseEdit.Values()
 
-	v.Add("text", config.Text)
-	if config.ParseMode != "" {
-		v.Add("parse_mode", config.ParseMode)
+	v.Add("text", j.Text)
+	if j.ParseMode != "" {
+		v.Add("parse_mode", j.ParseMode)
 	}
-	if config.DisableWebPagePreview {
-		v.Add("disable_web_page_preview", strconv.FormatBool(config.DisableWebPagePreview))
+	if j.DisableWebPagePreview {
+		v.Add("disable_web_page_preview", strconv.FormatBool(j.DisableWebPagePreview))
 	}
 
 	return v, nil
 }
 
-func (config EditMessageTextConfig) method() string {
+func (j *EditMessageTextConfig) method() string {
 	return "editMessageText"
 }
 
@@ -701,15 +703,15 @@ type EditMessageCaptionConfig struct {
 }
 
 // Values returns URL values representation of EditMessageCaptionConfig
-func (config EditMessageCaptionConfig) Values() (url.Values, error) {
-	v, _ := config.BaseEdit.Values()
+func (j *EditMessageCaptionConfig) Values() (url.Values, error) {
+	v, _ := j.BaseEdit.Values()
 
-	v.Add("caption", config.Caption)
+	v.Add("caption", j.Caption)
 
 	return v, nil
 }
 
-func (config EditMessageCaptionConfig) method() string {
+func (j *EditMessageCaptionConfig) method() string {
 	return "editMessageCaption"
 }
 
@@ -720,7 +722,7 @@ type EditMessageReplyMarkupConfig struct {
 }
 
 // Values returns URL values representation of EditMessageReplyMarkupConfig
-func (config EditMessageReplyMarkupConfig) Values() (url.Values, error) {
+func (config *EditMessageReplyMarkupConfig) Values() (url.Values, error) {
 	return config.BaseEdit.Values()
 }
 
@@ -750,10 +752,71 @@ type UpdateConfig struct {
 
 // WebhookConfig contains information about a SetWebhook request.
 type WebhookConfig struct {
-	URL            *url.URL
-	Certificate    interface{}
-	MaxConnections int
-	AllowedUpdates []string
+
+	// URL - HTTPS url to send updates to. Use an empty string to remove webhook integration
+	URL *url.URL `json:"url"` // REQUIRED!
+
+	// Certificate - 	Upload your public key certificate so that the root certificate in use can be checked.
+	// See https://core.telegram.org/bots/self-signed guide for details.
+	Certificate interface{} `json:"certificate,omitempty"`
+
+	// IPAddress - The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
+	IPAddress string `json:"ip_address,omitempty"`
+
+	// MaxConnections - 	The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100.
+	// Defaults to 40. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
+	MaxConnections int `json:"max_connections,omitempty"`
+
+	// AllowedUpdates - A JSON-serialized list of the update types you want your bot to receive.
+	// For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types.
+	// See Update for a complete list of available update types.
+	// Specify an empty list to receive all update types except chat_member (default).
+	// If not specified, the previous setting will be used.
+	// Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
+	AllowedUpdates []string `json:"allowed_updates,omitempty"`
+
+	// DropPendingUpdates - Pass True to drop all pending updates
+	DropPendingUpdates bool `json:"drop_pending_updates,omitempty"`
+
+	// SecretToken - A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters.
+	// Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you.
+	SecretToken string `json:"secret_token,omitempty"`
+}
+
+// Values returns url.Values representation of WebhookConfig.
+func (j *WebhookConfig) Values() (values url.Values, err error) {
+	if j.URL == nil {
+		return nil, errors.New("URL is nil")
+	}
+	if webhookUrl := j.URL.String(); webhookUrl == "" {
+		return nil, errors.New("URL is empty string")
+	} else {
+		values.Add("url", webhookUrl)
+	}
+	if j.IPAddress != "" {
+		values.Add("ip_address", j.IPAddress)
+	}
+	if j.MaxConnections > 0 {
+		values.Add("max_connections", strconv.Itoa(j.MaxConnections))
+	}
+	if len(j.AllowedUpdates) > 0 {
+		values.Add("allowed_updates", `["`+strings.Join(j.AllowedUpdates, `","`)+`"]`)
+	}
+	if j.DropPendingUpdates {
+		values.Add("drop_pending_updates", "True")
+	}
+	if j.SecretToken != "" {
+		values.Add("secret_token", j.SecretToken)
+	}
+	return values, err
+}
+
+// Validate returns an error if the WebhookConfig struct is invalid.
+func (j *WebhookConfig) Validate() error {
+	if j.URL == nil || j.URL.String() == "" {
+		return errors.New("URL is required")
+	}
+	return nil
 }
 
 // FileBytes contains information about a set of bytes to upload
@@ -783,12 +846,12 @@ type InlineConfig struct {
 	SwitchPMParameter string        `json:"switch_pm_parameter,omitempty"`
 }
 
-func (config InlineConfig) method() string {
+func (config *InlineConfig) method() string {
 	return "answerInlineQuery"
 }
 
 // Values returns URL values representation of InlineConfig
-func (config InlineConfig) Values() (url.Values, error) {
+func (config *InlineConfig) Values() (url.Values, error) {
 	v := url.Values{}
 
 	v.Add("inline_query_id", config.InlineQueryID)
@@ -830,25 +893,25 @@ type AnswerCallbackQueryConfig struct {
 
 var _ Chattable = (*AnswerCallbackQueryConfig)(nil)
 
-func (config AnswerCallbackQueryConfig) method() string {
+func (j *AnswerCallbackQueryConfig) method() string {
 	return "answerCallbackQuery"
 }
 
 // Values returns URL values representation of AnswerCallbackQueryConfig
-func (config AnswerCallbackQueryConfig) Values() (v url.Values, err error) {
+func (j *AnswerCallbackQueryConfig) Values() (v url.Values, err error) {
 	v = url.Values{} // if removed causes nil pointer exception
-	v.Add("callback_query_id", config.CallbackQueryID)
-	if config.Text != "" && config.URL != "" {
-		err = errors.New("Both config.Text && config.URL supplied")
+	v.Add("callback_query_id", j.CallbackQueryID)
+	if j.Text != "" && j.URL != "" {
+		err = errors.New("both j.Text && j.URL supplied")
 		return
 	}
-	if config.Text != "" {
-		v.Add("text", config.Text)
-		if config.ShowAlert {
+	if j.Text != "" {
+		v.Add("text", j.Text)
+		if j.ShowAlert {
 			v.Add("show_alert", "true")
 		}
-	} else if config.URL != "" {
-		v.Add("url", config.URL)
+	} else if j.URL != "" {
+		v.Add("url", j.URL)
 	}
 	return
 }

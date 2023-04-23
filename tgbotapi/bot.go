@@ -91,26 +91,35 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 
 	if err != nil {
 		log.Errorf(bot.c, "Failed to send POST to %v: %v", method, err.Error())
-		return APIResponse{Ok: false}, err
+		return APIResponse{Ok: false}, fmt.Errorf("%v: %s: %w", "POST", method, err)
+	}
+
+	var body []byte
+	if resp.ContentLength > 0 {
+		var readerErr error
+		if body, readerErr = io.ReadAll(resp.Body); err != nil {
+			log.Errorf(bot.c, "Failed to read response.body: %v", readerErr)
+			if err == nil {
+				err = readerErr
+			}
+		}
+	}
+	apiResp = APIResponse{
+		Result: json.RawMessage(body),
+	}
+	if resp.StatusCode >= 300 {
+		apiResp.ErrorCode = resp.StatusCode
 	}
 
 	switch resp.StatusCode {
+	case http.StatusUnauthorized:
+		return apiResp, fmt.Errorf("%s %+v unauthorized: %s", method, params, string(body))
 	case http.StatusForbidden:
-		apiResp = APIResponse{}
-		if resp.ContentLength > 0 {
-			if body, err := io.ReadAll(resp.Body); err == nil {
-				apiResp.Result = json.RawMessage(body)
-				if bot.c != nil {
-					log.Debugf(bot.c, "Response.body: %v", string(apiResp.Result))
-				}
-			}
-		}
-		return apiResp, ErrAPIForbidden{}
+		return apiResp, &ErrAPIForbidden{}
 	}
 
-	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return APIResponse{}, err
+		return APIResponse{Ok: false, Result: json.RawMessage(body)}, fmt.Errorf("%v: %s: %w", "POST", method, err)
 	}
 
 	logRequestAndResponse := func() {
@@ -456,7 +465,7 @@ func (bot *BotAPI) GetFile(config FileConfig) (File, error) {
 // To avoid stale items, set Offset to one higher than the previous item.
 // Set Timeout to a large number to reduce requests so you can get updates
 // instantly instead of having to wait between requests.
-func (bot *BotAPI) GetUpdates(config UpdateConfig) ([]Update, error) {
+func (bot *BotAPI) GetUpdates(config *UpdateConfig) ([]Update, error) {
 	var updates []Update
 
 	v := url.Values{}
@@ -493,44 +502,35 @@ func (bot *BotAPI) RemoveWebhook() (APIResponse, error) {
 //
 // If this is set, GetUpdates will not get any data!
 //
-// If you do not have a legitimate TLS certificate, you need to include
-// your self signed certificate with the config.
+// If you do not have a legitimate TLS certificate, you need to include your self-signed certificate with the config.
 func (bot *BotAPI) SetWebhook(config WebhookConfig) (APIResponse, error) {
 	if config.Certificate == nil {
-		v := url.Values{}
-		v.Add("url", config.URL.String())
-		if len(config.AllowedUpdates) > 0 {
-			v.Add("allowed_updates", `["`+strings.Join(config.AllowedUpdates, `","`)+`"]`)
+		params, err := config.Values()
+		if err != nil {
+			return APIResponse{}, err
 		}
-		if config.MaxConnections > 0 {
-			v.Add("max_connections", strconv.Itoa(config.MaxConnections))
+		return bot.MakeRequest("setWebhook", params)
+	} else {
+		var apiResp APIResponse
+		resp, err := bot.UploadFile("setWebhook", map[string]string{"url": config.URL.String()}, "certificate", config.Certificate)
+		if err != nil {
+			return apiResp, err
 		}
-		return bot.MakeRequest("setWebhook", v)
+
+		if err = ffjson.Unmarshal(resp.Result, &apiResp); err != nil {
+			return apiResp, err
+		}
+
+		if bot.c != nil {
+			log.Debugf(bot.c, "setWebhook resp: %+v\n", apiResp)
+		}
+
+		return apiResp, nil
 	}
-
-	params := make(map[string]string)
-	params["url"] = config.URL.String()
-
-	var apiResp APIResponse
-
-	resp, err := bot.UploadFile("setWebhook", params, "certificate", config.Certificate)
-	if err != nil {
-		return apiResp, err
-	}
-
-	if err = ffjson.Unmarshal(resp.Result, &apiResp); err != nil {
-		return apiResp, err
-	}
-
-	if bot.c != nil {
-		log.Debugf(bot.c, "setWebhook resp: %+v\n", apiResp)
-	}
-
-	return apiResp, nil
 }
 
 // GetUpdatesChan starts and returns a channel for getting updates.
-func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) (<-chan Update, error) {
+func (bot *BotAPI) GetUpdatesChan(config *UpdateConfig) (<-chan Update, error) {
 	updatesChan := make(chan Update, 100)
 
 	go func() {
