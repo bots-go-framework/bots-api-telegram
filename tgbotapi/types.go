@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/bots-go-framework/bots-fw/botsfw"
+	botsgocore "github.com/bots-go-framework/bots-go-core"
 	"net/url"
 	"strconv"
 	"strings"
@@ -399,11 +399,11 @@ type ReplyKeyboardMarkup struct {
 }
 
 // KeyboardType returns KeyboardTypeBottom
-func (*ReplyKeyboardMarkup) KeyboardType() botsfw.KeyboardType {
-	return botsfw.KeyboardTypeBottom
+func (*ReplyKeyboardMarkup) KeyboardType() botsgocore.KeyboardType {
+	return botsgocore.KeyboardTypeBottom
 }
 
-var _ botsfw.Keyboard = (*ReplyKeyboardMarkup)(nil)
+var _ botsgocore.Keyboard = (*ReplyKeyboardMarkup)(nil)
 
 // KeyboardButton is a button within a custom keyboard.
 type KeyboardButton struct {
@@ -419,11 +419,11 @@ type ReplyKeyboardHide struct {
 }
 
 // KeyboardType returns KeyboardTypeHide
-func (ReplyKeyboardHide) KeyboardType() botsfw.KeyboardType {
-	return botsfw.KeyboardTypeHide
+func (ReplyKeyboardHide) KeyboardType() botsgocore.KeyboardType {
+	return botsgocore.KeyboardTypeHide
 }
 
-var _ botsfw.Keyboard = (*ReplyKeyboardHide)(nil)
+var _ botsgocore.Keyboard = (*ReplyKeyboardHide)(nil)
 
 // InlineKeyboardMarkup is a custom keyboard presented for an inline bot.
 type InlineKeyboardMarkup struct {
@@ -431,11 +431,11 @@ type InlineKeyboardMarkup struct {
 }
 
 // KeyboardType returns KeyboardTypeInline
-func (*InlineKeyboardMarkup) KeyboardType() botsfw.KeyboardType {
-	return botsfw.KeyboardTypeInline
+func (*InlineKeyboardMarkup) KeyboardType() botsgocore.KeyboardType {
+	return botsgocore.KeyboardTypeInline
 }
 
-var _ botsfw.Keyboard = (*InlineKeyboardMarkup)(nil)
+var _ botsgocore.Keyboard = (*InlineKeyboardMarkup)(nil)
 
 // InlineKeyboardButton is a button within a custom keyboard for
 // inline query responses.
@@ -469,11 +469,11 @@ type ForceReply struct {
 }
 
 // KeyboardType returns KeyboardTypeForceReply
-func (ForceReply) KeyboardType() botsfw.KeyboardType {
-	return botsfw.KeyboardTypeForceReply
+func (ForceReply) KeyboardType() botsgocore.KeyboardType {
+	return botsgocore.KeyboardTypeForceReply
 }
 
-var _ botsfw.Keyboard = (*ForceReply)(nil)
+var _ botsgocore.Keyboard = (*ForceReply)(nil)
 
 // InlineQuery is a Query from Telegram for an inline request.
 type InlineQuery struct {
