@@ -885,10 +885,11 @@ type WebhookConfig struct {
 // Values returns url.Values representation of WebhookConfig.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (j WebhookConfig) Values() (values url.Values, err error) {
+func (j WebhookConfig) Values() (url.Values, error) {
 	if j.URL == nil {
 		return nil, errors.New("URL is nil")
 	}
+	values := make(url.Values, 6)
 	if webhookUrl := j.URL.String(); webhookUrl == "" {
 		return nil, errors.New("URL is empty string")
 	} else {
@@ -909,7 +910,7 @@ func (j WebhookConfig) Values() (values url.Values, err error) {
 	if j.SecretToken != "" {
 		values.Add("secret_token", j.SecretToken)
 	}
-	return values, err
+	return values, nil
 }
 
 // Validate returns an error if the WebhookConfig struct is invalid.
@@ -1007,22 +1008,21 @@ func (j AnswerCallbackQueryConfig) method() string {
 // Values returns URL values representation of AnswerCallbackQueryConfig
 //
 //goland:noinspection GoMixedReceiverTypes
-func (j AnswerCallbackQueryConfig) Values() (v url.Values, err error) {
-	v = url.Values{} // if removed causes nil pointer exception
-	v.Add("callback_query_id", j.CallbackQueryID)
+func (j AnswerCallbackQueryConfig) Values() (url.Values, error) {
+	values := make(url.Values, 3) // if removed causes nil pointer exception
+	values.Add("callback_query_id", j.CallbackQueryID)
 	if j.Text != "" && j.URL != "" {
-		err = errors.New("both j.Text && j.URL supplied")
-		return
+		return nil, errors.New("both j.Text && j.URL supplied")
 	}
 	if j.Text != "" {
-		v.Add("text", j.Text)
+		values.Add("text", j.Text)
 		if j.ShowAlert {
-			v.Add("show_alert", "true")
+			values.Add("show_alert", "true")
 		}
 	} else if j.URL != "" {
-		v.Add("url", j.URL)
+		values.Add("url", j.URL)
 	}
-	return
+	return values, nil
 }
 
 // ChatMemberConfig contains information about a user in a chat for use
