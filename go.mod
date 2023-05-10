@@ -6,7 +6,7 @@ require (
 	github.com/bots-go-framework/bots-go-core v0.0.1
 	github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7
 	github.com/stretchr/testify v1.8.2
-	github.com/strongo/log v0.2.3
+	github.com/strongo/log v0.3.0
 	github.com/technoweenie/multipartstreamer v1.0.1
 )
 
