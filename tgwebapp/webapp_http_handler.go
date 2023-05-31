@@ -14,11 +14,16 @@ import (
 
 // AuthenticateTelegramWebApp validates Telegram web app init data
 // https://core.telegram.org/bots/webapps#webappinitdata
-// TODO: Move some of it into Telegram module?
+// TODO: Move some of it into Telegram FW module?
 func AuthenticateTelegramWebApp(
 	w http.ResponseWriter, r *http.Request,
-	authenticated func() error,
+	getToken func(bot string) string,
+	complete func(initData *InitData),
 ) {
+	var initData InitData
+	defer func() {
+		complete(&initData)
+	}()
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -33,35 +38,27 @@ func AuthenticateTelegramWebApp(
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	if !isValidWebAppInitData(values, "") {
-		http.Error(w, "invalid data", http.StatusUnauthorized)
+	bot := r.URL.Query().Get("bot")
+	token := getToken(bot)
+	if !isFromTelegram(values, token) {
+		http.Error(w, "data are not signed with telegram bot token", http.StatusUnauthorized)
 		return
 	}
-
+	initData = NewInitDataFromUrlValues(values)
 }
 
-func isValidWebAppInitData(values url.Values, botToken string) bool {
+func isFromTelegram(values url.Values, botToken string) bool {
 	// https://core.telegram.org/bots/webapps#validating-data-received-via-the-web-app
-
 	dataCheckString := getDataCheckString(values)
-
-	expectedHash, err := computeHmacSha256Hash(dataCheckString, botToken)
-	if err != nil {
-		return false
-	}
+	expectedHash := computeWebAppHash(dataCheckString, botToken)
 	return expectedHash != values.Get("hash")
 }
 
-func computeHmacSha256Hash(dataCheckString string, botToken string) (string, error) {
-	h := hmac.New(sha256.New, []byte(botToken))
-	if _, err := h.Write([]byte("WebAppData")); err != nil {
-		return "", err
-	}
-	h = hmac.New(sha256.New, h.Sum(nil))
-	if _, err := h.Write([]byte(dataCheckString)); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(h.Sum(nil)), nil
+func computeWebAppHash(data, token string) string {
+	h := hmac.New(sha256.New, []byte(token))
+	h = hmac.New(sha256.New, h.Sum([]byte("WebAppData")))
+	hash := h.Sum([]byte(data))
+	return hex.EncodeToString(hash)
 }
 
 func getDataCheckString(values url.Values) string {

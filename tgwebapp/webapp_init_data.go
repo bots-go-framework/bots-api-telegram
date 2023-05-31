@@ -1,5 +1,10 @@
 package tgwebapp
 
+import (
+	"net/url"
+	"strconv"
+)
+
 // InitData describes Telegram web app init data
 // https://core.telegram.org/bots/webapps#webappinitdata
 type InitData struct {
@@ -29,5 +34,15 @@ type InitData struct {
 	Hash string `json:"hash"`
 }
 
-type Chat struct {
+func NewInitDataFromUrlValues(values url.Values) InitData {
+	initData := InitData{
+		QueryID:      values.Get("query_id"),
+		ChatType:     values.Get("chat_type"),
+		ChatInstance: values.Get("chat_instance"),
+		StartParam:   values.Get("start_param"),
+		Hash:         values.Get("hash"),
+	}
+	initData.CanSendAfter, _ = strconv.Atoi(values.Get("can_send_after"))
+	initData.AuthDate, _ = strconv.Atoi(values.Get("auth_date"))
+	return initData
 }
