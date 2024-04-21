@@ -2,7 +2,7 @@ module github.com/bots-go-framework/bots-api-telegram
 
 go 1.21
 
-toolchain go1.21.4
+toolchain go1.22.2
 
 require (
 	github.com/bots-go-framework/bots-go-core v0.0.2
