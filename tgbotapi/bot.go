@@ -9,7 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/pquerna/ffjson/ffjson"
-	"github.com/strongo/log"
+	"github.com/strongo/logus"
 	"github.com/technoweenie/multipartstreamer"
 	"io"
 	"net/http"
@@ -75,7 +75,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 		if resp, err = bot.Client.PostForm(method, params); err != nil {
 			if strings.Contains(err.Error(), "DEADLINE_EXCEEDED") {
 				hadDeadlineExceeded = true
-				log.Warningf(bot.c, "#%v fail to send POST due to DEADLINE_EXCEEDED to %v, will retry: %v", i, method, err)
+				logus.Warningf(bot.c, "#%v fail to send POST due to DEADLINE_EXCEEDED to %v, will retry: %v", i, method, err)
 				continue
 			}
 		}
@@ -84,13 +84,13 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 	if resp != nil && resp.Body != nil {
 		defer func() {
 			if err := resp.Body.Close(); err != nil {
-				log.Warningf(bot.c, "failed to close response body: %v", err)
+				logus.Warningf(bot.c, "failed to close response body: %v", err)
 			}
 		}()
 	}
 
 	if err != nil {
-		log.Errorf(bot.c, "Failed to send POST to %v: %v", method, err.Error())
+		logus.Errorf(bot.c, "Failed to send POST to %v: %v", method, err.Error())
 		return APIResponse{Ok: false}, fmt.Errorf("%v: %s: %w", "POST", method, err)
 	}
 
@@ -98,7 +98,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 	if resp.ContentLength > 0 {
 		var readerErr error
 		if body, readerErr = io.ReadAll(resp.Body); err != nil {
-			log.Errorf(bot.c, "Failed to read response.body: %v", readerErr)
+			logus.Errorf(bot.c, "Failed to read response.body: %v", readerErr)
 			if err == nil {
 				err = readerErr
 			}
@@ -124,8 +124,8 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 
 	logRequestAndResponse := func() {
 		if bot.c != nil {
-			log.Debugf(bot.c, "Request to Telegram API: %v => %v", endpoint, params)
-			log.Debugf(bot.c, "Telegram API response: %v", string(body))
+			logus.Debugf(bot.c, "Request to Telegram API: %v => %v", endpoint, params)
+			logus.Debugf(bot.c, "Telegram API response: %v", string(body))
 		}
 	}
 
@@ -248,7 +248,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 	}
 
 	if bot.c != nil {
-		log.Debugf(bot.c, string(body))
+		logus.Debugf(bot.c, string(body))
 	}
 
 	var apiResp APIResponse
@@ -336,11 +336,11 @@ func (bot *BotAPI) Send(c Chattable) (Message, error) {
 
 // debugLog checks if the bot is currently running in debug mode, and if
 // so will display information about the request and response in the
-// debug log.
+// debug logus.
 func (bot *BotAPI) debugLog(context string, v url.Values, message interface{}) {
 	if bot.c != nil {
-		log.Debugf(bot.c, "%s req : %+v\n", context, v)
-		log.Debugf(bot.c, "%s resp: %+v\n", context, message)
+		logus.Debugf(bot.c, "%s req : %+v\n", context, v)
+		logus.Debugf(bot.c, "%s resp: %+v\n", context, message)
 	}
 }
 
@@ -522,7 +522,7 @@ func (bot *BotAPI) SetWebhook(config WebhookConfig) (APIResponse, error) {
 		}
 
 		if bot.c != nil {
-			log.Debugf(bot.c, "setWebhook resp: %+v\n", apiResp)
+			logus.Debugf(bot.c, "setWebhook resp: %+v\n", apiResp)
 		}
 
 		return apiResp, nil
@@ -537,8 +537,8 @@ func (bot *BotAPI) GetUpdatesChan(config *UpdateConfig) (<-chan Update, error) {
 		for {
 			updates, err := bot.GetUpdates(config)
 			if err != nil {
-				//log.Println(err)
-				//log.Println("Failed to get updates, retrying in 3 seconds...")
+				//logus.Println(err)
+				//logus.Println("Failed to get updates, retrying in 3 seconds...")
 				time.Sleep(time.Second * 3)
 
 				continue
@@ -565,7 +565,7 @@ func (bot *BotAPI) ListenForWebhook(pattern string) <-chan Update {
 
 		var update Update
 		if err := ffjson.Unmarshal(body, &update); err != nil {
-			log.Errorf(context.Background(), fmt.Errorf("failed to unmarshal update JSON: %w", err).Error())
+			logus.Errorf(context.Background(), fmt.Errorf("failed to unmarshal update JSON: %w", err).Error())
 			return
 		}
 

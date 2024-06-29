@@ -1,6 +1,6 @@
 module github.com/bots-go-framework/bots-api-telegram
 
-go 1.21
+go 1.22.3
 
 toolchain go1.22.4
 
@@ -8,7 +8,7 @@ require (
 	github.com/bots-go-framework/bots-go-core v0.0.2
 	github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7
 	github.com/stretchr/testify v1.9.0
-	github.com/strongo/log v0.3.0
+	github.com/strongo/logus v0.0.0-20240628225821-04cf45b5968f
 	github.com/technoweenie/multipartstreamer v1.0.1
 )
 
