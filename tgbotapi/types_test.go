@@ -58,7 +58,7 @@ func TestCommandWithCommand(t *testing.T) {
 	message := Message{Text: "/testcommand"}
 
 	if message.Command() != "testcommand" {
-		t.Fatalf("Expected `/testcommand`, got: " + message.Command())
+		t.Fatal("Expected `/testcommand`, got: " + message.Command())
 	}
 }
 
