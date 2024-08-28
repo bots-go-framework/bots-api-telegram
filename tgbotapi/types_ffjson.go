@@ -4590,7 +4590,7 @@ func (j *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.WebApp != nil {
 		if true {
-			buf.WriteString(`"webapp":`)
+			buf.WriteString(`"web_app":`)
 
 			{
 
@@ -4706,7 +4706,7 @@ var ffjKeyInlineKeyboardButtonURL = []byte("url")
 
 var ffjKeyInlineKeyboardButtonCallbackData = []byte("callback_data")
 
-var ffjKeyInlineKeyboardButtonWebApp = []byte("webapp")
+var ffjKeyInlineKeyboardButtonWebApp = []byte("web_app")
 
 var ffjKeyInlineKeyboardButtonLoginUrl = []byte("login_url")
 
@@ -4890,7 +4890,7 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffjKeyInlineKeyboardButtonWebApp, kn) {
+				if fflib.AsciiEqualFold(ffjKeyInlineKeyboardButtonWebApp, kn) {
 					currentKey = ffjtInlineKeyboardButtonWebApp
 					state = fflib.FFParse_want_colon
 					goto mainparse
@@ -13239,7 +13239,7 @@ func (j *KeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.Webapp != nil {
 		if true {
-			buf.WriteString(`"webapp":`)
+			buf.WriteString(`"web_app":`)
 
 			{
 
@@ -13288,7 +13288,7 @@ var ffjKeyKeyboardButtonRequestLocation = []byte("request_location")
 
 var ffjKeyKeyboardButtonRequestPoll = []byte("request_poll")
 
-var ffjKeyKeyboardButtonWebapp = []byte("webapp")
+var ffjKeyKeyboardButtonWebapp = []byte("web_app")
 
 // UnmarshalJSON umarshall json - template of ffjson
 func (j *KeyboardButton) UnmarshalJSON(input []byte) error {
@@ -13397,7 +13397,7 @@ mainparse:
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffjKeyKeyboardButtonWebapp, kn) {
+				if fflib.AsciiEqualFold(ffjKeyKeyboardButtonWebapp, kn) {
 					currentKey = ffjtKeyboardButtonWebapp
 					state = fflib.FFParse_want_colon
 					goto mainparse

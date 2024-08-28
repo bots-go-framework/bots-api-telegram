@@ -488,7 +488,7 @@ type KeyboardButton struct {
 	RequestContact  bool                        `json:"request_contact"`
 	RequestLocation bool                        `json:"request_location"`
 	RequestPoll     *KeyboardButtonPollType     `json:"request_poll,omitempty"`
-	Webapp          *WebappInfo                 `json:"webapp,omitempty"`
+	Webapp          *WebappInfo                 `json:"web_app,omitempty"`
 }
 
 // Validate checks if the keyboard button is valid
@@ -561,7 +561,7 @@ type InlineKeyboardButton struct {
 	Text                         string                       `json:"text"`
 	URL                          string                       `json:"url,omitempty"`
 	CallbackData                 string                       `json:"callback_data,omitempty"`
-	WebApp                       *WebappInfo                  `json:"webapp,omitempty"`
+	WebApp                       *WebappInfo                  `json:"web_app,omitempty"`
 	LoginUrl                     *LoginUrl                    `json:"login_url,omitempty"`
 	SwitchInlineQuery            *string                      `json:"switch_inline_query,omitempty"`              // we use pointer as empty string is non zero value in this case
 	SwitchInlineQueryCurrentChat *string                      `json:"switch_inline_query_current_chat,omitempty"` // we use pointer as empty string is non zero value in this case
