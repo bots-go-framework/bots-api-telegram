@@ -530,17 +530,70 @@ func (*InlineKeyboardMarkup) KeyboardType() botsgocore.KeyboardType {
 
 var _ botsgocore.Keyboard = (*InlineKeyboardMarkup)(nil)
 
-// InlineKeyboardButton is a button within a custom keyboard for
-// inline query responses.
-//
+// LoginUrl represents a parameter of the inline keyboard button used to automatically authorize a user.
+// https://core.telegram.org/bots/api#loginurl
+type LoginUrl struct {
+	// An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed.
+	// If the user refuses to provide authorization data,
+	// the original URL without information about the user will be opened.
+	// The data added is the same as described in Receiving authorization data.
+	Url string `json:"url"`
+
+	// Optional. New text of the button in forwarded messages.
+	ForwardText string `json:"forward_text,omitempty"`
+
+	// Optional.
+	// Username of a bot, which will be used for user authorization.
+	// See Setting up a bot for more details.
+	// If not specified, the current bot's username will be assumed.
+	// The url's domain must be the same as the domain linked with the bot.
+	// See Linking your domain to the bot for more details.
+	BotUsername string `json:"bot_username,omitempty"`
+
+	// Optional. Pass True to request the permission for your bot to send messages to the user.
+	RequestWriteAccess bool `json:"request_write_access,omitempty"`
+}
+
+// InlineKeyboardButton is a button within a custom keyboard for inline query responses.
 // Note that some values are references as even an empty string will change behavior.
+// Documentation: https://core.telegram.org/bots/api#inlinekeyboardbutton
 type InlineKeyboardButton struct {
-	Text                         string  `json:"text"`
-	URL                          string  `json:"url,omitempty"`
-	CallbackData                 string  `json:"callback_data,omitempty"`
-	SwitchInlineQuery            *string `json:"switch_inline_query,omitempty"`              // we use pointer as empty string is non zero value in this case
-	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // we use pointer as empty string is non zero value in this case
-	Pay                          bool    `json:"pay,omitempty"`
+	Text                         string                       `json:"text"`
+	URL                          string                       `json:"url,omitempty"`
+	CallbackData                 string                       `json:"callback_data,omitempty"`
+	WebApp                       *WebappInfo                  `json:"webapp,omitempty"`
+	LoginUrl                     *LoginUrl                    `json:"login_url,omitempty"`
+	SwitchInlineQuery            *string                      `json:"switch_inline_query,omitempty"`              // we use pointer as empty string is non zero value in this case
+	SwitchInlineQueryCurrentChat *string                      `json:"switch_inline_query_current_chat,omitempty"` // we use pointer as empty string is non zero value in this case
+	SwitchInlineQueryChosenChat  *SwitchInlineQueryChosenChat `json:"switch_inline_query_chosen_chat,omitempty"`
+	CallbackGame                 *CallbackGame                `json:"callback_game,omitempty"`
+	Pay                          bool                         `json:"pay,omitempty"`
+}
+
+// SwitchInlineQueryChosenChat represents an inline button that switches the current user to inline mode
+// in a chosen chat, with an optional default inline query.
+// Documentation: https://core.telegram.org/bots/api#switchinlinequerychosenchat
+type SwitchInlineQueryChosenChat struct {
+	// Optional.
+	//The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
+	Query string `json:"query,omitempty"`
+
+	// Optional. True, if private chats with users can be chosen
+	AllowUserChats bool `json:"allow_user_chats,omitempty"`
+
+	// Optional. True, if private chats with bots can be chosen
+	AllowBotChats bool `json:"allow_bot_chats,omitempty"`
+
+	// Optional. True, if group and supergroup chats can be chosen
+	AllowGroupChats bool `json:"allow_group_chats,omitempty"`
+
+	// Optional. True, if channel chats can be chosen
+	AllowChannelChats bool `json:"allow_channel_chats,omitempty"`
+}
+
+// CallbackGame is a placeholder, currently holds no information. Use BotFather to set up your game.
+type CallbackGame struct {
+	// A placeholder, currently holds no information. Use BotFather to set up your game.
 }
 
 // CallbackQuery is data sent when a keyboard button with callback data
