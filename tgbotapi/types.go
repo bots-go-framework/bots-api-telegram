@@ -117,14 +117,14 @@ func (u User) GetFullName() string {
 			return buffer.String()
 		}
 		if u.UserName != "" {
-			fmt.Fprintf(&buffer, " (@%v)", u.UserName)
+			_, _ = fmt.Fprintf(&buffer, " (@%s)", u.UserName)
 		}
 		return buffer.String()
 	}
 	if u.LastName != "" {
 		buffer.WriteString(u.LastName)
 		if u.UserName != "" {
-			fmt.Fprintf(&buffer, " (@%v)", u.UserName)
+			_, _ = fmt.Fprintf(&buffer, " (@%s)", u.UserName)
 		}
 		return buffer.String()
 	}
@@ -405,11 +405,104 @@ func (*ReplyKeyboardMarkup) KeyboardType() botsgocore.KeyboardType {
 
 var _ botsgocore.Keyboard = (*ReplyKeyboardMarkup)(nil)
 
+// KeyboardButtonRequestUsers represents a request from the bot to send users
+// https://core.telegram.org/bots/api#keyboardbuttonrequestusers
+type KeyboardButtonRequestUsers struct {
+	// Signed 32-bit identifier of the request, which will be received back in the ChatShared object.
+	// Must be unique within the message
+	RequestID int `json:"request_id"`
+
+	UserIsBot       bool `json:"user_is_bot,omitempty"`
+	UserIsPremium   bool `json:"user_is_premium,omitempty"`
+	MaxQuantity     int  `json:"max_quantity,omitempty"` // The maximum number of users to be selected; 1-10. Defaults to 1.
+	RequestName     bool `json:"request_name,omitempty"`
+	RequestUsername bool `json:"request_username,omitempty"`
+	RequestPhoto    bool `json:"request_photo,omitempty"`
+}
+
+// KeyboardButtonRequestChat represents a request from the bot to send a chat
+// https://core.telegram.org/bots/api#keyboardbuttonrequestchat
+type KeyboardButtonRequestChat struct {
+	// Signed 32-bit identifier of the request, which will be received back in the ChatShared object.
+	// Must be unique within the message
+	RequestID int `json:"request_id"`
+
+	// Pass True to request a channel chat, pass False to request a group or a supergroup chat.
+	ChatIsChannel bool `json:"chat_is_channel"`
+
+	// Pass True to request a forum supergroup, pass False to request a non-forum chat.
+	// If not specified, no additional restrictions are applied.
+	ChatIsForum bool `json:"chat_is_forum,omitempty"`
+
+	// Pass True to request a supergroup or a channel with a username,
+	// pass False to request a chat without a username.
+	// If not specified, no additional restrictions are applied.
+	ChatHasUsername bool `json:"chat_has_username,omitempty"`
+
+	// Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.
+	ChatIsCreated bool `json:"chat_is_created,omitempty"`
+
+	// A JSON-serialized object listing the required administrator rights of the user in the chat.
+	// The rights must be a superset of bot_administrator_rights.
+	// If not specified, no additional restrictions are applied.
+	UserAdministratorRights *ChatAdministratorRights `json:"user_administrator_rights,omitempty"`
+
+	// A JSON-serialized object listing the required administrator rights of the bot in the chat.
+	// The rights must be a subset of user_administrator_rights.
+	// If not specified, no additional restrictions are applied.
+	BotAdministratorRights *ChatAdministratorRights `json:"bot_administrator_rights,omitempty"`
+
+	// Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.
+	BotIsMember bool `json:"bot_is_member,omitempty"`
+
+	// Pass True to request the chat's title
+	RequestTitle bool `json:"request_title,omitempty"`
+
+	// Pass True to request the chat's username
+	RequestUsername bool `json:"request_username,omitempty"`
+
+	// Pass True to request the chat's photo
+	RequestPhoto bool `json:"request_photo,omitempty"`
+}
+
+// KeyboardButtonPollType represents the type of poll to be created
+// https://core.telegram.org/bots/api#keyboardbuttonpolltype
+type KeyboardButtonPollType struct {
+	// Optional.
+	// If quiz is passed, the user will be allowed to create only polls in the quiz mode.
+	// If regular is passed, only regular polls will be allowed.
+	// Otherwise, the user will be allowed to create a poll of any type.
+	Type string `json:"type,omitempty"`
+}
+
+type ChatAdministratorRights struct {
+	// True, if the user's presence in the chat is hidden
+	IsAnonymous bool `json:"is_anonymous,omitempty"`
+}
+
 // KeyboardButton is a button within a custom keyboard.
 type KeyboardButton struct {
-	Text            string `json:"text"`
-	RequestContact  bool   `json:"request_contact"`
-	RequestLocation bool   `json:"request_location"`
+	Text            string                      `json:"text"`
+	RequestUsers    *KeyboardButtonRequestUsers `json:"request_users,omitempty"`
+	RequestChat     *KeyboardButtonRequestChat  `json:"request_chat,omitempty"`
+	RequestContact  bool                        `json:"request_contact"`
+	RequestLocation bool                        `json:"request_location"`
+	RequestPoll     *KeyboardButtonPollType     `json:"request_poll,omitempty"`
+	Webapp          *WebappInfo                 `json:"webapp,omitempty"`
+}
+
+// Validate checks if the keyboard button is valid
+func (j *KeyboardButton) Validate() error {
+	if j.Text == "" {
+		return errors.New("keyboard button requires 'text' field")
+	}
+	return nil
+}
+
+// WebappInfo represents a web app to be opened with the button
+// https://core.telegram.org/bots/api#webappinfo
+type WebappInfo struct {
+	Url string `json:"url"`
 }
 
 // ReplyKeyboardHide allows the Bot to hide a custom keyboard.
@@ -419,7 +512,7 @@ type ReplyKeyboardHide struct {
 }
 
 // KeyboardType returns KeyboardTypeHide
-func (ReplyKeyboardHide) KeyboardType() botsgocore.KeyboardType {
+func (_ *ReplyKeyboardHide) KeyboardType() botsgocore.KeyboardType {
 	return botsgocore.KeyboardTypeHide
 }
 
