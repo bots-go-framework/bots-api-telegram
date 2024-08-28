@@ -13706,9 +13706,11 @@ func (j *WebhookConfig) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		}
 		buf.WriteByte(',')
 	}
-	buf.WriteString(`"IPAddress":`)
-	fflib.WriteJsonString(buf, string(j.IPAddress))
-	buf.WriteByte(',')
+	if len(j.IPAddress) != 0 {
+		buf.WriteString(`"ip_address":`)
+		fflib.WriteJsonString(buf, string(j.IPAddress))
+		buf.WriteByte(',')
+	}
 	if j.MaxConnections != 0 {
 		buf.WriteString(`"max_connections":`)
 		fflib.FormatBits2(buf, uint64(j.MaxConnections), 10, j.MaxConnections < 0)
@@ -13771,7 +13773,7 @@ var ffjKeyWebhookConfigURL = []byte("url")
 
 var ffjKeyWebhookConfigCertificate = []byte("certificate")
 
-var ffjKeyWebhookConfigIPAddress = []byte("IPAddress")
+var ffjKeyWebhookConfigIPAddress = []byte("ip_address")
 
 var ffjKeyWebhookConfigMaxConnections = []byte("max_connections")
 
@@ -13842,14 +13844,6 @@ mainparse:
 			} else {
 				switch kn[0] {
 
-				case 'I':
-
-					if bytes.Equal(ffjKeyWebhookConfigIPAddress, kn) {
-						currentKey = ffjtWebhookConfigIPAddress
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				case 'a':
 
 					if bytes.Equal(ffjKeyWebhookConfigAllowedUpdates, kn) {
@@ -13870,6 +13864,14 @@ mainparse:
 
 					if bytes.Equal(ffjKeyWebhookConfigDropPendingUpdates, kn) {
 						currentKey = ffjtWebhookConfigDropPendingUpdates
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'i':
+
+					if bytes.Equal(ffjKeyWebhookConfigIPAddress, kn) {
+						currentKey = ffjtWebhookConfigIPAddress
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
