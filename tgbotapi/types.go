@@ -347,13 +347,25 @@ type Voice struct {
 }
 
 // Contact contains information about a contact.
-//
-// Note that LastName and UserID may be empty.
+// Note that LastName, UserID, VCard may be empty.
 type Contact struct {
+
+	// PhoneNumber must always be presented
 	PhoneNumber string `json:"phone_number"`
-	FirstName   string `json:"first_name"`
-	LastName    string `json:"last_name,omitempty"` // optional
-	UserID      int    `json:"user_id,omitempty"`   // optional
+
+	// FirstName must always be presented
+	FirstName string `json:"first_name"`
+
+	// Optional
+	LastName string `json:"last_name,omitempty"` // optional
+
+	// UserID (optional) is a Contact's user identifier in Telegram.
+	// It has at most 52 significant bits,
+	// so a 64-bit integer or double-precision float type are safe for storing this identifier.
+	UserID int64 `json:"user_id,omitempty"` // optional
+
+	// VCard (optional) additional data about the contact in the form of https://en.wikipedia.org/wiki/VCard
+	VCard string `json:"vcard,omitempty"`
 }
 
 // Location contains information about a place.

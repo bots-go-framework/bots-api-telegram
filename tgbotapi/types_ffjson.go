@@ -3296,7 +3296,7 @@ handle_UserID:
 				return fs.WrapErr(err)
 			}
 
-			j.UserID = int(tval)
+			j.UserID = tval
 
 		}
 	}
