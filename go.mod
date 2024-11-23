@@ -5,7 +5,7 @@ go 1.22.3
 require (
 	github.com/bots-go-framework/bots-go-core v0.0.3
 	github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/strongo/logus v0.2.0
 	github.com/technoweenie/multipartstreamer v1.0.1
 )
