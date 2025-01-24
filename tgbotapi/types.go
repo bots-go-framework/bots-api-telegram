@@ -217,6 +217,10 @@ type PhotoSize struct {
 	FileSize int    `json:"file_size,omitempty"` // optional
 }
 
+func (v *PhotoSize) String() string {
+	return fmt.Sprintf("%s@%dx%d:%dbytes", v.FileID, v.Width, v.Height, v.FileSize)
+}
+
 // Audio contains information about audio.
 type Audio struct {
 	FileID    string `json:"file_id"`
