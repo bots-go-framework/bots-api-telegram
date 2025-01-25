@@ -28,37 +28,6 @@ func (r APIResponse) Error() string {
 	return ""
 }
 
-// Update is an update response, from GetUpdates.
-type Update struct {
-	UpdateID           int                 `json:"update_id"`
-	Message            *Message            `json:"message"`
-	EditedMessage      *Message            `json:"edited_message"`
-	ChannelPost        *Message            `json:"channel_post"`
-	EditedChannelPost  *Message            `json:"edited_channel_post"`
-	InlineQuery        *InlineQuery        `json:"inline_query"`
-	ChosenInlineResult *ChosenInlineResult `json:"chosen_inline_result"`
-	CallbackQuery      *CallbackQuery      `json:"callback_query"`
-}
-
-// Chat provides chat struct for the update
-func (update Update) Chat() *Chat {
-	switch {
-	case update.Message != nil:
-		return update.Message.Chat
-	case update.EditedMessage != nil:
-		return update.EditedMessage.Chat
-	case update.ChannelPost != nil:
-		return update.ChannelPost.Chat
-	case update.EditedChannelPost != nil:
-		return update.EditedChannelPost.Chat
-	case update.CallbackQuery != nil:
-		if update.CallbackQuery.Message != nil {
-			return update.CallbackQuery.Message.Chat
-		}
-	}
-	return nil
-}
-
 // User is a user on Telegram.
 type User struct {
 	ID           int    `json:"id"`
@@ -207,18 +176,6 @@ func (entity MessageEntity) ParseURL() (*url.URL, error) {
 	}
 
 	return url.Parse(entity.URL)
-}
-
-// PhotoSize contains information about photos.
-type PhotoSize struct {
-	FileID   string `json:"file_id"`
-	Width    int    `json:"width"`
-	Height   int    `json:"height"`
-	FileSize int    `json:"file_size,omitempty"` // optional
-}
-
-func (v *PhotoSize) String() string {
-	return fmt.Sprintf("%s@%dx%d:%dbytes", v.FileID, v.Width, v.Height, v.FileSize)
 }
 
 // Audio contains information about audio.
@@ -543,17 +500,6 @@ type SwitchInlineQueryChosenChat struct {
 // CallbackGame is a placeholder, currently holds no information. Use BotFather to set up your game.
 type CallbackGame struct {
 	// A placeholder, currently holds no information. Use BotFather to set up your game.
-}
-
-// CallbackQuery is data sent when a keyboard button with callback data
-// is clicked.
-type CallbackQuery struct {
-	ID              string   `json:"id"`
-	From            *User    `json:"from"`
-	Message         *Message `json:"message,omitempty"`           // optional
-	ChatInstance    string   `json:"chat_instance,omitempty"`     // optional
-	InlineMessageID string   `json:"inline_message_id,omitempty"` // optional
-	Data            string   `json:"data,omitempty"`              // optional
 }
 
 // ForceReply allows the Bot to have users directly reply to it without

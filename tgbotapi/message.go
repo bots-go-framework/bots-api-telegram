@@ -1,5 +1,7 @@
 package tgbotapi
 
+//go:generate ffjson $GOFILE
+
 import (
 	"strings"
 	"time"
@@ -11,6 +13,8 @@ type Message struct {
 	From                  *User            `json:"from,omitempty"` // optional
 	Date                  int              `json:"date"`
 	Chat                  *Chat            `json:"chat,omitempty"`
+	UserShared            *UserShared      `json:"user_shared,omitempty"`             // optional NON-DOCUMENTED FIELD
+	UsersShared           *UsersShared     `json:"users_shared,omitempty"`            // optional
 	ForwardFrom           *User            `json:"forward_from,omitempty"`            // optional
 	ForwardDate           int              `json:"forward_date,omitempty"`            // optional
 	ReplyToMessage        *Message         `json:"reply_to_message,omitempty"`        // optional
@@ -39,7 +43,6 @@ type Message struct {
 	MigrateToChatID       int64            `json:"migrate_to_chat_id,omitempty"`      // optional
 	MigrateFromChatID     int64            `json:"migrate_from_chat_id,omitempty"`    // optional
 	PinnedMessage         *Message         `json:"pinned_message,omitempty"`          // optional
-	UsersShared           *UsersShared     `json:"users_shared,omitempty"`            // optional
 }
 
 // Time converts the message timestamp into a Time.
