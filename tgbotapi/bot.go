@@ -83,7 +83,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 	}
 	if resp != nil && resp.Body != nil {
 		defer func() {
-			if err := resp.Body.Close(); err != nil {
+			if err = resp.Body.Close(); err != nil {
 				logus.Warningf(bot.c, "failed to close response body: %v", err)
 			}
 		}()
@@ -97,11 +97,9 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 	var body []byte
 	if resp.ContentLength > 0 {
 		var readerErr error
-		if body, readerErr = io.ReadAll(resp.Body); err != nil {
+		if body, readerErr = io.ReadAll(resp.Body); readerErr != nil {
 			logus.Errorf(bot.c, "Failed to read response.body: %v", readerErr)
-			if err == nil {
-				err = readerErr
-			}
+			err = readerErr
 		}
 	}
 	apiResp = APIResponse{
@@ -144,6 +142,10 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 	return apiResp, nil
 }
 
+func (bot *BotAPI) DeleteMessage(chatID string, messageID int) (apiResp APIResponse, err error) {
+	return bot.MakeRequest("deleteMessage", url.Values{"chat_id": {chatID}, "message_id": {strconv.Itoa(messageID)}})
+}
+
 // makeMessageRequest makes a request to a method that returns a Message.
 func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Message, error) {
 	resp, err := bot.MakeRequest(endpoint, params)
@@ -173,94 +175,93 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 //
 // Note that if your FileReader has a size set to -1, it will read
 // the file into memory to calculate a size.
-func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldname string, file interface{}) (APIResponse, error) {
+func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldname string, file interface{}) (apiResp APIResponse, err error) {
 	ms := multipartstreamer.New()
-	err := ms.WriteFields(params)
-	if err != nil {
-		return APIResponse{}, err
+	if err = ms.WriteFields(params); err != nil {
+		return
 	}
 
 	switch f := file.(type) {
 	case string:
-		fileHandle, err := os.Open(f)
-		if err != nil {
-			return APIResponse{}, err
+		var fileHandle *os.File
+		if fileHandle, err = os.Open(f); err != nil {
+			return
 		}
 		defer func() {
 			_ = fileHandle.Close()
 		}()
 
-		fi, err := os.Stat(f)
-		if err != nil {
-			return APIResponse{}, err
+		var fi os.FileInfo
+		if fi, err = os.Stat(f); err != nil {
+			return
 		}
 
 		if err = ms.WriteReader(fieldname, fileHandle.Name(), fi.Size(), fileHandle); err != nil {
-			return APIResponse{}, err
+			return
 		}
 	case FileBytes:
 		buf := bytes.NewBuffer(f.Bytes)
 		if err = ms.WriteReader(fieldname, f.Name, int64(len(f.Bytes)), buf); err != nil {
-			return APIResponse{}, err
+			return
 		}
 	case FileReader:
 		if f.Size != -1 {
 			if err = ms.WriteReader(fieldname, f.Name, f.Size, f.Reader); err != nil {
-				return APIResponse{}, err
+				return
 			}
 			break
 		}
 
-		data, err := io.ReadAll(f.Reader)
-		if err != nil {
-			return APIResponse{}, err
+		var data []byte
+		if data, err = io.ReadAll(f.Reader); err != nil {
+			return
 		}
 
 		buf := bytes.NewBuffer(data)
 
 		if err = ms.WriteReader(fieldname, f.Name, int64(len(data)), buf); err != nil {
-			return APIResponse{}, err
+			return
 		}
 	default:
-		return APIResponse{}, errors.New(ErrBadFileType)
+		err = ErrBadFileType
+		return
 	}
 
 	method := fmt.Sprintf(APIEndpoint, bot.Token, endpoint)
 
-	req, err := http.NewRequest("POST", method, nil)
-	if err != nil {
-		return APIResponse{}, err
+	var req *http.Request
+	if req, err = http.NewRequest("POST", method, nil); err != nil {
+		return
 	}
 
 	ms.SetupRequest(req)
 
-	res, err := bot.Client.Do(req)
-	if err != nil {
-		return APIResponse{}, err
+	var res *http.Response
+	if res, err = bot.Client.Do(req); err != nil {
+		return
 	}
 	defer func() {
 		_ = res.Body.Close()
 	}()
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return APIResponse{}, err
+	var body []byte
+	if body, err = io.ReadAll(res.Body); err != nil {
+		return
 	}
 
 	if bot.c != nil {
 		logus.Debugf(bot.c, string(body))
 	}
 
-	var apiResp APIResponse
 	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
-		return apiResp, nil
+		return
 	}
 
 	if !apiResp.Ok {
-		return APIResponse{}, errors.New(apiResp.Description)
+		err = errors.New(apiResp.Description)
+		return
 	}
-
-	return apiResp, nil
+	return
 }
 
 // GetFileDirectURL returns direct URL to file

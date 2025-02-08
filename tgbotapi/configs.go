@@ -83,12 +83,12 @@ const (
 )
 
 // Library errors
-const (
+var (
 	// ErrBadFileType happens when you pass an unknown type
-	ErrBadFileType = "bad file type"
+	ErrBadFileType = errors.New("bad file type")
 
 	// ErrBadURL indicates bad or empty URL
-	ErrBadURL = "bad or empty URL"
+	ErrBadURL = errors.New("bad or empty URL")
 )
 
 // Chattable is any config type that can be sent.
@@ -739,7 +739,9 @@ func (config ChatActionConfig) method() string {
 	return "sendChatAction"
 }
 
-// DeleteMessage is a command to delete a message
+// DeleteMessage is a command to delete a message.
+// It should not be used with SendMessage()
+// Instead use BotAPI.DeleteMessage(chatID string, messageID int)
 type DeleteMessage chatEdit
 
 //goland:noinspection GoMixedReceiverTypes
