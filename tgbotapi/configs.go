@@ -941,56 +941,6 @@ type FileReader struct {
 	Size   int64
 }
 
-// InlineConfig contains information on making an InlineQuery response.
-type InlineConfig struct {
-	InlineQueryID     string        `json:"inline_query_id"`
-	Results           []interface{} `json:"results,omitempty"`
-	CacheTime         int           `json:"cache_time"`
-	IsPersonal        bool          `json:"is_personal,omitempty"`
-	NextOffset        string        `json:"next_offset,omitempty"`
-	SwitchPMText      string        `json:"switch_pm_text,omitempty"`
-	SwitchPMParameter string        `json:"switch_pm_parameter,omitempty"`
-}
-
-//goland:noinspection GoMixedReceiverTypes
-func (config InlineConfig) method() string {
-	return "answerInlineQuery"
-}
-
-// Values returns URL values representation of InlineConfig
-//
-//goland:noinspection GoMixedReceiverTypes
-func (config InlineConfig) Values() (url.Values, error) {
-	v := url.Values{}
-
-	v.Add("inline_query_id", config.InlineQueryID)
-	if config.CacheTime != 0 {
-		v.Add("cache_time", strconv.Itoa(config.CacheTime))
-	}
-	if config.IsPersonal {
-		v.Add("is_personal", strconv.FormatBool(config.IsPersonal))
-	}
-	if config.NextOffset != "" {
-		v.Add("next_offset", config.NextOffset)
-	}
-	if config.SwitchPMText != "" {
-		v.Add("switch_pm_text", config.SwitchPMText)
-	}
-	if config.SwitchPMParameter != "" {
-		v.Add("switch_pm_parameter", config.SwitchPMParameter)
-	}
-
-	data, err := ffjson.Marshal(config.Results)
-	if err != nil {
-		ffjson.Pool(data)
-		return v, err
-	}
-	v.Add("results", string(data))
-	ffjson.Pool(data)
-
-	return v, nil
-}
-
 // AnswerCallbackQueryConfig contains information on making a CallbackQuery response.
 type AnswerCallbackQueryConfig struct {
 	CallbackQueryID string `json:"callback_query_id,"`

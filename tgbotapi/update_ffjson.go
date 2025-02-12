@@ -37,41 +37,57 @@ func (j *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteString(`{"update_id":`)
 	fflib.FormatBits2(buf, uint64(j.UpdateID), 10, j.UpdateID < 0)
 	if j.Message != nil {
-		/* Struct fall back. type=tgbotapi.Message kind=struct */
 		buf.WriteString(`,"message":`)
-		err = buf.Encode(j.Message)
-		if err != nil {
-			return err
+
+		{
+
+			err = j.Message.MarshalJSONBuf(buf)
+			if err != nil {
+				return err
+			}
+
 		}
 	} else {
 		buf.WriteString(`,"message":null`)
 	}
 	if j.EditedMessage != nil {
-		/* Struct fall back. type=tgbotapi.Message kind=struct */
 		buf.WriteString(`,"edited_message":`)
-		err = buf.Encode(j.EditedMessage)
-		if err != nil {
-			return err
+
+		{
+
+			err = j.EditedMessage.MarshalJSONBuf(buf)
+			if err != nil {
+				return err
+			}
+
 		}
 	} else {
 		buf.WriteString(`,"edited_message":null`)
 	}
 	if j.ChannelPost != nil {
-		/* Struct fall back. type=tgbotapi.Message kind=struct */
 		buf.WriteString(`,"channel_post":`)
-		err = buf.Encode(j.ChannelPost)
-		if err != nil {
-			return err
+
+		{
+
+			err = j.ChannelPost.MarshalJSONBuf(buf)
+			if err != nil {
+				return err
+			}
+
 		}
 	} else {
 		buf.WriteString(`,"channel_post":null`)
 	}
 	if j.EditedChannelPost != nil {
-		/* Struct fall back. type=tgbotapi.Message kind=struct */
 		buf.WriteString(`,"edited_channel_post":`)
-		err = buf.Encode(j.EditedChannelPost)
-		if err != nil {
-			return err
+
+		{
+
+			err = j.EditedChannelPost.MarshalJSONBuf(buf)
+			if err != nil {
+				return err
+			}
+
 		}
 	} else {
 		buf.WriteString(`,"edited_channel_post":null`)
@@ -105,15 +121,11 @@ func (j *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteString(`,"chosen_inline_result":null`)
 	}
 	if j.CallbackQuery != nil {
+		/* Struct fall back. type=tgbotapi.CallbackQuery kind=struct */
 		buf.WriteString(`,"callback_query":`)
-
-		{
-
-			err = j.CallbackQuery.MarshalJSONBuf(buf)
-			if err != nil {
-				return err
-			}
-
+		err = buf.Encode(j.CallbackQuery)
+		if err != nil {
+			return err
 		}
 	} else {
 		buf.WriteString(`,"callback_query":null`)
@@ -415,16 +427,22 @@ handle_Message:
 	/* handler: j.Message type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=tgbotapi.Message kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
-		}
+		if tok == fflib.FFTok_null {
 
-		err = json.Unmarshal(tbuf, &j.Message)
-		if err != nil {
-			return fs.WrapErr(err)
+			j.Message = nil
+
+		} else {
+
+			if j.Message == nil {
+				j.Message = new(Message)
+			}
+
+			err = j.Message.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -435,16 +453,22 @@ handle_EditedMessage:
 	/* handler: j.EditedMessage type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=tgbotapi.Message kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
-		}
+		if tok == fflib.FFTok_null {
 
-		err = json.Unmarshal(tbuf, &j.EditedMessage)
-		if err != nil {
-			return fs.WrapErr(err)
+			j.EditedMessage = nil
+
+		} else {
+
+			if j.EditedMessage == nil {
+				j.EditedMessage = new(Message)
+			}
+
+			err = j.EditedMessage.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -455,16 +479,22 @@ handle_ChannelPost:
 	/* handler: j.ChannelPost type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=tgbotapi.Message kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
-		}
+		if tok == fflib.FFTok_null {
 
-		err = json.Unmarshal(tbuf, &j.ChannelPost)
-		if err != nil {
-			return fs.WrapErr(err)
+			j.ChannelPost = nil
+
+		} else {
+
+			if j.ChannelPost == nil {
+				j.ChannelPost = new(Message)
+			}
+
+			err = j.ChannelPost.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -475,16 +505,22 @@ handle_EditedChannelPost:
 	/* handler: j.EditedChannelPost type=tgbotapi.Message kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=tgbotapi.Message kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
-		}
+		if tok == fflib.FFTok_null {
 
-		err = json.Unmarshal(tbuf, &j.EditedChannelPost)
-		if err != nil {
-			return fs.WrapErr(err)
+			j.EditedChannelPost = nil
+
+		} else {
+
+			if j.EditedChannelPost == nil {
+				j.EditedChannelPost = new(Message)
+			}
+
+			err = j.EditedChannelPost.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -547,22 +583,16 @@ handle_CallbackQuery:
 	/* handler: j.CallbackQuery type=tgbotapi.CallbackQuery kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.CallbackQuery = nil
-
-		} else {
-
-			if j.CallbackQuery == nil {
-				j.CallbackQuery = new(CallbackQuery)
-			}
-
-			err = j.CallbackQuery.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.CallbackQuery kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.CallbackQuery)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value

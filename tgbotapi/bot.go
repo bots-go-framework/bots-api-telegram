@@ -583,18 +583,32 @@ func (bot *BotAPI) AnswerInlineQuery(config InlineConfig) (APIResponse, error) {
 	v := url.Values{}
 
 	v.Add("inline_query_id", config.InlineQueryID)
-	v.Add("cache_time", strconv.Itoa(config.CacheTime))
-	v.Add("is_personal", strconv.FormatBool(config.IsPersonal))
-	v.Add("next_offset", config.NextOffset)
+	if config.CacheTime > 0 {
+		v.Add("cache_time", strconv.Itoa(config.CacheTime))
+	}
+	if config.IsPersonal {
+		v.Add("is_personal", strconv.FormatBool(config.IsPersonal))
+	}
+	if config.NextOffset != "" {
+		v.Add("next_offset", config.NextOffset)
+	}
+
 	data, err := ffjson.Marshal(config.Results)
 	if err != nil {
 		ffjson.Pool(data)
 		return APIResponse{}, err
 	}
 	v.Add("results", string(data))
+
+	if config.Button != nil {
+		if data, err = ffjson.Marshal(config.Button); err != nil {
+			ffjson.Pool(data)
+			return APIResponse{}, err
+		}
+		v.Add("button", string(data))
+	}
+
 	ffjson.Pool(data)
-	v.Add("switch_pm_text", config.SwitchPMText)
-	v.Add("switch_pm_parameter", config.SwitchPMParameter)
 
 	bot.debugLog("answerInlineQuery", v, nil)
 

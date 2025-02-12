@@ -10,13 +10,13 @@ func TestNewInlineQueryResultArticle(t *testing.T) {
 	if result.Type != "article" ||
 		result.ID != "id" ||
 		result.Title != "title" ||
-		result.InputMessageContent.(InputTextMessageContent).Text != "message" {
+		result.InputMessageContent.(InputTextMessageContent).MessageText != "message" {
 		t.Fail()
 	}
 }
 
 func TestNewInlineQueryResultGIF(t *testing.T) {
-	result := NewInlineQueryResultGIF("id", "google.com")
+	result := NewInlineQueryResultGIF("id", "google.com", "'")
 
 	if result.Type != "gif" ||
 		result.ID != "id" ||
@@ -26,7 +26,7 @@ func TestNewInlineQueryResultGIF(t *testing.T) {
 }
 
 func TestNewInlineQueryResultMPEG4GIF(t *testing.T) {
-	result := NewInlineQueryResultMPEG4GIF("id", "google.com")
+	result := NewInlineQueryResultMPEG4GIF("id", "google.com", "")
 
 	if result.Type != "mpeg4_gif" ||
 		result.ID != "id" ||
@@ -36,7 +36,7 @@ func TestNewInlineQueryResultMPEG4GIF(t *testing.T) {
 }
 
 func TestNewInlineQueryResultPhoto(t *testing.T) {
-	result := NewInlineQueryResultPhoto("id", "google.com")
+	result := NewInlineQueryResultPhoto("id", "google.com", "")
 
 	if result.Type != "photo" ||
 		result.ID != "id" ||
@@ -46,7 +46,7 @@ func TestNewInlineQueryResultPhoto(t *testing.T) {
 }
 
 func TestNewInlineQueryResultVideo(t *testing.T) {
-	result := NewInlineQueryResultVideo("id", "google.com")
+	result := NewInlineQueryResultVideo("id", "google.com", "")
 
 	if result.Type != "video" ||
 		result.ID != "id" ||
