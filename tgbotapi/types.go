@@ -510,6 +510,8 @@ func (v LoginUrl) Validate() error {
 // Note that some values are references as even an empty string will change behavior.
 // Documentation: https://core.telegram.org/bots/api#inlinekeyboardbutton
 type InlineKeyboardButton struct {
+
+	// Label text on the button
 	Text string `json:"text"`
 
 	// Optional.
@@ -519,14 +521,49 @@ type InlineKeyboardButton struct {
 	URL string `json:"url,omitempty"`
 
 	// Optional. Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes
-	CallbackData                 string                       `json:"callback_data,omitempty"`
-	WebApp                       *WebAppInfo                  `json:"web_app,omitempty"`
-	LoginUrl                     *LoginUrl                    `json:"login_url,omitempty"`
-	SwitchInlineQuery            *string                      `json:"switch_inline_query,omitempty"`              // we use pointer as empty string is non zero value in this case
-	SwitchInlineQueryCurrentChat *string                      `json:"switch_inline_query_current_chat,omitempty"` // we use pointer as empty string is non zero value in this case
-	SwitchInlineQueryChosenChat  *SwitchInlineQueryChosenChat `json:"switch_inline_query_chosen_chat,omitempty"`
-	CallbackGame                 *CallbackGame                `json:"callback_game,omitempty"`
-	Pay                          bool                         `json:"pay,omitempty"`
+	CallbackData string `json:"callback_data,omitempty"`
+
+	// Optional. Description of the Web App that will be launched when the user presses the button.
+	// The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery.
+	// Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
+	WebApp *WebAppInfo `json:"web_app,omitempty"`
+
+	// Optional. An HTTPS URL used to automatically authorize the user.
+	// Can be used as a replacement for the Telegram Login Widget.
+	LoginUrl *LoginUrl `json:"login_url,omitempty"`
+
+	// Optional. If set, pressing the button will prompt the user to select one of their chats,
+	// open that chat and insert the bot's username and the specified inline query in the input field.
+	// May be empty, in which case just the bot's username will be inserted.
+	// Not supported for messages sent on behalf of a Telegram Business account.
+	SwitchInlineQuery *string `json:"switch_inline_query,omitempty"` // we use pointer as empty string is non zero value in this case
+
+	// Optional. If set, pressing the button will insert the bot's username
+	// and the specified inline query in the current chat's input field.
+	// May be empty, in which case only the bot's username will be inserted.
+	//
+	// This offers a quick way for the user to open your bot
+	// in inline mode in the same chat - good for selecting something from multiple options.
+	// Not supported in channels and for messages sent on behalf of a Telegram Business account.
+	SwitchInlineQueryCurrentChat *string `json:"switch_inline_query_current_chat,omitempty"` // we use pointer as empty string is non zero value in this case
+
+	// Optional. If set, pressing the button will prompt the user to select one of their chats of the specified type,
+	// open that chat and insert the bot's username and the specified inline query in the input field.
+	// Not supported for messages sent on behalf of a Telegram Business account.
+	SwitchInlineQueryChosenChat *SwitchInlineQueryChosenChat `json:"switch_inline_query_chosen_chat,omitempty"`
+
+	CopyText *CopyTextButton `json:"copy_text,omitempty"`
+
+	// Optional. Description of the game that will be launched when the user presses the button.
+	//
+	//NOTE: This type of button must always be the first button in the first row.
+	CallbackGame *CallbackGame `json:"callback_game,omitempty"`
+
+	// Optional. Specify True, to send a Pay button.
+	//  Substrings “⭐” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.
+	//
+	// NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.
+	Pay bool `json:"pay,omitempty"`
 }
 
 func (v InlineKeyboardButton) Validate() error {
@@ -561,17 +598,35 @@ func (v InlineKeyboardButton) Validate() error {
 	if v.SwitchInlineQueryChosenChat != nil {
 		populatedFields = append(populatedFields, "switch_inline_query_chosen_chat")
 		if err := v.SwitchInlineQueryChosenChat.Validate(); err != nil {
-			return fmt.Errorf("SwitchInlineQueryChosenChat is invalid: %w", err)
+			return fmt.Errorf("invalid field SwitchInlineQueryChosenChat: %w", err)
 		}
 	}
 	if v.CallbackGame != nil {
 		populatedFields = append(populatedFields, "callback_game")
 		if err := v.CallbackGame.Validate(); err != nil {
-			return fmt.Errorf("CallbackGame is invalid: %w", err)
+			return fmt.Errorf("invaldi field CallbackGame: %w", err)
+		}
+	}
+	if v.CopyText != nil {
+		populatedFields = append(populatedFields, "copy_text")
+		if err := v.CopyText.Validate(); err != nil {
+			return fmt.Errorf("invalid field CopyText: %w", err)
 		}
 	}
 	if len(populatedFields) != 1 {
 		return fmt.Errorf("exactly one of the optional fields must be used to specify type of the button, got: %s", strings.Join(populatedFields, ", "))
+	}
+	return nil
+}
+
+// CopyTextButton represents an inline keyboard button that copies specified text to the clipboard.
+type CopyTextButton struct {
+	Text string `json:"text"`
+}
+
+func (v CopyTextButton) Validate() error {
+	if v.Text == "" {
+		return errors.New("text is empty")
 	}
 	return nil
 }

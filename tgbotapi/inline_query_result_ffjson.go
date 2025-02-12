@@ -583,15 +583,11 @@ func (j *InlineQueryResultArticle) MarshalJSONBuf(buf fflib.EncodingBuffer) erro
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -1192,22 +1188,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1283,15 +1273,11 @@ func (j *InlineQueryResultAudio) MarshalJSONBuf(buf fflib.EncodingBuffer) error 
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -1744,22 +1730,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1819,15 +1799,11 @@ func (j *InlineQueryResultBase) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -2100,22 +2076,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -2187,15 +2157,11 @@ func (j *InlineQueryResultCachedSticker) MarshalJSONBuf(buf fflib.EncodingBuffer
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -2553,22 +2519,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -2652,15 +2612,11 @@ func (j *InlineQueryResultContact) MarshalJSONBuf(buf fflib.EncodingBuffer) erro
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -3159,22 +3115,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -3258,15 +3208,11 @@ func (j *InlineQueryResultDocument) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -3902,22 +3848,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -4009,15 +3949,11 @@ func (j *InlineQueryResultGIF) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -4562,22 +4498,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -4639,15 +4569,11 @@ func (j *InlineQueryResultGame) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -4967,22 +4893,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -5071,15 +4991,11 @@ func (j *InlineQueryResultLocation) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -5629,22 +5545,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -5724,15 +5634,11 @@ func (j *InlineQueryResultMPEG4GIF) MarshalJSONBuf(buf fflib.EncodingBuffer) err
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -6277,22 +6183,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -6394,15 +6294,11 @@ func (j *InlineQueryResultPhoto) MarshalJSONBuf(buf fflib.EncodingBuffer) error 
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -7041,22 +6937,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -7147,15 +7037,11 @@ func (j *InlineQueryResultVenue) MarshalJSONBuf(buf fflib.EncodingBuffer) error 
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -7801,22 +7687,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -7954,15 +7834,11 @@ func (j *InlineQueryResultVideo) MarshalJSONBuf(buf fflib.EncodingBuffer) error 
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -8649,22 +8525,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -8738,15 +8608,11 @@ func (j *InlineQueryResultVoice) MarshalJSONBuf(buf fflib.EncodingBuffer) error 
 	}
 	if j.ReplyMarkup != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
 			buf.WriteString(`"reply_markup":`)
-
-			{
-
-				err = j.ReplyMarkup.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ReplyMarkup)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -9152,22 +9018,16 @@ handle_ReplyMarkup:
 	/* handler: j.ReplyMarkup type=tgbotapi.InlineKeyboardMarkup kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ReplyMarkup = nil
-
-		} else {
-
-			if j.ReplyMarkup == nil {
-				j.ReplyMarkup = new(InlineKeyboardMarkup)
-			}
-
-			err = j.ReplyMarkup.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.InlineKeyboardMarkup kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ReplyMarkup)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value

@@ -40,15 +40,11 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteByte(',')
 	if j.From != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.User kind=struct */
 			buf.WriteString(`"from":`)
-
-			{
-
-				err = j.From.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.From)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -58,15 +54,11 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteByte(',')
 	if j.Chat != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Chat kind=struct */
 			buf.WriteString(`"chat":`)
-
-			{
-
-				err = j.Chat.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Chat)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -95,15 +87,11 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.ForwardFrom != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.User kind=struct */
 			buf.WriteString(`"forward_from":`)
-
-			{
-
-				err = j.ForwardFrom.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.ForwardFrom)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -142,14 +130,10 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 					if i != 0 {
 						buf.WriteString(`,`)
 					}
-
-					{
-
-						err = v.MarshalJSONBuf(buf)
-						if err != nil {
-							return err
-						}
-
+					/* Struct fall back. type=tgbotapi.MessageEntity kind=struct */
+					err = buf.Encode(&v)
+					if err != nil {
+						return err
 					}
 				}
 				buf.WriteString(`]`)
@@ -161,30 +145,22 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.Audio != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Audio kind=struct */
 			buf.WriteString(`"audio":`)
-
-			{
-
-				err = j.Audio.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Audio)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if j.Document != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Document kind=struct */
 			buf.WriteString(`"document":`)
-
-			{
-
-				err = j.Document.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Document)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -213,45 +189,33 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.Sticker != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Sticker kind=struct */
 			buf.WriteString(`"sticker":`)
-
-			{
-
-				err = j.Sticker.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Sticker)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if j.Video != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Video kind=struct */
 			buf.WriteString(`"video":`)
-
-			{
-
-				err = j.Video.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Video)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if j.Voice != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Voice kind=struct */
 			buf.WriteString(`"voice":`)
-
-			{
-
-				err = j.Voice.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Voice)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -263,75 +227,55 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.Contact != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Contact kind=struct */
 			buf.WriteString(`"contact":`)
-
-			{
-
-				err = j.Contact.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Contact)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if j.Location != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Location kind=struct */
 			buf.WriteString(`"location":`)
-
-			{
-
-				err = j.Location.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Location)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if j.Venue != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Venue kind=struct */
 			buf.WriteString(`"venue":`)
-
-			{
-
-				err = j.Venue.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Venue)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if j.NewChatParticipant != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.ChatMember kind=struct */
 			buf.WriteString(`"new_chat_participant":`)
-
-			{
-
-				err = j.NewChatParticipant.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.NewChatParticipant)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if j.NewChatMember != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.ChatMember kind=struct */
 			buf.WriteString(`"new_chat_member":`)
-
-			{
-
-				err = j.NewChatMember.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.NewChatMember)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -344,14 +288,10 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 				if i != 0 {
 					buf.WriteString(`,`)
 				}
-
-				{
-
-					err = v.MarshalJSONBuf(buf)
-					if err != nil {
-						return err
-					}
-
+				/* Struct fall back. type=tgbotapi.ChatMember kind=struct */
+				err = buf.Encode(&v)
+				if err != nil {
+					return err
 				}
 			}
 			buf.WriteString(`]`)
@@ -362,15 +302,11 @@ func (j *Message) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.LeftChatMember != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.ChatMember kind=struct */
 			buf.WriteString(`"left_chat_member":`)
-
-			{
-
-				err = j.LeftChatMember.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.LeftChatMember)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -1255,22 +1191,16 @@ handle_From:
 	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.From = nil
-
-		} else {
-
-			if j.From == nil {
-				j.From = new(User)
-			}
-
-			err = j.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.User kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.From)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1311,22 +1241,16 @@ handle_Chat:
 	/* handler: j.Chat type=tgbotapi.Chat kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Chat = nil
-
-		} else {
-
-			if j.Chat == nil {
-				j.Chat = new(Chat)
-			}
-
-			err = j.Chat.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Chat kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Chat)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1377,22 +1301,16 @@ handle_ForwardFrom:
 	/* handler: j.ForwardFrom type=tgbotapi.User kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ForwardFrom = nil
-
-		} else {
-
-			if j.ForwardFrom == nil {
-				j.ForwardFrom = new(User)
-			}
-
-			err = j.ForwardFrom.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.User kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ForwardFrom)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1526,16 +1444,16 @@ handle_Entities:
 				/* handler: tmpJEntities type=tgbotapi.MessageEntity kind=struct quoted=false*/
 
 				{
-					if tok == fflib.FFTok_null {
-
-					} else {
-
-						err = tmpJEntities.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-						if err != nil {
-							return err
-						}
+					/* Falling back. type=tgbotapi.MessageEntity kind=struct */
+					tbuf, err := fs.CaptureField(tok)
+					if err != nil {
+						return fs.WrapErr(err)
 					}
-					state = fflib.FFParse_after_value
+
+					err = json.Unmarshal(tbuf, &tmpJEntities)
+					if err != nil {
+						return fs.WrapErr(err)
+					}
 				}
 
 				*j.Entities = append(*j.Entities, tmpJEntities)
@@ -1553,22 +1471,16 @@ handle_Audio:
 	/* handler: j.Audio type=tgbotapi.Audio kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Audio = nil
-
-		} else {
-
-			if j.Audio == nil {
-				j.Audio = new(Audio)
-			}
-
-			err = j.Audio.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Audio kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Audio)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1579,22 +1491,16 @@ handle_Document:
 	/* handler: j.Document type=tgbotapi.Document kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Document = nil
-
-		} else {
-
-			if j.Document == nil {
-				j.Document = new(Document)
-			}
-
-			err = j.Document.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Document kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Document)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1673,22 +1579,16 @@ handle_Sticker:
 	/* handler: j.Sticker type=tgbotapi.Sticker kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Sticker = nil
-
-		} else {
-
-			if j.Sticker == nil {
-				j.Sticker = new(Sticker)
-			}
-
-			err = j.Sticker.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Sticker kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Sticker)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1699,22 +1599,16 @@ handle_Video:
 	/* handler: j.Video type=tgbotapi.Video kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Video = nil
-
-		} else {
-
-			if j.Video == nil {
-				j.Video = new(Video)
-			}
-
-			err = j.Video.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Video kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Video)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1725,22 +1619,16 @@ handle_Voice:
 	/* handler: j.Voice type=tgbotapi.Voice kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Voice = nil
-
-		} else {
-
-			if j.Voice == nil {
-				j.Voice = new(Voice)
-			}
-
-			err = j.Voice.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Voice kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Voice)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1777,22 +1665,16 @@ handle_Contact:
 	/* handler: j.Contact type=tgbotapi.Contact kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Contact = nil
-
-		} else {
-
-			if j.Contact == nil {
-				j.Contact = new(Contact)
-			}
-
-			err = j.Contact.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Contact kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Contact)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1803,22 +1685,16 @@ handle_Location:
 	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Location = nil
-
-		} else {
-
-			if j.Location == nil {
-				j.Location = new(Location)
-			}
-
-			err = j.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Location kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Location)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1829,22 +1705,16 @@ handle_Venue:
 	/* handler: j.Venue type=tgbotapi.Venue kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Venue = nil
-
-		} else {
-
-			if j.Venue == nil {
-				j.Venue = new(Venue)
-			}
-
-			err = j.Venue.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Venue kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Venue)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1855,22 +1725,16 @@ handle_NewChatParticipant:
 	/* handler: j.NewChatParticipant type=tgbotapi.ChatMember kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.NewChatParticipant = nil
-
-		} else {
-
-			if j.NewChatParticipant == nil {
-				j.NewChatParticipant = new(ChatMember)
-			}
-
-			err = j.NewChatParticipant.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.ChatMember kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.NewChatParticipant)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1881,22 +1745,16 @@ handle_NewChatMember:
 	/* handler: j.NewChatMember type=tgbotapi.ChatMember kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.NewChatMember = nil
-
-		} else {
-
-			if j.NewChatMember == nil {
-				j.NewChatMember = new(ChatMember)
-			}
-
-			err = j.NewChatMember.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.ChatMember kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.NewChatMember)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -1948,16 +1806,16 @@ handle_NewChatMembers:
 				/* handler: tmpJNewChatMembers type=tgbotapi.ChatMember kind=struct quoted=false*/
 
 				{
-					if tok == fflib.FFTok_null {
-
-					} else {
-
-						err = tmpJNewChatMembers.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-						if err != nil {
-							return err
-						}
+					/* Falling back. type=tgbotapi.ChatMember kind=struct */
+					tbuf, err := fs.CaptureField(tok)
+					if err != nil {
+						return fs.WrapErr(err)
 					}
-					state = fflib.FFParse_after_value
+
+					err = json.Unmarshal(tbuf, &tmpJNewChatMembers)
+					if err != nil {
+						return fs.WrapErr(err)
+					}
 				}
 
 				j.NewChatMembers = append(j.NewChatMembers, tmpJNewChatMembers)
@@ -1975,22 +1833,16 @@ handle_LeftChatMember:
 	/* handler: j.LeftChatMember type=tgbotapi.ChatMember kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.LeftChatMember = nil
-
-		} else {
-
-			if j.LeftChatMember == nil {
-				j.LeftChatMember = new(ChatMember)
-			}
-
-			err = j.LeftChatMember.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.ChatMember kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.LeftChatMember)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value

@@ -572,15 +572,11 @@ func (j *InlineQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteString(`{"id":`)
 	fflib.WriteJsonString(buf, string(j.ID))
 	if j.From != nil {
+		/* Struct fall back. type=tgbotapi.User kind=struct */
 		buf.WriteString(`,"from":`)
-
-		{
-
-			err = j.From.MarshalJSONBuf(buf)
-			if err != nil {
-				return err
-			}
-
+		err = buf.Encode(j.From)
+		if err != nil {
+			return err
 		}
 	} else {
 		buf.WriteString(`,"from":null`)
@@ -588,15 +584,11 @@ func (j *InlineQuery) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteByte(',')
 	if j.Location != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.Location kind=struct */
 			buf.WriteString(`"location":`)
-
-			{
-
-				err = j.Location.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.Location)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -844,22 +836,16 @@ handle_From:
 	/* handler: j.From type=tgbotapi.User kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.From = nil
-
-		} else {
-
-			if j.From == nil {
-				j.From = new(User)
-			}
-
-			err = j.From.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.User kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.From)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -870,22 +856,16 @@ handle_Location:
 	/* handler: j.Location type=tgbotapi.Location kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.Location = nil
-
-		} else {
-
-			if j.Location == nil {
-				j.Location = new(Location)
-			}
-
-			err = j.Location.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.Location kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.Location)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -993,15 +973,11 @@ func (j *InlineQueryResultsButton) MarshalJSONBuf(buf fflib.EncodingBuffer) erro
 	}
 	if j.WebApp != nil {
 		if true {
+			/* Struct fall back. type=tgbotapi.WebAppInfo kind=struct */
 			buf.WriteString(`"url":`)
-
-			{
-
-				err = j.WebApp.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(j.WebApp)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -1209,22 +1185,16 @@ handle_WebApp:
 	/* handler: j.WebApp type=tgbotapi.WebAppInfo kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.WebApp = nil
-
-		} else {
-
-			if j.WebApp == nil {
-				j.WebApp = new(WebAppInfo)
-			}
-
-			err = j.WebApp.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.WebAppInfo kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.WebApp)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value

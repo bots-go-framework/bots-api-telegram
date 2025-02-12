@@ -2903,6 +2903,200 @@ done:
 }
 
 // MarshalJSON marshal bytes to json - template
+func (j *CopyTextButton) MarshalJSON() ([]byte, error) {
+	var buf fflib.Buffer
+	if j == nil {
+		buf.WriteString("null")
+		return buf.Bytes(), nil
+	}
+	err := j.MarshalJSONBuf(&buf)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+// MarshalJSONBuf marshal buff to json - template
+func (j *CopyTextButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+	if j == nil {
+		buf.WriteString("null")
+		return nil
+	}
+	var err error
+	var obj []byte
+	_ = obj
+	_ = err
+	buf.WriteString(`{"text":`)
+	fflib.WriteJsonString(buf, string(j.Text))
+	buf.WriteByte('}')
+	return nil
+}
+
+const (
+	ffjtCopyTextButtonbase = iota
+	ffjtCopyTextButtonnosuchkey
+
+	ffjtCopyTextButtonText
+)
+
+var ffjKeyCopyTextButtonText = []byte("text")
+
+// UnmarshalJSON umarshall json - template of ffjson
+func (j *CopyTextButton) UnmarshalJSON(input []byte) error {
+	fs := fflib.NewFFLexer(input)
+	return j.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
+}
+
+// UnmarshalJSONFFLexer fast json unmarshall - template ffjson
+func (j *CopyTextButton) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+	var err error
+	currentKey := ffjtCopyTextButtonbase
+	_ = currentKey
+	tok := fflib.FFTok_init
+	wantedTok := fflib.FFTok_init
+
+mainparse:
+	for {
+		tok = fs.Scan()
+		//	println(fmt.Sprintf("debug: tok: %v  state: %v", tok, state))
+		if tok == fflib.FFTok_error {
+			goto tokerror
+		}
+
+		switch state {
+
+		case fflib.FFParse_map_start:
+			if tok != fflib.FFTok_left_bracket {
+				wantedTok = fflib.FFTok_left_bracket
+				goto wrongtokenerror
+			}
+			state = fflib.FFParse_want_key
+			continue
+
+		case fflib.FFParse_after_value:
+			if tok == fflib.FFTok_comma {
+				state = fflib.FFParse_want_key
+			} else if tok == fflib.FFTok_right_bracket {
+				goto done
+			} else {
+				wantedTok = fflib.FFTok_comma
+				goto wrongtokenerror
+			}
+
+		case fflib.FFParse_want_key:
+			// json {} ended. goto exit. woo.
+			if tok == fflib.FFTok_right_bracket {
+				goto done
+			}
+			if tok != fflib.FFTok_string {
+				wantedTok = fflib.FFTok_string
+				goto wrongtokenerror
+			}
+
+			kn := fs.Output.Bytes()
+			if len(kn) <= 0 {
+				// "" case. hrm.
+				currentKey = ffjtCopyTextButtonnosuchkey
+				state = fflib.FFParse_want_colon
+				goto mainparse
+			} else {
+				switch kn[0] {
+
+				case 't':
+
+					if bytes.Equal(ffjKeyCopyTextButtonText, kn) {
+						currentKey = ffjtCopyTextButtonText
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				}
+
+				if fflib.SimpleLetterEqualFold(ffjKeyCopyTextButtonText, kn) {
+					currentKey = ffjtCopyTextButtonText
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				currentKey = ffjtCopyTextButtonnosuchkey
+				state = fflib.FFParse_want_colon
+				goto mainparse
+			}
+
+		case fflib.FFParse_want_colon:
+			if tok != fflib.FFTok_colon {
+				wantedTok = fflib.FFTok_colon
+				goto wrongtokenerror
+			}
+			state = fflib.FFParse_want_value
+			continue
+		case fflib.FFParse_want_value:
+
+			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
+				switch currentKey {
+
+				case ffjtCopyTextButtonText:
+					goto handle_Text
+
+				case ffjtCopyTextButtonnosuchkey:
+					err = fs.SkipField(tok)
+					if err != nil {
+						return fs.WrapErr(err)
+					}
+					state = fflib.FFParse_after_value
+					goto mainparse
+				}
+			} else {
+				goto wantedvalue
+			}
+		}
+	}
+
+handle_Text:
+
+	/* handler: j.Text type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.Text = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+wantedvalue:
+	return fs.WrapErr(fmt.Errorf("wanted value token, but got token: %v", tok))
+wrongtokenerror:
+	return fs.WrapErr(fmt.Errorf("ffjson: wanted token: %v, but got token: %v output=%s", wantedTok, tok, fs.Output.String()))
+tokerror:
+	if fs.BigError != nil {
+		return fs.WrapErr(fs.BigError)
+	}
+	err = fs.Error.ToError()
+	if err != nil {
+		return fs.WrapErr(err)
+	}
+	panic("ffjson-generated: unreachable, please report bug.")
+done:
+
+	return nil
+}
+
+// MarshalJSON marshal bytes to json - template
 func (j *Document) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if j == nil {
@@ -2931,11 +3125,15 @@ func (j *Document) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteByte(',')
 	if j.Thumbnail != nil {
 		if true {
-			/* Struct fall back. type=tgbotapi.PhotoSize kind=struct */
 			buf.WriteString(`"thumb":`)
-			err = buf.Encode(j.Thumbnail)
-			if err != nil {
-				return err
+
+			{
+
+				err = j.Thumbnail.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -3189,16 +3387,22 @@ handle_Thumbnail:
 	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=tgbotapi.PhotoSize kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
-		}
+		if tok == fflib.FFTok_null {
 
-		err = json.Unmarshal(tbuf, &j.Thumbnail)
-		if err != nil {
-			return fs.WrapErr(err)
+			j.Thumbnail = nil
+
+		} else {
+
+			if j.Thumbnail == nil {
+				j.Thumbnail = new(PhotoSize)
+			}
+
+			err = j.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -4217,6 +4421,21 @@ func (j *InlineKeyboardButton) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
+	if j.CopyText != nil {
+		if true {
+			buf.WriteString(`"copy_text":`)
+
+			{
+
+				err = j.CopyText.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
+			}
+			buf.WriteByte(',')
+		}
+	}
 	if j.CallbackGame != nil {
 		if true {
 			buf.WriteString(`"callback_game":`)
@@ -4265,6 +4484,8 @@ const (
 
 	ffjtInlineKeyboardButtonSwitchInlineQueryChosenChat
 
+	ffjtInlineKeyboardButtonCopyText
+
 	ffjtInlineKeyboardButtonCallbackGame
 
 	ffjtInlineKeyboardButtonPay
@@ -4285,6 +4506,8 @@ var ffjKeyInlineKeyboardButtonSwitchInlineQuery = []byte("switch_inline_query")
 var ffjKeyInlineKeyboardButtonSwitchInlineQueryCurrentChat = []byte("switch_inline_query_current_chat")
 
 var ffjKeyInlineKeyboardButtonSwitchInlineQueryChosenChat = []byte("switch_inline_query_chosen_chat")
+
+var ffjKeyInlineKeyboardButtonCopyText = []byte("copy_text")
 
 var ffjKeyInlineKeyboardButtonCallbackGame = []byte("callback_game")
 
@@ -4355,6 +4578,11 @@ mainparse:
 
 					if bytes.Equal(ffjKeyInlineKeyboardButtonCallbackData, kn) {
 						currentKey = ffjtInlineKeyboardButtonCallbackData
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffjKeyInlineKeyboardButtonCopyText, kn) {
+						currentKey = ffjtInlineKeyboardButtonCopyText
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
@@ -4432,6 +4660,12 @@ mainparse:
 
 				if fflib.EqualFoldRight(ffjKeyInlineKeyboardButtonCallbackGame, kn) {
 					currentKey = ffjtInlineKeyboardButtonCallbackGame
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.AsciiEqualFold(ffjKeyInlineKeyboardButtonCopyText, kn) {
+					currentKey = ffjtInlineKeyboardButtonCopyText
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -4524,6 +4758,9 @@ mainparse:
 
 				case ffjtInlineKeyboardButtonSwitchInlineQueryChosenChat:
 					goto handle_SwitchInlineQueryChosenChat
+
+				case ffjtInlineKeyboardButtonCopyText:
+					goto handle_CopyText
 
 				case ffjtInlineKeyboardButtonCallbackGame:
 					goto handle_CallbackGame
@@ -4751,6 +4988,32 @@ handle_SwitchInlineQueryChosenChat:
 			}
 
 			err = j.SwitchInlineQueryChosenChat.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
+		}
+		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_CopyText:
+
+	/* handler: j.CopyText type=tgbotapi.CopyTextButton kind=struct quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			j.CopyText = nil
+
+		} else {
+
+			if j.CopyText == nil {
+				j.CopyText = new(CopyTextButton)
+			}
+
+			err = j.CopyText.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 			if err != nil {
 				return err
 			}
@@ -8871,11 +9134,15 @@ func (j *Sticker) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteByte(',')
 	if j.Thumbnail != nil {
 		if true {
-			/* Struct fall back. type=tgbotapi.PhotoSize kind=struct */
 			buf.WriteString(`"thumb":`)
-			err = buf.Encode(j.Thumbnail)
-			if err != nil {
-				return err
+
+			{
+
+				err = j.Thumbnail.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -9182,16 +9449,22 @@ handle_Thumbnail:
 	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=tgbotapi.PhotoSize kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
-		}
+		if tok == fflib.FFTok_null {
 
-		err = json.Unmarshal(tbuf, &j.Thumbnail)
-		if err != nil {
-			return fs.WrapErr(err)
+			j.Thumbnail = nil
+
+		} else {
+
+			if j.Thumbnail == nil {
+				j.Thumbnail = new(PhotoSize)
+			}
+
+			err = j.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -10122,10 +10395,14 @@ func (j *UserProfilePhotos) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 					if i != 0 {
 						buf.WriteString(`,`)
 					}
-					/* Struct fall back. type=tgbotapi.PhotoSize kind=struct */
-					err = buf.Encode(&v)
-					if err != nil {
-						return err
+
+					{
+
+						err = v.MarshalJSONBuf(buf)
+						if err != nil {
+							return err
+						}
+
 					}
 				}
 				buf.WriteString(`]`)
@@ -10733,11 +11010,15 @@ func (j *Video) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteByte(',')
 	if j.Thumbnail != nil {
 		if true {
-			/* Struct fall back. type=tgbotapi.PhotoSize kind=struct */
 			buf.WriteString(`"thumb":`)
-			err = buf.Encode(j.Thumbnail)
-			if err != nil {
-				return err
+
+			{
+
+				err = j.Thumbnail.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -11121,16 +11402,22 @@ handle_Thumbnail:
 	/* handler: j.Thumbnail type=tgbotapi.PhotoSize kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=tgbotapi.PhotoSize kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
-		}
+		if tok == fflib.FFTok_null {
 
-		err = json.Unmarshal(tbuf, &j.Thumbnail)
-		if err != nil {
-			return fs.WrapErr(err)
+			j.Thumbnail = nil
+
+		} else {
+
+			if j.Thumbnail == nil {
+				j.Thumbnail = new(PhotoSize)
+			}
+
+			err = j.Thumbnail.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

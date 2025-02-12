@@ -107,25 +107,25 @@ func (j *Update) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteString(`,"inline_query":null`)
 	}
 	if j.ChosenInlineResult != nil {
+		/* Struct fall back. type=tgbotapi.ChosenInlineResult kind=struct */
 		buf.WriteString(`,"chosen_inline_result":`)
-
-		{
-
-			err = j.ChosenInlineResult.MarshalJSONBuf(buf)
-			if err != nil {
-				return err
-			}
-
+		err = buf.Encode(j.ChosenInlineResult)
+		if err != nil {
+			return err
 		}
 	} else {
 		buf.WriteString(`,"chosen_inline_result":null`)
 	}
 	if j.CallbackQuery != nil {
-		/* Struct fall back. type=tgbotapi.CallbackQuery kind=struct */
 		buf.WriteString(`,"callback_query":`)
-		err = buf.Encode(j.CallbackQuery)
-		if err != nil {
-			return err
+
+		{
+
+			err = j.CallbackQuery.MarshalJSONBuf(buf)
+			if err != nil {
+				return err
+			}
+
 		}
 	} else {
 		buf.WriteString(`,"callback_query":null`)
@@ -557,22 +557,16 @@ handle_ChosenInlineResult:
 	/* handler: j.ChosenInlineResult type=tgbotapi.ChosenInlineResult kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			j.ChosenInlineResult = nil
-
-		} else {
-
-			if j.ChosenInlineResult == nil {
-				j.ChosenInlineResult = new(ChosenInlineResult)
-			}
-
-			err = j.ChosenInlineResult.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
-			}
+		/* Falling back. type=tgbotapi.ChosenInlineResult kind=struct */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &j.ChosenInlineResult)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -583,16 +577,22 @@ handle_CallbackQuery:
 	/* handler: j.CallbackQuery type=tgbotapi.CallbackQuery kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=tgbotapi.CallbackQuery kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
-		}
+		if tok == fflib.FFTok_null {
 
-		err = json.Unmarshal(tbuf, &j.CallbackQuery)
-		if err != nil {
-			return fs.WrapErr(err)
+			j.CallbackQuery = nil
+
+		} else {
+
+			if j.CallbackQuery == nil {
+				j.CallbackQuery = new(CallbackQuery)
+			}
+
+			err = j.CallbackQuery.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+			if err != nil {
+				return err
+			}
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

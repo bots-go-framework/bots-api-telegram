@@ -5,6 +5,7 @@ package tgbotapi
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	fflib "github.com/pquerna/ffjson/fflib/v1"
@@ -634,14 +635,10 @@ func (j *InputTextMessageContent) MarshalJSONBuf(buf fflib.EncodingBuffer) error
 			if i != 0 {
 				buf.WriteString(`,`)
 			}
-
-			{
-
-				err = v.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			/* Struct fall back. type=tgbotapi.MessageEntity kind=struct */
+			err = buf.Encode(&v)
+			if err != nil {
+				return err
 			}
 		}
 		buf.WriteString(`]`)
@@ -938,16 +935,16 @@ handle_Entities:
 				/* handler: tmpJEntities type=tgbotapi.MessageEntity kind=struct quoted=false*/
 
 				{
-					if tok == fflib.FFTok_null {
-
-					} else {
-
-						err = tmpJEntities.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-						if err != nil {
-							return err
-						}
+					/* Falling back. type=tgbotapi.MessageEntity kind=struct */
+					tbuf, err := fs.CaptureField(tok)
+					if err != nil {
+						return fs.WrapErr(err)
 					}
-					state = fflib.FFParse_after_value
+
+					err = json.Unmarshal(tbuf, &tmpJEntities)
+					if err != nil {
+						return fs.WrapErr(err)
+					}
 				}
 
 				j.Entities = append(j.Entities, tmpJEntities)

@@ -1,13 +1,13 @@
 package tgbotapi
 
+//go:generate ffjson $GOFILE
+
 import (
 	"errors"
 	"github.com/pquerna/ffjson/ffjson"
 	"net/url"
 	"strconv"
 )
-
-//go:generate ffjson $GOFILE
 
 // InlineQueryResultsButton represents a button to be shown above inline query results.
 // You must use exactly one of the optional fields.
