@@ -9542,32 +9542,45 @@ func (j *SwitchInlineQueryChosenChat) MarshalJSONBuf(buf fflib.EncodingBuffer) e
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteByte('{')
+	buf.WriteString(`{ `)
 	if len(j.Query) != 0 {
 		buf.WriteString(`"query":`)
 		fflib.WriteJsonString(buf, string(j.Query))
 		buf.WriteByte(',')
 	}
-	if j.AllowUserChats {
-		buf.WriteString(`"allow_user_chats":true`)
-	} else {
-		buf.WriteString(`"allow_user_chats":false`)
+	if j.AllowUserChats != false {
+		if j.AllowUserChats {
+			buf.WriteString(`"allow_user_chats":true`)
+		} else {
+			buf.WriteString(`"allow_user_chats":false`)
+		}
+		buf.WriteByte(',')
 	}
-	if j.AllowBotChats {
-		buf.WriteString(`,"allow_bot_chats":true`)
-	} else {
-		buf.WriteString(`,"allow_bot_chats":false`)
+	if j.AllowBotChats != false {
+		if j.AllowBotChats {
+			buf.WriteString(`"allow_bot_chats":true`)
+		} else {
+			buf.WriteString(`"allow_bot_chats":false`)
+		}
+		buf.WriteByte(',')
 	}
-	if j.AllowGroupChats {
-		buf.WriteString(`,"allow_group_chats":true`)
-	} else {
-		buf.WriteString(`,"allow_group_chats":false`)
+	if j.AllowGroupChats != false {
+		if j.AllowGroupChats {
+			buf.WriteString(`"allow_group_chats":true`)
+		} else {
+			buf.WriteString(`"allow_group_chats":false`)
+		}
+		buf.WriteByte(',')
 	}
-	if j.AllowChannelChats {
-		buf.WriteString(`,"allow_channel_chats":true`)
-	} else {
-		buf.WriteString(`,"allow_channel_chats":false`)
+	if j.AllowChannelChats != false {
+		if j.AllowChannelChats {
+			buf.WriteString(`"allow_channel_chats":true`)
+		} else {
+			buf.WriteString(`"allow_channel_chats":false`)
+		}
+		buf.WriteByte(',')
 	}
+	buf.Rewind(1)
 	buf.WriteByte('}')
 	return nil
 }

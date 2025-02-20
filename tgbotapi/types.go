@@ -639,17 +639,20 @@ type SwitchInlineQueryChosenChat struct {
 	//The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
 	Query string `json:"query,omitempty"`
 
+	// Known issue in macOS Telegram Desktop not respecting allow_*_chats field:
+	// https://github.com/overtake/TelegramSwift/issues/1213
+
 	// Optional. True, if private chats with users can be chosen
-	AllowUserChats bool `json:"allow_user_chats"` // DO not omit this field, as it defaults to TRUE
+	AllowUserChats bool `json:"allow_user_chats,omitempty"`
 
 	// Optional. True, if private chats with bots can be chosen
-	AllowBotChats bool `json:"allow_bot_chats"` // DO not omit this field, as it defaults to TRUE
+	AllowBotChats bool `json:"allow_bot_chats,omitempty"`
 
 	// Optional. True, if group and supergroup chats can be chosen
-	AllowGroupChats bool `json:"allow_group_chats"` // DO not omit this field, as it defaults to TRUE
+	AllowGroupChats bool `json:"allow_group_chats,omitempty"`
 
 	// Optional. True, if channel chats can be chosen
-	AllowChannelChats bool `json:"allow_channel_chats"` // DO not omit this field, as it defaults to TRUE
+	AllowChannelChats bool `json:"allow_channel_chats,omitempty"`
 }
 
 func (v SwitchInlineQueryChosenChat) Validate() error {
