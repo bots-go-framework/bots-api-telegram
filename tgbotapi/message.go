@@ -7,12 +7,47 @@ import (
 	"time"
 )
 
-// Message is returned by almost every request, and contains data about almost anything.
+// Message is returned by almost every request and contains data about almost anything.
 type Message struct {
-	MessageID             int              `json:"message_id"`
-	From                  *User            `json:"from,omitempty"` // optional
-	Date                  int              `json:"date"`
-	Chat                  *Chat            `json:"chat,omitempty"`
+
+	// Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
+	MessageID int `json:"message_id"`
+
+	// Optional. Unique identifier of a message thread to which the message belongs; for supergroups only
+	MessageThreadID int `json:"message_thread_id"`
+
+	// Optional. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats
+	From *User `json:"from,omitempty"`
+
+	// Optional. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field from contains a fake sender user in non-channel chats.
+	SenderChat *Chat `json:"sender_chat,omitempty"`
+
+	// Optional. If the sender of the message boosted the chat, the number of boosts added by the user
+	SenderBootCount int `json:"sender_boot_count,omitempty"`
+
+	// Optional. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+	SenderBusinessBot *User `json:"sender_business_bot,omitempty"`
+
+	// Date the message was sent in Unix time. It is always a positive number, representing a valid date.
+	Date int `json:"date"`
+
+	// Optional. Unique identifier of the business connection from which the message was received.
+	// If non-empty, the message belongs to a chat of the corresponding business account
+	// that is independent from any potential bot chat which might share the same identifier.
+	BusinessConnectionID string `json:"business_connection_id,omitempty"`
+
+	// Chat the message belongs to
+	Chat *Chat `json:"chat,omitempty"`
+
+	// Optional. Information about the original message for forwarded messages
+	ForwardOrigin *MessageOrigin `json:"forward_origin,omitempty"`
+
+	// Optional. True, if the message is sent to a forum topic
+	IsTopicMessage bool `json:"is_topic_message,omitempty"`
+
+	// Optional. True, if the message is a channel post that was automatically forwarded to the connected discussion group
+	IsAutomaticForward bool `json:"is_automatic_forward,omitempty"`
+
 	UserShared            *UserShared      `json:"user_shared,omitempty"`             // optional NON-DOCUMENTED FIELD
 	UsersShared           *UsersShared     `json:"users_shared,omitempty"`            // optional
 	ForwardFrom           *User            `json:"forward_from,omitempty"`            // optional
@@ -43,6 +78,13 @@ type Message struct {
 	MigrateToChatID       int64            `json:"migrate_to_chat_id,omitempty"`      // optional
 	MigrateFromChatID     int64            `json:"migrate_from_chat_id,omitempty"`    // optional
 	PinnedMessage         *Message         `json:"pinned_message,omitempty"`          // optional
+
+	// Optional. Message is an invoice for a payment, information about the invoice.
+	// https://core.telegram.org/bots/api#payments
+	Invoice *InvoiceConfig `json:"invoice"`
+
+	// Optional. Bot through which the message was sent
+	ViaBot *User `json:"via_bot"`
 }
 
 // Time converts the message timestamp into a Time.

@@ -106,13 +106,22 @@ type Fileable interface {
 	useExistingFile() bool
 }
 
-// BaseChat is base type for all chat config types.
+// BaseChat is a base type for all chat config types.
 type BaseChat struct {
 	ChatID              int64       `json:"chat_id,omitempty"`
 	ChannelUsername     string      `json:"channel_username,omitempty"`
 	ReplyToMessageID    int         `json:"reply_to_message_id,omitempty"`
 	ReplyMarkup         interface{} `json:"reply_markup,omitempty"`
 	DisableNotification bool        `json:"disable_notification,omitempty"`
+
+	ProtectContent bool `json:"protect_content,omitempty"` // Protects the contents of the sent message from forwarding and saving
+
+	// Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+	MessageThreadID    int64  `json:"message_thread_id,omitempty"`
+	MessageEffectID    string `json:"message_effect_id,omitempty"`
+	AllowPaidBroadcast bool   `json:"allow_paid_broadcast,omitempty"` // Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+
+	ReplyParameters *ReplyParameters `json:"reply_parameters,omitempty"` // Description of the message to reply to
 }
 
 // Values returns url.Values representation of BaseChat
@@ -128,6 +137,39 @@ func (j BaseChat) Values() (url.Values, error) {
 
 	if j.ReplyToMessageID != 0 {
 		values.Add("reply_to_message_id", strconv.Itoa(j.ReplyToMessageID))
+	}
+
+	if j.ProtectContent {
+		values.Add("protect_content", "true")
+	}
+
+	if j.AllowPaidBroadcast {
+		values.Add("allow_paid_broadcast", "true")
+	}
+
+	if j.MessageThreadID != 0 {
+		values.Add("message_thread_id", strconv.FormatInt(j.MessageThreadID, 10))
+	}
+
+	if j.MessageEffectID != "" {
+		values.Add("message_effect_id", j.MessageEffectID)
+	}
+	if j.AllowPaidBroadcast {
+		values.Add("allow_paid_broadcast", "true")
+	}
+
+	if j.ReplyParameters != nil {
+		data, err := ffjson.Marshal(j.ReplyParameters)
+		if err != nil {
+			ffjson.Pool(data)
+			return values, err
+		}
+		if string(data) == "null" {
+			panic(fmt.Sprintf("string(data) == null, BaseChat: %v", j))
+		}
+
+		values.Add("reply_parameters", string(data))
+		ffjson.Pool(data)
 	}
 
 	if j.ReplyMarkup != nil {
