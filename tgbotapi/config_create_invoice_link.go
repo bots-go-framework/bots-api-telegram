@@ -2,7 +2,7 @@ package tgbotapi
 
 import "net/url"
 
-var _ Chattable = (*CreateInvoiceLinkConfig)(nil)
+var _ Sendable = (*CreateInvoiceLinkConfig)(nil)
 
 type CreateInvoiceLinkConfig struct {
 	BaseChat
@@ -11,7 +11,7 @@ type CreateInvoiceLinkConfig struct {
 	BusinessConnectionID string `json:"business_connection_id,omitempty"`
 }
 
-func (v CreateInvoiceLinkConfig) method() string {
+func (v CreateInvoiceLinkConfig) TelegramMethod() string {
 	return "createInvoiceLink"
 }
 

@@ -79,12 +79,20 @@ type Message struct {
 	MigrateFromChatID     int64            `json:"migrate_from_chat_id,omitempty"`    // optional
 	PinnedMessage         *Message         `json:"pinned_message,omitempty"`          // optional
 
-	// Optional. Message is an invoice for a payment, information about the invoice.
+	// Optional. Message is an invoice for a Payment, information about the invoice.
 	// https://core.telegram.org/bots/api#payments
 	Invoice *InvoiceConfig `json:"invoice"`
 
 	// Optional. Bot through which the message was sent
 	ViaBot *User `json:"via_bot"`
+
+	SuccessfulPayment *SuccessfulPayment `json:"successful_payment,omitempty"` // optional
+	RefundedPayment   *RefundedPayment   `json:"refunded_payment,omitempty"`   //	optional
+
+	ChatShared *ChatShared `json:"chat_shared,omitempty"`
+
+	Gift       *GiftInfo       `json:"gift,omitempty"`
+	UniqueGift *UniqueGiftInfo `json:"unique_gift,omitempty"`
 }
 
 // Time converts the message timestamp into a Time.

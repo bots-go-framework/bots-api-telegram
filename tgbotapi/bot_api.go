@@ -5,7 +5,6 @@ package tgbotapi
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/pquerna/ffjson/ffjson"
@@ -54,22 +53,26 @@ func NewBotAPIWithClient(token string, client *http.Client) *BotAPI {
 	}
 }
 
-// MakeRequestFromChattable makes request from chattable TODO: Is duplicate of Send()?
-func (bot *BotAPI) MakeRequestFromChattable(m Chattable) (resp APIResponse, err error) { //
-	values, err := m.Values()
-	if err != nil {
+// MakeRequestFromMessageWithValues makes request from WithValues
+func (bot *BotAPI) MakeRequestFromMessageWithValues(method string, m WithValues) (resp APIResponse, err error) { //
+	var values url.Values
+	if values, err = m.Values(); err != nil {
 		return resp, err
 	}
-	return bot.MakeRequest(m.method(), values)
+	return bot.MakeRequest(method, values)
 }
 
-// MakeRequest makes a request to a specific endpoint with our token.
-func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIResponse, err error) {
-	method := fmt.Sprintf(APIEndpoint, bot.Token, endpoint)
+// MakeRequestFromChattable makes request from chattable TODO: Is duplicate of Send()?
+func (bot *BotAPI) MakeRequestFromChattable(m Sendable) (resp APIResponse, err error) { //
+	return bot.MakeRequestFromMessageWithValues(m.TelegramMethod(), m)
+}
 
-	var resp *http.Response
+// SendRequest sends a request to a specific endpoint with our token and reads response.
+func (bot *BotAPI) MakeRequest(telegramMethod string, params url.Values) (apiResp APIResponse, err error) {
+	method := fmt.Sprintf(APIEndpoint, bot.Token, telegramMethod)
 
 	var hadDeadlineExceeded bool
+	var resp *http.Response
 
 	for i := 1; i <= 2; i++ { // TODO: Should this be in bots framework?
 		if resp, err = bot.Client.PostForm(method, params); err != nil {
@@ -103,7 +106,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 		}
 	}
 	apiResp = APIResponse{
-		Result: json.RawMessage(body),
+		Result: body,
 	}
 	if resp.StatusCode >= 300 {
 		apiResp.ErrorCode = resp.StatusCode
@@ -117,21 +120,19 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 	}
 
 	if err != nil {
-		return APIResponse{Ok: false, Result: json.RawMessage(body)}, fmt.Errorf("%v: %s: %w", "POST", method, err)
+		return APIResponse{Ok: false, Result: body}, fmt.Errorf("%v: %s: %w", "POST", method, err)
 	}
 
 	logRequestAndResponse := func() {
 		if bot.c != nil {
-			logus.Debugf(bot.c, "Request to Telegram API: %v => %v", endpoint, params)
-			logus.Debugf(bot.c, "Telegram API response: %v", string(body))
+			logus.Debugf(bot.c, "Request to Telegram API: %v => %v", telegramMethod, params)
+			logus.Debugf(bot.c, "Telegram API response: %v", string(apiResp.Result))
 		}
 	}
 
-	//logRequestAndResponse()
-
-	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
+	if err = ffjson.Unmarshal(apiResp.Result, &apiResp); err != nil {
 		logRequestAndResponse()
-		return apiResp, fmt.Errorf("telegram API returned non JSON response or unknown JSON: %w:\n%s", err, string(body))
+		return apiResp, fmt.Errorf("telegram API returned non JSON response or unknown JSON: %w:\n%s", err, string(apiResp.Result))
 	} else if !apiResp.Ok {
 		logRequestAndResponse()
 		if hadDeadlineExceeded && apiResp.ErrorCode == 400 && strings.Contains(apiResp.Description, "message is not modified") {
@@ -139,6 +140,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params url.Values) (apiResp APIR
 		}
 		return apiResp, apiResp
 	}
+
 	return apiResp, nil
 }
 
@@ -146,7 +148,7 @@ func (bot *BotAPI) DeleteMessage(chatID string, messageID int) (apiResp APIRespo
 	return bot.MakeRequest("deleteMessage", url.Values{"chat_id": {chatID}, "message_id": {strconv.Itoa(messageID)}})
 }
 
-// makeMessageRequest makes a request to a method that returns a Message.
+// makeMessageRequest makes a request to a TelegramMethod that returns a Message.
 func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Message, error) {
 	resp, err := bot.MakeRequest(endpoint, params)
 	var message Message
@@ -279,7 +281,7 @@ func (bot *BotAPI) GetFileDirectURL(fileID string) (string, error) {
 
 // GetMe fetches the currently authenticated bot.
 //
-// This method is called upon creation to validate the token,
+// This TelegramMethod is called upon creation to validate the token,
 // and so you may get this data from BotAPI.Self without the need for
 // another request.
 func (bot *BotAPI) GetMe() (User, error) {
@@ -323,10 +325,10 @@ func (bot *BotAPI) IsMessageToMe(message Message) bool {
 	return strings.Contains(message.Text, "@"+bot.Self.UserName)
 }
 
-// Send will send a Chattable item to Telegram.
+// Send will send a Sendable item to Telegram.
 //
-// It requires the Chattable to send.
-func (bot *BotAPI) Send(c Chattable) (Message, error) {
+// It requires the Sendable to send.
+func (bot *BotAPI) Send(c Sendable) (Message, error) {
 	switch t := c.(type) {
 	case Fileable:
 		return bot.sendFile(t)
@@ -390,20 +392,20 @@ func (bot *BotAPI) uploadAndSend(method string, config Fileable) (Message, error
 // a new file, then sends it as needed.
 func (bot *BotAPI) sendFile(config Fileable) (Message, error) {
 	if config.useExistingFile() {
-		return bot.sendExisting(config.method(), config)
+		return bot.sendExisting(config.TelegramMethod(), config)
 	}
 
-	return bot.uploadAndSend(config.method(), config)
+	return bot.uploadAndSend(config.TelegramMethod(), config)
 }
 
-// sendChattable sends a Chattable.
-func (bot *BotAPI) sendChattable(config Chattable) (Message, error) {
+// sendChattable sends a Sendable.
+func (bot *BotAPI) sendChattable(config Sendable) (Message, error) {
 	v, err := config.Values()
 	if err != nil {
 		return Message{}, err
 	}
 
-	return bot.makeMessageRequest(config.method(), v)
+	return bot.makeMessageRequest(config.TelegramMethod(), v)
 }
 
 // GetUserProfilePhotos gets a user's profile photos.
@@ -496,7 +498,7 @@ func (bot *BotAPI) GetUpdates(config *UpdateConfig) ([]Update, error) {
 
 // RemoveWebhook unsets the webhook.
 func (bot *BotAPI) RemoveWebhook() (APIResponse, error) {
-	return bot.MakeRequest("setWebhook", url.Values{})
+	return bot.MakeRequest("removeWebhook", url.Values{})
 }
 
 // SetWebhook sets a webhook.
@@ -648,4 +650,39 @@ func (bot *BotAPI) UnbanChatMember(config ChatMemberConfig) (APIResponse, error)
 	bot.debugLog("unbanChatMember", v, nil)
 
 	return bot.MakeRequest("unbanChatMember", v)
+}
+
+func (bot *BotAPI) SetDescription(config SetMyDescription) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+func (bot *BotAPI) SetShortDescription(config SetMyShortDescription) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+func (bot *BotAPI) SetCommands(config SetMyCommandsConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+func (bot *BotAPI) GetCommands(ctx context.Context, config GetMyCommandsConfig) (commands []TelegramBotCommand, err error) {
+	err = bot.SendCustomMessage(ctx, config, &commands)
+	return
+}
+
+func (bot *BotAPI) SendCustomMessage(ctx context.Context, config Sendable, result any) (err error) {
+	var values url.Values
+	if values, err = config.Values(); err != nil {
+		return
+	}
+	telegramMethod := config.TelegramMethod()
+	var apiResponse APIResponse
+	apiResponse, err = bot.MakeRequest(telegramMethod, values)
+	if err != nil {
+		return
+	}
+	if err = ffjson.Unmarshal(apiResponse.Result, &result); err != nil {
+		err = fmt.Errorf("failed to unmarshal telegram response to type %T: %s: %w", result, string(apiResponse.Result), err)
+		return
+	}
+	return
 }

@@ -6,7 +6,7 @@ import (
 )
 
 // ReplyToResponse replies to response
-func ReplyToResponse(chattable Chattable, w http.ResponseWriter) (string, error) {
+func ReplyToResponse(chattable Sendable, w http.ResponseWriter) (string, error) {
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 
 	values, err := chattable.Values()
@@ -15,7 +15,7 @@ func ReplyToResponse(chattable Chattable, w http.ResponseWriter) (string, error)
 		return "", err
 	}
 
-	s := fmt.Sprintf("method=%v&%v", chattable.method(), values.Encode())
+	s := fmt.Sprintf("TelegramMethod=%v&%v", chattable.TelegramMethod(), values.Encode())
 
 	_, err = w.Write([]byte(s))
 

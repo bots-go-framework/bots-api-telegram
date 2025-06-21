@@ -91,15 +91,19 @@ var (
 	ErrBadURL = errors.New("bad or empty URL")
 )
 
-// Chattable is any config type that can be sent.
-type Chattable interface {
-	Values() (url.Values, error)
-	method() string
+type WithValues interface {
+	Values() (values url.Values, err error)
+}
+
+// Sendable is any config type that can be sent to an endpoint returned by BotEndpoint().
+type Sendable interface {
+	WithValues
+	TelegramMethod() string
 }
 
 // Fileable is any config type that can be sent that includes a file.
 type Fileable interface {
-	Chattable
+	Sendable
 	params() (map[string]string, error)
 	name() string
 	getFile() interface{}
@@ -330,7 +334,7 @@ func (v MessageConfig) Values() (url.Values, error) {
 // method returns Telegram API method name for sending Message.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (v MessageConfig) method() string {
+func (v MessageConfig) TelegramMethod() string {
 	return "sendMessage"
 }
 
@@ -355,7 +359,7 @@ func (v ForwardConfig) Values() (url.Values, error) {
 // method returns Telegram API method name for sending Forward.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (v ForwardConfig) method() string {
+func (v ForwardConfig) TelegramMethod() string {
 	return "forwardMessage"
 }
 
@@ -377,7 +381,7 @@ type LeaveChatConfig struct {
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (LeaveChatConfig) method() string {
+func (LeaveChatConfig) TelegramMethod() string {
 	return "leaveChat"
 }
 
@@ -387,7 +391,7 @@ type ExportChatInviteLink struct {
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (ExportChatInviteLink) method() string {
+func (ExportChatInviteLink) TelegramMethod() string {
 	return "exportChatInviteLink"
 }
 
@@ -436,7 +440,7 @@ func (v PhotoConfig) name() string {
 // method returns Telegram API method name for sending Photo.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (v PhotoConfig) method() string {
+func (v PhotoConfig) TelegramMethod() string {
 	return "sendPhoto"
 }
 
@@ -499,7 +503,7 @@ func (j AudioConfig) name() string {
 // method returns Telegram API method name for sending Audio.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (j AudioConfig) method() string {
+func (j AudioConfig) TelegramMethod() string {
 	return "sendAudio"
 }
 
@@ -538,7 +542,7 @@ func (v DocumentConfig) name() string {
 // method returns Telegram API method name for sending Document.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (v DocumentConfig) method() string {
+func (v DocumentConfig) TelegramMethod() string {
 	return "sendDocument"
 }
 
@@ -577,7 +581,7 @@ func (v StickerConfig) name() string {
 // method returns Telegram API method name for sending Sticker.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (v StickerConfig) method() string {
+func (v StickerConfig) TelegramMethod() string {
 	return "sendSticker"
 }
 
@@ -624,7 +628,7 @@ func (v VideoConfig) name() string {
 // method returns Telegram API method name for sending Video.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (v VideoConfig) method() string {
+func (v VideoConfig) TelegramMethod() string {
 	return "sendVideo"
 }
 
@@ -671,7 +675,7 @@ func (v VoiceConfig) name() string {
 // method returns Telegram API method name for sending Voice.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (v VoiceConfig) method() string {
+func (v VoiceConfig) TelegramMethod() string {
 	return "sendVoice"
 }
 
@@ -697,7 +701,7 @@ func (j LocationConfig) Values() (url.Values, error) {
 // method returns Telegram API method name for sending Location.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (j LocationConfig) method() string {
+func (j LocationConfig) TelegramMethod() string {
 	return "sendLocation"
 }
 
@@ -729,7 +733,7 @@ func (v VenueConfig) Values() (url.Values, error) {
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (v VenueConfig) method() string {
+func (v VenueConfig) TelegramMethod() string {
 	return "sendVenue"
 }
 
@@ -755,7 +759,7 @@ func (j ContactConfig) Values() (url.Values, error) {
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (j ContactConfig) method() string {
+func (j ContactConfig) TelegramMethod() string {
 	return "sendContact"
 }
 
@@ -777,7 +781,7 @@ func (config ChatActionConfig) Values() (url.Values, error) {
 // method returns Telegram API method name for sending ChatAction.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (config ChatActionConfig) method() string {
+func (config ChatActionConfig) TelegramMethod() string {
 	return "sendChatAction"
 }
 
@@ -787,7 +791,7 @@ func (config ChatActionConfig) method() string {
 type DeleteMessage chatEdit
 
 //goland:noinspection GoMixedReceiverTypes
-func (*DeleteMessage) method() string {
+func (*DeleteMessage) TelegramMethod() string {
 	return "deleteMessage"
 }
 
@@ -801,7 +805,7 @@ func (m DeleteMessage) Values() (url.Values, error) {
 	}, nil
 }
 
-var _ Chattable = (*DeleteMessage)(nil)
+var _ Sendable = (*DeleteMessage)(nil)
 
 // EditMessageTextConfig allows you to modify the text in a message.
 type EditMessageTextConfig struct {
@@ -829,7 +833,7 @@ func (j EditMessageTextConfig) Values() (url.Values, error) {
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (j EditMessageTextConfig) method() string {
+func (j EditMessageTextConfig) TelegramMethod() string {
 	return "editMessageText"
 }
 
@@ -851,7 +855,7 @@ func (j EditMessageCaptionConfig) Values() (url.Values, error) {
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (j EditMessageCaptionConfig) method() string {
+func (j EditMessageCaptionConfig) TelegramMethod() string {
 	return "editMessageCaption"
 }
 
@@ -869,7 +873,7 @@ func (config EditMessageReplyMarkupConfig) Values() (url.Values, error) {
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (config EditMessageReplyMarkupConfig) method() string {
+func (config EditMessageReplyMarkupConfig) TelegramMethod() string {
 	return "editMessageReplyMarkup"
 }
 
@@ -910,10 +914,12 @@ type WebhookConfig struct {
 	// Defaults to 40. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
 	MaxConnections int `json:"max_connections,omitempty"`
 
-	// AllowedUpdates - A JSON-serialized list of the update types you want your bot to receive.
-	// For example, specify [“message”, “edited_channel_post”, “callback_query”] to only receive updates of these types.
+	// AllowedUpdates - Optional
+	// A JSON-serialized list of the update types you want your bot to receive.
+	// For example, specify ["message", "edited_channel_post", "callback_query"] to only receive updates of these types.
 	// See Update for a complete list of available update types.
-	// Specify an empty list to receive all update types except chat_member (default).
+	// Specify an empty list to receive all update types except:
+	//	 chat_member, message_reaction, and message_reaction_count (default).
 	// If not specified, the previous setting will be used.
 	// Please note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.
 	AllowedUpdates []string `json:"allowed_updates,omitempty"`
@@ -992,10 +998,10 @@ type AnswerCallbackQueryConfig struct {
 	CacheTime       int    `json:"cache_time,omitempty"`
 }
 
-var _ Chattable = (*AnswerCallbackQueryConfig)(nil)
+var _ Sendable = (*AnswerCallbackQueryConfig)(nil)
 
 //goland:noinspection GoMixedReceiverTypes
-func (j AnswerCallbackQueryConfig) method() string {
+func (j AnswerCallbackQueryConfig) TelegramMethod() string {
 	return "answerCallbackQuery"
 }
 

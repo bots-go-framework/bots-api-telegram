@@ -442,7 +442,7 @@ type ReplyKeyboardHide struct {
 }
 
 // KeyboardType returns KeyboardTypeHide
-func (_ *ReplyKeyboardHide) KeyboardType() botsgocore.KeyboardType {
+func (*ReplyKeyboardHide) KeyboardType() botsgocore.KeyboardType {
 	return botsgocore.KeyboardTypeHide
 }
 
@@ -524,7 +524,7 @@ type InlineKeyboardButton struct {
 	CallbackData string `json:"callback_data,omitempty"`
 
 	// Optional. Description of the Web App that will be launched when the user presses the button.
-	// The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery.
+	// The Web App will be able to send an arbitrary message on behalf of the user using the TelegramMethod answerWebAppQuery.
 	// Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
 	WebApp *WebAppInfo `json:"web_app,omitempty"`
 

@@ -1,6 +1,7 @@
 package tgbotapi
 
-type payment struct {
+// Payment due to limitations of FFJSON can't be unexported.
+type Payment struct {
 	// Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
 	Currency string `json:"currency"`
 
@@ -10,9 +11,9 @@ type payment struct {
 	// Bot-specified invoice payload
 	InvoicePayload string `json:"invoice_payload"`
 
-	// Telegram payment identifier
+	// Telegram Payment identifier
 	TelegramPaymentChargeID string `json:"telegram_payment_charge_id"`
 
-	// Provider payment identifier
+	// Provider Payment identifier
 	ProviderPaymentChargeID string `json:"provider_payment_charge_id,omitempty"`
 }

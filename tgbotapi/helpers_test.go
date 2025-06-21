@@ -105,8 +105,8 @@ func TestNewEditMessageText(t *testing.T) {
 	edit := NewEditMessageText(ChatID, ReplyToMessageID, "", "new text")
 
 	if edit.Text != "new text" ||
-		edit.BaseEdit.ChatID != ChatID ||
-		edit.BaseEdit.MessageID != ReplyToMessageID {
+		edit.ChatID != ChatID ||
+		edit.MessageID != ReplyToMessageID {
 		t.Fail()
 	}
 }
@@ -115,8 +115,8 @@ func TestNewEditMessageCaption(t *testing.T) {
 	edit := NewEditMessageCaption(ChatID, ReplyToMessageID, "new caption")
 
 	if edit.Caption != "new caption" ||
-		edit.BaseEdit.ChatID != ChatID ||
-		edit.BaseEdit.MessageID != ReplyToMessageID {
+		edit.ChatID != ChatID ||
+		edit.MessageID != ReplyToMessageID {
 		t.Fail()
 	}
 }
@@ -133,8 +133,8 @@ func TestNewEditMessageReplyMarkup(t *testing.T) {
 	edit := NewEditMessageReplyMarkup(ChatID, ReplyToMessageID, "", &markup)
 
 	if edit.ReplyMarkup.InlineKeyboard[0][0].Text != "test" ||
-		edit.BaseEdit.ChatID != ChatID ||
-		edit.BaseEdit.MessageID != ReplyToMessageID {
+		edit.ChatID != ChatID ||
+		edit.MessageID != ReplyToMessageID {
 		t.Fail()
 	}
 

@@ -17,7 +17,7 @@ type InlineQueryResultsButton struct {
 	Text string `json:"text,omitempty"`
 
 	// Optional. Description of the Web App that will be launched when the user presses the button.
-	// The Web App will be able to switch back to the inline mode using the method switchInlineQuery inside the Web App.
+	// The Web App will be able to switch back to the inline mode using the TelegramMethod switchInlineQuery inside the Web App.
 	WebApp *WebAppInfo `json:"url,omitempty"`
 
 	// Optional. Deep-linking parameter for the /start message sent to the bot when a user presses the button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.
@@ -65,7 +65,7 @@ type InlineConfig struct {
 }
 
 //goland:noinspection GoMixedReceiverTypes
-func (config InlineConfig) method() string {
+func (config InlineConfig) TelegramMethod() string {
 	return "answerInlineQuery"
 }
 
