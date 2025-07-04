@@ -3,7 +3,6 @@ package tgbotapi
 import (
 	"errors"
 	"fmt"
-	"github.com/pquerna/ffjson/ffjson"
 	"net/url"
 )
 
@@ -84,7 +83,7 @@ func (s SetMyCommandsConfig) Values() (values url.Values, err error) {
 	}
 	if len(s.Commands) > 0 {
 		var b []byte
-		if b, err = ffjson.Marshal(s.Commands); err != nil {
+		if b, err = encodeToJson(s.Commands); err != nil {
 			err = fmt.Errorf("failed to serialize commands to JSON: %w", err)
 			return
 		}

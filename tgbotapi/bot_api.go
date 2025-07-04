@@ -5,9 +5,9 @@ package tgbotapi
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pquerna/ffjson/ffjson"
 	"github.com/strongo/logus"
 	"github.com/technoweenie/multipartstreamer"
 	"io"
@@ -130,7 +130,7 @@ func (bot *BotAPI) MakeRequest(telegramMethod string, params url.Values) (apiRes
 		}
 	}
 
-	if err = ffjson.Unmarshal(apiResp.Result, &apiResp); err != nil {
+	if err = json.Unmarshal(apiResp.Result, &apiResp); err != nil {
 		logRequestAndResponse()
 		return apiResp, fmt.Errorf("telegram API returned non JSON response or unknown JSON: %w:\n%s", err, string(apiResp.Result))
 	} else if !apiResp.Ok {
@@ -162,7 +162,7 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 	}
 
 	if string(resp.Result) != "true" { // TODO: This is a workaround for "answerCallbackQuery" that returns just "true".
-		if err = ffjson.Unmarshal(resp.Result, &message); err != nil {
+		if err = json.Unmarshal(resp.Result, &message); err != nil {
 			return message, fmt.Errorf("failed to call json.Unmarshal(s): %w: s=%s", err, string(resp.Result))
 		}
 	}
@@ -255,7 +255,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 		logus.Debugf(bot.c, string(body))
 	}
 
-	if err = ffjson.Unmarshal(body, &apiResp); err != nil {
+	if err = json.Unmarshal(body, &apiResp); err != nil {
 		return
 	}
 
@@ -292,7 +292,7 @@ func (bot *BotAPI) GetMe() (User, error) {
 		return user, err
 	}
 
-	if err = ffjson.Unmarshal(resp.Result, &user); err != nil {
+	if err = json.Unmarshal(resp.Result, &user); err != nil {
 		return user, err
 	}
 
@@ -309,7 +309,7 @@ func (bot *BotAPI) GetChat(chatID string) (Chat, error) {
 		return chat, err
 	}
 
-	if err = ffjson.Unmarshal(resp.Result, &chat); err != nil {
+	if err = json.Unmarshal(resp.Result, &chat); err != nil {
 		return chat, err
 	}
 
@@ -379,7 +379,7 @@ func (bot *BotAPI) uploadAndSend(method string, config Fileable) (Message, error
 		return message, err
 	}
 
-	if err = ffjson.Unmarshal(resp.Result, &message); err != nil {
+	if err = json.Unmarshal(resp.Result, &message); err != nil {
 		return message, err
 	}
 
@@ -429,7 +429,7 @@ func (bot *BotAPI) GetUserProfilePhotos(config UserProfilePhotosConfig) (UserPro
 		return profilePhotos, err
 	}
 
-	if err = ffjson.Unmarshal(resp.Result, &profilePhotos); err != nil {
+	if err = json.Unmarshal(resp.Result, &profilePhotos); err != nil {
 		return profilePhotos, err
 	}
 
@@ -452,7 +452,7 @@ func (bot *BotAPI) GetFile(config FileConfig) (File, error) {
 		return file, err
 	}
 
-	if err = ffjson.Unmarshal(resp.Result, &file); err != nil {
+	if err = json.Unmarshal(resp.Result, &file); err != nil {
 		return file, err
 	}
 
@@ -487,7 +487,7 @@ func (bot *BotAPI) GetUpdates(config *UpdateConfig) ([]Update, error) {
 		return updates, err
 	}
 
-	if err = ffjson.Unmarshal(resp.Result, &updates); err != nil {
+	if err = json.Unmarshal(resp.Result, &updates); err != nil {
 		return updates, err
 	}
 
@@ -520,7 +520,7 @@ func (bot *BotAPI) SetWebhook(config WebhookConfig) (APIResponse, error) {
 			return apiResp, err
 		}
 
-		if err = ffjson.Unmarshal(resp.Result, &apiResp); err != nil {
+		if err = json.Unmarshal(resp.Result, &apiResp); err != nil {
 			return apiResp, err
 		}
 
@@ -567,7 +567,7 @@ func (bot *BotAPI) ListenForWebhook(pattern string) <-chan Update {
 		body, _ := io.ReadAll(r.Body)
 
 		var update Update
-		if err := ffjson.Unmarshal(body, &update); err != nil {
+		if err := json.Unmarshal(body, &update); err != nil {
 			logus.Errorf(context.Background(), fmt.Errorf("failed to unmarshal update JSON: %w", err).Error())
 			return
 		}
@@ -595,22 +595,18 @@ func (bot *BotAPI) AnswerInlineQuery(config InlineConfig) (APIResponse, error) {
 		v.Add("next_offset", config.NextOffset)
 	}
 
-	data, err := ffjson.Marshal(config.Results)
+	data, err := encodeToJson(config.Results)
 	if err != nil {
-		ffjson.Pool(data)
 		return APIResponse{}, err
 	}
 	v.Add("results", string(data))
 
 	if config.Button != nil {
-		if data, err = ffjson.Marshal(config.Button); err != nil {
-			ffjson.Pool(data)
+		if data, err = encodeToJson(config.Button); err != nil {
 			return APIResponse{}, err
 		}
 		v.Add("button", string(data))
 	}
-
-	ffjson.Pool(data)
 
 	bot.debugLog("answerInlineQuery", v, nil)
 
@@ -680,7 +676,7 @@ func (bot *BotAPI) SendCustomMessage(ctx context.Context, config Sendable, resul
 	if err != nil {
 		return
 	}
-	if err = ffjson.Unmarshal(apiResponse.Result, &result); err != nil {
+	if err = json.Unmarshal(apiResponse.Result, &result); err != nil {
 		err = fmt.Errorf("failed to unmarshal telegram response to type %T: %s: %w", result, string(apiResponse.Result), err)
 		return
 	}

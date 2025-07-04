@@ -1,13 +1,13 @@
 package tgbotapi
 
 import (
-	"github.com/pquerna/ffjson/ffjson"
+	"encoding/json"
 	"testing"
 )
 
 func TestSuccessfulPayment_UnmarshalJSON(t *testing.T) {
 
-	json := `{
+	jsonStr := `{
             "currency": "XTR",
             "total_amount": 2,
             "invoice_payload": "topped_up",
@@ -17,7 +17,7 @@ func TestSuccessfulPayment_UnmarshalJSON(t *testing.T) {
         }`
 
 	v := SuccessfulPayment{}
-	if err := ffjson.Unmarshal([]byte(json), &v); err != nil {
+	if err := json.Unmarshal([]byte(jsonStr), &v); err != nil {
 		t.Fatal(err)
 	}
 	if !v.IsRecurring {

@@ -4,7 +4,6 @@ package tgbotapi
 
 import (
 	"errors"
-	"github.com/pquerna/ffjson/ffjson"
 	"net/url"
 	"strconv"
 )
@@ -98,14 +97,11 @@ func (config InlineConfig) Values() (url.Values, error) {
 	//	v.Add("switch_pm_parameter", config.SwitchPMParameter)
 	//}
 
-	data, err := ffjson.Marshal(config.Results)
+	data, err := encodeToJson(config.Results)
 	if err != nil {
-		ffjson.Pool(data)
 		return v, err
 	}
 	v.Add("results", string(data))
-	ffjson.Pool(data)
-
 	return v, nil
 }
 

@@ -11,14 +11,14 @@ type CreateInvoiceLinkConfig struct {
 	BusinessConnectionID string `json:"business_connection_id,omitempty"`
 }
 
-func (v CreateInvoiceLinkConfig) TelegramMethod() string {
+func (*CreateInvoiceLinkConfig) TelegramMethod() string {
 	return "createInvoiceLink"
 }
 
 // Values returns url.Values representation of InvoiceConfig.
 //
 //goland:noinspection GoMixedReceiverTypes
-func (v CreateInvoiceLinkConfig) Values() (url.Values, error) {
+func (v *CreateInvoiceLinkConfig) Values() (url.Values, error) {
 	values, _ := v.BaseChat.Values()
 	if v.BusinessConnectionID != "" {
 		values.Add("business_connection_id", v.BusinessConnectionID)

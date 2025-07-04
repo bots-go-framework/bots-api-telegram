@@ -5,7 +5,6 @@ package tgbotapi
 import (
 	"errors"
 	"fmt"
-	"github.com/pquerna/ffjson/ffjson"
 	"io"
 	"net/url"
 	"strconv"
@@ -126,6 +125,8 @@ type BaseChat struct {
 	AllowPaidBroadcast bool   `json:"allow_paid_broadcast,omitempty"` // Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
 
 	ReplyParameters *ReplyParameters `json:"reply_parameters,omitempty"` // Description of the message to reply to
+
+	BusinessConnectionID string `json:"business_connection_id,omitempty"` // Unique identifier of the business connection on behalf of which the message will be sent
 }
 
 // Values returns url.Values representation of BaseChat
@@ -163,9 +164,8 @@ func (j BaseChat) Values() (url.Values, error) {
 	}
 
 	if j.ReplyParameters != nil {
-		data, err := ffjson.Marshal(j.ReplyParameters)
+		data, err := encodeToJson(j.ReplyParameters)
 		if err != nil {
-			ffjson.Pool(data)
 			return values, err
 		}
 		if string(data) == "null" {
@@ -173,13 +173,11 @@ func (j BaseChat) Values() (url.Values, error) {
 		}
 
 		values.Add("reply_parameters", string(data))
-		ffjson.Pool(data)
 	}
 
 	if j.ReplyMarkup != nil {
-		data, err := ffjson.Marshal(j.ReplyMarkup)
+		data, err := encodeToJson(j.ReplyMarkup)
 		if err != nil {
-			ffjson.Pool(data)
 			return values, err
 		}
 		if string(data) == "null" {
@@ -187,7 +185,6 @@ func (j BaseChat) Values() (url.Values, error) {
 		}
 
 		values.Add("reply_markup", string(data))
-		ffjson.Pool(data)
 	}
 
 	values.Add("disable_notification", strconv.FormatBool(j.DisableNotification))
@@ -222,14 +219,12 @@ func (file BaseFile) params() (map[string]string, error) {
 	}
 
 	if file.ReplyMarkup != nil {
-		data, err := ffjson.Marshal(file.ReplyMarkup)
+		data, err := encodeToJson(file.ReplyMarkup)
 		if err != nil {
-			ffjson.Pool(data)
 			return params, err
 		}
 
 		params["reply_markup"] = string(data)
-		ffjson.Pool(data)
 	}
 
 	if file.MimeType != "" {
@@ -297,13 +292,11 @@ func (v BaseEdit) Values() (url.Values, error) {
 	}
 
 	if v.ReplyMarkup != nil {
-		data, err := ffjson.Marshal(v.ReplyMarkup)
+		data, err := encodeToJson(v.ReplyMarkup)
 		if err != nil {
-			ffjson.Pool(data)
 			return values, err
 		}
 		values.Add("reply_markup", string(data))
-		ffjson.Pool(data)
 	}
 
 	return values, nil
@@ -397,52 +390,6 @@ func (ExportChatInviteLink) TelegramMethod() string {
 
 // ErrNoChatID is error when chat_id is missing
 var ErrNoChatID = errors.New("missing chat_id")
-
-// PhotoConfig contains information about a SendPhoto request.
-type PhotoConfig struct {
-	BaseFile
-	Caption string
-}
-
-// Params returns a map[string]string representation of PhotoConfig.
-//
-//goland:noinspection GoMixedReceiverTypes
-func (v PhotoConfig) params() (map[string]string, error) {
-	params, _ := v.BaseFile.params()
-
-	if v.Caption != "" {
-		params["caption"] = v.Caption
-	}
-
-	return params, nil
-}
-
-// Values returns url.Values representation of PhotoConfig.
-//
-//goland:noinspection GoMixedReceiverTypes
-func (v PhotoConfig) Values() (url.Values, error) {
-	values, _ := v.BaseChat.Values()
-
-	values.Add(v.name(), v.FileID)
-	if v.Caption != "" {
-		values.Add("caption", v.Caption)
-	}
-	return values, nil
-}
-
-// name returns the field name for the Photo.
-//
-//goland:noinspection GoMixedReceiverTypes
-func (v PhotoConfig) name() string {
-	return "photo"
-}
-
-// method returns Telegram API method name for sending Photo.
-//
-//goland:noinspection GoMixedReceiverTypes
-func (v PhotoConfig) TelegramMethod() string {
-	return "sendPhoto"
-}
 
 // AudioConfig contains information about a SendAudio request.
 type AudioConfig struct {

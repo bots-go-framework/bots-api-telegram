@@ -2,7 +2,6 @@ package tgbotapi
 
 import (
 	"fmt"
-	"github.com/pquerna/ffjson/ffjson"
 	"net/url"
 )
 
@@ -56,7 +55,7 @@ func (v *InvoiceConfig) Values() (url.Values, error) {
 		values.Add("provider_token", v.ProviderToken)
 	}
 	if len(v.Prices) > 0 {
-		if b, err := ffjson.Marshal(v.Prices); err != nil {
+		if b, err := encodeToJson(v.Prices); err != nil {
 			return nil, fmt.Errorf("failed to marshal invoice prices as JSON: %v", err)
 		} else {
 			values.Add("prices", string(b))

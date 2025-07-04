@@ -49,13 +49,7 @@ func NewForward(chatID int64, fromChatID int64, messageID int) *ForwardConfig {
 //
 // Note that you must send animated GIFs as a document.
 func NewPhotoUpload(chatID int64, file interface{}) *PhotoConfig {
-	return &PhotoConfig{
-		BaseFile: BaseFile{
-			BaseChat:    BaseChat{ChatID: chatID},
-			File:        file,
-			UseExisting: false,
-		},
-	}
+	panic("not implemented yet")
 }
 
 // NewPhotoShare shares an existing photo.
@@ -63,13 +57,10 @@ func NewPhotoUpload(chatID int64, file interface{}) *PhotoConfig {
 //
 // chatID is where to send it, fileID is the ID of the file
 // already uploaded.
-func NewPhotoShare(chatID int64, fileID string) *PhotoConfig {
+func NewPhotoShare(chatID int64, fileID FileID) *PhotoConfig {
 	return &PhotoConfig{
-		BaseFile: BaseFile{
-			BaseChat:    BaseChat{ChatID: chatID},
-			FileID:      fileID,
-			UseExisting: true,
-		},
+		BaseChat: BaseChat{ChatID: chatID},
+		Photo:    fileID,
 	}
 }
 
