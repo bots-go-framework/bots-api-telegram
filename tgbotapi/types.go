@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	botsgocore "github.com/bots-go-framework/bots-go-core"
+	"github.com/bots-go-framework/bots-go-core/botkb"
 	"net/url"
 	"strconv"
 	"strings"
@@ -304,11 +304,11 @@ type ReplyKeyboardMarkup struct {
 }
 
 // KeyboardType returns KeyboardTypeBottom
-func (*ReplyKeyboardMarkup) KeyboardType() botsgocore.KeyboardType {
-	return botsgocore.KeyboardTypeBottom
+func (*ReplyKeyboardMarkup) KeyboardType() botkb.KeyboardType {
+	return botkb.KeyboardTypeBottom
 }
 
-var _ botsgocore.Keyboard = (*ReplyKeyboardMarkup)(nil)
+var _ botkb.Keyboard = (*ReplyKeyboardMarkup)(nil)
 
 // KeyboardButtonRequestUsers represents a request from the bot to send users
 // https://core.telegram.org/bots/api#keyboardbuttonrequestusers
@@ -442,11 +442,11 @@ type ReplyKeyboardHide struct {
 }
 
 // KeyboardType returns KeyboardTypeHide
-func (*ReplyKeyboardHide) KeyboardType() botsgocore.KeyboardType {
-	return botsgocore.KeyboardTypeHide
+func (*ReplyKeyboardHide) KeyboardType() botkb.KeyboardType {
+	return botkb.KeyboardTypeHide
 }
 
-var _ botsgocore.Keyboard = (*ReplyKeyboardHide)(nil)
+var _ botkb.Keyboard = (*ReplyKeyboardHide)(nil)
 
 // InlineKeyboardMarkup is a custom keyboard presented for an inline bot.
 type InlineKeyboardMarkup struct {
@@ -465,11 +465,11 @@ func (v *InlineKeyboardMarkup) Validate() error {
 }
 
 // KeyboardType returns KeyboardTypeInline
-func (*InlineKeyboardMarkup) KeyboardType() botsgocore.KeyboardType {
-	return botsgocore.KeyboardTypeInline
+func (*InlineKeyboardMarkup) KeyboardType() botkb.KeyboardType {
+	return botkb.KeyboardTypeInline
 }
 
-var _ botsgocore.Keyboard = (*InlineKeyboardMarkup)(nil)
+var _ botkb.Keyboard = (*InlineKeyboardMarkup)(nil)
 
 // LoginUrl represents a parameter of the inline keyboard button used to automatically authorize a user.
 // https://core.telegram.org/bots/api#loginurl
@@ -676,11 +676,11 @@ type ForceReply struct {
 }
 
 // KeyboardType returns KeyboardTypeForceReply
-func (ForceReply) KeyboardType() botsgocore.KeyboardType {
-	return botsgocore.KeyboardTypeForceReply
+func (ForceReply) KeyboardType() botkb.KeyboardType {
+	return botkb.KeyboardTypeForceReply
 }
 
-var _ botsgocore.Keyboard = (*ForceReply)(nil)
+var _ botkb.Keyboard = (*ForceReply)(nil)
 
 // ChosenInlineResult is an inline query result chosen by a User
 type ChosenInlineResult struct {
