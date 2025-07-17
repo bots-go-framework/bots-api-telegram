@@ -3,6 +3,7 @@ package tgbotapi
 //go:generate ffjson $GOFILE
 
 import (
+	"strconv"
 	"strings"
 	"time"
 )
@@ -93,6 +94,10 @@ type Message struct {
 
 	Gift       *GiftInfo       `json:"gift,omitempty"`
 	UniqueGift *UniqueGiftInfo `json:"unique_gift,omitempty"`
+}
+
+func (m *Message) GetMessageID() string {
+	return strconv.Itoa(m.MessageID)
 }
 
 // Time converts the message timestamp into a Time.

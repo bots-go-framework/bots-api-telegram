@@ -111,11 +111,11 @@ type Fileable interface {
 
 // BaseChat is a base type for all chat config types.
 type BaseChat struct {
-	ChatID              int64       `json:"chat_id,omitempty"`
-	ChannelUsername     string      `json:"channel_username,omitempty"`
-	ReplyToMessageID    int         `json:"reply_to_message_id,omitempty"`
-	ReplyMarkup         interface{} `json:"reply_markup,omitempty"`
-	DisableNotification bool        `json:"disable_notification,omitempty"`
+	ChatID              int64  `json:"chat_id,omitempty"`
+	ChannelUsername     string `json:"channel_username,omitempty"`
+	ReplyToMessageID    int    `json:"reply_to_message_id,omitempty"`
+	ReplyMarkup         any    `json:"reply_markup,omitempty"`
+	DisableNotification bool   `json:"disable_notification,omitempty"`
 
 	ProtectContent bool `json:"protect_content,omitempty"` // Protects the contents of the sent message from forwarding and saving
 
