@@ -435,8 +435,8 @@ type KeyboardButton struct {
 	Text            string                      `json:"text"`
 	RequestUsers    *KeyboardButtonRequestUsers `json:"request_users,omitempty"`
 	RequestChat     *KeyboardButtonRequestChat  `json:"request_chat,omitempty"`
-	RequestContact  bool                        `json:"request_contact"`
-	RequestLocation bool                        `json:"request_location"`
+	RequestContact  bool                        `json:"request_contact,omitempty"`
+	RequestLocation bool                        `json:"request_location,omitempty"`
 	RequestPoll     *KeyboardButtonPollType     `json:"request_poll,omitempty"`
 	Webapp          *WebAppInfo                 `json:"web_app,omitempty"`
 }
