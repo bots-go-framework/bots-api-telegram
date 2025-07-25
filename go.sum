@@ -4,6 +4,8 @@ github.com/bots-go-framework/bots-go-core v0.2.1 h1:LN2575Fv+441LSQWae+R8nZzt1Jb
 github.com/bots-go-framework/bots-go-core v0.2.1/go.mod h1:XCn9z4TI8sbgwyus+VDzw7iMY2QCPWEAvl23GMDjeEU=
 github.com/bots-go-framework/bots-go-core v0.2.2 h1:9Wi8L4Y1sCpHiYAVejgXkwrezwk2r2yIF9I3IG3iJzc=
 github.com/bots-go-framework/bots-go-core v0.2.2/go.mod h1:XCn9z4TI8sbgwyus+VDzw7iMY2QCPWEAvl23GMDjeEU=
+github.com/bots-go-framework/bots-go-core v0.2.3 h1:wqdeyDJ+f+3W0RyFu7h46dkHoXoa74mOltmCM6W0tQc=
+github.com/bots-go-framework/bots-go-core v0.2.3/go.mod h1:XCn9z4TI8sbgwyus+VDzw7iMY2QCPWEAvl23GMDjeEU=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
