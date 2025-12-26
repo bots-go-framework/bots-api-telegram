@@ -29,6 +29,8 @@ github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/strongo/logus v0.2.1 h1:ZzAtdSg6PPF1Y43WbNWl7MH1XYl7kvKMxyxv/lpbadI=
 github.com/strongo/logus v0.2.1/go.mod h1:sd8gjJklqGQAg+Q0mlP5MWgzguAuxR25YYFSkfVOPdc=
+github.com/strongo/logus v0.4.0 h1:EdwNafWX1eGWvPqMvu3gHVqXtBOUvV9KWbxm6tCU+dU=
+github.com/strongo/logus v0.4.0/go.mod h1:sd8gjJklqGQAg+Q0mlP5MWgzguAuxR25YYFSkfVOPdc=
 github.com/technoweenie/multipartstreamer v1.0.1 h1:XRztA5MXiR1TIRHxH2uNxXxaIkKQDeX7m2XsSOlQEnM=
 github.com/technoweenie/multipartstreamer v1.0.1/go.mod h1:jNVxdtShOxzAsukZwTSw6MDx5eUJoiEBsSvzDU9uzog=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
