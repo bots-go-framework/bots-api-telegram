@@ -1,113 +1,160 @@
-# Golang bindings for the Telegram Bot API
+# Go bindings for the Telegram Bot API
 
 [![Go CI](https://github.com/bots-go-framework/bots-api-telegram/actions/workflows/ci.yml/badge.svg)](https://github.com/bots-go-framework/bots-api-telegram/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/bots-go-framework/bots-api-telegram)](https://goreportcard.com/report/github.com/bots-go-framework/bots-api-telegram)
-[![GoDoc](https://godoc.org/github.com/bots-go-framework/bots-api-telegram?status.svg)](http://godoc.org/github.com/bots-go-framework/bots-api-telegram)
+[![GoDoc](https://pkg.go.dev/badge/github.com/bots-go-framework/bots-api-telegram)](https://pkg.go.dev/github.com/bots-go-framework/bots-api-telegram)
 
-All methods have been added, and all features should be available.
-If you want a feature that hasn't been added yet or something is broken,
-open an issue and I'll see what I can do.
+Go bindings for the [Telegram Bot API](https://core.telegram.org/bots/api), tracking **Bot API 9.5**.
 
-All methods are fairly self explanatory, and reading the godoc page should
-explain everything. If something isn't clear, open an issue or submit
-a pull request.
+This module also includes sub-packages for [Telegram Login Widget](#tglogin) and [Telegram Web Apps](#tgwebapp).
 
-The scope of this project is just to provide a wrapper around the API
-without any additional features. There are other projects for creating
-something with plugins and command handlers without having to design
-all that yourself.
+## Packages
 
-Use `github.com/go-telegram-bot-api/telegram-bot-api` for the latest
-version, or use `gopkg.in/telegram-bot-api.v1` for the stable build.
+| Package | Import path | Description |
+|---|---|---|
+| `tgbotapi` | `github.com/bots-go-framework/bots-api-telegram/tgbotapi` | Core Bot API types and HTTP client |
+| `tglogin` | `github.com/bots-go-framework/bots-api-telegram/tglogin` | Telegram Login Widget authentication |
+| `tgwebapp` | `github.com/bots-go-framework/bots-api-telegram/tgwebapp` | Telegram Web App (Mini App) init-data validation |
 
-## Example
+## Installation
 
-This is a very simple bot that just displays any gotten updates,
-then replies it to that chat.
+```sh
+go get github.com/bots-go-framework/bots-api-telegram
+```
+
+## Examples
+
+### Long-polling
+
+A minimal bot that echoes every message back to the sender:
 
 ```go
 package main
 
 import (
 	"log"
-	"gopkg.in/telegram-bot-api.v1"
+
+	"github.com/bots-go-framework/bots-api-telegram/tgbotapi"
 )
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI("MyAwesomeBotToken")
-	if err != nil {
-		logus.Panic(err)
-	}
+	bot := tgbotapi.NewBotAPI("MyAwesomeBotToken")
 
-	bot.Debug = true
-
-	logus.Printf("Authorized on account %s", bot.Self.UserName)
+	log.Printf("Authorized on account %s", bot.Self.UserName)
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
 	updates, err := bot.GetUpdatesChan(u)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for update := range updates {
-		logus.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+		if update.Message == nil {
+			continue
+		}
+		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 		msg.ReplyToMessageID = update.Message.MessageID
 
-		bot.Send(msg)
+		if _, err := bot.Send(msg); err != nil {
+			log.Println(err)
+		}
 	}
 }
 ```
 
-If you need to use webhooks (if you wish to run on Google App Engine),
-you may use a slightly different method.
+### Webhook
+
+To receive updates via webhook your server must be reachable over HTTPS.
+Telegram supports ports **443, 80, 88, and 8443**.
 
 ```go
 package main
 
 import (
-	"gopkg.in/telegram-bot-api.v1"
 	"log"
 	"net/http"
+
+	"github.com/bots-go-framework/bots-api-telegram/tgbotapi"
 )
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI("MyAwesomeBotToken")
+	bot := tgbotapi.NewBotAPI("MyAwesomeBotToken")
+
+	log.Printf("Authorized on account %s", bot.Self.UserName)
+
+	_, err := bot.SetWebhook(tgbotapi.NewWebhookWithCert(
+		"https://example.com:8443/"+bot.Token, "cert.pem",
+	))
 	if err != nil {
-		logus.Fatal(err)
+		log.Fatal(err)
 	}
 
-	bot.Debug = true
-
-	logus.Printf("Authorized on account %s", bot.Self.UserName)
-
-	_, err = bot.SetWebhook(tgbotapi.NewWebhookWithCert("https://www.google.com:8443/"+bot.Token, "cert.pem"))
-	if err != nil {
-		logus.Fatal(err)
-	}
-
-	updates, _ := bot.ListenForWebhook("/" + bot.Token)
-	go http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", nil)
+	updates := bot.ListenForWebhook("/" + bot.Token)
+	go func() {
+		if err := http.ListenAndServeTLS("0.0.0.0:8443", "cert.pem", "key.pem", nil); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	for update := range updates {
-		logus.Printf("%+v\n", update)
+		log.Printf("%+v\n", update)
 	}
 }
 ```
 
-If you need, you may generate a self signed certficate, as this requires
-HTTPS / TLS. The above example tells Telegram that this is your
-certificate and that it should be trusted, even though it is not
-properly signed.
+#### Self-signed TLS certificate
 
-    openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 3560 -subj "//O=Org\CN=Test" -nodes
+If you don't have a certificate from a trusted CA (e.g. [Let's Encrypt](https://letsencrypt.org)),
+you can generate a self-signed one. Pass the public certificate to `NewWebhookWithCert` so
+Telegram knows to trust it.
 
-Now that [Let's Encrypt](https://letsencrypt.org) has entered public beta,
-you may wish to generate your free TLS certificate there.
+```sh
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 3650 \
+  -subj "/O=Org/CN=example.com" -nodes
+```
+
+## tglogin
+
+The `tglogin` sub-package validates data received from the
+[Telegram Login Widget](https://core.telegram.org/widgets/login).
+
+```go
+import "github.com/bots-go-framework/bots-api-telegram/tglogin"
+
+user := tglogin.LoginUser{ /* fields from the widget callback */ }
+if user.IsFromTelegram(botToken) {
+    // user data is authentic
+}
+```
+
+See [`tglogin/README.md`](tglogin/README.md) for full details.
+
+## tgwebapp
+
+The `tgwebapp` sub-package validates init data received from a
+[Telegram Web App (Mini App)](https://core.telegram.org/bots/webapps).
+
+```go
+import "github.com/bots-go-framework/bots-api-telegram/tgwebapp"
+
+tgwebapp.AuthenticateTelegramWebApp(w, r,
+    func(bot string) string { return myBotToken },
+    func(initData *tgwebapp.InitData) {
+        // initData is verified and ready to use
+    },
+)
+```
+
+See [`tgwebapp/README.md`](tgwebapp/README.md) for full details.
 
 ## Used by
-This package is used in production by:
-* https://debtstracker.io/ - an app and [Telegram bot](https://t.me/DebtsTrackerBot) to track your personal debts
 
-## Frameworks that utilise this `strongo/db` package
-* [`bots-go-framework`](https://github.com/bots-go-framework) - a framework to build chat bots in Go language.
+- [debtstracker.io](https://debtstracker.io/) — personal debt tracking app with a [Telegram bot](https://t.me/DebtsTrackerBot)
+
+## Related
+
+- [`bots-go-framework`](https://github.com/bots-go-framework) — framework for building Telegram bots in Go
