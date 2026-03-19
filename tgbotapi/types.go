@@ -30,12 +30,46 @@ func (r APIResponse) Error() string {
 }
 
 // User is a user on Telegram.
+// https://core.telegram.org/bots/api#user
 type User struct {
-	ID           int    `json:"id"`
+	// Unique identifier for this user or bot.
+	// It has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe.
+	ID int64 `json:"id"`
+
+	// True, if this user is a bot
+	IsBot bool `json:"is_bot,omitempty"`
+
 	FirstName    string `json:"first_name,omitempty"`
 	LastName     string `json:"last_name,omitempty"`     // optional
 	UserName     string `json:"username,omitempty"`      // optional
 	LanguageCode string `json:"language_code,omitempty"` // optional
+
+	// Optional. True, if this user is a Telegram Premium user
+	IsPremium bool `json:"is_premium,omitempty"`
+
+	// Optional. True, if this user added the bot to the attachment menu
+	AddedToAttachmentMenu bool `json:"added_to_attachment_menu,omitempty"`
+
+	// Optional. True, if the bot can be invited to groups. Returned only in getMe.
+	CanJoinGroups bool `json:"can_join_groups,omitempty"`
+
+	// Optional. True, if privacy mode is disabled for the bot. Returned only in getMe.
+	CanReadAllGroupMessages bool `json:"can_read_all_group_messages,omitempty"`
+
+	// Optional. True, if the bot supports inline queries. Returned only in getMe.
+	SupportsInlineQueries bool `json:"supports_inline_queries,omitempty"`
+
+	// Optional. True, if the bot can be connected to a Telegram Business account. Returned only in getMe.
+	CanConnectToBusiness bool `json:"can_connect_to_business,omitempty"`
+
+	// Optional. True, if the bot has a main Web App. Returned only in getMe.
+	HasMainWebApp bool `json:"has_main_web_app,omitempty"`
+
+	// Optional. True, if the bot has forum topic mode enabled in private chats. Returned only in getMe.
+	HasTopicsEnabled bool `json:"has_topics_enabled,omitempty"`
+
+	// Optional. True, if the bot allows users to create and delete topics in private chats. Returned only in getMe.
+	AllowsUsersToCreateTopics bool `json:"allows_users_to_create_topics,omitempty"`
 }
 
 // ChatMember holds information about chat member
@@ -56,6 +90,11 @@ func (u User) Platform() string {
 
 // GetID returns Telegram user ID
 func (u User) GetID() interface{} {
+	return u.ID
+}
+
+// GetIDInt64 returns Telegram user ID as int64
+func (u User) GetIDInt64() int64 {
 	return u.ID
 }
 
@@ -101,7 +140,7 @@ func (u User) GetFullName() string {
 		return "@" + u.UserName
 	}
 
-	return "#" + strconv.Itoa(u.ID)
+	return "#" + strconv.FormatInt(u.ID, 10)
 }
 
 // GetLanguage returns preferred language of the user
@@ -133,13 +172,20 @@ type GroupChat struct {
 }
 
 // Chat contains information about the place a message was sent.
+// https://core.telegram.org/bots/api#chat
 type Chat struct {
 	ID        int64  `json:"id"`
 	Type      string `json:"type"`
-	Title     string `json:"title"`      // optional
-	UserName  string `json:"username"`   // optional
-	FirstName string `json:"first_name"` // optional
-	LastName  string `json:"last_name"`  // optional
+	Title     string `json:"title,omitempty"`      // optional
+	UserName  string `json:"username,omitempty"`   // optional
+	FirstName string `json:"first_name,omitempty"` // optional
+	LastName  string `json:"last_name,omitempty"`  // optional
+
+	// Optional. True, if the supergroup chat is a forum (has topics enabled)
+	IsForum bool `json:"is_forum,omitempty"`
+
+	// Optional. True, if the chat is the direct messages chat of a channel
+	IsDirectMessages bool `json:"is_direct_messages,omitempty"`
 }
 
 // IsPrivate returns if the Chat is a private conversation.
@@ -163,11 +209,27 @@ func (c *Chat) IsChannel() bool {
 }
 
 // MessageEntity contains information about data in a Message.
+// https://core.telegram.org/bots/api#messageentity
 type MessageEntity struct {
 	Type   string `json:"type"`
 	Offset int    `json:"offset"`
 	Length int    `json:"length"`
 	URL    string `json:"url,omitempty"` // optional
+
+	// Optional. For "text_mention" only, the mentioned user
+	User *User `json:"user,omitempty"`
+
+	// Optional. For "pre" only, the programming language of the entity text
+	Language string `json:"language,omitempty"`
+
+	// Optional. For "custom_emoji" only, unique identifier of the custom emoji
+	CustomEmojiID string `json:"custom_emoji_id,omitempty"`
+
+	// Optional. For "date_time" only, the Unix time associated with the entity
+	UnixTime int `json:"unix_time,omitempty"`
+
+	// Optional. For "date_time" only, the string that defines the formatting of the date and time
+	DateTimeFormat string `json:"date_time_format,omitempty"`
 }
 
 func (entity *MessageEntity) Validate() error {
@@ -193,50 +255,66 @@ func (entity *MessageEntity) ParseURL() (*url.URL, error) {
 }
 
 // Audio contains information about audio.
+// https://core.telegram.org/bots/api#audio
 type Audio struct {
-	FileID    string `json:"file_id"`
-	Duration  int    `json:"duration"`
-	Performer string `json:"performer"` // optional
-	Title     string `json:"title"`     // optional
-	MimeType  string `json:"mime_type"` // optional
-	FileSize  int    `json:"file_size"` // optional
+	FileID       string     `json:"file_id"`
+	FileUniqueID string     `json:"file_unique_id,omitempty"`
+	Duration     int        `json:"duration"`
+	Performer    string     `json:"performer"`           // optional
+	Title        string     `json:"title"`               // optional
+	MimeType     string     `json:"mime_type"`           // optional
+	FileSize     int        `json:"file_size,omitempty"` // optional
+	Thumbnail    *PhotoSize `json:"thumbnail,omitempty"` // optional
 }
 
 // Document contains information about a document.
+// https://core.telegram.org/bots/api#document
 type Document struct {
-	FileID    string     `json:"file_id"`
-	Thumbnail *PhotoSize `json:"thumb,omitempty"`     // optional
-	FileName  string     `json:"file_name,omitempty"` // optional
-	MimeType  string     `json:"mime_type,omitempty"` // optional
-	FileSize  int        `json:"file_size,omitempty"` // optional
+	FileID       string     `json:"file_id"`
+	FileUniqueID string     `json:"file_unique_id,omitempty"`
+	Thumbnail    *PhotoSize `json:"thumbnail,omitempty"` // optional
+	FileName     string     `json:"file_name,omitempty"` // optional
+	MimeType     string     `json:"mime_type,omitempty"` // optional
+	FileSize     int        `json:"file_size,omitempty"` // optional
 }
 
 // Sticker contains information about a sticker.
+// https://core.telegram.org/bots/api#sticker
 type Sticker struct {
-	FileID    string     `json:"file_id"`
-	Width     int        `json:"width"`
-	Height    int        `json:"height"`
-	Thumbnail *PhotoSize `json:"thumb,omitempty"`     // optional
-	FileSize  int        `json:"file_size,omitempty"` // optional
+	FileID       string     `json:"file_id"`
+	FileUniqueID string     `json:"file_unique_id,omitempty"`
+	Type         string     `json:"type,omitempty"`
+	Width        int        `json:"width"`
+	Height       int        `json:"height"`
+	IsAnimated   bool       `json:"is_animated,omitempty"`
+	IsVideo      bool       `json:"is_video,omitempty"`
+	Thumbnail    *PhotoSize `json:"thumbnail,omitempty"` // optional
+	Emoji        string     `json:"emoji,omitempty"`
+	SetName      string     `json:"set_name,omitempty"`
+	FileSize     int        `json:"file_size,omitempty"` // optional
 }
 
 // Video contains information about a video.
+// https://core.telegram.org/bots/api#video
 type Video struct {
-	FileID    string     `json:"file_id"`
-	Width     int        `json:"width"`
-	Height    int        `json:"height"`
-	Duration  int        `json:"duration"`
-	Thumbnail *PhotoSize `json:"thumb,omitempty"`     // optional
-	MimeType  string     `json:"mime_type,omitempty"` // optional
-	FileSize  int        `json:"file_size,omitempty"` // optional
+	FileID       string     `json:"file_id"`
+	FileUniqueID string     `json:"file_unique_id,omitempty"`
+	Width        int        `json:"width"`
+	Height       int        `json:"height"`
+	Duration     int        `json:"duration"`
+	Thumbnail    *PhotoSize `json:"thumbnail,omitempty"` // optional
+	MimeType     string     `json:"mime_type,omitempty"` // optional
+	FileSize     int        `json:"file_size,omitempty"` // optional
 }
 
 // Voice contains information about a voice.
+// https://core.telegram.org/bots/api#voice
 type Voice struct {
-	FileID   string `json:"file_id"`
-	Duration int    `json:"duration"`
-	MimeType string `json:"mime_type,omitempty"` // optional
-	FileSize int    `json:"file_size,omitempty"` // optional
+	FileID       string `json:"file_id"`
+	FileUniqueID string `json:"file_unique_id,omitempty"`
+	Duration     int    `json:"duration"`
+	MimeType     string `json:"mime_type,omitempty"` // optional
+	FileSize     int    `json:"file_size,omitempty"` // optional
 }
 
 // Contact contains information about a contact.
@@ -428,9 +506,59 @@ type KeyboardButtonPollType struct {
 type ChatAdministratorRights struct {
 	// True, if the user's presence in the chat is hidden
 	IsAnonymous bool `json:"is_anonymous,omitempty"`
+
+	// True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode
+	CanManageChat bool `json:"can_manage_chat,omitempty"`
+
+	// True, if the administrator can delete messages of other users
+	CanDeleteMessages bool `json:"can_delete_messages,omitempty"`
+
+	// True, if the administrator can manage video chats
+	CanManageVideoChats bool `json:"can_manage_video_chats,omitempty"`
+
+	// True, if the administrator can restrict, ban or unban chat members, or access supergroup statistics
+	CanRestrictMembers bool `json:"can_restrict_members,omitempty"`
+
+	// True, if the administrator can add new administrators with a subset of their own privileges or demote administrators
+	CanPromoteMembers bool `json:"can_promote_members,omitempty"`
+
+	// True, if the user is allowed to change the chat title, photo and other settings
+	CanChangeInfo bool `json:"can_change_info,omitempty"`
+
+	// True, if the user is allowed to invite new users to the chat
+	CanInviteUsers bool `json:"can_invite_users,omitempty"`
+
+	// Optional. True, if the administrator can post messages in the channel, or access channel statistics; for channels only
+	CanPostMessages bool `json:"can_post_messages,omitempty"`
+
+	// Optional. True, if the administrator can edit messages of other users and can pin messages; for channels only
+	CanEditMessages bool `json:"can_edit_messages,omitempty"`
+
+	// Optional. True, if the user is allowed to pin messages; for groups and supergroups only
+	CanPinMessages bool `json:"can_pin_messages,omitempty"`
+
+	// Optional. True, if the administrator can post stories to the chat
+	CanPostStories bool `json:"can_post_stories,omitempty"`
+
+	// Optional. True, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
+	CanEditStories bool `json:"can_edit_stories,omitempty"`
+
+	// Optional. True, if the administrator can delete stories posted by other users
+	CanDeleteStories bool `json:"can_delete_stories,omitempty"`
+
+	// Optional. True, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
+	CanManageTopics bool `json:"can_manage_topics,omitempty"`
+
+	// Optional. True, if the administrator can manage direct messages of a channel
+	CanManageDirectMessages bool `json:"can_manage_direct_messages,omitempty"`
+
+	// Optional. True, if the administrator can manage tags in a supergroup
+	CanManageTags bool `json:"can_manage_tags,omitempty"`
 }
 
 // KeyboardButton is a button within a custom keyboard.
+// KeyboardButton is a button within a custom keyboard.
+// https://core.telegram.org/bots/api#keyboardbutton
 type KeyboardButton struct {
 	Text            string                      `json:"text"`
 	RequestUsers    *KeyboardButtonRequestUsers `json:"request_users,omitempty"`
@@ -439,6 +567,13 @@ type KeyboardButton struct {
 	RequestLocation bool                        `json:"request_location,omitempty"`
 	RequestPoll     *KeyboardButtonPollType     `json:"request_poll,omitempty"`
 	Webapp          *WebAppInfo                 `json:"web_app,omitempty"`
+
+	// Optional. Custom emoji identifier of the emoji that should appear on the button.
+	// Available if the bot is allowed to use custom emoji in messages. Bot API 9.4+
+	IconCustomEmojiID string `json:"icon_custom_emoji_id,omitempty"`
+
+	// Optional. The color of the button. One of "default", "positive", "destructive". Bot API 9.4+
+	Style string `json:"style,omitempty"`
 }
 
 // Validate checks if the keyboard button is valid
@@ -604,6 +739,13 @@ type InlineKeyboardButton struct {
 	//
 	// NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.
 	Pay bool `json:"pay,omitempty"`
+
+	// Optional. Custom emoji identifier of the emoji that should appear on the button.
+	// Available if the bot is allowed to use custom emoji in messages. Bot API 9.4+
+	IconCustomEmojiID string `json:"icon_custom_emoji_id,omitempty"`
+
+	// Optional. The color of the button. One of "default", "positive", "destructive". Bot API 9.4+
+	Style string `json:"style,omitempty"`
 }
 
 func (v InlineKeyboardButton) Validate() error {

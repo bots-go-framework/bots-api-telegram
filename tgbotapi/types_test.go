@@ -6,7 +6,7 @@ import (
 )
 
 func TestUserStringWith(t *testing.T) {
-	user := User{0, "Test", "Test", "", ""}
+	user := User{ID: 0, FirstName: "Test", LastName: "Test"}
 
 	if user.String() != "Test Test" {
 		t.Fail()
@@ -14,7 +14,7 @@ func TestUserStringWith(t *testing.T) {
 }
 
 func TestUserStringWithUserName(t *testing.T) {
-	user := User{0, "Test", "Test", "@test", ""}
+	user := User{ID: 0, FirstName: "Test", LastName: "Test", UserName: "@test"}
 
 	if user.String() != "@test" {
 		t.Fail()
