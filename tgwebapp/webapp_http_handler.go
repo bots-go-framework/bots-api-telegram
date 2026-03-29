@@ -75,7 +75,7 @@ func getDataCheckString(values url.Values) string {
 		if i > 0 {
 			s.WriteByte('\n')
 		}
-		s.WriteString(fmt.Sprintf("%s=%s", k, values.Get(k)))
+		fmt.Fprintf(&s, "%s=%s", k, values.Get(k))
 	}
 	return s.String()
 }
