@@ -24,3 +24,5 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+.claude/settings.local.json
