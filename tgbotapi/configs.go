@@ -938,7 +938,7 @@ type FileReader struct {
 
 // AnswerCallbackQueryConfig contains information on making a CallbackQuery response.
 type AnswerCallbackQueryConfig struct {
-	CallbackQueryID string `json:"callback_query_id,"`
+	CallbackQueryID string `json:"callback_query_id"`
 	Text            string `json:"text,omitempty"`
 	ShowAlert       bool   `json:"show_alert,omitempty"`
 	URL             string `json:"url,omitempty"`
