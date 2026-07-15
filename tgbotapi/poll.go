@@ -1,5 +1,38 @@
 package tgbotapi
 
+// PollMedia describes media attached to a poll, a poll's quiz explanation, or a poll option.
+// At most one of the fields is expected to be set.
+//
+// https://core.telegram.org/bots/api#pollmedia
+type PollMedia struct {
+	// Optional. Media is an animation
+	Animation *Animation `json:"animation,omitempty"`
+
+	// Optional. Media is an audio file
+	Audio *Audio `json:"audio,omitempty"`
+
+	// Optional. Media is a general file
+	Document *Document `json:"document,omitempty"`
+
+	// Optional. Media is a live photo
+	LivePhoto *LivePhoto `json:"live_photo,omitempty"`
+
+	// Optional. Media is a shared location
+	Location *Location `json:"location,omitempty"`
+
+	// Optional. Media is a photo
+	Photo []PhotoSize `json:"photo,omitempty"`
+
+	// Optional. Media is a sticker
+	Sticker *Sticker `json:"sticker,omitempty"`
+
+	// Optional. Media is a venue
+	Venue *Venue `json:"venue,omitempty"`
+
+	// Optional. Media is a video
+	Video *Video `json:"video,omitempty"`
+}
+
 // PollOption contains information about one answer option in a poll.
 // https://core.telegram.org/bots/api#polloption
 type PollOption struct {
@@ -17,6 +50,9 @@ type PollOption struct {
 
 	// Optional. Date when the option was added, in Unix time. Bot API 9.6+
 	AdditionDate int `json:"addition_date,omitempty"`
+
+	// Optional. Media attached to the option. Bot API 10.0+
+	Media *PollMedia `json:"media,omitempty"`
 }
 
 // Poll contains information about a poll.
@@ -50,6 +86,18 @@ type Poll struct {
 
 	// Optional. Special entities that appear in the poll description. Bot API 9.6+
 	DescriptionEntities []MessageEntity `json:"description_entities,omitempty"`
+
+	// Optional. Media attached to the poll. Bot API 10.0+
+	Media *PollMedia `json:"media,omitempty"`
+
+	// Optional. Media attached to the quiz explanation. Bot API 10.0+
+	ExplanationMedia *PollMedia `json:"explanation_media,omitempty"`
+
+	// Optional. True, if the poll can be voted only by members of the chat it was sent to. Bot API 10.0+
+	MembersOnly bool `json:"members_only,omitempty"`
+
+	// Optional. A list of two-letter ISO 3166-1 alpha-2 country codes the poll is restricted to. Bot API 10.0+
+	CountryCodes []string `json:"country_codes,omitempty"`
 }
 
 // PollAnswer represents an answer of a user in a non-anonymous poll.

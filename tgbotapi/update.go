@@ -78,6 +78,9 @@ type Update struct {
 
 	// Optional. A managed bot was created or its token was changed. Bot API 9.6+
 	ManagedBot *ManagedBotUpdated `json:"managed_bot,omitempty"`
+
+	// Optional. New incoming message received via Guest Mode, in a chat the bot is not a member of. Bot API 10.0+
+	GuestMessage *Message `json:"guest_message,omitempty"`
 }
 
 // Chat provides chat struct for the update

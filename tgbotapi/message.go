@@ -27,6 +27,17 @@ type Message struct {
 	// Optional. Sender of the message when sent on behalf of a chat
 	SenderChat *Chat `json:"sender_chat,omitempty"`
 
+	// Optional. In Guest Mode, the user that caused the bot to receive the message and be able
+	// to reply within a chat it is not a member of. Bot API 10.0+
+	GuestBotCallerUser *User `json:"guest_bot_caller_user,omitempty"`
+
+	// Optional. In Guest Mode, the chat that caused the bot to receive the message and be able
+	// to reply within a chat it is not a member of. Bot API 10.0+
+	GuestBotCallerChat *Chat `json:"guest_bot_caller_chat,omitempty"`
+
+	// Optional. Unique identifier of the guest query, to be used to reply to it with answerGuestQuery. Bot API 10.0+
+	GuestQueryID string `json:"guest_query_id,omitempty"`
+
 	// Optional. If the sender of the message boosted the chat, the number of boosts added by the user
 	SenderBoostCount int `json:"sender_boost_count,omitempty"`
 
@@ -125,6 +136,9 @@ type Message struct {
 
 	// Optional. Message is a photo
 	Photo *[]PhotoSize `json:"photo,omitempty"`
+
+	// Optional. Message is a live photo. Bot API 10.0+
+	LivePhoto *LivePhoto `json:"live_photo,omitempty"`
 
 	// Optional. Message is a sticker
 	Sticker *Sticker `json:"sticker,omitempty"`

@@ -73,6 +73,10 @@ type User struct {
 
 	// Optional. True, if other bots can be created under this bot's control. Returned only in getMe.
 	CanManageBots bool `json:"can_manage_bots,omitempty"`
+
+	// Optional. True, if the bot supports guest queries, allowing it to receive certain messages
+	// and issue replies within chats it is not a member of. Returned only in getMe. Bot API 10.0+
+	SupportsGuestQueries bool `json:"supports_guest_queries,omitempty"`
 }
 
 // ChatMember holds information about chat member
