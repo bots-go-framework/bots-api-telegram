@@ -34,4 +34,27 @@ type ChatJoinRequest struct {
 	Date       int         `json:"date"`
 	Bio        string      `json:"bio,omitempty"`
 	InviteLink interface{} `json:"invite_link,omitempty"`
+
+	// Optional. Identifier of the join request query; for bots assigned to process join requests only.
+	// If present, then the bot must call SendChatJoinRequestWebApp or directly call
+	// AnswerChatJoinRequestQuery within 10 seconds. Bot API 10.1+
+	// https://core.telegram.org/bots/api#chatjoinrequest
+	QueryID string `json:"query_id,omitempty"`
 }
+
+// ChatJoinRequestQueryResult is the result to answer a chat join request query with, via
+// BotAPI.AnswerChatJoinRequestQuery. Bot API 10.1+
+//
+// https://core.telegram.org/bots/api#answerchatjoinrequestquery
+type ChatJoinRequestQueryResult string
+
+const (
+	// ChatJoinRequestQueryResultApprove allows the user to join the chat.
+	ChatJoinRequestQueryResultApprove ChatJoinRequestQueryResult = "approve"
+
+	// ChatJoinRequestQueryResultDecline disallows the user to join the chat.
+	ChatJoinRequestQueryResultDecline ChatJoinRequestQueryResult = "decline"
+
+	// ChatJoinRequestQueryResultQueue leaves the decision to other administrators.
+	ChatJoinRequestQueryResultQueue ChatJoinRequestQueryResult = "queue"
+)

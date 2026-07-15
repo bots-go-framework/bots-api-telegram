@@ -77,6 +77,11 @@ type User struct {
 	// Optional. True, if the bot supports guest queries, allowing it to receive certain messages
 	// and issue replies within chats it is not a member of. Returned only in getMe. Bot API 10.0+
 	SupportsGuestQueries bool `json:"supports_guest_queries,omitempty"`
+
+	// Optional. True, if the bot supports join request queries, allowing it to be asked to process
+	// chat join requests. Returned only in getMe. Bot API 10.1+
+	// https://core.telegram.org/bots/api#user
+	SupportsJoinRequestQueries bool `json:"supports_join_request_queries,omitempty"`
 }
 
 // ChatMember holds information about chat member

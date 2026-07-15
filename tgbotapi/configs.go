@@ -760,6 +760,10 @@ type EditMessageTextConfig struct {
 	Text                  string
 	ParseMode             string
 	DisableWebPagePreview bool
+
+	// Optional. A JSON-serialized rich message to replace the message content with. Bot API 10.1+
+	// https://core.telegram.org/bots/api#editmessagetext
+	RichMessage *InputRichMessage
 }
 
 // Values returns URL values representation of EditMessageTextConfig
@@ -774,6 +778,13 @@ func (j EditMessageTextConfig) Values() (url.Values, error) {
 	}
 	if j.DisableWebPagePreview {
 		v.Add("disable_web_page_preview", strconv.FormatBool(j.DisableWebPagePreview))
+	}
+	if j.RichMessage != nil {
+		if b, err := encodeToJson(j.RichMessage); err != nil {
+			return v, fmt.Errorf("failed to marshal rich message as JSON: %w", err)
+		} else {
+			v.Add("rich_message", string(b))
+		}
 	}
 
 	return v, nil

@@ -119,6 +119,9 @@ type Message struct {
 	// Optional. Information about suggested post parameters if the message is a suggested post
 	SuggestedPostInfo *SuggestedPostInfo `json:"suggested_post_info,omitempty"`
 
+	// Optional. Message is a rich message. Bot API 10.1+
+	RichMessage *RichMessage `json:"rich_message,omitempty"`
+
 	// Optional. Unique identifier of the message effect added to the message
 	EffectID string `json:"effect_id,omitempty"`
 

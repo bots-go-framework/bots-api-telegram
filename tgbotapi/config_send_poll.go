@@ -48,7 +48,8 @@ type InputPollMedia struct {
 //
 // https://core.telegram.org/bots/api#inputpolloptionmedia
 type InputPollOptionMedia struct {
-	// Type of the media, one of "animation", "live_photo", "location", "photo", "sticker", "venue", "video"
+	// Type of the media, one of "animation", "link", "live_photo", "location", "photo", "sticker",
+	// "venue", "video". "link" added in Bot API 10.1
 	Type string `json:"type"`
 
 	// File to send, required for file-based types ("animation", "live_photo", "photo", "sticker", "video").
@@ -56,6 +57,9 @@ type InputPollOptionMedia struct {
 	// get a file from the Internet, or pass "attach://<file_attach_name>" to upload a new one using
 	// multipart/form-data.
 	Media string `json:"media,omitempty"`
+
+	// HTTP URL of the link, required when Type is "link". Bot API 10.1+
+	URL string `json:"url,omitempty"`
 
 	// Location to attach, required when Type is "location"
 	Location *Location `json:"location,omitempty"`

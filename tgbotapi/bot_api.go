@@ -849,6 +849,34 @@ func (bot *BotAPI) DeleteMessageReaction(chatID int64, messageID int, userID int
 	return bot.MakeRequest("deleteMessageReaction", v)
 }
 
+// AnswerChatJoinRequestQuery processes a received chat join request query. Bot API 10.1+
+//
+// https://core.telegram.org/bots/api#answerchatjoinrequestquery
+func (bot *BotAPI) AnswerChatJoinRequestQuery(chatJoinRequestQueryID string, result ChatJoinRequestQueryResult) (APIResponse, error) {
+	v := url.Values{}
+	v.Add("chat_join_request_query_id", chatJoinRequestQueryID)
+	v.Add("result", string(result))
+
+	bot.debugLog("answerChatJoinRequestQuery", v, nil)
+
+	return bot.MakeRequest("answerChatJoinRequestQuery", v)
+}
+
+// SendChatJoinRequestWebApp processes a received chat join request query by showing a Mini App to the
+// user before deciding the outcome. Call AnswerChatJoinRequestQuery to resolve the join request query
+// based on the user interaction with the Mini App. Bot API 10.1+
+//
+// https://core.telegram.org/bots/api#sendchatjoinrequestwebapp
+func (bot *BotAPI) SendChatJoinRequestWebApp(chatJoinRequestQueryID, webAppURL string) (APIResponse, error) {
+	v := url.Values{}
+	v.Add("chat_join_request_query_id", chatJoinRequestQueryID)
+	v.Add("web_app_url", webAppURL)
+
+	bot.debugLog("sendChatJoinRequestWebApp", v, nil)
+
+	return bot.MakeRequest("sendChatJoinRequestWebApp", v)
+}
+
 func (bot *BotAPI) SendCustomMessage(ctx context.Context, config Sendable, result any) (err error) {
 	var values url.Values
 	if values, err = config.Values(); err != nil {

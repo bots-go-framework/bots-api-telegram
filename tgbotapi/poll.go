@@ -1,5 +1,25 @@
 package tgbotapi
 
+// Link represents an HTTP link.
+//
+// https://core.telegram.org/bots/api#link
+type Link struct {
+	// URL of the link
+	URL string `json:"url"`
+}
+
+// InputMediaLink represents an HTTP link to be sent. It can be used as an InputPollOptionMedia.
+// Bot API 10.1+
+//
+// https://core.telegram.org/bots/api#inputmedialink
+type InputMediaLink struct {
+	// Type of the media, must be "link"
+	Type string `json:"type"`
+
+	// HTTP URL of the link
+	URL string `json:"url"`
+}
+
 // PollMedia describes media attached to a poll, a poll's quiz explanation, or a poll option.
 // At most one of the fields is expected to be set.
 //
@@ -13,6 +33,9 @@ type PollMedia struct {
 
 	// Optional. Media is a general file
 	Document *Document `json:"document,omitempty"`
+
+	// Optional. The HTTP link attached to the poll option. Bot API 10.1+
+	Link *Link `json:"link,omitempty"`
 
 	// Optional. Media is a live photo
 	LivePhoto *LivePhoto `json:"live_photo,omitempty"`
