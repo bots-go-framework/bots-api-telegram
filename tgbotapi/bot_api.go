@@ -877,6 +877,41 @@ func (bot *BotAPI) SendChatJoinRequestWebApp(chatJoinRequestQueryID, webAppURL s
 	return bot.MakeRequest("sendChatJoinRequestWebApp", v)
 }
 
+// EditEphemeralMessageText edits an ephemeral text message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#editephemeralmessagetext
+func (bot *BotAPI) EditEphemeralMessageText(config EditEphemeralMessageTextConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+// EditEphemeralMessageMedia edits the media of an ephemeral message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#editephemeralmessagemedia
+func (bot *BotAPI) EditEphemeralMessageMedia(config EditEphemeralMessageMediaConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+// EditEphemeralMessageCaption edits the caption of an ephemeral message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#editephemeralmessagecaption
+func (bot *BotAPI) EditEphemeralMessageCaption(config EditEphemeralMessageCaptionConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+// EditEphemeralMessageReplyMarkup edits only the reply markup of an ephemeral message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#editephemeralmessagereplymarkup
+func (bot *BotAPI) EditEphemeralMessageReplyMarkup(config EditEphemeralMessageReplyMarkupConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+// DeleteEphemeralMessage deletes an ephemeral message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#deleteephemeralmessage
+func (bot *BotAPI) DeleteEphemeralMessage(config DeleteEphemeralMessageConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
 func (bot *BotAPI) SendCustomMessage(ctx context.Context, config Sendable, result any) (err error) {
 	var values url.Values
 	if values, err = config.Values(); err != nil {

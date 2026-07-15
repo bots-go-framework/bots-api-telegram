@@ -47,6 +47,14 @@ type Message struct {
 	// Optional. Tag or custom title of the sender of the message; for supergroups only
 	SenderTag string `json:"sender_tag,omitempty"`
 
+	// Optional. For ephemeral messages, the user who received the message. Bot API 10.2+
+	ReceiverUser *User `json:"receiver_user,omitempty"`
+
+	// Optional. For ephemeral messages, identifier of the ephemeral message inside this chat. The
+	// identifier may be reused for another ephemeral message after the message is deleted or expires.
+	// Bot API 10.2+
+	EphemeralMessageID int `json:"ephemeral_message_id,omitempty"`
+
 	// Date the message was sent in Unix time
 	Date int `json:"date"`
 
@@ -254,6 +262,12 @@ type Message struct {
 
 	// Optional. Service message: tasks were added to a checklist
 	ChecklistTasksAdded *ChecklistTasksAdded `json:"checklist_tasks_added,omitempty"`
+
+	// Optional. Service message: chat added to a Community. Bot API 10.2+
+	CommunityChatAdded *CommunityChatAdded `json:"community_chat_added,omitempty"`
+
+	// Optional. Service message: chat removed from a Community. Bot API 10.2+
+	CommunityChatRemoved *CommunityChatRemoved `json:"community_chat_removed,omitempty"`
 
 	// Optional. Service message: the price for paid messages in the direct messages chat has changed
 	DirectMessagePriceChanged *DirectMessagePriceChanged `json:"direct_message_price_changed,omitempty"`

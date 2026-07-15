@@ -81,6 +81,9 @@ type Update struct {
 
 	// Optional. New incoming message received via Guest Mode, in a chat the bot is not a member of. Bot API 10.0+
 	GuestMessage *Message `json:"guest_message,omitempty"`
+
+	// Optional. User payment subscription has changed. Bot API 10.2+
+	Subscription *BotSubscriptionUpdated `json:"subscription,omitempty"`
 }
 
 // Chat provides chat struct for the update
