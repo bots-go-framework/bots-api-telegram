@@ -665,6 +665,77 @@ func (bot *BotAPI) GetCommands(ctx context.Context, config GetMyCommandsConfig) 
 	return
 }
 
+// GetManagedBotToken returns the token of a managed bot.
+//
+// https://core.telegram.org/bots/api#getmanagedbottoken
+func (bot *BotAPI) GetManagedBotToken(userID int64) (token string, err error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	resp, err := bot.MakeRequest("getManagedBotToken", v)
+	if err != nil {
+		return "", err
+	}
+
+	if err = json.Unmarshal(resp.Result, &token); err != nil {
+		return "", err
+	}
+
+	bot.debugLog("getManagedBotToken", v, token)
+
+	return token, nil
+}
+
+// ReplaceManagedBotToken revokes the current token of a managed bot and generates a new one.
+//
+// https://core.telegram.org/bots/api#replacemanagedbottoken
+func (bot *BotAPI) ReplaceManagedBotToken(userID int64) (token string, err error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	resp, err := bot.MakeRequest("replaceManagedBotToken", v)
+	if err != nil {
+		return "", err
+	}
+
+	if err = json.Unmarshal(resp.Result, &token); err != nil {
+		return "", err
+	}
+
+	bot.debugLog("replaceManagedBotToken", v, token)
+
+	return token, nil
+}
+
+// SavePreparedKeyboardButton stores a keyboard button that can be used by a user within a Mini App.
+//
+// The button must be of type request_users, request_chat, or request_managed_bot.
+//
+// https://core.telegram.org/bots/api#savepreparedkeyboardbutton
+func (bot *BotAPI) SavePreparedKeyboardButton(userID int64, button KeyboardButton) (prepared PreparedKeyboardButton, err error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	data, err := encodeToJson(button)
+	if err != nil {
+		return prepared, err
+	}
+	v.Add("button", string(data))
+
+	resp, err := bot.MakeRequest("savePreparedKeyboardButton", v)
+	if err != nil {
+		return prepared, err
+	}
+
+	if err = json.Unmarshal(resp.Result, &prepared); err != nil {
+		return prepared, err
+	}
+
+	bot.debugLog("savePreparedKeyboardButton", v, prepared)
+
+	return prepared, nil
+}
+
 func (bot *BotAPI) SendCustomMessage(ctx context.Context, config Sendable, result any) (err error) {
 	var values url.Values
 	if values, err = config.Values(); err != nil {

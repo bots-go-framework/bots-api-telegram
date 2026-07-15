@@ -69,6 +69,9 @@ type Message struct {
 	// Optional. Identifier of the specific checklist task that is being replied to
 	ReplyToChecklistTaskID int `json:"reply_to_checklist_task_id,omitempty"`
 
+	// Optional. Persistent identifier of the poll option that is being replied to. Bot API 9.6+
+	ReplyToPollOptionID string `json:"reply_to_poll_option_id,omitempty"`
+
 	// Optional. Bot through which the message was sent
 	ViaBot *User `json:"via_bot,omitempty"`
 
@@ -164,6 +167,12 @@ type Message struct {
 
 	// Optional. Message is a native poll
 	Poll *Poll `json:"poll,omitempty"`
+
+	// Optional. Service message: a new option was added to a poll. Bot API 9.6+
+	PollOptionAdded *PollOptionAdded `json:"poll_option_added,omitempty"`
+
+	// Optional. Service message: an option was deleted from a poll. Bot API 9.6+
+	PollOptionDeleted *PollOptionDeleted `json:"poll_option_deleted,omitempty"`
 
 	// Optional. Message is a venue
 	Venue *Venue `json:"venue,omitempty"`
@@ -300,6 +309,9 @@ type Message struct {
 
 	Gift       *GiftInfo       `json:"gift,omitempty"`
 	UniqueGift *UniqueGiftInfo `json:"unique_gift,omitempty"`
+
+	// Optional. Service message: a managed bot was created. Bot API 9.6+
+	ManagedBotCreated *ManagedBotCreated `json:"managed_bot_created,omitempty"`
 
 	// Optional. Inline keyboard attached to the message
 	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`

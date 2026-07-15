@@ -70,6 +70,9 @@ type User struct {
 
 	// Optional. True, if the bot allows users to create and delete topics in private chats. Returned only in getMe.
 	AllowsUsersToCreateTopics bool `json:"allows_users_to_create_topics,omitempty"`
+
+	// Optional. True, if other bots can be created under this bot's control. Returned only in getMe.
+	CanManageBots bool `json:"can_manage_bots,omitempty"`
 }
 
 // ChatMember holds information about chat member
@@ -567,6 +570,10 @@ type KeyboardButton struct {
 	RequestLocation bool                        `json:"request_location,omitempty"`
 	RequestPoll     *KeyboardButtonPollType     `json:"request_poll,omitempty"`
 	Webapp          *WebAppInfo                 `json:"web_app,omitempty"`
+
+	// Optional. If specified, pressing the button will open a list of suitable bots.
+	// Tapping on any of them will create a managed bot with the corresponding data. Bot API 9.6+
+	RequestManagedBot *KeyboardButtonRequestManagedBot `json:"request_managed_bot,omitempty"`
 
 	// Optional. Custom emoji identifier of the emoji that should appear on the button.
 	// Available if the bot is allowed to use custom emoji in messages. Bot API 9.4+

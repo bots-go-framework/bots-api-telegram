@@ -75,6 +75,9 @@ type Update struct {
 
 	// Optional. A boost was removed from a chat
 	RemovedChatBoost *ChatBoostRemoved `json:"removed_chat_boost,omitempty"`
+
+	// Optional. A managed bot was created or its token was changed. Bot API 9.6+
+	ManagedBot *ManagedBotUpdated `json:"managed_bot,omitempty"`
 }
 
 // Chat provides chat struct for the update

@@ -14,4 +14,6 @@ type ReplyParameters struct {
 	QuoteEntities            []MessageEntity `json:"quote_entities,omitempty"`              // Optional. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of quote_parse_mode.
 	QuotePosition            int64           `json:"quote_position,omitempty"`              // Optional. Position of the quote in the original message in UTF-16 code units
 
+	// Optional. Persistent identifier of the poll option to reply to. Bot API 9.6+
+	PollOptionID string `json:"poll_option_id,omitempty"`
 }
