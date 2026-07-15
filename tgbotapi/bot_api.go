@@ -665,6 +665,253 @@ func (bot *BotAPI) GetCommands(ctx context.Context, config GetMyCommandsConfig) 
 	return
 }
 
+// GetManagedBotToken returns the token of a managed bot.
+//
+// https://core.telegram.org/bots/api#getmanagedbottoken
+func (bot *BotAPI) GetManagedBotToken(userID int64) (token string, err error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	resp, err := bot.MakeRequest("getManagedBotToken", v)
+	if err != nil {
+		return "", err
+	}
+
+	if err = json.Unmarshal(resp.Result, &token); err != nil {
+		return "", err
+	}
+
+	bot.debugLog("getManagedBotToken", v, token)
+
+	return token, nil
+}
+
+// ReplaceManagedBotToken revokes the current token of a managed bot and generates a new one.
+//
+// https://core.telegram.org/bots/api#replacemanagedbottoken
+func (bot *BotAPI) ReplaceManagedBotToken(userID int64) (token string, err error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	resp, err := bot.MakeRequest("replaceManagedBotToken", v)
+	if err != nil {
+		return "", err
+	}
+
+	if err = json.Unmarshal(resp.Result, &token); err != nil {
+		return "", err
+	}
+
+	bot.debugLog("replaceManagedBotToken", v, token)
+
+	return token, nil
+}
+
+// SavePreparedKeyboardButton stores a keyboard button that can be used by a user within a Mini App.
+//
+// The button must be of type request_users, request_chat, or request_managed_bot.
+//
+// https://core.telegram.org/bots/api#savepreparedkeyboardbutton
+func (bot *BotAPI) SavePreparedKeyboardButton(userID int64, button KeyboardButton) (prepared PreparedKeyboardButton, err error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	data, err := encodeToJson(button)
+	if err != nil {
+		return prepared, err
+	}
+	v.Add("button", string(data))
+
+	resp, err := bot.MakeRequest("savePreparedKeyboardButton", v)
+	if err != nil {
+		return prepared, err
+	}
+
+	if err = json.Unmarshal(resp.Result, &prepared); err != nil {
+		return prepared, err
+	}
+
+	bot.debugLog("savePreparedKeyboardButton", v, prepared)
+
+	return prepared, nil
+}
+
+// GetManagedBotAccessSettings returns the current access settings of a bot managed by the current bot.
+//
+// https://core.telegram.org/bots/api#getmanagedbotaccesssettings
+func (bot *BotAPI) GetManagedBotAccessSettings(userID int64) (settings BotAccessSettings, err error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	resp, err := bot.MakeRequest("getManagedBotAccessSettings", v)
+	if err != nil {
+		return settings, err
+	}
+
+	if err = json.Unmarshal(resp.Result, &settings); err != nil {
+		return settings, err
+	}
+
+	bot.debugLog("getManagedBotAccessSettings", v, settings)
+
+	return settings, nil
+}
+
+// SetManagedBotAccessSettings updates the access settings of a bot managed by the current bot.
+//
+// https://core.telegram.org/bots/api#setmanagedbotaccesssettings
+func (bot *BotAPI) SetManagedBotAccessSettings(userID int64, settings BotAccessSettings) (APIResponse, error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	data, err := encodeToJson(settings)
+	if err != nil {
+		return APIResponse{}, err
+	}
+	v.Add("access_settings", string(data))
+
+	bot.debugLog("setManagedBotAccessSettings", v, nil)
+
+	return bot.MakeRequest("setManagedBotAccessSettings", v)
+}
+
+// GetUserPersonalChatMessages returns recent messages posted to a user's personal chat, as shown on
+// their profile page.
+//
+// https://core.telegram.org/bots/api#getuserpersonalchatmessages
+func (bot *BotAPI) GetUserPersonalChatMessages(userID int64) (messages []Message, err error) {
+	v := url.Values{}
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	resp, err := bot.MakeRequest("getUserPersonalChatMessages", v)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(resp.Result, &messages); err != nil {
+		return nil, err
+	}
+
+	bot.debugLog("getUserPersonalChatMessages", v, messages)
+
+	return messages, nil
+}
+
+// AnswerGuestQuery sends a reply, on behalf of the bot, to a message received via Guest Mode in a chat
+// the bot is not a member of.
+//
+// https://core.telegram.org/bots/api#answerguestquery
+func (bot *BotAPI) AnswerGuestQuery(guestQueryID, text string) (sent SentGuestMessage, err error) {
+	v := url.Values{}
+	v.Add("guest_query_id", guestQueryID)
+	v.Add("text", text)
+
+	resp, err := bot.MakeRequest("answerGuestQuery", v)
+	if err != nil {
+		return sent, err
+	}
+
+	if err = json.Unmarshal(resp.Result, &sent); err != nil {
+		return sent, err
+	}
+
+	bot.debugLog("answerGuestQuery", v, sent)
+
+	return sent, nil
+}
+
+// DeleteAllMessageReactions removes all reactions from a message. Requires the can_restrict_members
+// administrator right.
+//
+// https://core.telegram.org/bots/api#deleteallmessagereactions
+func (bot *BotAPI) DeleteAllMessageReactions(chatID int64, messageID int) (APIResponse, error) {
+	v := url.Values{}
+	v.Add("chat_id", strconv.FormatInt(chatID, 10))
+	v.Add("message_id", strconv.Itoa(messageID))
+
+	bot.debugLog("deleteAllMessageReactions", v, nil)
+
+	return bot.MakeRequest("deleteAllMessageReactions", v)
+}
+
+// DeleteMessageReaction removes a specific user's reaction from a message. Requires the
+// can_restrict_members administrator right.
+//
+// https://core.telegram.org/bots/api#deletemessagereaction
+func (bot *BotAPI) DeleteMessageReaction(chatID int64, messageID int, userID int64) (APIResponse, error) {
+	v := url.Values{}
+	v.Add("chat_id", strconv.FormatInt(chatID, 10))
+	v.Add("message_id", strconv.Itoa(messageID))
+	v.Add("user_id", strconv.FormatInt(userID, 10))
+
+	bot.debugLog("deleteMessageReaction", v, nil)
+
+	return bot.MakeRequest("deleteMessageReaction", v)
+}
+
+// AnswerChatJoinRequestQuery processes a received chat join request query. Bot API 10.1+
+//
+// https://core.telegram.org/bots/api#answerchatjoinrequestquery
+func (bot *BotAPI) AnswerChatJoinRequestQuery(chatJoinRequestQueryID string, result ChatJoinRequestQueryResult) (APIResponse, error) {
+	v := url.Values{}
+	v.Add("chat_join_request_query_id", chatJoinRequestQueryID)
+	v.Add("result", string(result))
+
+	bot.debugLog("answerChatJoinRequestQuery", v, nil)
+
+	return bot.MakeRequest("answerChatJoinRequestQuery", v)
+}
+
+// SendChatJoinRequestWebApp processes a received chat join request query by showing a Mini App to the
+// user before deciding the outcome. Call AnswerChatJoinRequestQuery to resolve the join request query
+// based on the user interaction with the Mini App. Bot API 10.1+
+//
+// https://core.telegram.org/bots/api#sendchatjoinrequestwebapp
+func (bot *BotAPI) SendChatJoinRequestWebApp(chatJoinRequestQueryID, webAppURL string) (APIResponse, error) {
+	v := url.Values{}
+	v.Add("chat_join_request_query_id", chatJoinRequestQueryID)
+	v.Add("web_app_url", webAppURL)
+
+	bot.debugLog("sendChatJoinRequestWebApp", v, nil)
+
+	return bot.MakeRequest("sendChatJoinRequestWebApp", v)
+}
+
+// EditEphemeralMessageText edits an ephemeral text message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#editephemeralmessagetext
+func (bot *BotAPI) EditEphemeralMessageText(config EditEphemeralMessageTextConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+// EditEphemeralMessageMedia edits the media of an ephemeral message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#editephemeralmessagemedia
+func (bot *BotAPI) EditEphemeralMessageMedia(config EditEphemeralMessageMediaConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+// EditEphemeralMessageCaption edits the caption of an ephemeral message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#editephemeralmessagecaption
+func (bot *BotAPI) EditEphemeralMessageCaption(config EditEphemeralMessageCaptionConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+// EditEphemeralMessageReplyMarkup edits only the reply markup of an ephemeral message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#editephemeralmessagereplymarkup
+func (bot *BotAPI) EditEphemeralMessageReplyMarkup(config EditEphemeralMessageReplyMarkupConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
+// DeleteEphemeralMessage deletes an ephemeral message. Bot API 10.2+
+//
+// https://core.telegram.org/bots/api#deleteephemeralmessage
+func (bot *BotAPI) DeleteEphemeralMessage(config DeleteEphemeralMessageConfig) (APIResponse, error) {
+	return bot.MakeRequestFromChattable(config)
+}
+
 func (bot *BotAPI) SendCustomMessage(ctx context.Context, config Sendable, result any) (err error) {
 	var values url.Values
 	if values, err = config.Values(); err != nil {

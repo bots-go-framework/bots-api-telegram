@@ -2,7 +2,9 @@ package tgbotapi
 
 // ReplyParameters describes reply parameters for the message that is being sent.
 type ReplyParameters struct {
-	MessageID int64 `json:"message_id"`
+	// Optional. Identifier of the message that will be replied to in the current chat, or in the chat
+	// ChatIDInt/ChatIDStr if specified. Required if EphemeralMessageID isn't specified.
+	MessageID int64 `json:"message_id,omitempty"`
 
 	// Optional. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account.
 	ChatIDInt int64
@@ -14,4 +16,12 @@ type ReplyParameters struct {
 	QuoteEntities            []MessageEntity `json:"quote_entities,omitempty"`              // Optional. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of quote_parse_mode.
 	QuotePosition            int64           `json:"quote_position,omitempty"`              // Optional. Position of the quote in the original message in UTF-16 code units
 
+	// Optional. Persistent identifier of the poll option to reply to. Bot API 9.6+
+	PollOptionID string `json:"poll_option_id,omitempty"`
+
+	// Optional. Identifier of the incoming ephemeral message that will be replied to in the current
+	// chat. A reply to an ephemeral message must itself be an ephemeral message. An ephemeral message
+	// may only be replied to within 15 seconds of being sent. Required if MessageID isn't specified;
+	// MessageID and EphemeralMessageID are mutually exclusive - set exactly one. Bot API 10.2+
+	EphemeralMessageID int64 `json:"ephemeral_message_id,omitempty"`
 }

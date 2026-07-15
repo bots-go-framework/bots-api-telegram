@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/bots-go-framework/bots-api-telegram)](https://goreportcard.com/report/github.com/bots-go-framework/bots-api-telegram)
 [![GoDoc](https://pkg.go.dev/badge/github.com/bots-go-framework/bots-api-telegram)](https://pkg.go.dev/github.com/bots-go-framework/bots-api-telegram)
 
-Go bindings for the [Telegram Bot API](https://core.telegram.org/bots/api), tracking **Bot API 9.5**.
+Go bindings for the [Telegram Bot API](https://core.telegram.org/bots/api), tracking **Bot API 10.2**.
 
 This module also includes sub-packages for [Telegram Login Widget](#tglogin) and [Telegram Web Apps](#tgwebapp).
 

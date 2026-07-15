@@ -4,6 +4,7 @@ package tgbotapi
 // - PaidMediaPreview
 // - PaidMediaPhoto
 // - PaidMediaVideo
+// - PaidMediaLivePhoto (Bot API 10.0+)
 // https://core.telegram.org/bots/api#paidmedia
 type PaidMedia struct {
 	// Type of the paid media — "preview", "photo", or "video"
@@ -23,6 +24,9 @@ type PaidMedia struct {
 
 	// For "video": the video
 	Video *Video `json:"video,omitempty"`
+
+	// For "live_photo": the live photo. Bot API 10.0+
+	LivePhoto *LivePhoto `json:"live_photo,omitempty"`
 }
 
 // PaidMediaInfo describes the paid media added to a message.

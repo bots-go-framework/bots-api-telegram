@@ -21,6 +21,7 @@ type ExternalReplyInfo struct {
 	Document           *Document           `json:"document,omitempty"`
 	PaidMedia          *PaidMediaInfo      `json:"paid_media,omitempty"`
 	Photo              []PhotoSize         `json:"photo,omitempty"`
+	LivePhoto          *LivePhoto          `json:"live_photo,omitempty"` // Bot API 10.0+
 	Sticker            *Sticker            `json:"sticker,omitempty"`
 	Story              *Story              `json:"story,omitempty"`
 	Video              *Video              `json:"video,omitempty"`

@@ -127,6 +127,15 @@ type BaseChat struct {
 	ReplyParameters *ReplyParameters `json:"reply_parameters,omitempty"` // Description of the message to reply to
 
 	BusinessConnectionID string `json:"business_connection_id,omitempty"` // Unique identifier of the business connection on behalf of which the message will be sent
+
+	// ReceiverUserID: for outgoing ephemeral messages, unique identifier of the user who will receive
+	// the message; for group and supergroup chats only. It is not guaranteed that the user will receive
+	// the message, especially if they are offline. Bot API 10.2+
+	ReceiverUserID int64 `json:"receiver_user_id,omitempty"`
+
+	// CallbackQueryID: for outgoing ephemeral messages, identifier of the callback query which
+	// triggered the message, if any. Bot API 10.2+
+	CallbackQueryID string `json:"callback_query_id,omitempty"`
 }
 
 // Values returns url.Values representation of BaseChat
@@ -161,6 +170,13 @@ func (j BaseChat) Values() (url.Values, error) {
 	}
 	if j.AllowPaidBroadcast {
 		values.Add("allow_paid_broadcast", "true")
+	}
+
+	if j.ReceiverUserID != 0 {
+		values.Add("receiver_user_id", strconv.FormatInt(j.ReceiverUserID, 10))
+	}
+	if j.CallbackQueryID != "" {
+		values.Add("callback_query_id", j.CallbackQueryID)
 	}
 
 	if j.ReplyParameters != nil {
@@ -233,6 +249,13 @@ func (file BaseFile) params() (map[string]string, error) {
 
 	if file.FileSize > 0 {
 		params["file_size"] = strconv.Itoa(file.FileSize)
+	}
+
+	if file.ReceiverUserID != 0 {
+		params["receiver_user_id"] = strconv.FormatInt(file.ReceiverUserID, 10)
+	}
+	if file.CallbackQueryID != "" {
+		params["callback_query_id"] = file.CallbackQueryID
 	}
 
 	params["disable_notification"] = strconv.FormatBool(file.DisableNotification)
@@ -760,6 +783,10 @@ type EditMessageTextConfig struct {
 	Text                  string
 	ParseMode             string
 	DisableWebPagePreview bool
+
+	// Optional. A JSON-serialized rich message to replace the message content with. Bot API 10.1+
+	// https://core.telegram.org/bots/api#editmessagetext
+	RichMessage *InputRichMessage
 }
 
 // Values returns URL values representation of EditMessageTextConfig
@@ -774,6 +801,13 @@ func (j EditMessageTextConfig) Values() (url.Values, error) {
 	}
 	if j.DisableWebPagePreview {
 		v.Add("disable_web_page_preview", strconv.FormatBool(j.DisableWebPagePreview))
+	}
+	if j.RichMessage != nil {
+		if b, err := encodeToJson(j.RichMessage); err != nil {
+			return v, fmt.Errorf("failed to marshal rich message as JSON: %w", err)
+		} else {
+			v.Add("rich_message", string(b))
+		}
 	}
 
 	return v, nil

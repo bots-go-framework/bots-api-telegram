@@ -27,6 +27,17 @@ type Message struct {
 	// Optional. Sender of the message when sent on behalf of a chat
 	SenderChat *Chat `json:"sender_chat,omitempty"`
 
+	// Optional. In Guest Mode, the user that caused the bot to receive the message and be able
+	// to reply within a chat it is not a member of. Bot API 10.0+
+	GuestBotCallerUser *User `json:"guest_bot_caller_user,omitempty"`
+
+	// Optional. In Guest Mode, the chat that caused the bot to receive the message and be able
+	// to reply within a chat it is not a member of. Bot API 10.0+
+	GuestBotCallerChat *Chat `json:"guest_bot_caller_chat,omitempty"`
+
+	// Optional. Unique identifier of the guest query, to be used to reply to it with answerGuestQuery. Bot API 10.0+
+	GuestQueryID string `json:"guest_query_id,omitempty"`
+
 	// Optional. If the sender of the message boosted the chat, the number of boosts added by the user
 	SenderBoostCount int `json:"sender_boost_count,omitempty"`
 
@@ -35,6 +46,14 @@ type Message struct {
 
 	// Optional. Tag or custom title of the sender of the message; for supergroups only
 	SenderTag string `json:"sender_tag,omitempty"`
+
+	// Optional. For ephemeral messages, the user who received the message. Bot API 10.2+
+	ReceiverUser *User `json:"receiver_user,omitempty"`
+
+	// Optional. For ephemeral messages, identifier of the ephemeral message inside this chat. The
+	// identifier may be reused for another ephemeral message after the message is deleted or expires.
+	// Bot API 10.2+
+	EphemeralMessageID int `json:"ephemeral_message_id,omitempty"`
 
 	// Date the message was sent in Unix time
 	Date int `json:"date"`
@@ -68,6 +87,9 @@ type Message struct {
 
 	// Optional. Identifier of the specific checklist task that is being replied to
 	ReplyToChecklistTaskID int `json:"reply_to_checklist_task_id,omitempty"`
+
+	// Optional. Persistent identifier of the poll option that is being replied to. Bot API 9.6+
+	ReplyToPollOptionID string `json:"reply_to_poll_option_id,omitempty"`
 
 	// Optional. Bot through which the message was sent
 	ViaBot *User `json:"via_bot,omitempty"`
@@ -105,6 +127,9 @@ type Message struct {
 	// Optional. Information about suggested post parameters if the message is a suggested post
 	SuggestedPostInfo *SuggestedPostInfo `json:"suggested_post_info,omitempty"`
 
+	// Optional. Message is a rich message. Bot API 10.1+
+	RichMessage *RichMessage `json:"rich_message,omitempty"`
+
 	// Optional. Unique identifier of the message effect added to the message
 	EffectID string `json:"effect_id,omitempty"`
 
@@ -122,6 +147,9 @@ type Message struct {
 
 	// Optional. Message is a photo
 	Photo *[]PhotoSize `json:"photo,omitempty"`
+
+	// Optional. Message is a live photo. Bot API 10.0+
+	LivePhoto *LivePhoto `json:"live_photo,omitempty"`
 
 	// Optional. Message is a sticker
 	Sticker *Sticker `json:"sticker,omitempty"`
@@ -164,6 +192,12 @@ type Message struct {
 
 	// Optional. Message is a native poll
 	Poll *Poll `json:"poll,omitempty"`
+
+	// Optional. Service message: a new option was added to a poll. Bot API 9.6+
+	PollOptionAdded *PollOptionAdded `json:"poll_option_added,omitempty"`
+
+	// Optional. Service message: an option was deleted from a poll. Bot API 9.6+
+	PollOptionDeleted *PollOptionDeleted `json:"poll_option_deleted,omitempty"`
 
 	// Optional. Message is a venue
 	Venue *Venue `json:"venue,omitempty"`
@@ -228,6 +262,12 @@ type Message struct {
 
 	// Optional. Service message: tasks were added to a checklist
 	ChecklistTasksAdded *ChecklistTasksAdded `json:"checklist_tasks_added,omitempty"`
+
+	// Optional. Service message: chat added to a Community. Bot API 10.2+
+	CommunityChatAdded *CommunityChatAdded `json:"community_chat_added,omitempty"`
+
+	// Optional. Service message: chat removed from a Community. Bot API 10.2+
+	CommunityChatRemoved *CommunityChatRemoved `json:"community_chat_removed,omitempty"`
 
 	// Optional. Service message: the price for paid messages in the direct messages chat has changed
 	DirectMessagePriceChanged *DirectMessagePriceChanged `json:"direct_message_price_changed,omitempty"`
@@ -300,6 +340,9 @@ type Message struct {
 
 	Gift       *GiftInfo       `json:"gift,omitempty"`
 	UniqueGift *UniqueGiftInfo `json:"unique_gift,omitempty"`
+
+	// Optional. Service message: a managed bot was created. Bot API 9.6+
+	ManagedBotCreated *ManagedBotCreated `json:"managed_bot_created,omitempty"`
 
 	// Optional. Inline keyboard attached to the message
 	ReplyMarkup *InlineKeyboardMarkup `json:"reply_markup,omitempty"`

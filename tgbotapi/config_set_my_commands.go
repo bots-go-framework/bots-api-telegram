@@ -99,6 +99,11 @@ func (s SetMyCommandsConfig) TelegramMethod() string {
 type TelegramBotCommand struct {
 	Command     string `json:"command"`     // Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores.
 	Description string `json:"description"` // Description of the command; 1-256 characters.
+
+	// Optional. True, if the command sends an ephemeral message, which can be seen only by the sender
+	// of the message and the bot. Bot API 10.2+
+	// https://core.telegram.org/bots/api#botcommand
+	IsEphemeral bool `json:"is_ephemeral,omitempty"`
 }
 
 func (v TelegramBotCommand) Validate() error {
