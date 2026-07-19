@@ -15,7 +15,9 @@ func ReplyToResponse(chattable Sendable, w http.ResponseWriter) (string, error) 
 		return "", err
 	}
 
-	s := fmt.Sprintf("TelegramMethod=%v&%v", chattable.TelegramMethod(), values.Encode())
+	// Telegram requires the webhook response to name the Bot API method in a
+	// parameter literally called "method".
+	s := fmt.Sprintf("method=%v&%v", chattable.TelegramMethod(), values.Encode())
 
 	_, err = w.Write([]byte(s))
 
