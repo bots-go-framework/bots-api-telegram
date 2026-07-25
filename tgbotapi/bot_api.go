@@ -174,7 +174,7 @@ func (bot *BotAPI) MakeRequest(telegramMethod string, params url.Values) (apiRes
 
 	switch resp.StatusCode {
 	case http.StatusUnauthorized:
-		return apiResp, fmt.Errorf("Telegram API method %q returned %s", telegramMethod, http.StatusText(resp.StatusCode))
+		return apiResp, fmt.Errorf("telegram API method %q returned %s", telegramMethod, http.StatusText(resp.StatusCode))
 	case http.StatusForbidden:
 		return apiResp, &ErrAPIForbidden{}
 	}
@@ -205,7 +205,7 @@ func (bot *BotAPI) MakeRequest(telegramMethod string, params url.Values) (apiRes
 
 	if err = json.Unmarshal(apiResp.Result, &apiResp); err != nil {
 		logRequestAndResponse()
-		return apiResp, fmt.Errorf("Telegram API method %q returned invalid JSON: %w", telegramMethod, err)
+		return apiResp, fmt.Errorf("telegram API method %q returned invalid JSON: %w", telegramMethod, err)
 	} else if !apiResp.Ok {
 		logRequestAndResponse()
 		if hadDeadlineExceeded && apiResp.ErrorCode == 400 && strings.Contains(apiResp.Description, "message is not modified") {
