@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/strongo/logus"
 	"github.com/technoweenie/multipartstreamer"
@@ -27,7 +26,57 @@ type BotAPI struct {
 	c      context.Context // TODO: Wrong? read docs on Context class
 }
 
-// EnableDebug enables debugging
+// telegramRequestError preserves the transport error for errors.Is/errors.As
+// without exposing the token-bearing Telegram endpoint through Error().
+type telegramRequestError struct {
+	method string
+	err    error
+}
+
+func (e telegramRequestError) Error() string {
+	return fmt.Sprintf("Telegram API request %q failed", e.method)
+}
+
+func (e telegramRequestError) Unwrap() error {
+	return e.err
+}
+
+// telegramResponseIOError preserves read failures for errors.Is/errors.As while
+// preventing response readers from placing secrets in the public error string.
+type telegramResponseIOError struct {
+	method string
+	err    error
+}
+
+func (e telegramResponseIOError) Error() string {
+	return fmt.Sprintf("failed to read Telegram API response for method %q", e.method)
+}
+
+func (e telegramResponseIOError) Unwrap() error {
+	return e.err
+}
+
+// telegramProviderError keeps the structured APIResponse available through
+// errors.As without exposing Telegram's free-form Description by default.
+type telegramProviderError struct {
+	method   string
+	response APIResponse
+}
+
+func (e telegramProviderError) Error() string {
+	return fmt.Sprintf(
+		"Telegram API method %q failed with error code %d",
+		e.method,
+		e.response.ErrorCode,
+	)
+}
+
+func (e telegramProviderError) Unwrap() error {
+	return e.response
+}
+
+// EnableDebug enables metadata-only debugging. Request parameters, bot tokens,
+// response bodies, and decoded provider objects are intentionally never logged.
 func (bot *BotAPI) EnableDebug(c context.Context) {
 	bot.c = c
 }
@@ -69,16 +118,22 @@ func (bot *BotAPI) MakeRequestFromChattable(m Sendable) (resp APIResponse, err e
 
 // SendRequest sends a request to a specific endpoint with our token and reads response.
 func (bot *BotAPI) MakeRequest(telegramMethod string, params url.Values) (apiResp APIResponse, err error) {
-	method := fmt.Sprintf(APIEndpoint, bot.Token, telegramMethod)
+	endpointURL := fmt.Sprintf(APIEndpoint, bot.Token, telegramMethod)
 
 	var hadDeadlineExceeded bool
 	var resp *http.Response
 
 	for i := 1; i <= 2; i++ { // TODO: Should this be in bots framework?
-		if resp, err = bot.Client.PostForm(method, params); err != nil {
+		if resp, err = bot.Client.PostForm(endpointURL, params); err != nil {
 			if strings.Contains(err.Error(), "DEADLINE_EXCEEDED") {
 				hadDeadlineExceeded = true
-				logus.Warningf(bot.c, "#%v fail to send POST due to DEADLINE_EXCEEDED to %v, will retry: %v", i, method, err)
+				logus.Warningf(
+					bot.c,
+					"Telegram API request retry: attempt=%d, method=%q, error_type=%T",
+					i,
+					telegramMethod,
+					err,
+				)
 				continue
 			}
 		}
@@ -86,23 +141,28 @@ func (bot *BotAPI) MakeRequest(telegramMethod string, params url.Values) (apiRes
 	}
 	if resp != nil && resp.Body != nil {
 		defer func() {
-			if err = resp.Body.Close(); err != nil {
-				logus.Warningf(bot.c, "failed to close response body: %v", err)
+			if closeErr := resp.Body.Close(); closeErr != nil {
+				logus.Warningf(bot.c, "failed to close Telegram API response body: error_type=%T", closeErr)
 			}
 		}()
 	}
 
 	if err != nil {
-		logus.Errorf(bot.c, "Failed to send POST to %v: %v", method, err.Error())
-		return APIResponse{Ok: false}, fmt.Errorf("%v: %s: %w", "POST", method, err)
+		logus.Errorf(bot.c, "Telegram API request failed: method=%q, error_type=%T", telegramMethod, err)
+		return APIResponse{Ok: false}, telegramRequestError{method: telegramMethod, err: err}
 	}
 
 	var body []byte
 	if resp.ContentLength > 0 {
 		var readerErr error
 		if body, readerErr = io.ReadAll(resp.Body); readerErr != nil {
-			logus.Errorf(bot.c, "Failed to read response.body: %v", readerErr)
-			err = readerErr
+			logus.Errorf(
+				bot.c,
+				"Failed to read Telegram API response body: method=%q, error_type=%T",
+				telegramMethod,
+				readerErr,
+			)
+			err = telegramResponseIOError{method: telegramMethod, err: readerErr}
 		}
 	}
 	apiResp = APIResponse{
@@ -114,31 +174,44 @@ func (bot *BotAPI) MakeRequest(telegramMethod string, params url.Values) (apiRes
 
 	switch resp.StatusCode {
 	case http.StatusUnauthorized:
-		return apiResp, fmt.Errorf("%s %+v unauthorized: %s", method, params, string(body))
+		return apiResp, fmt.Errorf("Telegram API method %q returned %s", telegramMethod, http.StatusText(resp.StatusCode))
 	case http.StatusForbidden:
 		return apiResp, &ErrAPIForbidden{}
 	}
 
 	if err != nil {
-		return APIResponse{Ok: false, Result: body}, fmt.Errorf("%v: %s: %w", "POST", method, err)
+		return APIResponse{Ok: false, Result: body}, err
 	}
 
 	logRequestAndResponse := func() {
 		if bot.c != nil {
-			logus.Debugf(bot.c, "Request to Telegram API: %v => %v", telegramMethod, params)
-			logus.Debugf(bot.c, "Telegram API response: %v", string(apiResp.Result))
+			logus.Debugf(
+				bot.c,
+				"Telegram API request: method=%q, parameter_count=%d",
+				telegramMethod,
+				len(params),
+			)
+			logus.Debugf(
+				bot.c,
+				"Telegram API response: method=%q, status=%d, body_bytes=%d, ok=%t, error_code=%d",
+				telegramMethod,
+				resp.StatusCode,
+				len(apiResp.Result),
+				apiResp.Ok,
+				apiResp.ErrorCode,
+			)
 		}
 	}
 
 	if err = json.Unmarshal(apiResp.Result, &apiResp); err != nil {
 		logRequestAndResponse()
-		return apiResp, fmt.Errorf("telegram API returned non JSON response or unknown JSON: %w:\n%s", err, string(apiResp.Result))
+		return apiResp, fmt.Errorf("Telegram API method %q returned invalid JSON: %w", telegramMethod, err)
 	} else if !apiResp.Ok {
 		logRequestAndResponse()
 		if hadDeadlineExceeded && apiResp.ErrorCode == 400 && strings.Contains(apiResp.Description, "message is not modified") {
 			return apiResp, nil
 		}
-		return apiResp, apiResp
+		return apiResp, telegramProviderError{method: telegramMethod, response: apiResp}
 	}
 
 	return apiResp, nil
@@ -163,7 +236,7 @@ func (bot *BotAPI) makeMessageRequest(endpoint string, params url.Values) (Messa
 
 	if string(resp.Result) != "true" { // TODO: This is a workaround for "answerCallbackQuery" that returns just "true".
 		if err = json.Unmarshal(resp.Result, &message); err != nil {
-			return message, fmt.Errorf("failed to call json.Unmarshal(s): %w: s=%s", err, string(resp.Result))
+			return message, fmt.Errorf("failed to decode Telegram API response for method %q: %w", endpoint, err)
 		}
 	}
 	return message, err
@@ -240,7 +313,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 
 	var res *http.Response
 	if res, err = bot.Client.Do(req); err != nil {
-		return
+		return apiResp, telegramRequestError{method: endpoint, err: err}
 	}
 	defer func() {
 		_ = res.Body.Close()
@@ -248,11 +321,17 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 
 	var body []byte
 	if body, err = io.ReadAll(res.Body); err != nil {
-		return
+		return apiResp, telegramResponseIOError{method: endpoint, err: err}
 	}
 
 	if bot.c != nil {
-		logus.Debugf(bot.c, string(body))
+		logus.Debugf(
+			bot.c,
+			"Telegram API upload response: method=%q, status=%d, body_bytes=%d",
+			endpoint,
+			res.StatusCode,
+			len(body),
+		)
 	}
 
 	if err = json.Unmarshal(body, &apiResp); err != nil {
@@ -260,8 +339,7 @@ func (bot *BotAPI) UploadFile(endpoint string, params map[string]string, fieldna
 	}
 
 	if !apiResp.Ok {
-		err = errors.New(apiResp.Description)
-		return
+		return apiResp, telegramProviderError{method: endpoint, response: apiResp}
 	}
 	return
 }
@@ -337,13 +415,17 @@ func (bot *BotAPI) Send(c Sendable) (Message, error) {
 	}
 }
 
-// debugLog checks if the bot is currently running in debug mode, and if
-// so will display information about the request and response in the
-// debug logus.
-func (bot *BotAPI) debugLog(context string, v url.Values, message interface{}) {
+// debugLog emits only operational metadata. Provider payloads can contain bot
+// tokens, user data, message text, callback data, and payment information.
+func (bot *BotAPI) debugLog(operation string, v url.Values, message interface{}) {
 	if bot.c != nil {
-		logus.Debugf(bot.c, "%s req : %+v\n", context, v)
-		logus.Debugf(bot.c, "%s resp: %+v\n", context, message)
+		logus.Debugf(
+			bot.c,
+			"Telegram API operation: method=%q, parameter_count=%d, response_type=%T",
+			operation,
+			len(v),
+			message,
+		)
 	}
 }
 
@@ -525,7 +607,14 @@ func (bot *BotAPI) SetWebhook(config WebhookConfig) (APIResponse, error) {
 		}
 
 		if bot.c != nil {
-			logus.Debugf(bot.c, "setWebhook resp: %+v\n", apiResp)
+			logus.Debugf(
+				bot.c,
+				"Telegram API operation: method=%q, ok=%t, error_code=%d, result_bytes=%d",
+				"setWebhook",
+				apiResp.Ok,
+				apiResp.ErrorCode,
+				len(apiResp.Result),
+			)
 		}
 
 		return apiResp, nil
@@ -924,7 +1013,7 @@ func (bot *BotAPI) SendCustomMessage(ctx context.Context, config Sendable, resul
 		return
 	}
 	if err = json.Unmarshal(apiResponse.Result, &result); err != nil {
-		err = fmt.Errorf("failed to unmarshal telegram response to type %T: %s: %w", result, string(apiResponse.Result), err)
+		err = fmt.Errorf("failed to decode Telegram API response for method %q into type %T: %w", telegramMethod, result, err)
 		return
 	}
 	return
