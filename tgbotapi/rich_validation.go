@@ -6,7 +6,10 @@ import (
 	"regexp"
 )
 
-var richMediaIDPattern = regexp.MustCompile(`^[A-Za-z0-9_-]{1,64}$`)
+var (
+	richMediaIDPattern        = regexp.MustCompile(`^[A-Za-z0-9_-]{1,64}$`)
+	richDateTimeFormatPattern = regexp.MustCompile(`^(r|w?[dD]?[tT]?)$`)
+)
 
 func (v InputRichMessage) validate(allowThinking bool) error {
 	set := 0
@@ -129,8 +132,11 @@ func (r RichText) Validate() error {
 		if err := requireText(); err != nil {
 			return err
 		}
-		if r.DateTimeFormat == "" {
-			return errors.New("date_time_format is required")
+		if !richDateTimeFormatPattern.MatchString(r.DateTimeFormat) {
+			return fmt.Errorf(
+				"date_time_format must match r|w?[dD]?[tT]?, got %q",
+				r.DateTimeFormat,
+			)
 		}
 	case RichTextTypeTextMention:
 		if err := requireText(); err != nil {

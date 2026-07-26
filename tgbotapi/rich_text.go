@@ -145,7 +145,25 @@ func (r RichText) MarshalJSON() ([]byte, error) {
 		}
 		return json.Marshal(r.PlainText)
 	}
-	return json.Marshal(richTextAlias(r))
+	raw, err := json.Marshal(richTextAlias(r))
+	if err != nil {
+		return nil, err
+	}
+	if r.Type != RichTextTypeDateTime || (r.DateTimeFormat != "" && r.UnixTime != 0) {
+		return raw, nil
+	}
+
+	var object map[string]json.RawMessage
+	if err = json.Unmarshal(raw, &object); err != nil {
+		return nil, fmt.Errorf("failed to marshal required RichTextDateTime fields: %w", err)
+	}
+	if r.DateTimeFormat == "" {
+		object["date_time_format"] = json.RawMessage(`""`)
+	}
+	if r.UnixTime == 0 {
+		object["unix_time"] = json.RawMessage(`0`)
+	}
+	return json.Marshal(object)
 }
 
 // UnmarshalJSON implements the three-shape RichText wire encoding: a bare JSON string for plain text,
