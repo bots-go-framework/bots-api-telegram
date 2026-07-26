@@ -119,6 +119,45 @@ type InputMediaPhoto struct {
 	HasSpoiler bool `json:"has_spoiler,omitempty"`
 }
 
+// InputMediaSticker represents a sticker file to be sent.
+type InputMediaSticker struct {
+	Type  string `json:"type"`
+	Media string `json:"media"`
+	Emoji string `json:"emoji,omitempty"`
+}
+
+// InputMediaLocation represents a location to be sent.
+type InputMediaLocation struct {
+	Type               string  `json:"type"`
+	Latitude           float64 `json:"latitude"`
+	Longitude          float64 `json:"longitude"`
+	HorizontalAccuracy float64 `json:"horizontal_accuracy,omitempty"`
+}
+
+// InputMediaVenue represents a venue to be sent.
+type InputMediaVenue struct {
+	Type            string  `json:"type"`
+	Latitude        float64 `json:"latitude"`
+	Longitude       float64 `json:"longitude"`
+	Title           string  `json:"title"`
+	Address         string  `json:"address"`
+	FoursquareID    string  `json:"foursquare_id,omitempty"`
+	FoursquareType  string  `json:"foursquare_type,omitempty"`
+	GooglePlaceID   string  `json:"google_place_id,omitempty"`
+	GooglePlaceType string  `json:"google_place_type,omitempty"`
+}
+
+// InputMediaDocument represents a general file to be sent.
+type InputMediaDocument struct {
+	Type                        string          `json:"type"`
+	Media                       string          `json:"media"`
+	Thumbnail                   string          `json:"thumbnail,omitempty"`
+	Caption                     string          `json:"caption,omitempty"`
+	ParseMode                   string          `json:"parse_mode,omitempty"`
+	CaptionEntities             []MessageEntity `json:"caption_entities,omitempty"`
+	DisableContentTypeDetection bool            `json:"disable_content_type_detection,omitempty"`
+}
+
 // InputMediaVideo represents a video to be sent.
 //
 // https://core.telegram.org/bots/api#inputmediavideo

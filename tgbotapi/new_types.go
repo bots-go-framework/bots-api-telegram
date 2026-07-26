@@ -3,14 +3,20 @@ package tgbotapi
 // SuggestedPostInfo contains information about suggested post parameters.
 // https://core.telegram.org/bots/api#suggestedpostinfo
 type SuggestedPostInfo struct {
-	Price             *SuggestedPostPrice `json:"price,omitempty"`
-	SuggestedPostDate int                 `json:"suggested_post_date,omitempty"`
+	State    string              `json:"state"`
+	Price    *SuggestedPostPrice `json:"price,omitempty"`
+	SendDate int                 `json:"send_date,omitempty"`
+
+	// Deprecated: pre-release bindings used suggested_post_date. Retained for
+	// decoding stored updates; current Telegram updates use SendDate.
+	SuggestedPostDate int `json:"suggested_post_date,omitempty"`
 }
 
 // SuggestedPostPrice describes the price of a suggested post.
 // https://core.telegram.org/bots/api#suggestedpostprice
 type SuggestedPostPrice struct {
-	StarCount int `json:"star_count"`
+	Currency string `json:"currency"`
+	Amount   int64  `json:"amount"`
 }
 
 // SuggestedPostApproved represents a service message about the approval of a suggested post.
@@ -42,8 +48,8 @@ type SuggestedPostRefunded struct {
 // DirectMessagesTopic represents information about a direct messages chat topic.
 // https://core.telegram.org/bots/api#directmessagestopic
 type DirectMessagesTopic struct {
-	MessageThreadID int    `json:"message_thread_id"`
-	Name            string `json:"name,omitempty"`
+	TopicID int64 `json:"topic_id"`
+	User    *User `json:"user,omitempty"`
 }
 
 // ChatOwnerLeft represents a service message: chat owner has left the chat.

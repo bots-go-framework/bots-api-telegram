@@ -56,29 +56,31 @@ func TestUpdateGuestMessage(t *testing.T) {
 // TestSentGuestMessage verifies round-tripping of the SentGuestMessage class returned by
 // answerGuestQuery (Bot API 10.0).
 func TestSentGuestMessage(t *testing.T) {
-	data := `{"message_id": 55}`
+	data := `{"inline_message_id": "guest-inline-55"}`
 	var sent SentGuestMessage
 	require.NoError(t, json.Unmarshal([]byte(data), &sent))
-	assert.Equal(t, 55, sent.MessageID)
+	assert.Equal(t, "guest-inline-55", sent.InlineMessageID)
 }
 
 // TestBotAccessSettings verifies round-tripping of BotAccessSettings, used by
 // getManagedBotAccessSettings/setManagedBotAccessSettings (Bot API 10.0).
 func TestBotAccessSettings(t *testing.T) {
 	settings := BotAccessSettings{
-		CanReadMessages:   true,
-		CanSendMessages:   true,
-		CanManageSettings: false,
+		IsAccessRestricted: true,
+		AddedUsers: []User{
+			{ID: 42, FirstName: "Player"},
+		},
 	}
 
 	data, err := encodeToJson(settings)
 	require.NoError(t, err)
 
-	var decoded map[string]any
+	var decoded BotAccessSettings
 	require.NoError(t, json.Unmarshal(data, &decoded))
-	assert.Equal(t, true, decoded["can_read_messages"])
-	assert.Equal(t, true, decoded["can_send_messages"])
-	assert.NotContains(t, decoded, "can_manage_settings")
+	assert.True(t, decoded.IsAccessRestricted)
+	require.Len(t, decoded.AddedUsers, 1)
+	assert.EqualValues(t, 42, decoded.AddedUsers[0].ID)
+	assert.Equal(t, "Player", decoded.AddedUsers[0].FirstName)
 }
 
 // TestLivePhotoUnmarshal verifies parsing of the LivePhoto class (Bot API 10.0 Live Photos).

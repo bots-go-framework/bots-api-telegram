@@ -106,16 +106,98 @@ func TestRichTextCustomEmoji(t *testing.T) {
 
 // TestRichTextDateTime verifies RichTextDateTime's unix_time and date_time_format fields.
 func TestRichTextDateTime(t *testing.T) {
-	data := `{"type": "date_time", "text": "yesterday", "unix_time": 1700000000, "date_time_format": "relative"}`
+	data := `{"type": "date_time", "text": "yesterday", "unix_time": 1700000000, "date_time_format": "r"}`
 	var rt RichText
 	require.NoError(t, json.Unmarshal([]byte(data), &rt))
 	assert.Equal(t, RichTextTypeDateTime, rt.Type)
 	assert.Equal(t, 1700000000, rt.UnixTime)
-	assert.Equal(t, "relative", rt.DateTimeFormat)
+	assert.Equal(t, "r", rt.DateTimeFormat)
 
 	out, err := json.Marshal(rt)
 	require.NoError(t, err)
 	assert.JSONEq(t, data, string(out))
+}
+
+func TestRichTextDateTimeFormatValidate(t *testing.T) {
+	tests := []struct {
+		name    string
+		format  string
+		wantErr bool
+	}{
+		{name: "relative", format: "r"},
+		{name: "weekday", format: "w"},
+		{name: "short date", format: "d"},
+		{name: "long date", format: "D"},
+		{name: "short time", format: "t"},
+		{name: "long time", format: "T"},
+		{name: "weekday short date", format: "wd"},
+		{name: "weekday long date", format: "wD"},
+		{name: "weekday short time", format: "wt"},
+		{name: "weekday long time", format: "wT"},
+		{name: "short date short time", format: "dt"},
+		{name: "short date long time", format: "dT"},
+		{name: "long date short time", format: "Dt"},
+		{name: "long date long time", format: "DT"},
+		{name: "weekday short date short time", format: "wdt"},
+		{name: "weekday short date long time", format: "wdT"},
+		{name: "weekday long date short time", format: "wDt"},
+		{name: "weekday long date long time", format: "wDT"},
+		{name: "empty", format: ""},
+		{name: "word alias", format: "relative", wantErr: true},
+		{name: "uppercase relative", format: "R", wantErr: true},
+		{name: "relative with date", format: "rd", wantErr: true},
+		{name: "date before weekday", format: "dw", wantErr: true},
+		{name: "time before date", format: "td", wantErr: true},
+		{name: "duplicate date", format: "dd", wantErr: true},
+		{name: "duplicate time", format: "TT", wantErr: true},
+		{name: "surrounding whitespace", format: " r ", wantErr: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rt := RichText{
+				Type:           RichTextTypeDateTime,
+				Text:           &RichText{PlainText: "when"},
+				UnixTime:       1_700_000_000,
+				DateTimeFormat: tt.format,
+			}
+			err := rt.Validate()
+			if tt.wantErr {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestRichTextDateTimeRequiredZeroValuesArePresentOnWire(t *testing.T) {
+	rt := RichText{
+		Type: RichTextTypeDateTime,
+		Text: &RichText{PlainText: "when"},
+	}
+	require.NoError(t, rt.Validate())
+
+	data, err := json.Marshal(rt)
+	require.NoError(t, err)
+	assert.JSONEq(t, `{
+		"type": "date_time",
+		"text": "when",
+		"unix_time": 0,
+		"date_time_format": ""
+	}`, string(data))
+}
+
+func TestRichTextDateTimeFieldsAreOmittedForOtherVariants(t *testing.T) {
+	rt := RichText{
+		Type: RichTextTypeBold,
+		Text: &RichText{PlainText: "bold"},
+	}
+
+	data, err := json.Marshal(rt)
+	require.NoError(t, err)
+	assert.NotContains(t, string(data), "date_time_format")
+	assert.NotContains(t, string(data), "unix_time")
 }
 
 // TestRichBlockParagraph verifies RichBlockParagraph JSON round-tripping via the flattened RichBlock struct.

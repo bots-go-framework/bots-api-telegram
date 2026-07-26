@@ -86,12 +86,38 @@ type User struct {
 
 // ChatMember holds information about chat member
 type ChatMember struct {
+	// Deprecated: use MemberUser. Kept for source compatibility with the
+	// framework's earlier, incomplete representation.
 	User
-	IsBot bool `json:"is_bot,omitempty"`
+	Status     string `json:"status,omitempty"`
+	MemberUser *User  `json:"user,omitempty"`
+	IsBot      bool   `json:"is_bot,omitempty"`
+
+	// Permission fields are populated for restricted members and administrators.
+	CanSendMessages       bool `json:"can_send_messages,omitempty"`
+	CanSendAudios         bool `json:"can_send_audios,omitempty"`
+	CanSendDocuments      bool `json:"can_send_documents,omitempty"`
+	CanSendPhotos         bool `json:"can_send_photos,omitempty"`
+	CanSendVideos         bool `json:"can_send_videos,omitempty"`
+	CanSendVideoNotes     bool `json:"can_send_video_notes,omitempty"`
+	CanSendVoiceNotes     bool `json:"can_send_voice_notes,omitempty"`
+	CanSendPolls          bool `json:"can_send_polls,omitempty"`
+	CanSendOtherMessages  bool `json:"can_send_other_messages,omitempty"`
+	CanAddWebPagePreviews bool `json:"can_add_web_page_previews,omitempty"`
+	CanReactToMessages    bool `json:"can_react_to_messages,omitempty"`
+	CanEditTag            bool `json:"can_edit_tag,omitempty"`
+	CanChangeInfo         bool `json:"can_change_info,omitempty"`
+	CanInviteUsers        bool `json:"can_invite_users,omitempty"`
+	CanPinMessages        bool `json:"can_pin_messages,omitempty"`
+	CanManageTopics       bool `json:"can_manage_topics,omitempty"`
+	UntilDate             int  `json:"until_date,omitempty"`
 }
 
 // IsBotUser indicates if chat member is a bot
 func (chatMember ChatMember) IsBotUser() bool {
+	if chatMember.MemberUser != nil {
+		return chatMember.MemberUser.IsBot
+	}
 	return chatMember.IsBot
 }
 
@@ -198,7 +224,18 @@ type Chat struct {
 
 	// Optional. True, if the chat is the direct messages chat of a channel
 	IsDirectMessages bool `json:"is_direct_messages,omitempty"`
+
+	// Optional. Bot assigned to process join request queries. Bot API 10.1+
+	GuardBot *User `json:"guard_bot,omitempty"`
+
+	// Optional. Community to which the chat belongs. Bot API 10.2+
+	Community *Community `json:"community,omitempty"`
 }
+
+// ChatFullInfo is the object returned by getChat. This package historically
+// modeled the same fields directly on Chat, so the alias preserves source
+// compatibility while exposing the current Bot API name.
+type ChatFullInfo = Chat
 
 // IsPrivate returns if the Chat is a private conversation.
 func (c *Chat) IsPrivate() bool {
@@ -353,16 +390,20 @@ type Contact struct {
 
 // Location contains information about a place.
 type Location struct {
-	Longitude float64 `json:"longitude"`
-	Latitude  float64 `json:"latitude"`
+	Longitude          float64 `json:"longitude"`
+	Latitude           float64 `json:"latitude"`
+	HorizontalAccuracy float64 `json:"horizontal_accuracy,omitempty"`
 }
 
 // Venue contains information about a venue, including its Location.
 type Venue struct {
-	Location     Location `json:"location"`
-	Title        string   `json:"title"`
-	Address      string   `json:"address"`
-	FoursquareID string   `json:"foursquare_id,omitempty"` // optional
+	Location        Location `json:"location"`
+	Title           string   `json:"title"`
+	Address         string   `json:"address"`
+	FoursquareID    string   `json:"foursquare_id,omitempty"`
+	FoursquareType  string   `json:"foursquare_type,omitempty"`
+	GooglePlaceID   string   `json:"google_place_id,omitempty"`
+	GooglePlaceType string   `json:"google_place_type,omitempty"`
 }
 
 // UserProfilePhotos contains a set of user profile photos.
@@ -588,14 +629,53 @@ type KeyboardButton struct {
 	// Available if the bot is allowed to use custom emoji in messages. Bot API 9.4+
 	IconCustomEmojiID string `json:"icon_custom_emoji_id,omitempty"`
 
-	// Optional. The color of the button. One of "default", "positive", "destructive". Bot API 9.4+
+	// Optional. The color of the button. One of "primary", "success", "danger". Bot API 9.4+
 	Style string `json:"style,omitempty"`
+}
+
+const (
+	ButtonStylePrimary = "primary"
+	ButtonStyleSuccess = "success"
+	ButtonStyleDanger  = "danger"
+)
+
+func validateButtonStyle(style string) error {
+	switch style {
+	case "", ButtonStylePrimary, ButtonStyleSuccess, ButtonStyleDanger:
+		return nil
+	default:
+		return fmt.Errorf("invalid button style %q: expected primary, success, or danger", style)
+	}
+}
+
+// ChatPermissions describes actions that a non-administrator user may perform
+// in a chat.
+type ChatPermissions struct {
+	CanSendMessages       bool `json:"can_send_messages,omitempty"`
+	CanSendAudios         bool `json:"can_send_audios,omitempty"`
+	CanSendDocuments      bool `json:"can_send_documents,omitempty"`
+	CanSendPhotos         bool `json:"can_send_photos,omitempty"`
+	CanSendVideos         bool `json:"can_send_videos,omitempty"`
+	CanSendVideoNotes     bool `json:"can_send_video_notes,omitempty"`
+	CanSendVoiceNotes     bool `json:"can_send_voice_notes,omitempty"`
+	CanSendPolls          bool `json:"can_send_polls,omitempty"`
+	CanSendOtherMessages  bool `json:"can_send_other_messages,omitempty"`
+	CanAddWebPagePreviews bool `json:"can_add_web_page_previews,omitempty"`
+	CanReactToMessages    bool `json:"can_react_to_messages,omitempty"`
+	CanEditTag            bool `json:"can_edit_tag,omitempty"`
+	CanChangeInfo         bool `json:"can_change_info,omitempty"`
+	CanInviteUsers        bool `json:"can_invite_users,omitempty"`
+	CanPinMessages        bool `json:"can_pin_messages,omitempty"`
+	CanManageTopics       bool `json:"can_manage_topics,omitempty"`
 }
 
 // Validate checks if the keyboard button is valid
 func (j *KeyboardButton) Validate() error {
 	if j.Text == "" {
 		return errors.New("keyboard button requires 'text' field")
+	}
+	if err := validateButtonStyle(j.Style); err != nil {
+		return err
 	}
 	return nil
 }
@@ -760,11 +840,14 @@ type InlineKeyboardButton struct {
 	// Available if the bot is allowed to use custom emoji in messages. Bot API 9.4+
 	IconCustomEmojiID string `json:"icon_custom_emoji_id,omitempty"`
 
-	// Optional. The color of the button. One of "default", "positive", "destructive". Bot API 9.4+
+	// Optional. The color of the button. One of "primary", "success", "danger". Bot API 9.4+
 	Style string `json:"style,omitempty"`
 }
 
 func (v InlineKeyboardButton) Validate() error {
+	if err := validateButtonStyle(v.Style); err != nil {
+		return err
+	}
 	var populatedFields []string
 	if v.URL != "" {
 		populatedFields = append(populatedFields, "url")

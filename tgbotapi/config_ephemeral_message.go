@@ -30,6 +30,15 @@ type baseEphemeralMessageEdit struct {
 //
 //goland:noinspection GoMixedReceiverTypes
 func (v baseEphemeralMessageEdit) Values() (url.Values, error) {
+	if v.ChatID == 0 && v.ChannelUsername == "" {
+		return nil, fmt.Errorf("chat_id is required")
+	}
+	if v.ReceiverUserID == 0 {
+		return nil, fmt.Errorf("receiver_user_id is required")
+	}
+	if v.EphemeralMessageID == 0 {
+		return nil, fmt.Errorf("ephemeral_message_id is required")
+	}
 	values := url.Values{}
 	if v.ChannelUsername != "" {
 		values.Add("chat_id", v.ChannelUsername)
@@ -71,6 +80,15 @@ type EditEphemeralMessageTextConfig struct {
 	LinkPreviewOptions *LinkPreviewOptions `json:"link_preview_options,omitempty"`
 }
 
+// NewEditEphemeralMessageText constructs an externally usable ephemeral text
+// edit without exposing the package's shared addressing implementation.
+func NewEditEphemeralMessageText(chatID, receiverUserID, ephemeralMessageID int64, text string) EditEphemeralMessageTextConfig {
+	return EditEphemeralMessageTextConfig{
+		baseEphemeralMessageEdit: newBaseEphemeralMessageEdit(chatID, receiverUserID, ephemeralMessageID),
+		Text:                     text,
+	}
+}
+
 // Values returns URL values representation of EditEphemeralMessageTextConfig
 //
 //goland:noinspection GoMixedReceiverTypes
@@ -78,6 +96,12 @@ func (v EditEphemeralMessageTextConfig) Values() (url.Values, error) {
 	values, err := v.baseEphemeralMessageEdit.Values()
 	if err != nil {
 		return values, err
+	}
+	if len([]rune(v.Text)) == 0 || len([]rune(v.Text)) > 4096 {
+		return values, fmt.Errorf("text must contain 1-4096 characters")
+	}
+	if v.ParseMode != "" && len(v.Entities) > 0 {
+		return values, fmt.Errorf("parse_mode and entities are mutually exclusive")
 	}
 
 	values.Add("text", v.Text)
@@ -122,6 +146,14 @@ type EditEphemeralMessageMediaConfig struct {
 	Media any `json:"media"`
 }
 
+// NewEditEphemeralMessageMedia constructs an ephemeral media edit.
+func NewEditEphemeralMessageMedia(chatID, receiverUserID, ephemeralMessageID int64, media any) EditEphemeralMessageMediaConfig {
+	return EditEphemeralMessageMediaConfig{
+		baseEphemeralMessageEdit: newBaseEphemeralMessageEdit(chatID, receiverUserID, ephemeralMessageID),
+		Media:                    media,
+	}
+}
+
 // Values returns URL values representation of EditEphemeralMessageMediaConfig
 //
 //goland:noinspection GoMixedReceiverTypes
@@ -129,6 +161,9 @@ func (v EditEphemeralMessageMediaConfig) Values() (url.Values, error) {
 	values, err := v.baseEphemeralMessageEdit.Values()
 	if err != nil {
 		return values, err
+	}
+	if v.Media == nil {
+		return values, fmt.Errorf("media is required")
 	}
 
 	data, err := encodeToJson(v.Media)
@@ -165,6 +200,14 @@ type EditEphemeralMessageCaptionConfig struct {
 	CaptionEntities []MessageEntity `json:"caption_entities,omitempty"`
 }
 
+// NewEditEphemeralMessageCaption constructs an ephemeral caption edit.
+func NewEditEphemeralMessageCaption(chatID, receiverUserID, ephemeralMessageID int64, caption string) EditEphemeralMessageCaptionConfig {
+	return EditEphemeralMessageCaptionConfig{
+		baseEphemeralMessageEdit: newBaseEphemeralMessageEdit(chatID, receiverUserID, ephemeralMessageID),
+		Caption:                  caption,
+	}
+}
+
 // Values returns URL values representation of EditEphemeralMessageCaptionConfig
 //
 //goland:noinspection GoMixedReceiverTypes
@@ -172,6 +215,12 @@ func (v EditEphemeralMessageCaptionConfig) Values() (url.Values, error) {
 	values, err := v.baseEphemeralMessageEdit.Values()
 	if err != nil {
 		return values, err
+	}
+	if len([]rune(v.Caption)) > 1024 {
+		return values, fmt.Errorf("caption must contain at most 1024 characters")
+	}
+	if v.ParseMode != "" && len(v.CaptionEntities) > 0 {
+		return values, fmt.Errorf("parse_mode and caption_entities are mutually exclusive")
 	}
 
 	values.Add("caption", v.Caption)
@@ -204,6 +253,18 @@ type EditEphemeralMessageReplyMarkupConfig struct {
 	baseEphemeralMessageEdit
 }
 
+// NewEditEphemeralMessageReplyMarkup constructs an ephemeral keyboard edit.
+func NewEditEphemeralMessageReplyMarkup(chatID, receiverUserID, ephemeralMessageID int64, replyMarkup *InlineKeyboardMarkup) EditEphemeralMessageReplyMarkupConfig {
+	return EditEphemeralMessageReplyMarkupConfig{
+		baseEphemeralMessageEdit: baseEphemeralMessageEdit{
+			ChatID:             chatID,
+			ReceiverUserID:     receiverUserID,
+			EphemeralMessageID: ephemeralMessageID,
+			ReplyMarkup:        replyMarkup,
+		},
+	}
+}
+
 //goland:noinspection GoMixedReceiverTypes
 func (v EditEphemeralMessageReplyMarkupConfig) Values() (url.Values, error) {
 	return v.baseEphemeralMessageEdit.Values()
@@ -221,6 +282,21 @@ var _ Sendable = EditEphemeralMessageReplyMarkupConfig{}
 // https://core.telegram.org/bots/api#deleteephemeralmessage
 type DeleteEphemeralMessageConfig struct {
 	baseEphemeralMessageEdit
+}
+
+// NewDeleteEphemeralMessage constructs an ephemeral-message deletion.
+func NewDeleteEphemeralMessage(chatID, receiverUserID, ephemeralMessageID int64) DeleteEphemeralMessageConfig {
+	return DeleteEphemeralMessageConfig{
+		baseEphemeralMessageEdit: newBaseEphemeralMessageEdit(chatID, receiverUserID, ephemeralMessageID),
+	}
+}
+
+func newBaseEphemeralMessageEdit(chatID, receiverUserID, ephemeralMessageID int64) baseEphemeralMessageEdit {
+	return baseEphemeralMessageEdit{
+		ChatID:             chatID,
+		ReceiverUserID:     receiverUserID,
+		EphemeralMessageID: ephemeralMessageID,
+	}
 }
 
 //goland:noinspection GoMixedReceiverTypes
