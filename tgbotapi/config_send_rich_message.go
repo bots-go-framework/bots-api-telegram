@@ -22,6 +22,9 @@ type RichMessageConfig struct {
 //
 //goland:noinspection GoMixedReceiverTypes
 func (v RichMessageConfig) Values() (url.Values, error) {
+	if err := v.RichMessage.Validate(); err != nil {
+		return nil, fmt.Errorf("invalid rich message: %w", err)
+	}
 	values, err := v.BaseChat.Values()
 	if err != nil {
 		return values, err
@@ -71,6 +74,15 @@ type RichMessageDraftConfig struct {
 //
 //goland:noinspection GoMixedReceiverTypes
 func (v RichMessageDraftConfig) Values() (url.Values, error) {
+	if v.ChatID == 0 {
+		return nil, fmt.Errorf("chat_id is required")
+	}
+	if v.DraftID == 0 {
+		return nil, fmt.Errorf("draft_id must be non-zero")
+	}
+	if err := v.RichMessage.ValidateDraft(); err != nil {
+		return nil, fmt.Errorf("invalid rich message draft: %w", err)
+	}
 	values := url.Values{}
 	values.Add("chat_id", strconv.FormatInt(v.ChatID, 10))
 	if v.MessageThreadID != 0 {

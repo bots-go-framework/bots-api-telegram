@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/strongo/logus"
 	"github.com/technoweenie/multipartstreamer"
@@ -849,15 +850,23 @@ func (bot *BotAPI) GetManagedBotAccessSettings(userID int64) (settings BotAccess
 // SetManagedBotAccessSettings updates the access settings of a bot managed by the current bot.
 //
 // https://core.telegram.org/bots/api#setmanagedbotaccesssettings
-func (bot *BotAPI) SetManagedBotAccessSettings(userID int64, settings BotAccessSettings) (APIResponse, error) {
+func (bot *BotAPI) SetManagedBotAccessSettings(userID int64, isAccessRestricted bool, addedUserIDs []int64) (APIResponse, error) {
+	if userID == 0 {
+		return APIResponse{}, errors.New("user_id is required")
+	}
+	if len(addedUserIDs) > 10 {
+		return APIResponse{}, errors.New("added_user_ids supports at most 10 users")
+	}
 	v := url.Values{}
 	v.Add("user_id", strconv.FormatInt(userID, 10))
-
-	data, err := encodeToJson(settings)
-	if err != nil {
-		return APIResponse{}, err
+	v.Add("is_access_restricted", strconv.FormatBool(isAccessRestricted))
+	if len(addedUserIDs) > 0 {
+		data, err := encodeToJson(addedUserIDs)
+		if err != nil {
+			return APIResponse{}, err
+		}
+		v.Add("added_user_ids", string(data))
 	}
-	v.Add("access_settings", string(data))
 
 	bot.debugLog("setManagedBotAccessSettings", v, nil)
 
@@ -868,9 +877,23 @@ func (bot *BotAPI) SetManagedBotAccessSettings(userID int64, settings BotAccessS
 // their profile page.
 //
 // https://core.telegram.org/bots/api#getuserpersonalchatmessages
-func (bot *BotAPI) GetUserPersonalChatMessages(userID int64) (messages []Message, err error) {
+func (bot *BotAPI) GetUserPersonalChatMessages(userID int64, requestedLimit ...int) (messages []Message, err error) {
+	limit := 20
+	if len(requestedLimit) > 1 {
+		return nil, errors.New("only one limit may be specified")
+	}
+	if len(requestedLimit) == 1 {
+		limit = requestedLimit[0]
+	}
+	if userID == 0 {
+		return nil, errors.New("user_id is required")
+	}
+	if limit < 1 || limit > 20 {
+		return nil, errors.New("limit must be between 1 and 20")
+	}
 	v := url.Values{}
 	v.Add("user_id", strconv.FormatInt(userID, 10))
+	v.Add("limit", strconv.Itoa(limit))
 
 	resp, err := bot.MakeRequest("getUserPersonalChatMessages", v)
 	if err != nil {
@@ -890,10 +913,23 @@ func (bot *BotAPI) GetUserPersonalChatMessages(userID int64) (messages []Message
 // the bot is not a member of.
 //
 // https://core.telegram.org/bots/api#answerguestquery
-func (bot *BotAPI) AnswerGuestQuery(guestQueryID, text string) (sent SentGuestMessage, err error) {
+func (bot *BotAPI) AnswerGuestQuery(guestQueryID string, result InlineQueryResult) (sent SentGuestMessage, err error) {
+	if guestQueryID == "" {
+		return sent, errors.New("guest_query_id is required")
+	}
+	if result == nil {
+		return sent, errors.New("result is nil")
+	}
+	if err = result.Validate(); err != nil {
+		return sent, fmt.Errorf("invalid inline query result: %w", err)
+	}
 	v := url.Values{}
 	v.Add("guest_query_id", guestQueryID)
-	v.Add("text", text)
+	resultJSON, err := encodeToJson(result)
+	if err != nil {
+		return sent, fmt.Errorf("failed to marshal inline query result: %w", err)
+	}
+	v.Add("result", string(resultJSON))
 
 	resp, err := bot.MakeRequest("answerGuestQuery", v)
 	if err != nil {
@@ -907,6 +943,34 @@ func (bot *BotAPI) AnswerGuestQuery(guestQueryID, text string) (sent SentGuestMe
 	bot.debugLog("answerGuestQuery", v, sent)
 
 	return sent, nil
+}
+
+// GetChatAdministrators returns chat administrators. Set returnBots to include
+// administrator bots other than the current bot.
+//
+// https://core.telegram.org/bots/api#getchatadministrators
+func (bot *BotAPI) GetChatAdministrators(chatID string, includeBots ...bool) (members []ChatMember, err error) {
+	if chatID == "" {
+		return nil, errors.New("chat_id is required")
+	}
+	if len(includeBots) > 1 {
+		return nil, errors.New("only one return_bots value may be specified")
+	}
+	returnBots := len(includeBots) == 1 && includeBots[0]
+	v := url.Values{}
+	v.Add("chat_id", chatID)
+	if returnBots {
+		v.Add("return_bots", "true")
+	}
+	resp, err := bot.MakeRequest("getChatAdministrators", v)
+	if err != nil {
+		return nil, err
+	}
+	if err = json.Unmarshal(resp.Result, &members); err != nil {
+		return nil, err
+	}
+	bot.debugLog("getChatAdministrators", v, members)
+	return members, nil
 }
 
 // DeleteAllMessageReactions removes all reactions from a message. Requires the can_restrict_members
@@ -942,6 +1006,14 @@ func (bot *BotAPI) DeleteMessageReaction(chatID int64, messageID int, userID int
 //
 // https://core.telegram.org/bots/api#answerchatjoinrequestquery
 func (bot *BotAPI) AnswerChatJoinRequestQuery(chatJoinRequestQueryID string, result ChatJoinRequestQueryResult) (APIResponse, error) {
+	if chatJoinRequestQueryID == "" {
+		return APIResponse{}, errors.New("chat_join_request_query_id is required")
+	}
+	switch result {
+	case ChatJoinRequestQueryResultApprove, ChatJoinRequestQueryResultDecline, ChatJoinRequestQueryResultQueue:
+	default:
+		return APIResponse{}, fmt.Errorf("invalid chat join request result %q", result)
+	}
 	v := url.Values{}
 	v.Add("chat_join_request_query_id", chatJoinRequestQueryID)
 	v.Add("result", string(result))
@@ -957,6 +1029,12 @@ func (bot *BotAPI) AnswerChatJoinRequestQuery(chatJoinRequestQueryID string, res
 //
 // https://core.telegram.org/bots/api#sendchatjoinrequestwebapp
 func (bot *BotAPI) SendChatJoinRequestWebApp(chatJoinRequestQueryID, webAppURL string) (APIResponse, error) {
+	if chatJoinRequestQueryID == "" {
+		return APIResponse{}, errors.New("chat_join_request_query_id is required")
+	}
+	if webAppURL == "" {
+		return APIResponse{}, errors.New("web_app_url is required")
+	}
 	v := url.Values{}
 	v.Add("chat_join_request_query_id", chatJoinRequestQueryID)
 	v.Add("web_app_url", webAppURL)

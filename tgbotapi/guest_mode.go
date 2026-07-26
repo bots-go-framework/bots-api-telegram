@@ -5,6 +5,6 @@ package tgbotapi
 //
 // https://core.telegram.org/bots/api#sentguestmessage
 type SentGuestMessage struct {
-	// Unique identifier of the sent message
-	MessageID int `json:"message_id"`
+	// Unique identifier of the inline message sent by the guest bot.
+	InlineMessageID string `json:"inline_message_id"`
 }

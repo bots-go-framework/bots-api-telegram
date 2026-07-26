@@ -120,9 +120,12 @@ type BaseChat struct {
 	ProtectContent bool `json:"protect_content,omitempty"` // Protects the contents of the sent message from forwarding and saving
 
 	// Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-	MessageThreadID    int64  `json:"message_thread_id,omitempty"`
-	MessageEffectID    string `json:"message_effect_id,omitempty"`
-	AllowPaidBroadcast bool   `json:"allow_paid_broadcast,omitempty"` // Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+	MessageThreadID       int64  `json:"message_thread_id,omitempty"`
+	DirectMessagesTopicID int64  `json:"direct_messages_topic_id,omitempty"`
+	MessageEffectID       string `json:"message_effect_id,omitempty"`
+	AllowPaidBroadcast    bool   `json:"allow_paid_broadcast,omitempty"` // Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+
+	SuggestedPostParameters *SuggestedPostParameters `json:"suggested_post_parameters,omitempty"`
 
 	ReplyParameters *ReplyParameters `json:"reply_parameters,omitempty"` // Description of the message to reply to
 
@@ -157,12 +160,11 @@ func (j BaseChat) Values() (url.Values, error) {
 		values.Add("protect_content", "true")
 	}
 
-	if j.AllowPaidBroadcast {
-		values.Add("allow_paid_broadcast", "true")
-	}
-
 	if j.MessageThreadID != 0 {
 		values.Add("message_thread_id", strconv.FormatInt(j.MessageThreadID, 10))
+	}
+	if j.DirectMessagesTopicID != 0 {
+		values.Add("direct_messages_topic_id", strconv.FormatInt(j.DirectMessagesTopicID, 10))
 	}
 
 	if j.MessageEffectID != "" {
@@ -178,8 +180,24 @@ func (j BaseChat) Values() (url.Values, error) {
 	if j.CallbackQueryID != "" {
 		values.Add("callback_query_id", j.CallbackQueryID)
 	}
+	if j.BusinessConnectionID != "" {
+		values.Add("business_connection_id", j.BusinessConnectionID)
+	}
+	if j.SuggestedPostParameters != nil {
+		data, err := encodeToJson(j.SuggestedPostParameters)
+		if err != nil {
+			return values, fmt.Errorf("failed to marshal suggested_post_parameters: %w", err)
+		}
+		values.Add("suggested_post_parameters", string(data))
+	}
 
 	if j.ReplyParameters != nil {
+		if err := j.ReplyParameters.Validate(); err != nil {
+			return values, fmt.Errorf("invalid reply_parameters: %w", err)
+		}
+		if j.ReplyParameters.EphemeralMessageID != 0 && j.ReceiverUserID == 0 {
+			return values, errors.New("receiver_user_id is required when replying to an ephemeral message")
+		}
 		data, err := encodeToJson(j.ReplyParameters)
 		if err != nil {
 			return values, err
@@ -232,6 +250,31 @@ func (file BaseFile) params() (map[string]string, error) {
 
 	if file.ReplyToMessageID != 0 {
 		params["reply_to_message_id"] = strconv.Itoa(file.ReplyToMessageID)
+	}
+	if file.MessageThreadID != 0 {
+		params["message_thread_id"] = strconv.FormatInt(file.MessageThreadID, 10)
+	}
+	if file.DirectMessagesTopicID != 0 {
+		params["direct_messages_topic_id"] = strconv.FormatInt(file.DirectMessagesTopicID, 10)
+	}
+	if file.BusinessConnectionID != "" {
+		params["business_connection_id"] = file.BusinessConnectionID
+	}
+	if file.MessageEffectID != "" {
+		params["message_effect_id"] = file.MessageEffectID
+	}
+	if file.ProtectContent {
+		params["protect_content"] = "true"
+	}
+	if file.AllowPaidBroadcast {
+		params["allow_paid_broadcast"] = "true"
+	}
+	if file.SuggestedPostParameters != nil {
+		data, err := encodeToJson(file.SuggestedPostParameters)
+		if err != nil {
+			return params, fmt.Errorf("failed to marshal suggested_post_parameters: %w", err)
+		}
+		params["suggested_post_parameters"] = string(data)
 	}
 
 	if file.ReplyMarkup != nil {
@@ -290,9 +333,10 @@ func NewChatMessageEdit(chatID int64, messageID int) BaseEdit {
 // BaseEdit is base type of all chat edits.
 type BaseEdit struct {
 	chatEdit
-	ChannelUsername string                `json:",omitempty"`
-	InlineMessageID string                `json:"inline_message_id,omitempty"`
-	ReplyMarkup     *InlineKeyboardMarkup `json:",omitempty"`
+	BusinessConnectionID string                `json:"business_connection_id,omitempty"`
+	ChannelUsername      string                `json:",omitempty"`
+	InlineMessageID      string                `json:"inline_message_id,omitempty"`
+	ReplyMarkup          *InlineKeyboardMarkup `json:",omitempty"`
 }
 
 // Values returns URL values
@@ -312,6 +356,9 @@ func (v BaseEdit) Values() (url.Values, error) {
 	}
 	if v.InlineMessageID != "" {
 		values.Add("inline_message_id", v.InlineMessageID)
+	}
+	if v.BusinessConnectionID != "" {
+		values.Add("business_connection_id", v.BusinessConnectionID)
 	}
 
 	if v.ReplyMarkup != nil {
@@ -795,14 +842,21 @@ type EditMessageTextConfig struct {
 func (j EditMessageTextConfig) Values() (url.Values, error) {
 	v, _ := j.BaseEdit.Values()
 
-	v.Add("text", j.Text)
-	if j.ParseMode != "" {
-		v.Add("parse_mode", j.ParseMode)
-	}
-	if j.DisableWebPagePreview {
-		v.Add("disable_web_page_preview", strconv.FormatBool(j.DisableWebPagePreview))
+	// rich_message replaces text. Suppress legacy text fields when callers add
+	// RichMessage to a config created by NewEditMessageText.
+	if j.RichMessage == nil {
+		v.Add("text", j.Text)
+		if j.ParseMode != "" {
+			v.Add("parse_mode", j.ParseMode)
+		}
+		if j.DisableWebPagePreview {
+			v.Add("disable_web_page_preview", strconv.FormatBool(j.DisableWebPagePreview))
+		}
 	}
 	if j.RichMessage != nil {
+		if err := j.RichMessage.Validate(); err != nil {
+			return v, fmt.Errorf("invalid rich message: %w", err)
+		}
 		if b, err := encodeToJson(j.RichMessage); err != nil {
 			return v, fmt.Errorf("failed to marshal rich message as JSON: %w", err)
 		} else {

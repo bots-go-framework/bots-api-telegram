@@ -1,7 +1,5 @@
 package tgbotapi
 
-import "errors"
-
 // RichMessage represents a rich formatted message (Bot API 10.1 Rich Messages).
 //
 // https://core.telegram.org/bots/api#richmessage
@@ -41,26 +39,15 @@ type InputRichMessage struct {
 	SkipEntityDetection bool `json:"skip_entity_detection,omitempty"`
 }
 
-// Validate checks that exactly one of HTML, Markdown, or Blocks is set.
+// Validate checks the persistent-message constraints recursively.
 func (v InputRichMessage) Validate() error {
-	set := 0
-	if v.HTML != "" {
-		set++
-	}
-	if v.Markdown != "" {
-		set++
-	}
-	if len(v.Blocks) > 0 {
-		set++
-	}
-	switch set {
-	case 0:
-		return errors.New("one of HTML, Markdown, or Blocks must be set")
-	case 1:
-		return nil
-	default:
-		return errors.New("only one of HTML, Markdown, or Blocks may be set")
-	}
+	return v.validate(false)
+}
+
+// ValidateDraft checks rich-message constraints while allowing the outgoing-only
+// InputRichBlockThinking block.
+func (v InputRichMessage) ValidateDraft() error {
+	return v.validate(true)
 }
 
 // InputRichMessageMedia describes a media element embedded in an outgoing rich message, referenced from

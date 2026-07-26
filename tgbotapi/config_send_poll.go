@@ -1,6 +1,7 @@
 package tgbotapi
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 )
@@ -27,8 +28,12 @@ type InputPollOption struct {
 //
 // https://core.telegram.org/bots/api#inputpollmedia
 type InputPollMedia struct {
+	// Input is an optional fully typed InputMedia* union member. When set, it is
+	// serialized directly and the legacy flattened fields below are ignored.
+	Input any `json:"-"`
+
 	// Type of the media, one of "animation", "audio", "document", "live_photo", "location", "photo",
-	// "sticker", "venue", "video"
+	// "venue", "video"
 	Type string `json:"type"`
 
 	// File to send, required for file-based types ("animation", "audio", "document", "live_photo",
@@ -48,6 +53,10 @@ type InputPollMedia struct {
 //
 // https://core.telegram.org/bots/api#inputpolloptionmedia
 type InputPollOptionMedia struct {
+	// Input is an optional fully typed InputMedia* union member. When set, it is
+	// serialized directly and the legacy flattened fields below are ignored.
+	Input any `json:"-"`
+
 	// Type of the media, one of "animation", "link", "live_photo", "location", "photo", "sticker",
 	// "venue", "video". "link" added in Bot API 10.1
 	Type string `json:"type"`
@@ -66,6 +75,189 @@ type InputPollOptionMedia struct {
 
 	// Venue to attach, required when Type is "venue"
 	Venue *Venue `json:"venue,omitempty"`
+}
+
+// NewInputPollMedia constructs a full-fidelity InputPollMedia union.
+func NewInputPollMedia(input any) InputPollMedia {
+	return InputPollMedia{Input: input}
+}
+
+// NewInputPollOptionMedia constructs a full-fidelity InputPollOptionMedia union.
+func NewInputPollOptionMedia(input any) InputPollOptionMedia {
+	return InputPollOptionMedia{Input: input}
+}
+
+func (v InputPollMedia) MarshalJSON() ([]byte, error) {
+	if v.Input != nil {
+		if err := validatePollMediaInput(v.Input, false); err != nil {
+			return nil, err
+		}
+		return json.Marshal(v.Input)
+	}
+	return marshalLegacyPollMedia(v.Type, v.Media, "", v.Location, v.Venue, false)
+}
+
+func (v InputPollOptionMedia) MarshalJSON() ([]byte, error) {
+	if v.Input != nil {
+		if err := validatePollMediaInput(v.Input, true); err != nil {
+			return nil, err
+		}
+		return json.Marshal(v.Input)
+	}
+	return marshalLegacyPollMedia(v.Type, v.Media, v.URL, v.Location, v.Venue, true)
+}
+
+func marshalLegacyPollMedia(mediaType, media, linkURL string, location *Location, venue *Venue, option bool) ([]byte, error) {
+	switch mediaType {
+	case "location":
+		if location == nil {
+			return nil, fmt.Errorf("location is required for poll media type %q", mediaType)
+		}
+		return json.Marshal(InputMediaLocation{
+			Type:               mediaType,
+			Latitude:           location.Latitude,
+			Longitude:          location.Longitude,
+			HorizontalAccuracy: location.HorizontalAccuracy,
+		})
+	case "venue":
+		if venue == nil {
+			return nil, fmt.Errorf("venue is required for poll media type %q", mediaType)
+		}
+		return json.Marshal(InputMediaVenue{
+			Type:            mediaType,
+			Latitude:        venue.Location.Latitude,
+			Longitude:       venue.Location.Longitude,
+			Title:           venue.Title,
+			Address:         venue.Address,
+			FoursquareID:    venue.FoursquareID,
+			FoursquareType:  venue.FoursquareType,
+			GooglePlaceID:   venue.GooglePlaceID,
+			GooglePlaceType: venue.GooglePlaceType,
+		})
+	case "link":
+		if !option {
+			return nil, fmt.Errorf("link is only valid for poll-option media")
+		}
+		if linkURL == "" {
+			return nil, fmt.Errorf("url is required for poll media type %q", mediaType)
+		}
+		return json.Marshal(InputMediaLink{Type: mediaType, URL: linkURL})
+	default:
+		if mediaType == "" {
+			return nil, fmt.Errorf("poll media type is required")
+		}
+		allowed := mediaType == "animation" || mediaType == "live_photo" || mediaType == "photo" || mediaType == "video"
+		if option {
+			allowed = allowed || mediaType == "sticker"
+		} else {
+			allowed = allowed || mediaType == "audio" || mediaType == "document"
+		}
+		if !allowed {
+			return nil, fmt.Errorf("media type %q is not valid for this poll media union", mediaType)
+		}
+		if media == "" {
+			return nil, fmt.Errorf("media is required for poll media type %q", mediaType)
+		}
+		return json.Marshal(struct {
+			Type  string `json:"type"`
+			Media string `json:"media"`
+		}{Type: mediaType, Media: media})
+	}
+}
+
+func validatePollMediaInput(input any, option bool) error {
+	switch media := input.(type) {
+	case InputMediaAnimation:
+		return validateTypedMedia(media.Type, "animation", media.Media)
+	case *InputMediaAnimation:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validateTypedMedia(media.Type, "animation", media.Media)
+	case InputMediaLivePhoto:
+		return validateTypedMedia(media.Type, "live_photo", media.Media)
+	case *InputMediaLivePhoto:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validateTypedMedia(media.Type, "live_photo", media.Media)
+	case InputMediaLocation:
+		if media.Type != "location" {
+			return fmt.Errorf("location type must be %q", "location")
+		}
+		return nil
+	case *InputMediaLocation:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validatePollMediaInput(*media, option)
+	case InputMediaPhoto:
+		return validateTypedMedia(media.Type, "photo", media.Media)
+	case *InputMediaPhoto:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validateTypedMedia(media.Type, "photo", media.Media)
+	case InputMediaVenue:
+		if media.Type != "venue" || media.Title == "" || media.Address == "" {
+			return fmt.Errorf("venue type, title, and address are required")
+		}
+		return nil
+	case *InputMediaVenue:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validatePollMediaInput(*media, option)
+	case InputMediaVideo:
+		return validateTypedMedia(media.Type, "video", media.Media)
+	case *InputMediaVideo:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validateTypedMedia(media.Type, "video", media.Media)
+	case InputMediaAudio:
+		if option {
+			return fmt.Errorf("audio is not valid poll-option media")
+		}
+		return validateTypedMedia(media.Type, "audio", media.Media)
+	case *InputMediaAudio:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validatePollMediaInput(*media, option)
+	case InputMediaDocument:
+		if option {
+			return fmt.Errorf("document is not valid poll-option media")
+		}
+		return validateTypedMedia(media.Type, "document", media.Media)
+	case *InputMediaDocument:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validatePollMediaInput(*media, option)
+	case InputMediaLink:
+		if !option || media.Type != "link" || media.URL == "" {
+			return fmt.Errorf("link is only valid for poll options and requires type and url")
+		}
+		return nil
+	case *InputMediaLink:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validatePollMediaInput(*media, option)
+	case InputMediaSticker:
+		if !option {
+			return fmt.Errorf("sticker is only valid for poll options")
+		}
+		return validateTypedMedia(media.Type, "sticker", media.Media)
+	case *InputMediaSticker:
+		if media == nil {
+			return fmt.Errorf("poll media is nil")
+		}
+		return validatePollMediaInput(*media, option)
+	default:
+		return fmt.Errorf("unsupported poll media type %T", input)
+	}
 }
 
 var _ Sendable = (*PollConfig)(nil)

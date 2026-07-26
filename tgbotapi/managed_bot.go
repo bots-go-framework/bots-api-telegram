@@ -44,20 +44,15 @@ type PreparedKeyboardButton struct {
 	ID string `json:"id"`
 }
 
-// BotAccessSettings describes the access settings granted to a bot for managing a bot it created. Used
-// by getManagedBotAccessSettings and setManagedBotAccessSettings.
+// BotAccessSettings describes who can access a managed bot.
 //
 // https://core.telegram.org/bots/api#botaccesssettings
 type BotAccessSettings struct {
-	// Optional. True, if the bot can read messages sent to the managed bot
-	CanReadMessages bool `json:"can_read_messages,omitempty"`
+	// True if only selected users can access the bot. The owner always has access.
+	IsAccessRestricted bool `json:"is_access_restricted"`
 
-	// Optional. True, if the bot can send messages on behalf of the managed bot
-	CanSendMessages bool `json:"can_send_messages,omitempty"`
-
-	// Optional. True, if the bot can change the managed bot's settings, such as its name,
-	// description and commands
-	CanManageSettings bool `json:"can_manage_settings,omitempty"`
+	// Optional. Users who have access in addition to the owner.
+	AddedUsers []User `json:"added_users,omitempty"`
 }
 
 // PollOptionAdded describes a service message about a new option being added to a poll.
