@@ -93,6 +93,17 @@ func TestMakeRequest_ProviderErrorDoesNotExposeDescription(t *testing.T) {
 	if providerResponse.ErrorCode != http.StatusBadRequest {
 		t.Fatalf("provider error code = %d, want %d", providerResponse.ErrorCode, http.StatusBadRequest)
 	}
+	details, ok := TelegramProviderErrorDetailsFrom(fmt.Errorf("wrapped: %w", err))
+	if !ok {
+		t.Fatal("TelegramProviderErrorDetailsFrom() = false, want true")
+	}
+	if got, want := details, (TelegramProviderErrorDetails{
+		Method:      "sendMessage",
+		ErrorCode:   http.StatusBadRequest,
+		Description: privateDescription,
+	}); got != want {
+		t.Fatalf("TelegramProviderErrorDetailsFrom() = %#v, want %#v", got, want)
+	}
 }
 
 func TestUploadFile_ProviderErrorDoesNotExposeDescription(t *testing.T) {
@@ -115,6 +126,23 @@ func TestUploadFile_ProviderErrorDoesNotExposeDescription(t *testing.T) {
 	assertDoesNotContainPrivateValues(t, err.Error(), token, privateDescription)
 	if response.Description != privateDescription {
 		t.Fatalf("APIResponse.Description = %q, want structured provider description", response.Description)
+	}
+	details, ok := TelegramProviderErrorDetailsFrom(err)
+	if !ok {
+		t.Fatal("TelegramProviderErrorDetailsFrom() = false, want true")
+	}
+	if got, want := details, (TelegramProviderErrorDetails{
+		Method:      "sendPhoto",
+		ErrorCode:   http.StatusBadRequest,
+		Description: privateDescription,
+	}); got != want {
+		t.Fatalf("TelegramProviderErrorDetailsFrom() = %#v, want %#v", got, want)
+	}
+}
+
+func TestTelegramProviderErrorDetailsFrom_NonProviderError(t *testing.T) {
+	if details, ok := TelegramProviderErrorDetailsFrom(errors.New("not a provider error")); ok || details != (TelegramProviderErrorDetails{}) {
+		t.Fatalf("TelegramProviderErrorDetailsFrom() = (%#v, %t), want zero details and false", details, ok)
 	}
 }
 

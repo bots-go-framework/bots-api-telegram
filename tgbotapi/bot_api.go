@@ -64,6 +64,36 @@ type telegramProviderError struct {
 	response APIResponse
 }
 
+// TelegramProviderErrorDetails is the diagnostic subset of a Telegram API
+// provider error. It deliberately excludes the bot token, request URL,
+// request parameters, and raw response body, so it is suitable for structured
+// operational logs.
+//
+// Description is supplied by Telegram. It is intentionally not included in
+// Error(), which remains safe for ordinary error logs.
+type TelegramProviderErrorDetails struct {
+	Method      string
+	ErrorCode   int
+	Description string
+}
+
+// TelegramProviderErrorDetailsFrom extracts safe, structured diagnostics from
+// an error returned by the Telegram API. It also works when that error has
+// been wrapped with fmt.Errorf("...: %w", err).
+//
+// It returns false for transport, decoding, and non-Telegram provider errors.
+func TelegramProviderErrorDetailsFrom(err error) (details TelegramProviderErrorDetails, ok bool) {
+	var providerErr telegramProviderError
+	if !errors.As(err, &providerErr) {
+		return TelegramProviderErrorDetails{}, false
+	}
+	return TelegramProviderErrorDetails{
+		Method:      providerErr.method,
+		ErrorCode:   providerErr.response.ErrorCode,
+		Description: providerErr.response.Description,
+	}, true
+}
+
 func (e telegramProviderError) Error() string {
 	return fmt.Sprintf(
 		"Telegram API method %q failed with error code %d",
