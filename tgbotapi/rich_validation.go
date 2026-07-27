@@ -11,6 +11,12 @@ var (
 	richDateTimeFormatPattern = regexp.MustCompile(`^(r|w?[dD]?[tT]?)$`)
 )
 
+// richDateTimeFallbackMaxUTF8Bytes is the maximum date_time fallback length
+// accepted by Telegram Bot API 10.1 in live probes: 31 bytes succeeds and 32
+// bytes returns RICH_MESSAGE_DATE_TOO_LONG. This is empirical behavior, not a
+// limit published in the Bot API documentation.
+const richDateTimeFallbackMaxUTF8Bytes = 31
+
 func (v InputRichMessage) validate(allowThinking bool) error {
 	set := 0
 	if v.HTML != "" {
@@ -138,6 +144,9 @@ func (r RichText) Validate() error {
 				r.DateTimeFormat,
 			)
 		}
+		if fallbackBytes := r.Text.visibleUTF8ByteLen(); fallbackBytes > richDateTimeFallbackMaxUTF8Bytes {
+			return fmt.Errorf("date_time fallback must be at most %d UTF-8 bytes; got %d", richDateTimeFallbackMaxUTF8Bytes, fallbackBytes)
+		}
 	case RichTextTypeTextMention:
 		if err := requireText(); err != nil {
 			return err
@@ -233,6 +242,35 @@ func (r RichText) Validate() error {
 		return fmt.Errorf("unknown rich text type %q", r.Type)
 	}
 	return nil
+}
+
+// visibleUTF8ByteLen returns the UTF-8 byte length of the fallback text as it
+// is rendered. RichText.Validate has already verified each shape before this
+// is used by a date_time node.
+func (r RichText) visibleUTF8ByteLen() int {
+	if r.Type == "" {
+		if r.Items == nil {
+			return len(r.PlainText)
+		}
+		length := 0
+		for i := range r.Items {
+			length += r.Items[i].visibleUTF8ByteLen()
+		}
+		return length
+	}
+	switch r.Type {
+	case RichTextTypeCustomEmoji:
+		return len(r.AlternativeText)
+	case RichTextTypeMathematicalExpression:
+		return len(r.Expression)
+	case RichTextTypeAnchor:
+		return 0
+	default:
+		if r.Text == nil {
+			return 0
+		}
+		return r.Text.visibleUTF8ByteLen()
+	}
 }
 
 func validateRichText(field string, text *RichText) error {
