@@ -52,6 +52,8 @@ func AuthenticateTelegramWebApp(
 Validates the request and calls `complete` with the parsed init data.
 The `bot` parameter passed to `getToken` comes from the `?bot=` query
 string of the request URL, allowing a single handler to serve multiple bots.
+Signature validation establishes integrity, not freshness. Before creating a
+session, callers must reject `AuthDate` values outside their chosen maximum age.
 
 ### `InitData`
 

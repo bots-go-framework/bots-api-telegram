@@ -12,7 +12,9 @@ import (
 	"strings"
 )
 
-// AuthenticateTelegramWebApp validates Telegram web app init data
+// AuthenticateTelegramWebApp validates the signature of Telegram web app init
+// data. Callers must reject stale AuthDate values according to their session
+// policy.
 // https://core.telegram.org/bots/webapps#webappinitdata
 // TODO: Move some of it into Telegram FW module?
 func AuthenticateTelegramWebApp(
@@ -49,28 +51,37 @@ func AuthenticateTelegramWebApp(
 
 func isFromTelegram(values url.Values, botToken string) bool {
 	// https://core.telegram.org/bots/webapps#validating-data-received-via-the-web-app
-	dataCheckString := getDataCheckString(values)
-	expectedHash := computeWebAppHash(dataCheckString, botToken)
-	return expectedHash != values.Get("hash")
+	if botToken == "" {
+		return false
+	}
+	suppliedHash, err := hex.DecodeString(values.Get("hash"))
+	if err != nil || len(suppliedHash) != sha256.Size {
+		return false
+	}
+	expectedHash := computeWebAppHash(getDataCheckString(values), botToken)
+	return hmac.Equal(expectedHash, suppliedHash)
 }
 
-func computeWebAppHash(data, token string) string {
-	h := hmac.New(sha256.New, []byte(token))
-	h = hmac.New(sha256.New, h.Sum([]byte("WebAppData")))
-	hash := h.Sum([]byte(data))
-	return hex.EncodeToString(hash)
+func computeWebAppHash(data, token string) []byte {
+	secretKeyMAC := hmac.New(sha256.New, []byte("WebAppData"))
+	_, _ = secretKeyMAC.Write([]byte(token))
+
+	dataMAC := hmac.New(sha256.New, secretKeyMAC.Sum(nil))
+	_, _ = dataMAC.Write([]byte(data))
+	return dataMAC.Sum(nil)
 }
 
 func getDataCheckString(values url.Values) string {
-	// Extract and sort the keys
 	keys := make([]string, 0, len(values))
 	for k := range values {
+		if k == "hash" {
+			continue
+		}
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 
 	var s strings.Builder
-	// Iterate over sorted keys
 	for i, k := range keys {
 		if i > 0 {
 			s.WriteByte('\n')
