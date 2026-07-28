@@ -154,7 +154,7 @@ func (bot *BotAPI) MakeRequest(telegramMethod string, params url.Values) (apiRes
 	}
 
 	var body []byte
-	if resp.ContentLength > 0 {
+	{
 		var readerErr error
 		if body, readerErr = io.ReadAll(resp.Body); readerErr != nil {
 			logus.Errorf(
