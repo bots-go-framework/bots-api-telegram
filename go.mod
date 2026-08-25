@@ -1,6 +1,6 @@
 module github.com/bots-go-framework/bots-api-telegram
 
-go 1.25
+go 1.27.0
 
 require (
 	github.com/bots-go-framework/bots-go-core v0.3.0
