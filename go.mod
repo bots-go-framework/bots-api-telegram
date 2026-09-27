@@ -5,9 +5,9 @@ go 1.26.0
 toolchain go1.27.1
 
 require (
-	github.com/bots-go-framework/bots-go-core v0.3.3
+	github.com/bots-go-framework/bots-go-core v0.3.5
 	github.com/stretchr/testify v1.12.1
-	github.com/strongo/logus v0.4.4
+	github.com/strongo/logus v0.4.6
 	github.com/technoweenie/multipartstreamer v1.0.1
 )
 
