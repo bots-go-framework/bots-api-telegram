@@ -2,12 +2,12 @@ module github.com/bots-go-framework/bots-api-telegram
 
 go 1.26.0
 
-toolchain go1.27.3
+toolchain go1.27.4
 
 require (
-	github.com/bots-go-framework/bots-go-core v0.3.7
+	github.com/bots-go-framework/bots-go-core v0.3.8
 	github.com/stretchr/testify v1.12.1
-	github.com/strongo/logus v0.4.8
+	github.com/strongo/logus v0.4.9
 	github.com/technoweenie/multipartstreamer v1.0.1
 )
 
